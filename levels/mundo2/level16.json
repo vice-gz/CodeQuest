@@ -1,0 +1,105 @@
+{
+  "id": 16,
+  "mundo": 2,
+  "nombre": "La memoria de Robot1",
+  "concepto": "combinación de variables, tipos y operadores",
+  "narrativa": "Robot1 ya recuerda, calcula y lee sensores. Toca usarlo todo junto.",
+  "fases": [
+    {
+      "id": "16.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Robot1 se consulta",
+      "enunciado": "Ejecuta y observa cómo Robot1 guarda su propio estado en variables.",
+      "codigoInicial": "robot1.avanzar(2)\ndonde = robot1.posicion()\nhacia = robot1.mirar()\nprint(donde)\nprint(hacia)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "posicion",
+        "mirar"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "posicion() y mirar() devuelven valores: se guardan en variables como cualquier dato.",
+      "pistas": [
+        "Compara lo que muestra Salida con el panel de Estado."
+      ]
+    },
+    {
+      "id": "16.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "Informe de estado",
+      "enunciado": "Guarda la energía de Robot1 en una variable llamada bateria y muéstrala.",
+      "codigoInicial": "",
+      "solucionReferencia": "bateria = robot1.energia()\nprint(bateria)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "energia"
+      ],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "100"
+      },
+      "retroalimentacion": "Robot1 puede reportar su propio estado al programa.",
+      "pistas": [
+        "bateria = robot1.energia()",
+        "Luego print(bateria)."
+      ]
+    },
+    {
+      "id": "16.3",
+      "tipo": "RESOLVER",
+      "titulo": "Ruta en dos tramos",
+      "enunciado": "Guarda 2 en una variable, avanza esa cantidad, gira al sur y avanza el doble.",
+      "codigoInicial": "",
+      "solucionReferencia": "tramo = 2\nrobot1.avanzar(tramo)\nrobot1.girar(\"sur\")\nrobot1.avanzar(tramo * 2)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          2,
+          4
+        ]
+      },
+      "retroalimentacion": "Una sola variable controló los dos tramos del recorrido.",
+      "pistas": [
+        "El doble de tramo es tramo * 2.",
+        "Gira al \"sur\" entre los dos avances."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          2,
+          4
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 5,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

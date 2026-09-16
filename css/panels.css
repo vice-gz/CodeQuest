@@ -1,0 +1,110 @@
+/* ============================================================
+   panels.css — Paneles en vivo: Salida, Memoria, Estado de Robot1
+   (prompt de cambios, sección 5.2 a 5.4)
+   ============================================================ */
+
+.panel-lateral {
+  padding-bottom: 14px;
+}
+
+.panel-vacio {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--texto-muted);
+  font-style: italic;
+}
+
+/* ---------- Salida ---------- */
+
+.salida-contenido {
+  max-height: 150px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--fuente-mono);
+  font-size: 0.85rem;
+}
+
+.salida-linea {
+  display: flex;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--panel-alt);
+}
+
+.salida-icono {
+  color: var(--texto-muted);
+  flex-shrink: 0;
+}
+
+.salida-print .salida-icono { color: var(--teal); }
+.salida-hablar .salida-icono { color: var(--morado); }
+.salida-entrada .salida-icono { color: var(--ambar); }
+
+.salida-valor {
+  word-break: break-word;
+  color: var(--texto);
+}
+
+/* ---------- Memoria ---------- */
+
+.memoria-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--fuente-mono);
+  font-size: 0.85rem;
+}
+
+.memoria-fila {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--panel-alt);
+}
+
+.memoria-nombre {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.memoria-igual {
+  color: var(--texto-muted);
+}
+
+.memoria-valor {
+  color: var(--texto);
+  word-break: break-word;
+}
+
+/* ---------- Estado de Robot1 ---------- */
+
+.estado-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.estado-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--panel-alt);
+}
+
+.estado-etiqueta {
+  font-size: 0.78rem;
+  color: var(--texto-muted);
+}
+
+.estado-valor {
+  font-family: var(--fuente-mono);
+  font-size: 0.88rem;
+  color: var(--texto);
+}

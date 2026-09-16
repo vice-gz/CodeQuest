@@ -1,0 +1,105 @@
+{
+  "id": 4,
+  "mundo": 1,
+  "nombre": "¿Cuánto?",
+  "concepto": "parámetros, argumentos, literales numéricos",
+  "narrativa": "Las instrucciones de Robot1 aceptan valores distintos. Ese valor se llama argumento.",
+  "fases": [
+    {
+      "id": "4.1",
+      "tipo": "EXPLORAR",
+      "titulo": "El mismo método, otro valor",
+      "enunciado": "Ejecuta y observa cuánto se mueve Robot1 con el argumento 1.",
+      "codigoInicial": "robot1.avanzar(1)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "El valor entre paréntesis es el argumento: cambia el resultado sin cambiar la instrucción.",
+      "pistas": [
+        "Presiona ▶ Ejecutar."
+      ]
+    },
+    {
+      "id": "4.2",
+      "tipo": "PREDECIR",
+      "titulo": "Predice el resultado",
+      "enunciado": "Robot1 está en la casilla 0. Si ejecutas robot1.avanzar(3), ¿en qué casilla termina?",
+      "codigoInicial": "robot1.avanzar(3)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "En la casilla 1"
+        },
+        {
+          "id": "b",
+          "texto": "En la casilla 3"
+        },
+        {
+          "id": "c",
+          "texto": "En la casilla 4"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Así es: avanza tantas casillas como diga el argumento.",
+      "pistas": [
+        "Empieza en 0 y avanza 3."
+      ]
+    },
+    {
+      "id": "4.3",
+      "tipo": "RESOLVER",
+      "titulo": "Llega exacto",
+      "enunciado": "Haz que Robot1 llegue exactamente a la casilla 5 usando una sola instrucción.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(5)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          5,
+          0
+        ]
+      },
+      "retroalimentacion": "Un solo argumento bien elegido basta.",
+      "pistas": [
+        "Solo necesitas una línea.",
+        "¿Cuántas casillas hay del 0 al 5?"
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          5,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 7,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 3,
+  "mundo": 1,
+  "nombre": "Haz que me entienda",
+  "concepto": "instrucciones disponibles, llamadas a métodos, sintaxis",
+  "narrativa": "Robot1 conoce más instrucciones de las que el jugador imagina. Toca descubrirlas.",
+  "fases": [
+    {
+      "id": "3.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Robot1 puede hablar",
+      "enunciado": "Ejecuta el código. Fíjate en que hablar() muestra una burbuja en el mundo Y una línea en Salida.",
+      "codigoInicial": "robot1.hablar(\"Sistema activo\")",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "hablar"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "hablar() es salida visual en el mundo. print() es salida de consola. No son lo mismo.",
+      "pistas": [
+        "Presiona ▶ Ejecutar y observa el mundo 2D y el panel de Salida."
+      ]
+    },
+    {
+      "id": "3.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Dónde aparece cada cosa?",
+      "enunciado": "Si ejecutas print(\"Hola\"), ¿dónde aparece el texto?",
+      "codigoInicial": "print(\"Hola\")",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo en el panel de Salida"
+        },
+        {
+          "id": "b",
+          "texto": "En una burbuja sobre Robot1"
+        },
+        {
+          "id": "c",
+          "texto": "En el panel de Estado"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: print() es salida de consola, solo va al panel de Salida.",
+      "pistas": [
+        "La burbuja sobre Robot1 la produce hablar(), no print()."
+      ]
+    },
+    {
+      "id": "3.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Usa las dos",
+      "enunciado": "Haz que Robot1 diga \"Listo\" con hablar(), y además muestra \"Diagnostico completo\" con print().",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.hablar(\"Listo\")\nprint(\"Diagnostico completo\")",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [
+        "hablar"
+      ],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "Diagnostico completo"
+      },
+      "retroalimentacion": "Ya distingues las dos formas de salida que tiene Robot1.",
+      "pistas": [
+        "robot1.hablar(\"texto\") para la burbuja.",
+        "print(\"texto\") para la consola."
+      ]
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      2,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

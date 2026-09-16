@@ -1,0 +1,82 @@
+{
+  "id": 1,
+  "mundo": 1,
+  "nombre": "Despertar",
+  "concepto": "programa, instrucción, ejecución, salida",
+  "narrativa": "Robot1 está apagado en una instalación desconocida. El jugador ejecuta su primer programa.",
+  "fases": [
+    {
+      "id": "1.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Enciende a Robot1",
+      "enunciado": "Ejecuta el código y observa qué aparece en el panel de Salida.",
+      "codigoInicial": "print(\"Robot1 despierta\")",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "¡Bien! print() muestra un mensaje en el panel de Salida cada vez que se ejecuta.",
+      "pistas": [
+        "Solo presiona ▶ Ejecutar y observa el panel de Salida."
+      ]
+    },
+    {
+      "id": "1.2",
+      "tipo": "MODIFICAR",
+      "titulo": "Cambia el mensaje",
+      "enunciado": "Cambia el texto para que Robot1 diga \"Robot1 está listo\".",
+      "codigoInicial": "print(\"cambia este texto\")",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "Robot1 está listo"
+      },
+      "retroalimentacion": "Exacto: el texto entre comillas es lo que print() muestra.",
+      "pistas": [
+        "Solo cambia lo que está entre comillas, no el resto de la línea."
+      ],
+      "solucionReferencia": "print(\"Robot1 está listo\")"
+    },
+    {
+      "id": "1.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Tu primer programa",
+      "enunciado": "Escribe un programa que muestre \"Hola mundo\" en pantalla.",
+      "codigoInicial": "",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "Hola mundo"
+      },
+      "retroalimentacion": "¡Programa completo! Ya sabes ejecutar instrucciones y ver su salida.",
+      "pistas": [
+        "Usa print(\"...\") con el texto entre comillas."
+      ],
+      "solucionReferencia": "print(\"Hola mundo\")"
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

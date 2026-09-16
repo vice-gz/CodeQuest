@@ -1,0 +1,98 @@
+{
+  "id": 15,
+  "mundo": 2,
+  "nombre": "El identificador incorrecto",
+  "concepto": "identificadores, lectura de código",
+  "narrativa": "Un error de nombre basta para que Robot1 no entienda nada. Hay que leer con cuidado.",
+  "fases": [
+    {
+      "id": "15.1",
+      "tipo": "DEBUG",
+      "titulo": "Nombre mal escrito",
+      "enunciado": "La variable se guarda con un nombre y se usa con otro. Corrígelo para mostrar 4.",
+      "codigoInicial": "pasos = 4\nprint(paso)",
+      "solucionReferencia": "pasos = 4\nprint(pasos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "4"
+      },
+      "retroalimentacion": "SEM_001: el identificador debe escribirse exactamente igual en los dos lugares.",
+      "pistas": [
+        "Compara letra por letra los dos nombres.",
+        "Falta una s."
+      ]
+    },
+    {
+      "id": "15.2",
+      "tipo": "DEBUG",
+      "titulo": "Mayúsculas y minúsculas",
+      "enunciado": "CQL distingue mayúsculas de minúsculas. Corrige el código para mostrar \"Robot1\".",
+      "codigoInicial": "Nombre = \"Robot1\"\nprint(nombre)",
+      "solucionReferencia": "nombre = \"Robot1\"\nprint(nombre)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "Robot1"
+      },
+      "retroalimentacion": "Nombre y nombre son dos identificadores distintos para el programa.",
+      "pistas": [
+        "Haz que los dos nombres coincidan exactamente."
+      ]
+    },
+    {
+      "id": "15.3",
+      "tipo": "DEBUG",
+      "titulo": "Usada antes de existir",
+      "enunciado": "Aquí la variable se usa antes de crearla. Reordena el código para que Robot1 llegue a la casilla 3.",
+      "codigoInicial": "robot1.avanzar(pasos)\npasos = 3",
+      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)",
+      "instruccionesPermitidas": [
+        "asignacion"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          3,
+          0
+        ]
+      },
+      "retroalimentacion": "El orden importa: una variable debe existir antes de usarse.",
+      "pistas": [
+        "Intercambia las dos líneas."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          3,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

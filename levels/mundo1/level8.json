@@ -1,0 +1,129 @@
+{
+  "id": 8,
+  "mundo": 1,
+  "nombre": "La salida",
+  "concepto": "integración total",
+  "narrativa": "Robot1 encontró la puerta de la instalación. Es hora de escapar.",
+  "fases": [
+    {
+      "id": "8.1",
+      "tipo": "RESOLVER",
+      "titulo": "Recupera la tarjeta",
+      "enunciado": "Hay una tarjeta de acceso en (2, 0). Ve hasta ella y recógela.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(2)\nrobot1.recoger()",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "recoger"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          2,
+          0
+        ]
+      },
+      "retroalimentacion": "Robot1 recogió la tarjeta: ahora puede abrir la puerta.",
+      "pistas": [
+        "Primero llega a la casilla, después usa robot1.recoger()."
+      ],
+      "escenario": {
+        "objetos": [
+          {
+            "posicion": [
+              2,
+              0
+            ],
+            "tipo": "tarjeta"
+          }
+        ]
+      }
+    },
+    {
+      "id": "8.2",
+      "tipo": "RESOLVER",
+      "titulo": "Cruza el pasillo",
+      "enunciado": "Desde donde estás, baja hasta la fila 3 y llega a la casilla (2, 3).",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(3)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          2,
+          3
+        ]
+      },
+      "retroalimentacion": "Girar al sur y avanzar te mueve hacia abajo en la cuadrícula.",
+      "pistas": [
+        "Gira al \"sur\" antes de avanzar."
+      ],
+      "escenario": {
+        "robotPosicion": [
+          2,
+          0
+        ],
+        "objetivoPosicion": [
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "id": "8.3",
+      "tipo": "LIBRE",
+      "titulo": "Escapa de la instalación",
+      "enunciado": "La salida está en (5, 3). Llega hasta ahí y anuncia tu escape con print(\"Libre\").",
+      "codigoInicial": "",
+      "solucionReferencia": "pasos = 3\nrobot1.girar(\"sur\")\nrobot1.avanzar(pasos)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)\nprint(\"Libre\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar",
+        "hablar",
+        "recoger"
+      ],
+      "validacion": {
+        "tipo": "estado",
+        "posicionEsperada": [
+          5,
+          3
+        ]
+      },
+      "retroalimentacion": "¡Robot1 escapó! Usaste secuencia, parámetros, giros y salida en un solo programa.",
+      "pistas": [
+        "Puedes usar una variable para guardar los pasos.",
+        "Recuerda anunciar el escape con print(\"Libre\")."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          5,
+          3
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 4,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

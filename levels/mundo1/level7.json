@@ -1,0 +1,108 @@
+{
+  "id": 7,
+  "mundo": 1,
+  "nombre": "El sistema desconocido",
+  "concepto": "experimentación, combinación de conceptos",
+  "narrativa": "Nadie le dice a Robot1 qué hacer. Toca experimentar con lo aprendido.",
+  "fases": [
+    {
+      "id": "7.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Robot1 puede girar",
+      "enunciado": "Ejecuta y observa cómo cambia la dirección en el panel de Estado.",
+      "codigoInicial": "robot1.girar(\"sur\")\nrobot1.avanzar(2)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "girar",
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "girar() cambia hacia dónde mira Robot1: avanzar() siempre sigue esa dirección.",
+      "pistas": [
+        "Observa el panel de Estado antes y después."
+      ]
+    },
+    {
+      "id": "7.2",
+      "tipo": "RESOLVER",
+      "titulo": "Dos tramos",
+      "enunciado": "Lleva a Robot1 hasta (3, 2). Tendrás que avanzar, girar y volver a avanzar.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(3)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          3,
+          2
+        ]
+      },
+      "retroalimentacion": "Combinaste movimiento y giro para recorrer un camino en dos tramos.",
+      "pistas": [
+        "Primero muévete en horizontal, luego gira al sur.",
+        "Las direcciones son norte, sur, este y oeste."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          3,
+          2
+        ]
+      }
+    },
+    {
+      "id": "7.3",
+      "tipo": "LIBRE",
+      "titulo": "Explora a tu manera",
+      "enunciado": "Llega a (4, 3) como quieras. Cualquier ruta válida cuenta.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(3)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar",
+        "retroceder",
+        "hablar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          4,
+          3
+        ]
+      },
+      "retroalimentacion": "No hay una única solución correcta: lo que importa es llegar.",
+      "pistas": [
+        "Puedes girar tantas veces como necesites."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          4,
+          3
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 4,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

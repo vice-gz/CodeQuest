@@ -1,0 +1,86 @@
+{
+  "id": 17,
+  "mundo": 2,
+  "nombre": "El sistema de energía",
+  "concepto": "constantes vs variables",
+  "narrativa": "Hay datos que cambian todo el tiempo y datos que nunca deberían cambiar.",
+  "fases": [
+    {
+      "id": "17.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Un valor que no cambia",
+      "enunciado": "Ejecuta y observa: COSTO_POR_CASILLA se define una vez y se usa en el cálculo.",
+      "codigoInicial": "COSTO_POR_CASILLA = 2\ncasillas = 4\ngasto = COSTO_POR_CASILLA * casillas\nprint(gasto)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Por convención, un nombre EN MAYÚSCULAS avisa que ese valor no debe cambiar: es una constante.",
+      "pistas": [
+        "Fíjate en cómo está escrito el nombre de la constante."
+      ]
+    },
+    {
+      "id": "17.2",
+      "tipo": "MODIFICAR",
+      "titulo": "Cambia solo lo variable",
+      "enunciado": "Sin tocar la constante, cambia las casillas para que el gasto sea 14.",
+      "codigoInicial": "COSTO_POR_CASILLA = 2\ncasillas = 4\ngasto = COSTO_POR_CASILLA * casillas\nprint(gasto)",
+      "solucionReferencia": "COSTO_POR_CASILLA = 2\ncasillas = 7\ngasto = COSTO_POR_CASILLA * casillas\nprint(gasto)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "14"
+      },
+      "retroalimentacion": "La constante se queda fija; lo que varía es la variable.",
+      "pistas": [
+        "14 dividido entre 2 te dice cuántas casillas."
+      ]
+    },
+    {
+      "id": "17.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Tu propia constante",
+      "enunciado": "Define una constante ENERGIA_MAXIMA con valor 100, réstale un gasto de 30 y muestra el resultado.",
+      "codigoInicial": "",
+      "solucionReferencia": "ENERGIA_MAXIMA = 100\ngasto = 30\nrestante = ENERGIA_MAXIMA - gasto\nprint(restante)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "70"
+      },
+      "retroalimentacion": "Nombrar bien tus datos hace que el código se explique solo.",
+      "pistas": [
+        "Usa MAYÚSCULAS para la constante.",
+        "100 - 30 = 70."
+      ]
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "id": 18,
+  "mundo": 2,
+  "nombre": "El puente",
+  "concepto": "aplicar todo sin que se diga qué usar",
+  "narrativa": "Un puente estrecho separa a Robot1 del Mundo 3. Nadie le dirá cómo cruzarlo.",
+  "fases": [
+    {
+      "id": "18.1",
+      "tipo": "RESOLVER",
+      "titulo": "Mide el puente",
+      "enunciado": "El sensor dice cuántas casillas mide el puente. Léelo y muéstralo por consola.",
+      "codigoInicial": "",
+      "solucionReferencia": "largo = entrada()\nprint(largo)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "entradasSimuladas": [
+        5
+      ],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "5"
+      },
+      "retroalimentacion": "Antes de actuar, Robot1 midió el terreno.",
+      "pistas": [
+        "Guarda entrada() en una variable y muéstrala."
+      ]
+    },
+    {
+      "id": "18.2",
+      "tipo": "RESOLVER",
+      "titulo": "Cruza el puente",
+      "enunciado": "Lee el largo del puente con el sensor y avanza exactamente esa cantidad.",
+      "codigoInicial": "",
+      "solucionReferencia": "largo = entrada()\nrobot1.avanzar(largo)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "entradasSimuladas": [
+        5
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          5,
+          0
+        ]
+      },
+      "retroalimentacion": "El valor leído controló el movimiento sin que tú escribieras el número.",
+      "pistas": [
+        "No escribas 5 a mano: usa la variable."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          5,
+          0
+        ]
+      }
+    },
+    {
+      "id": "18.3",
+      "tipo": "LIBRE",
+      "titulo": "Cruza y desciende",
+      "enunciado": "Cruza el puente usando el sensor y luego baja hasta la fila 2. Resuélvelo como quieras.",
+      "codigoInicial": "",
+      "solucionReferencia": "largo = entrada()\nrobot1.avanzar(largo)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar",
+        "hablar",
+        "energia",
+        "posicion"
+      ],
+      "entradasSimuladas": [
+        5
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          5,
+          2
+        ]
+      },
+      "retroalimentacion": "Entrada, variables y giros en un solo programa: ya piensas como programador.",
+      "pistas": [
+        "Primero cruza, después gira al sur."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          5,
+          2
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 7,
+    "alto": 3,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

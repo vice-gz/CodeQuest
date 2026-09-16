@@ -1,0 +1,109 @@
+{
+  "id": 14,
+  "mundo": 2,
+  "nombre": "Información del exterior",
+  "concepto": "entrada() devuelve valores variables",
+  "narrativa": "Los sensores externos envían datos distintos cada vez. El programa debe funcionar igual.",
+  "fases": [
+    {
+      "id": "14.1",
+      "tipo": "EXPLORAR",
+      "titulo": "El sensor habla",
+      "enunciado": "Ejecuta y observa el valor que llega del sensor en Salida y en Memoria.",
+      "codigoInicial": "lectura = entrada()\nprint(lectura)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "entradasSimuladas": [
+        12
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "entrada() devuelve un valor que el programa no conocía de antemano.",
+      "pistas": [
+        "Presiona ▶ Ejecutar y mira los dos paneles."
+      ]
+    },
+    {
+      "id": "14.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "Opera con lo recibido",
+      "enunciado": "Lee un valor del sensor, súmale 5 y muestra el resultado.",
+      "codigoInicial": "",
+      "solucionReferencia": "lectura = entrada()\ntotal = lectura + 5\nprint(total)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "entradasSimuladas": [
+        12
+      ],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "17"
+      },
+      "retroalimentacion": "Un valor de entrada se puede operar igual que cualquier número.",
+      "pistas": [
+        "Guarda entrada() en una variable.",
+        "Luego crea otra variable con la suma."
+      ]
+    },
+    {
+      "id": "14.3",
+      "tipo": "RESOLVER",
+      "titulo": "Ruta desde el sensor",
+      "enunciado": "El sensor indica la mitad del camino. Lee ese valor, duplícalo y avanza esa cantidad.",
+      "codigoInicial": "",
+      "solucionReferencia": "mitad = entrada()\npasos = mitad * 2\nrobot1.avanzar(pasos)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "asignacion"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "entradasSimuladas": [
+        3
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          6,
+          0
+        ]
+      },
+      "retroalimentacion": "El programa funciona sin saber de antemano qué dirá el sensor.",
+      "pistas": [
+        "Duplicar es multiplicar por 2.",
+        "El sensor envía 3 en esta prueba."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          6,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

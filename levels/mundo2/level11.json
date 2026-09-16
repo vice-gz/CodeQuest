@@ -1,0 +1,108 @@
+{
+  "id": 11,
+  "mundo": 2,
+  "nombre": "No todo es lo mismo",
+  "concepto": "entero, decimal, texto",
+  "narrativa": "Robot1 descubre que la información viene en formas distintas, y no todas se usan igual.",
+  "fases": [
+    {
+      "id": "11.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Tres tipos de dato",
+      "enunciado": "Ejecuta y compara en el panel de Memoria: un entero, un decimal y un texto.",
+      "codigoInicial": "cantidad = 3\nvoltaje = 4.5\netiqueta = \"bateria\"\nprint(cantidad)\nprint(voltaje)\nprint(etiqueta)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Los textos se muestran entre comillas en Memoria; los números no. Son tipos distintos.",
+      "pistas": [
+        "Fíjate en cómo aparece cada valor en el panel de Memoria."
+      ]
+    },
+    {
+      "id": "11.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Cuál es texto?",
+      "enunciado": "¿Cuál de estos valores es un texto y NO un número?",
+      "codigoInicial": "a = 5\nb = 5.0\nc = \"5\"",
+      "instruccionesPermitidas": [
+        "asignacion"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "a = 5"
+        },
+        {
+          "id": "b",
+          "texto": "b = 5.0"
+        },
+        {
+          "id": "c",
+          "texto": "c = \"5\""
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Exacto: las comillas convierten el 5 en texto. No sirve para contar casillas.",
+      "pistas": [
+        "Busca las comillas."
+      ]
+    },
+    {
+      "id": "11.3",
+      "tipo": "DEBUG",
+      "titulo": "El tipo equivocado",
+      "enunciado": "Robot1 no puede avanzar un texto. Corrige el tipo de dato para que llegue a la casilla 3.",
+      "codigoInicial": "pasos = \"3\"\nrobot1.avanzar(pasos)",
+      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)",
+      "instruccionesPermitidas": [
+        "asignacion"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          3,
+          0
+        ]
+      },
+      "retroalimentacion": "SEM_004: avanzar() necesita un número, no un texto que se parezca a un número.",
+      "pistas": [
+        "Quita las comillas del valor.",
+        "\"3\" es texto; 3 es un número."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          3,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

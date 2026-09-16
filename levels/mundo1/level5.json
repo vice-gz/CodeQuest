@@ -1,0 +1,94 @@
+{
+  "id": 5,
+  "mundo": 1,
+  "nombre": "La orden equivocada",
+  "concepto": "sintaxis, errores, mensajes del sistema",
+  "narrativa": "Robot1 recibe órdenes mal escritas. Los mensajes de error no son castigos: son información.",
+  "fases": [
+    {
+      "id": "5.1",
+      "tipo": "DEBUG",
+      "titulo": "Falta un paréntesis",
+      "enunciado": "Este código tiene un error de sintaxis. Corrígelo para que muestre \"Reparado\".",
+      "codigoInicial": "print(\"Reparado\"",
+      "solucionReferencia": "print(\"Reparado\")",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "Reparado"
+      },
+      "retroalimentacion": "SYN_001: cada paréntesis que abres debe cerrarse.",
+      "pistas": [
+        "Lee el código de error que aparece al ejecutar.",
+        "Falta un ) al final."
+      ]
+    },
+    {
+      "id": "5.2",
+      "tipo": "DEBUG",
+      "titulo": "Falta una comilla",
+      "enunciado": "Corrige el texto sin cerrar para que Robot1 diga \"Sistema estable\".",
+      "codigoInicial": "robot1.hablar(\"Sistema estable)",
+      "solucionReferencia": "robot1.hablar(\"Sistema estable\")",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "hablar"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "LEX_002: todo texto abre y cierra con la misma comilla.",
+      "pistas": [
+        "El error dice \"Texto sin cerrar\".",
+        "Agrega la comilla que falta antes del )."
+      ]
+    },
+    {
+      "id": "5.3",
+      "tipo": "DEBUG",
+      "titulo": "El método no existe",
+      "enunciado": "robot1.volar() no existe. Cámbialo por una instrucción real que mueva a Robot1 a la casilla 3.",
+      "codigoInicial": "robot1.volar(3)",
+      "solucionReferencia": "robot1.avanzar(3)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          3,
+          0
+        ]
+      },
+      "retroalimentacion": "SEM_002: Robot1 solo entiende los métodos de su manual.",
+      "pistas": [
+        "Revisa la lista de instrucciones disponibles en esta fase."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          3,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

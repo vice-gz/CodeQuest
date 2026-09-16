@@ -1,0 +1,109 @@
+{
+  "id": 10,
+  "mundo": 2,
+  "nombre": "Cambia de opinión",
+  "concepto": "reasignación, estado",
+  "narrativa": "Una variable no es una piedra: su contenido puede cambiar mientras el programa corre.",
+  "fases": [
+    {
+      "id": "10.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Un nombre, dos valores",
+      "enunciado": "Ejecuta y observa cómo cambia el valor en el panel de Memoria.",
+      "codigoInicial": "energia = 100\nprint(energia)\nenergia = 60\nprint(energia)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "La segunda asignación reemplaza a la primera: la variable conserva el último valor.",
+      "pistas": [
+        "Mira el panel de Salida: hay dos valores distintos."
+      ]
+    },
+    {
+      "id": "10.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué se muestra al final?",
+      "enunciado": "Si ejecutas: pasos = 2, luego pasos = 5, y después print(pasos), ¿qué aparece?",
+      "codigoInicial": "pasos = 2\npasos = 5\nprint(pasos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "2"
+        },
+        {
+          "id": "b",
+          "texto": "5"
+        },
+        {
+          "id": "c",
+          "texto": "2 y luego 5"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: al mostrarla, la variable ya vale 5. El valor anterior se perdió.",
+      "pistas": [
+        "print() se ejecuta al final, cuando ya hubo dos asignaciones."
+      ]
+    },
+    {
+      "id": "10.3",
+      "tipo": "RESOLVER",
+      "titulo": "Corrige la ruta",
+      "enunciado": "La variable pasos vale 2, pero Robot1 debe llegar a la casilla 5. Reasigna pasos antes de avanzar.",
+      "codigoInicial": "pasos = 2\nrobot1.avanzar(pasos)",
+      "solucionReferencia": "pasos = 2\npasos = 5\nrobot1.avanzar(pasos)",
+      "instruccionesPermitidas": [
+        "asignacion"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          5,
+          0
+        ]
+      },
+      "retroalimentacion": "Reasignar te deja corregir el estado del programa sin borrar líneas.",
+      "pistas": [
+        "Agrega una línea que le dé a pasos su nuevo valor.",
+        "Debe ir antes de robot1.avanzar(pasos)."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          5,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 7,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

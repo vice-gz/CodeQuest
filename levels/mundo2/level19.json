@@ -1,0 +1,128 @@
+{
+  "id": 19,
+  "mundo": 2,
+  "nombre": "La puerta del Mundo 3",
+  "concepto": "integración total",
+  "narrativa": "La puerta al Mundo 3 está cerrada. Robot1 necesita la llave, energía suficiente y el código correcto.",
+  "fases": [
+    {
+      "id": "19.1",
+      "tipo": "RESOLVER",
+      "titulo": "Recupera la llave",
+      "enunciado": "La llave está en (3, 0). Ve por ella y recógela.",
+      "codigoInicial": "",
+      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)\nrobot1.recoger()",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "recoger"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          3,
+          0
+        ]
+      },
+      "retroalimentacion": "Llave asegurada. Revisa el panel de Estado: ya está en el inventario.",
+      "pistas": [
+        "Avanza hasta la casilla de la llave y luego robot1.recoger()."
+      ],
+      "escenario": {
+        "objetos": [
+          {
+            "posicion": [
+              3,
+              0
+            ],
+            "tipo": "llave"
+          }
+        ]
+      }
+    },
+    {
+      "id": "19.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "El código de la puerta",
+      "enunciado": "El código de la puerta es el residuo de dividir 17 entre 5. Calcúlalo con % y muéstralo.",
+      "codigoInicial": "",
+      "solucionReferencia": "codigo = 17 % 5\nprint(codigo)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "2"
+      },
+      "retroalimentacion": "El operador % devuelve el residuo: 17 entre 5 son 3 con 2 de sobra.",
+      "pistas": [
+        "Usa el operador %.",
+        "17 % 5 se calcula solo."
+      ]
+    },
+    {
+      "id": "19.3",
+      "tipo": "LIBRE",
+      "titulo": "Abre la puerta",
+      "enunciado": "Llega a la puerta en (6, 2) con al menos 90 de energía y anúncialo con print(\"Mundo 3\").",
+      "codigoInicial": "",
+      "solucionReferencia": "avance = 6\nrobot1.avanzar(avance)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nprint(\"Mundo 3\")",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "entrada"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar",
+        "retroceder",
+        "hablar",
+        "recoger",
+        "energia",
+        "posicion",
+        "mirar"
+      ],
+      "validacion": {
+        "tipo": "estado",
+        "posicionEsperada": [
+          6,
+          2
+        ],
+        "energiaMinima": 90
+      },
+      "retroalimentacion": "¡Puerta abierta! Completaste los Mundos 1 y 2 de CodeQuest.",
+      "pistas": [
+        "La ruta más corta gasta menos energía.",
+        "No olvides el print final."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          6,
+          2
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 7,
+    "alto": 3,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "energiaInicial": 100,
+    "costoEnergiaPorCasilla": 1
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

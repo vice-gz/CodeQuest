@@ -1,0 +1,102 @@
+{
+  "id": 2,
+  "mundo": 1,
+  "nombre": "Primeros movimientos",
+  "concepto": "secuencia, orden, estructura básica",
+  "narrativa": "Robot1 ya responde. Ahora debe desplazarse por una zona pequeña de la instalación.",
+  "fases": [
+    {
+      "id": "2.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Observa el movimiento",
+      "enunciado": "Ejecuta el código y mira cómo cambia la posición de Robot1 en el panel de Estado.",
+      "codigoInicial": "robot1.avanzar(2)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Robot1 avanzó 2 casillas. El panel de Estado muestra su nueva posición.",
+      "pistas": [
+        "Solo presiona ▶ Ejecutar y observa el panel de Estado."
+      ]
+    },
+    {
+      "id": "2.2",
+      "tipo": "MODIFICAR",
+      "titulo": "Llega a la estación",
+      "enunciado": "Cambia el número para que Robot1 llegue justo a la casilla 4.",
+      "codigoInicial": "robot1.avanzar(2)",
+      "solucionReferencia": "robot1.avanzar(4)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          4,
+          0
+        ]
+      },
+      "retroalimentacion": "El número entre paréntesis decide cuántas casillas avanza Robot1.",
+      "pistas": [
+        "Robot1 empieza en la casilla 0.",
+        "Cuenta cuántas casillas hay hasta el objetivo."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          4,
+          0
+        ]
+      }
+    },
+    {
+      "id": "2.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Dos instrucciones en orden",
+      "enunciado": "Escribe DOS instrucciones: primero que Robot1 avance 2 casillas, luego que avance 3 más.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(2)\nrobot1.avanzar(3)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          5,
+          0
+        ]
+      },
+      "retroalimentacion": "Un programa se ejecuta de arriba hacia abajo, una línea a la vez.",
+      "pistas": [
+        "Escribe una instrucción por línea.",
+        "2 + 3 casillas te dejan en la casilla 5."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          5,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

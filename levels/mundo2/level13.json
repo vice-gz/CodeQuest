@@ -1,0 +1,108 @@
+{
+  "id": 13,
+  "mundo": 2,
+  "nombre": "Calcula el camino",
+  "concepto": "operadores aritméticos: +, -, *, /, %",
+  "narrativa": "La ruta ya no viene dada: Robot1 tiene que calcularla.",
+  "fases": [
+    {
+      "id": "13.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Los cinco operadores",
+      "enunciado": "Ejecuta y observa el resultado de cada operación en el panel de Salida.",
+      "codigoInicial": "print(7 + 2)\nprint(7 - 2)\nprint(7 * 2)\nprint(7 / 2)\nprint(7 % 2)",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "El operador % devuelve el residuo de la división: 7 entre 2 sobra 1.",
+      "pistas": [
+        "Compara las cinco líneas del panel de Salida."
+      ]
+    },
+    {
+      "id": "13.2",
+      "tipo": "PREDECIR",
+      "titulo": "Precedencia",
+      "enunciado": "¿Cuánto vale 2 + 3 * 4?",
+      "codigoInicial": "print(2 + 3 * 4)",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "20, porque se lee de izquierda a derecha"
+        },
+        {
+          "id": "b",
+          "texto": "14, porque primero se multiplica"
+        },
+        {
+          "id": "c",
+          "texto": "9"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Igual que en matemáticas: * y / van antes que + y -.",
+      "pistas": [
+        "La multiplicación tiene prioridad sobre la suma."
+      ]
+    },
+    {
+      "id": "13.3",
+      "tipo": "RESOLVER",
+      "titulo": "La ruta calculada",
+      "enunciado": "El objetivo está en la casilla 6. Calcula los pasos con una operación (no escribas 6 directamente) y avanza.",
+      "codigoInicial": "",
+      "solucionReferencia": "pasos = 2 * 3\nrobot1.avanzar(pasos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          6,
+          0
+        ]
+      },
+      "retroalimentacion": "La expresión se evaluó antes de usarse como argumento.",
+      "pistas": [
+        "2 * 3 y 4 + 2 dan lo mismo.",
+        "Guarda el resultado en una variable y úsala en avanzar()."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          6,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

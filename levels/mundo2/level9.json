@@ -1,0 +1,86 @@
+{
+  "id": 9,
+  "mundo": 2,
+  "nombre": "Necesito recordar",
+  "concepto": "variable, asignación, identificador, literal",
+  "narrativa": "Robot1 salió de la instalación, pero olvida todo al instante. Necesita memoria.",
+  "fases": [
+    {
+      "id": "9.1",
+      "tipo": "EXPLORAR",
+      "titulo": "La primera variable",
+      "enunciado": "Ejecuta el código y observa cómo aparece la variable en el panel de Memoria.",
+      "codigoInicial": "nombre = \"Robot1\"\nprint(nombre)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "El signo = guarda un valor con un nombre. El panel de Memoria muestra lo guardado.",
+      "pistas": [
+        "Presiona ▶ Ejecutar y mira el panel de Memoria."
+      ]
+    },
+    {
+      "id": "9.2",
+      "tipo": "MODIFICAR",
+      "titulo": "Cambia lo guardado",
+      "enunciado": "Modifica el valor guardado para que el programa muestre \"Explorador\".",
+      "codigoInicial": "nombre = \"Robot1\"\nprint(nombre)",
+      "solucionReferencia": "nombre = \"Explorador\"\nprint(nombre)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "Explorador"
+      },
+      "retroalimentacion": "print(nombre) no muestra la palabra \"nombre\": muestra lo que hay guardado dentro.",
+      "pistas": [
+        "Cambia solo el texto entre comillas de la primera línea."
+      ]
+    },
+    {
+      "id": "9.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Guarda y reutiliza",
+      "enunciado": "Crea una variable llamada mision con el texto \"Explorar\" y muéstrala con print().",
+      "codigoInicial": "",
+      "solucionReferencia": "mision = \"Explorar\"\nprint(mision)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "Explorar"
+      },
+      "retroalimentacion": "Ya sabes crear un identificador y asignarle un literal.",
+      "pistas": [
+        "Primero mision = \"Explorar\".",
+        "Luego print(mision), sin comillas."
+      ]
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

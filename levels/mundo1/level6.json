@@ -1,0 +1,107 @@
+{
+  "id": 6,
+  "mundo": 1,
+  "nombre": "La terminal",
+  "concepto": "entrada(), print()",
+  "narrativa": "La instalación tiene una terminal. Robot1 puede leer datos que vienen del exterior.",
+  "fases": [
+    {
+      "id": "6.1",
+      "tipo": "EXPLORAR",
+      "titulo": "La terminal responde",
+      "enunciado": "Ejecuta y observa qué valor entrega entrada() en el panel de Salida.",
+      "codigoInicial": "entrada()",
+      "instruccionesPermitidas": [
+        "entrada"
+      ],
+      "metodosPermitidos": [],
+      "entradasSimuladas": [
+        7
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "entrada() lee un valor del sistema y lo registra en el panel de Salida.",
+      "pistas": [
+        "Presiona ▶ Ejecutar y mira el panel de Salida."
+      ]
+    },
+    {
+      "id": "6.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "Muestra lo que llegó",
+      "enunciado": "Lee un valor con entrada(), guárdalo en una variable llamada dato y muéstralo con print().",
+      "codigoInicial": "",
+      "solucionReferencia": "dato = entrada()\nprint(dato)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "print",
+        "asignacion"
+      ],
+      "metodosPermitidos": [],
+      "entradasSimuladas": [
+        7
+      ],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "7"
+      },
+      "retroalimentacion": "entrada() devuelve un valor: por eso puedes guardarlo con = y reutilizarlo.",
+      "pistas": [
+        "dato = entrada() guarda lo que llega.",
+        "Luego print(dato) lo muestra."
+      ]
+    },
+    {
+      "id": "6.3",
+      "tipo": "RESOLVER",
+      "titulo": "Obedece a la terminal",
+      "enunciado": "La terminal indica cuántas casillas avanzar. Léela y haz que Robot1 avance esa cantidad.",
+      "codigoInicial": "",
+      "solucionReferencia": "pasos = entrada()\nrobot1.avanzar(pasos)",
+      "instruccionesPermitidas": [
+        "entrada",
+        "asignacion"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "entradasSimuladas": [
+        4
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          4,
+          0
+        ]
+      },
+      "retroalimentacion": "El valor leído del exterior controló el movimiento de Robot1.",
+      "pistas": [
+        "Guarda entrada() en una variable.",
+        "Usa esa variable como argumento de avanzar()."
+      ],
+      "escenario": {
+        "objetivoPosicion": [
+          4,
+          0
+        ]
+      }
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}
