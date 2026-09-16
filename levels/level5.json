@@ -1,0 +1,33 @@
+{
+  "id": 5,
+  "nombre": "Operaciones",
+  "concepto": "operadores aritméticos",
+  "objetivo": "Comprender que las expresiones se evalúan antes de usarse",
+  "aprende": "Puedes hacer operaciones aritméticas antes de usar el resultado. CQL respeta la precedencia de Python: primero multiplicación y división, luego suma y resta.\n\npasos = 2 + 3\nrobot1.avanzar(pasos)",
+  "instruccionesPermitidas": ["asignacion"],
+  "metodosPermitidos": ["avanzar"],
+  "codigoInicial": "",
+  "solucionReferencia": "pasos = 2 + 3\nrobot1.avanzar(pasos)",
+  "pistas": [
+    "Una expresión como 2 + 3 se calcula antes de usarse.",
+    "¿Qué número necesitas para llegar del 0 al 5?"
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [0, 0],
+    "robotDireccion": "derecha",
+    "objetivoPosicion": [5, 0],
+    "obstaculos": []
+  },
+  "validacion": {
+    "tipo": "posicion",
+    "valorEsperado": [5, 0]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

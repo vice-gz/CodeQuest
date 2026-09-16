@@ -23,12 +23,19 @@
   <nav class="selector-niveles" id="selector-niveles" aria-label="Niveles"></nav>
 
   <div class="acciones-barra">
+    <button class="boton boton-barra" id="btn-diccionario" type="button" aria-expanded="false" title="Instrucciones aprendidas">
+      Diccionario <span class="dic-contador" id="dic-contador">0/12</span>
+    </button>
+    <button class="boton boton-barra" id="btn-tour" type="button" title="Ver de nuevo el recorrido por la interfaz">Tour</button>
+    <button class="boton boton-barra" id="btn-demo" type="button" title="Acceso para revisar todos los niveles">Demo</button>
     <div class="contador-estrellas" id="contador-estrellas-total" title="Estrellas totales">
       <span class="icono-estrella-mini">★</span>
       <span id="total-estrellas">0</span>
       <span class="separador-sutil">/ <span id="total-estrellas-max">57</span></span>
     </div>
   </div>
+
+  <aside class="diccionario-panel oculto" id="diccionario-panel" aria-label="Diccionario de instrucciones"></aside>
 </header>
 
 <main class="contenedor-nivel">

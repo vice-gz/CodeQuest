@@ -9,7 +9,7 @@
       "id": "14.1",
       "tipo": "EXPLORAR",
       "titulo": "El sensor habla",
-      "enunciado": "Ejecuta y observa el valor que llega del sensor en Salida y en Memoria.",
+      "enunciado": "El sensor externo ahora te pregunta a ti. Ejecuta, escribe un valor y observa cómo llega al programa: aparece en Salida y queda guardado en Memoria.",
       "codigoInicial": "lectura = entrada()\nprint(lectura)",
       "instruccionesPermitidas": [
         "entrada",
@@ -17,22 +17,23 @@
         "print"
       ],
       "metodosPermitidos": [],
-      "entradasSimuladas": [
-        12
-      ],
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "entrada() devuelve un valor que el programa no conocía de antemano.",
+      "retroalimentacion": "entrada() devuelve un valor que el programa no conocía: por eso se guarda en una variable.",
       "pistas": [
-        "Presiona ▶ Ejecutar y mira los dos paneles."
-      ]
+        "Ejecuta y escribe cualquier número en el campo que aparece."
+      ],
+      "entradasEstudiante": [
+        12
+      ],
+      "etiquetaEntrada": "El sensor pregunta: ¿qué valor envía?"
     },
     {
       "id": "14.2",
       "tipo": "ESCRIBIR",
       "titulo": "Opera con lo recibido",
-      "enunciado": "Lee un valor del sensor, súmale 5 y muestra el resultado.",
+      "enunciado": "Ahora escribes tú el valor. Léelo con entrada(), súmale 5 y muestra el resultado. Escribe 12 cuando se te pida.",
       "codigoInicial": "",
       "solucionReferencia": "lectura = entrada()\ntotal = lectura + 5\nprint(total)",
       "instruccionesPermitidas": [
@@ -41,65 +42,70 @@
         "print"
       ],
       "metodosPermitidos": [],
-      "entradasSimuladas": [
+      "entradasEstudiante": [
         12
       ],
+      "etiquetaEntrada": "El sensor pregunta: ¿qué valor envía?",
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "17"
+        "tipo": "output_con_variable",
+        "valorEsperado": "17",
+        "variableRequerida": "total"
       },
-      "retroalimentacion": "Un valor de entrada se puede operar igual que cualquier número.",
+      "retroalimentacion": "Un valor de entrada se opera igual que cualquier número.",
       "pistas": [
         "Guarda entrada() en una variable.",
-        "Luego crea otra variable con la suma."
-      ]
+        "Crea otra variable llamada total con la suma."
+      ],
+      "mensajeNoLogrado": "El resultado debe ser 17 y guardarse en una variable llamada total. Escribe 12 cuando se te pida."
     },
     {
       "id": "14.3",
       "tipo": "RESOLVER",
       "titulo": "Ruta desde el sensor",
-      "enunciado": "El sensor indica la mitad del camino. Lee ese valor, duplícalo y avanza esa cantidad.",
+      "enunciado": "El sensor indica la mitad del tramo horizontal. Léelo, duplícalo, avanza esa cantidad al este y luego baja 1 para llegar a (4,1). Escribe 2 cuando se te pida.",
       "codigoInicial": "",
-      "solucionReferencia": "mitad = entrada()\npasos = mitad * 2\nrobot1.avanzar(pasos)",
+      "solucionReferencia": "mitad = entrada()\npasos = mitad * 2\nrobot1.avanzar(pasos)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [
         "entrada",
         "asignacion"
       ],
       "metodosPermitidos": [
-        "avanzar"
+        "avanzar",
+        "girar"
       ],
-      "entradasSimuladas": [
-        3
+      "entradasEstudiante": [
+        2
       ],
+      "etiquetaEntrada": "¿Cuál es la mitad del tramo?",
       "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          6,
-          0
-        ]
+        "tipo": "estado",
+        "posicionEsperada": [
+          4,
+          1
+        ],
+        "operadorRequerido": "*"
       },
       "retroalimentacion": "El programa funciona sin saber de antemano qué dirá el sensor.",
       "pistas": [
         "Duplicar es multiplicar por 2.",
-        "El sensor envía 3 en esta prueba."
+        "Escribe 2 en la terminal: el tramo mide 4."
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          6,
-          0
-        ]
-      }
+      "mensajeNoLogrado": "Robot1 debe llegar a (4,1) y tu código debe duplicar el valor con *."
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 8,
-    "alto": 1,
+    "ancho": 5,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      4,
+      1
+    ]
   },
   "estrellas": {
     "base": true,

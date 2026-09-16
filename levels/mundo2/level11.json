@@ -9,7 +9,7 @@
       "id": "11.1",
       "tipo": "EXPLORAR",
       "titulo": "Tres tipos de dato",
-      "enunciado": "Ejecuta y compara en el panel de Memoria: un entero, un decimal y un texto.",
+      "enunciado": "Ejecuta y compara en Memoria: un entero, un decimal y un texto.",
       "codigoInicial": "cantidad = 3\nvoltaje = 4.5\netiqueta = \"bateria\"\nprint(cantidad)\nprint(voltaje)\nprint(etiqueta)",
       "instruccionesPermitidas": [
         "asignacion",
@@ -19,7 +19,7 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Los textos se muestran entre comillas en Memoria; los números no. Son tipos distintos.",
+      "retroalimentacion": "Los textos aparecen entre comillas en Memoria; los números no. Son tipos distintos.",
       "pistas": [
         "Fíjate en cómo aparece cada valor en el panel de Memoria."
       ]
@@ -61,44 +61,66 @@
       "id": "11.3",
       "tipo": "DEBUG",
       "titulo": "El tipo equivocado",
-      "enunciado": "Robot1 no puede avanzar un texto. Corrige el tipo de dato para que llegue a la casilla 3.",
+      "enunciado": "Robot1 no puede avanzar un texto. Corrige el tipo y baja a la meta en (3,1).",
       "codigoInicial": "pasos = \"3\"\nrobot1.avanzar(pasos)",
-      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)",
+      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [
         "asignacion"
       ],
       "metodosPermitidos": [
-        "avanzar"
+        "avanzar",
+        "girar"
       ],
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
           3,
-          0
+          1
         ]
       },
-      "retroalimentacion": "SEM_004: avanzar() necesita un número, no un texto que se parezca a un número.",
+      "retroalimentacion": "SEM_004: avanzar() necesita un número, no un texto que se le parezca.",
       "pistas": [
         "Quita las comillas del valor.",
-        "\"3\" es texto; 3 es un número."
+        "La meta está una fila más abajo."
+      ]
+    },
+    {
+      "id": "11.4",
+      "tipo": "DEBUG",
+      "titulo": "Sumar texto no suma",
+      "enunciado": "Aquí se intenta sumar dos textos. Corrige los tipos para que el resultado mostrado sea 8.",
+      "codigoInicial": "a = \"5\"\nb = \"3\"\ntotal = a + b\nprint(total)",
+      "solucionReferencia": "a = 5\nb = 3\ntotal = a + b\nprint(total)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          3,
-          0
-        ]
-      }
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "8"
+      },
+      "retroalimentacion": "Con textos, + los pega uno tras otro (\"53\"). Con números, suma de verdad.",
+      "pistas": [
+        "Ejecuta primero sin corregir y mira qué sale.",
+        "Quita las comillas de los dos valores."
+      ],
+      "mensajeNoLogrado": "El resultado debe ser 8, no \"53\". Revisa los tipos de a y b."
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 1,
+    "ancho": 5,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      3,
+      1
+    ]
   },
   "estrellas": {
     "base": true,

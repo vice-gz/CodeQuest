@@ -3,101 +3,108 @@
   "mundo": 1,
   "nombre": "La terminal",
   "concepto": "entrada(), print()",
-  "narrativa": "La instalación tiene una terminal. Robot1 puede leer datos que vienen del exterior.",
+  "narrativa": "La instalación tiene una terminal. Ahora los datos no los escribe el programa: los escribes tú.",
+  "ensena": [
+    "entrada()"
+  ],
   "fases": [
     {
       "id": "6.1",
       "tipo": "EXPLORAR",
-      "titulo": "La terminal responde",
-      "enunciado": "Ejecuta y observa qué valor entrega entrada() en el panel de Salida.",
+      "titulo": "La terminal te pregunta",
+      "enunciado": "Instrucción nueva: entrada() pausa el programa y te pide un valor. Ejecuta, escribe lo que quieras en el campo que aparece y observa el panel de Salida.",
       "codigoInicial": "entrada()",
       "instruccionesPermitidas": [
         "entrada"
       ],
       "metodosPermitidos": [],
-      "entradasSimuladas": [
+      "entradasEstudiante": [
         7
       ],
+      "etiquetaEntrada": "Escribe cualquier valor para probar la terminal",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "entrada() lee un valor del sistema y lo registra en el panel de Salida.",
+      "retroalimentacion": "El programa se detuvo hasta que tú escribiste. Ese valor viene de fuera del código.",
       "pistas": [
-        "Presiona ▶ Ejecutar y mira el panel de Salida."
+        "Puedes escribir un número o una palabra: pruébalo."
       ]
     },
     {
       "id": "6.2",
       "tipo": "ESCRIBIR",
-      "titulo": "Muestra lo que llegó",
-      "enunciado": "Lee un valor con entrada(), guárdalo en una variable llamada dato y muéstralo con print().",
+      "titulo": "Usa lo que escribes",
+      "enunciado": "entrada() DEVUELVE un valor, así que puedes ponerlo justo donde harías falta un dato: dentro de print(). Escribe un programa que muestre lo que teclees. Escribe 7 cuando se te pida.",
       "codigoInicial": "",
-      "solucionReferencia": "dato = entrada()\nprint(dato)",
+      "solucionReferencia": "print(entrada())",
       "instruccionesPermitidas": [
         "entrada",
-        "print",
-        "asignacion"
+        "print"
       ],
       "metodosPermitidos": [],
-      "entradasSimuladas": [
+      "entradasEstudiante": [
         7
       ],
+      "etiquetaEntrada": "La terminal pregunta: ¿qué valor envías?",
       "validacion": {
         "tipo": "output",
         "valorEsperado": "7"
       },
-      "retroalimentacion": "entrada() devuelve un valor: por eso puedes guardarlo con = y reutilizarlo.",
+      "retroalimentacion": "entrada() se evaluó primero y su resultado pasó a print(). El valor se usó y se perdió: guardarlo vendrá después.",
       "pistas": [
-        "dato = entrada() guarda lo que llega.",
-        "Luego print(dato) lo muestra."
-      ]
+        "Puedes escribir una instrucción dentro de otra.",
+        "print(entrada()) muestra lo que teclees."
+      ],
+      "mensajeNoLogrado": "Debes mostrar con print() el valor que escribes en la terminal. Escribe 7 cuando se te pida."
     },
     {
       "id": "6.3",
       "tipo": "RESOLVER",
-      "titulo": "Obedece a la terminal",
-      "enunciado": "La terminal indica cuántas casillas avanzar. Léela y haz que Robot1 avance esa cantidad.",
+      "titulo": "Tú marcas el rumbo",
+      "enunciado": "Ahora la terminal SOLO acepta números: si escribes texto, te lo dirá. Haz que Robot1 avance las casillas que teclees, luego gire al sur y avance 1, para llegar a (3,1). Escribe 3 cuando se te pida.",
       "codigoInicial": "",
-      "solucionReferencia": "pasos = entrada()\nrobot1.avanzar(pasos)",
+      "solucionReferencia": "robot1.avanzar(entrada())\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [
-        "entrada",
-        "asignacion"
+        "entrada"
       ],
       "metodosPermitidos": [
-        "avanzar"
+        "avanzar",
+        "girar"
       ],
-      "entradasSimuladas": [
-        4
+      "entradasEstudiante": [
+        3
       ],
+      "etiquetaEntrada": "¿Cuántas casillas avanza Robot1 al este?",
+      "entradaTipo": "numero",
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
-          4,
-          0
+          3,
+          1
         ]
       },
-      "retroalimentacion": "El valor leído del exterior controló el movimiento de Robot1.",
+      "retroalimentacion": "Un valor que tú escribiste controló el movimiento de Robot1, sin estar en el código.",
       "pistas": [
-        "Guarda entrada() en una variable.",
-        "Usa esa variable como argumento de avanzar()."
+        "Puedes poner entrada() como argumento de avanzar().",
+        "Después gira al sur y avanza 1."
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          4,
-          0
-        ]
-      }
+      "mensajeNoLogrado": "Robot1 debe terminar en (3,1) usando el valor que escribes en la terminal."
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 1,
+    "ancho": 4,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      3,
+      1
+    ],
+    "mostrarEnergia": false
   },
   "estrellas": {
     "base": true,

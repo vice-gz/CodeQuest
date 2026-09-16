@@ -3,14 +3,14 @@
   "mundo": 2,
   "nombre": "La batería",
   "concepto": "operadores, expresiones, modificación",
-  "narrativa": "Cada movimiento consume energía. Robot1 debe llevar la cuenta.",
+  "narrativa": "La batería de Robot1 está baja. Hay una estación de recarga en el camino.",
   "fases": [
     {
       "id": "12.1",
       "tipo": "EXPLORAR",
       "titulo": "Consulta tu energía",
       "enunciado": "Ejecuta y observa cómo baja la energía en el panel de Estado tras avanzar.",
-      "codigoInicial": "robot1.avanzar(3)\nnivel = robot1.energia()\nprint(nivel)",
+      "codigoInicial": "robot1.avanzar(2)\nnivel = robot1.energia()\nprint(nivel)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -22,9 +22,9 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "robot1.energia() devuelve un valor: puedes guardarlo en una variable y mostrarlo.",
+      "retroalimentacion": "robot1.energia() devuelve un valor: puedes guardarlo y mostrarlo.",
       "pistas": [
-        "Compara el panel de Estado antes y después de ejecutar."
+        "Compara el panel de Estado antes y después."
       ]
     },
     {
@@ -51,51 +51,60 @@
     {
       "id": "12.3",
       "tipo": "RESOLVER",
-      "titulo": "Llega sin agotarte",
-      "enunciado": "Llega a la casilla 4 y termina con al menos 95 de energía. Cada casilla cuesta 1.",
+      "titulo": "Pasa por la recarga",
+      "enunciado": "Robot1 arranca con 12 de energía y cada casilla cuesta 2. La meta está en (6,1) y hay una recarga (⚡) en (3,0). Llega con energía de sobra.",
       "codigoInicial": "",
-      "solucionReferencia": "pasos = 4\nrobot1.avanzar(pasos)",
+      "solucionReferencia": "robot1.avanzar(6)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [
         "avanzar",
-        "retroceder",
+        "girar",
         "energia"
       ],
       "validacion": {
         "tipo": "estado",
         "posicionEsperada": [
-          4,
-          0
+          6,
+          1
         ],
-        "energiaMinima": 95
+        "energiaMinima": 1
       },
-      "retroalimentacion": "Fuiste directo: sin pasos de más, la energía alcanza de sobra.",
+      "retroalimentacion": "Sin la recarga la batería no alcanzaba: pasar por ⚡ la repuso a mitad de camino.",
       "pistas": [
-        "Ir y volver gasta energía de más.",
-        "La ruta más corta es la más barata."
+        "Cruza por la fila 0 para pisar la recarga, y baja al final.",
+        "Sin la recarga la batería no alcanza."
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          4,
-          0
-        ]
-      }
+      "mensajeNoLogrado": "Robot1 debe llegar a (6,1) sin quedarse sin energía. Pasa por la recarga."
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
     "ancho": 7,
-    "alto": 1,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
     "robotDireccion": "este",
-    "energiaInicial": 100,
-    "costoEnergiaPorCasilla": 1
+    "objetivoPosicion": [
+      6,
+      1
+    ],
+    "energiaInicial": 12,
+    "costoEnergiaPorCasilla": 2,
+    "recargas": [
+      {
+        "posicion": [
+          3,
+          0
+        ],
+        "cantidad": 40
+      }
+    ],
+    "energiaMaxima": 100
   },
   "estrellas": {
     "base": true,

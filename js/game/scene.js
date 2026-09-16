@@ -9,6 +9,8 @@ const COLOR_CELDA = "#1b2140";
 const COLOR_CELDA_BORDE = "#2b3364";
 const COLOR_OBJETIVO = "#ffb84d";
 const COLOR_OBJETO = "#c792ff";
+const COLOR_OBSTACULO = "#6b7280";
+const COLOR_RECARGA = "#7dde86";
 const COLOR_ROBOT = "#5eead4";
 const COLOR_ROBOT_OJO = "#0f1424";
 const COLOR_BURBUJA = "#edeffa";
@@ -24,11 +26,13 @@ export class Scene {
     this.robot1 = robot1;
     this.visualX = robot1.x;
     this.visualY = robot1.y;
+    this.mostrarRobot = true;
   }
 
-  reiniciar(world, robot1) {
+  reiniciar(world, robot1, { mostrarRobot = true } = {}) {
     this.world = world;
     this.robot1 = robot1;
+    this.mostrarRobot = mostrarRobot;
     this.visualX = robot1.x;
     this.visualY = robot1.y;
     this.render();
@@ -89,8 +93,24 @@ export class Scene {
       }
     }
 
-    if (this.world.objetivoPosicion) {
-      const [gx, gy] = this.world.objetivoPosicion;
+    // obstáculos: bloques sólidos que Robot1 no puede atravesar
+    for (const [ox, oy] of this.world.obstaculos) {
+      ctx.fillStyle = COLOR_OBSTACULO;
+      this.roundRect(ctx, startX + ox * cell + 5, startY + oy * cell + 5, cell - 10, cell - 10, 8);
+      ctx.fill();
+    }
+
+    // recargas de energía
+    for (const recarga of this.world.recargas) {
+      const [rx, ry] = recarga.posicion;
+      this.dibujarRayo(ctx, startX + rx * cell + cell / 2, startY + ry * cell + cell / 2, cell * 0.26);
+    }
+
+    // objetivos (uno o varios); los ya alcanzados se atenúan
+    const alcanzados = this.robot1.objetivosAlcanzados || [];
+    for (const [gx, gy] of this.world.objetivos) {
+      const hecho = alcanzados.includes(`${gx},${gy}`);
+      ctx.globalAlpha = hecho ? 0.35 : 1;
       this.dibujarEstrella(
         ctx,
         startX + gx * cell + cell / 2,
@@ -98,6 +118,7 @@ export class Scene {
         cell * 0.22,
         COLOR_OBJETIVO
       );
+      ctx.globalAlpha = 1;
     }
 
     for (const objeto of this.world.objetos) {
@@ -114,9 +135,11 @@ export class Scene {
       ctx.fill();
     }
 
-    const rx = startX + this.visualX * cell + cell / 2;
-    const ry = startY + this.visualY * cell + cell / 2;
-    this.dibujarRobot(ctx, rx, ry, cell * 0.34);
+    if (this.mostrarRobot !== false) {
+      const rx = startX + this.visualX * cell + cell / 2;
+      const ry = startY + this.visualY * cell + cell / 2;
+      this.dibujarRobot(ctx, rx, ry, cell * 0.34);
+    }
   }
 
   dibujarRobot(ctx, cx, cy, r) {
@@ -176,6 +199,22 @@ export class Scene {
       ctx.textBaseline = "middle";
       ctx.fillText(texto, cx, by + bh / 2);
     }
+  }
+
+  dibujarRayo(ctx, cx, cy, r) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.fillStyle = COLOR_RECARGA;
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.25, -r);
+    ctx.lineTo(r * 0.5, -r * 0.1);
+    ctx.lineTo(r * 0.1, -r * 0.1);
+    ctx.lineTo(r * 0.3, r);
+    ctx.lineTo(-r * 0.5, r * 0.05);
+    ctx.lineTo(-r * 0.1, r * 0.05);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
   }
 
   dibujarEstrella(ctx, cx, cy, r, color) {

@@ -1,0 +1,33 @@
+{
+  "id": 3,
+  "nombre": "Mi primera variable",
+  "concepto": "variables",
+  "objetivo": "Comprender que una variable almacena información",
+  "aprende": "Una variable guarda un valor para reutilizarlo después.\n\nnombre = \"Robot1\"\nprint(nombre)",
+  "instruccionesPermitidas": ["asignacion", "print"],
+  "metodosPermitidos": [],
+  "codigoInicial": "",
+  "solucionReferencia": "nombre = \"Robot1\"\nprint(nombre)",
+  "pistas": [
+    "Crea una variable con nombre = \"Robot1\".",
+    "Luego usa print(nombre) para mostrar lo que guardaste."
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [0, 0],
+    "robotDireccion": "derecha",
+    "objetivoPosicion": null,
+    "obstaculos": []
+  },
+  "validacion": {
+    "tipo": "output",
+    "valorEsperado": "Robot1"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

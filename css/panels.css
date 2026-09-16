@@ -108,3 +108,314 @@
   font-size: 0.88rem;
   color: var(--texto);
 }
+
+/* ---------- Entrada interactiva (entrada() sin valor simulado) ---------- */
+
+.entrada-interactiva {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 184, 77, 0.45);
+  background: rgba(255, 184, 77, 0.08);
+}
+
+.entrada-etiqueta {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: var(--ambar);
+}
+
+.entrada-controles {
+  display: flex;
+  gap: 8px;
+}
+
+.entrada-campo {
+  flex: 1;
+  min-width: 0;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background: var(--bg-elevado);
+  color: var(--texto);
+  font-family: var(--fuente-mono);
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.entrada-campo:focus {
+  border-color: var(--ambar);
+}
+
+.entrada-campo-error {
+  border-color: var(--error);
+}
+
+.entrada-aceptar {
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.entrada-ayuda {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: var(--texto-muted);
+}
+
+.entrada-ayuda-error {
+  color: var(--error);
+}
+
+/* ---------- Diccionario ---------- */
+
+.boton-barra {
+  background: var(--panel);
+  border-color: var(--borde);
+  color: var(--texto);
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.boton-barra:hover {
+  border-color: var(--teal);
+}
+
+.dic-contador {
+  font-family: var(--fuente-mono);
+  font-size: 0.72rem;
+  color: var(--teal);
+}
+
+.diccionario-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 24px;
+  width: min(420px, calc(100vw - 32px));
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  z-index: 40;
+}
+
+.dic-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.dic-encabezado h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.dic-cerrar {
+  background: transparent;
+  border: none;
+  color: var(--texto-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.dic-cerrar:hover {
+  color: var(--texto);
+}
+
+.dic-intro {
+  margin: 0 0 14px;
+  font-size: 0.8rem;
+  color: var(--texto-muted);
+}
+
+.dic-categoria {
+  margin: 14px 0 8px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--teal);
+}
+
+.dic-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dic-entrada {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--panel-alt);
+  border: 1px solid var(--borde-suave);
+}
+
+.dic-firma {
+  display: block;
+  font-family: var(--fuente-mono);
+  font-size: 0.85rem;
+  color: var(--texto);
+  margin-bottom: 4px;
+}
+
+.dic-descripcion {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #c7cbea;
+}
+
+.dic-pendientes {
+  margin: 16px 0 0;
+  font-size: 0.78rem;
+  color: var(--texto-muted);
+  font-style: italic;
+}
+
+/* ---------- Tour ---------- */
+
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 16, 0.72);
+  z-index: 100;
+}
+
+.tour-recuadro {
+  position: fixed;
+  border: 2px solid var(--teal);
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(5, 7, 16, 0.72);
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+
+.tour-globo {
+  position: fixed;
+  background: var(--panel);
+  border: 1px solid var(--teal);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+.tour-progreso {
+  margin: 0 0 6px;
+  font-family: var(--fuente-mono);
+  font-size: 0.72rem;
+  color: var(--teal);
+}
+
+.tour-titulo {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.tour-texto {
+  margin: 0 0 16px;
+  font-size: 0.88rem;
+  color: #c7cbea;
+}
+
+.tour-botones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tour-botones .boton {
+  padding: 8px 14px;
+  font-size: 0.82rem;
+}
+
+.tour-saltar {
+  margin-right: auto;
+}
+
+/* ---------- Modo demo ---------- */
+
+.demo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 16, 0.75);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+}
+
+.demo-tarjeta {
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 28px 30px;
+  width: min(360px, calc(100vw - 32px));
+}
+
+.demo-tarjeta h2 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+.demo-nota {
+  margin: 0 0 18px;
+  font-size: 0.82rem;
+  color: var(--texto-muted);
+}
+
+.demo-campo {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.demo-campo span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--texto-muted);
+  margin-bottom: 5px;
+}
+
+.demo-campo input {
+  width: 100%;
+  border-radius: 9px;
+  border: 1px solid var(--borde);
+  background: var(--bg-elevado);
+  color: var(--texto);
+  font-family: var(--fuente-mono);
+  font-size: 0.88rem;
+  padding: 9px 11px;
+  outline: none;
+}
+
+.demo-campo input:focus {
+  border-color: var(--teal);
+}
+
+.demo-error {
+  margin: 0 0 12px;
+  font-size: 0.8rem;
+  color: var(--error);
+}
+
+.demo-botones {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.insignia-demo {
+  font-family: var(--fuente-mono);
+  font-size: 0.7rem;
+  color: #08201c;
+  background: var(--ambar);
+  border-radius: 6px;
+  padding: 3px 7px;
+}

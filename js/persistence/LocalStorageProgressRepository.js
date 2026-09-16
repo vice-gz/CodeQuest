@@ -25,6 +25,22 @@ function estadoNivelVacio() {
   return { completado: false, estrellas: 0, fases: {} };
 }
 
+// El progreso guardado puede venir de una versión anterior sin todos los
+// campos. Un merge superficial dejaría huecos (por ejemplo jugador sin
+// mundoActual), así que se rellena recursivamente contra el valor por defecto.
+function mergeProfundo(base, datos) {
+  const resultado = { ...base };
+  for (const key of Object.keys(datos)) {
+    const esObjeto = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
+    if (esObjeto(base[key]) && esObjeto(datos[key])) {
+      resultado[key] = mergeProfundo(base[key], datos[key]);
+    } else {
+      resultado[key] = datos[key];
+    }
+  }
+  return resultado;
+}
+
 function estadoFaseVacio() {
   return { completada: false, intentos: 0, pistas: 0 };
 }
@@ -45,7 +61,7 @@ export class LocalStorageProgressRepository extends ProgressRepository {
       const crudo = localStorage.getItem(CLAVE);
       if (!crudo) return progresoPorDefecto();
       const datos = JSON.parse(crudo);
-      return { ...progresoPorDefecto(), ...datos };
+      return mergeProfundo(progresoPorDefecto(), datos);
     } catch (e) {
       console.error("No se pudo leer el progreso de localStorage", e);
       return progresoPorDefecto();
@@ -84,7 +100,7 @@ export class LocalStorageProgressRepository extends ProgressRepository {
     return estadoNivel.fases[faseId] || estadoFaseVacio();
   }
 
-  registrarIntentoFase(mundoId, nivelId, faseId, { pistasUsadas } = {}) {
+  registrarIntentoFase(mundoId, nivelId, faseId, { pistasUsadas, codigo } = {}) {
     const progreso = this.cargarProgreso();
     if (!progreso.mundos[mundoId]) progreso.mundos[mundoId] = { completado: false, niveles: {} };
     if (!progreso.mundos[mundoId].niveles[nivelId]) {
@@ -92,7 +108,18 @@ export class LocalStorageProgressRepository extends ProgressRepository {
     }
     const nivel = progreso.mundos[mundoId].niveles[nivelId];
     const fase = nivel.fases[faseId] || estadoFaseVacio();
-    fase.intentos += 1;
+
+    // Reejecutar el mismo código sin tocarlo no cuenta como intento nuevo:
+    // de lo contrario, pulsar Ejecutar dos veces costaría una estrella.
+    if (codigo !== undefined) {
+      const ultima = progreso.ejecuciones.find(
+        (e) => e.mundoId === mundoId && e.nivelId === nivelId && e.faseId === faseId
+      );
+      if (!ultima || ultima.codigo !== codigo) {
+        fase.intentos += 1;
+      }
+    }
+
     if (pistasUsadas !== undefined) fase.pistas = Math.max(fase.pistas, pistasUsadas);
     nivel.fases[faseId] = fase;
     this.guardarProgreso(progreso);
@@ -113,7 +140,7 @@ export class LocalStorageProgressRepository extends ProgressRepository {
     return fase;
   }
 
-  completarNivel(mundoId, nivelId, { estrellas, siguienteMundo, siguienteNivel } = {}) {
+  completarNivel(mundoId, nivelId, { estrellas, siguienteMundo, siguienteNivel, totalNivelesMundo } = {}) {
     const progreso = this.cargarProgreso();
     if (!progreso.mundos[mundoId]) progreso.mundos[mundoId] = { completado: false, niveles: {} };
     if (!progreso.mundos[mundoId].niveles[nivelId]) {
@@ -122,6 +149,16 @@ export class LocalStorageProgressRepository extends ProgressRepository {
     const nivel = progreso.mundos[mundoId].niveles[nivelId];
     nivel.completado = true;
     nivel.estrellas = Math.max(nivel.estrellas, estrellas || 0);
+
+    // Un mundo queda completo cuando todos sus niveles lo están.
+    if (totalNivelesMundo) {
+      const completados = Object.values(progreso.mundos[mundoId].niveles)
+        .filter((n) => n.completado).length;
+      if (completados >= totalNivelesMundo) {
+        progreso.mundos[mundoId].completado = true;
+      }
+    }
+
     if (siguienteMundo && siguienteNivel) {
       progreso.jugador.mundoActual = siguienteMundo;
       progreso.jugador.nivelActual = siguienteNivel;

@@ -7,9 +7,30 @@
   "fases": [
     {
       "id": "15.1",
+      "tipo": "EXPLORAR",
+      "titulo": "El nombre no coincide",
+      "enunciado": "Este código falla. Ejecútalo y lee qué variable no encuentra el programa.",
+      "codigoInicial": "pasos = 4\nprint(paso)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "error_esperado",
+        "codigoError": "SEM_001"
+      },
+      "retroalimentacion": "SEM_001: el programa buscó paso, pero lo que existe es pasos. Una letra basta.",
+      "pistas": [
+        "No lo corrijas todavía: ejecútalo y lee el error."
+      ],
+      "mensajeNoLogrado": "Ejecuta el código tal como está y lee el error."
+    },
+    {
+      "id": "15.2",
       "tipo": "DEBUG",
-      "titulo": "Nombre mal escrito",
-      "enunciado": "La variable se guarda con un nombre y se usa con otro. Corrígelo para mostrar 4.",
+      "titulo": "Corrige el nombre",
+      "enunciado": "Ahora corrígelo para que muestre 4.",
       "codigoInicial": "pasos = 4\nprint(paso)",
       "solucionReferencia": "pasos = 4\nprint(pasos)",
       "instruccionesPermitidas": [
@@ -21,74 +42,86 @@
         "tipo": "output",
         "valorEsperado": "4"
       },
-      "retroalimentacion": "SEM_001: el identificador debe escribirse exactamente igual en los dos lugares.",
+      "retroalimentacion": "El identificador debe escribirse exactamente igual en los dos lugares.",
       "pistas": [
-        "Compara letra por letra los dos nombres.",
         "Falta una s."
       ]
     },
     {
-      "id": "15.2",
-      "tipo": "DEBUG",
+      "id": "15.3",
+      "tipo": "PREDECIR",
       "titulo": "Mayúsculas y minúsculas",
-      "enunciado": "CQL distingue mayúsculas de minúsculas. Corrige el código para mostrar \"Robot1\".",
+      "enunciado": "Si escribes Nombre = \"Robot1\" y luego print(nombre), ¿qué pasa?",
       "codigoInicial": "Nombre = \"Robot1\"\nprint(nombre)",
-      "solucionReferencia": "nombre = \"Robot1\"\nprint(nombre)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Muestra Robot1: da igual la mayúscula"
+        },
+        {
+          "id": "b",
+          "texto": "Falla: Nombre y nombre son variables distintas"
+        },
+        {
+          "id": "c",
+          "texto": "Muestra un espacio vacío"
+        }
+      ],
+      "respuestaCorrecta": "b",
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "Robot1"
+        "tipo": "ejecutado"
       },
-      "retroalimentacion": "Nombre y nombre son dos identificadores distintos para el programa.",
+      "retroalimentacion": "Correcto: CQL distingue mayúsculas de minúsculas, igual que Python.",
       "pistas": [
-        "Haz que los dos nombres coincidan exactamente."
+        "Compara letra por letra los dos nombres."
       ]
     },
     {
-      "id": "15.3",
+      "id": "15.4",
       "tipo": "DEBUG",
       "titulo": "Usada antes de existir",
-      "enunciado": "Aquí la variable se usa antes de crearla. Reordena el código para que Robot1 llegue a la casilla 3.",
+      "enunciado": "La variable se usa antes de crearla. Reordena el código y completa la ruta hasta (3,1).",
       "codigoInicial": "robot1.avanzar(pasos)\npasos = 3",
-      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)",
+      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [
         "asignacion"
       ],
       "metodosPermitidos": [
-        "avanzar"
+        "avanzar",
+        "girar"
       ],
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
           3,
-          0
+          1
         ]
       },
       "retroalimentacion": "El orden importa: una variable debe existir antes de usarse.",
       "pistas": [
-        "Intercambia las dos líneas."
-      ],
-      "escenario": {
-        "objetivoPosicion": [
-          3,
-          0
-        ]
-      }
+        "Intercambia las dos líneas.",
+        "Después baja una fila con girar(\"sur\")."
+      ]
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 1,
+    "ancho": 5,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      3,
+      1
+    ]
   },
   "estrellas": {
     "base": true,

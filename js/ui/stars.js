@@ -7,10 +7,16 @@
 
 export function calcularEstrellasNivel(estadoFases) {
   const fases = Object.values(estadoFases);
-  if (fases.length === 0) return 1;
+  if (fases.length === 0) return 0;
+
+  // Sin todas las fases completadas no hay ninguna estrella.
+  const todasCompletadas = fases.every((f) => f.completada === true);
+  if (!todasCompletadas) return 0;
+
+  const primerIntento = fases.every((f) => (f.intentos || 0) === 1);
   const sinPistas = fases.every((f) => (f.pistas || 0) === 0);
-  const primerIntentoSiempre = fases.every((f) => (f.intentos || 0) <= 1);
-  if (sinPistas && primerIntentoSiempre) return 3;
+
+  if (sinPistas && primerIntento) return 3;
   if (sinPistas) return 2;
   return 1;
 }

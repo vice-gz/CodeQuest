@@ -3,34 +3,49 @@
   "mundo": 1,
   "nombre": "El sistema desconocido",
   "concepto": "experimentación, combinación de conceptos",
-  "narrativa": "Nadie le dice a Robot1 qué hacer. Toca experimentar con lo aprendido.",
+  "narrativa": "El laboratorio se abre a zonas dañadas: aparecen muros. Robot1 tendrá que rodearlos.",
+  "ensena": [],
   "fases": [
     {
       "id": "7.1",
-      "tipo": "EXPLORAR",
-      "titulo": "Robot1 puede girar",
-      "enunciado": "Ejecuta y observa cómo cambia la dirección en el panel de Estado.",
-      "codigoInicial": "robot1.girar(\"sur\")\nrobot1.avanzar(2)",
+      "tipo": "PREDECIR",
+      "titulo": "Aparecen los muros",
+      "enunciado": "Los bloques grises son muros: Robot1 no puede atravesarlos. Hay uno en (2,0) y Robot1 está en (0,0) mirando al este. ¿Qué pasa si ejecutas robot1.avanzar(5)?",
+      "codigoInicial": "robot1.avanzar(5)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
-        "girar",
         "avanzar"
       ],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Atraviesa el muro y llega al final"
+        },
+        {
+          "id": "b",
+          "texto": "Choca con el muro y el programa se detiene"
+        },
+        {
+          "id": "c",
+          "texto": "Rodea el muro automáticamente"
+        }
+      ],
+      "respuestaCorrecta": "b",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "girar() cambia hacia dónde mira Robot1: avanzar() siempre sigue esa dirección.",
+      "retroalimentacion": "Correcto: Robot1 no improvisa. Si hay un muro, choca. Rodearlo es tarea tuya.",
       "pistas": [
-        "Observa el panel de Estado antes y después."
+        "Robot1 hace exactamente lo que le indicas, ni más ni menos."
       ]
     },
     {
       "id": "7.2",
       "tipo": "RESOLVER",
-      "titulo": "Dos tramos",
-      "enunciado": "Lleva a Robot1 hasta (3, 2). Tendrás que avanzar, girar y volver a avanzar.",
+      "titulo": "Rodea los escombros",
+      "enunciado": "Llega a la batería en (5,0) sin chocar. Hay muros en (2,0) y (3,1). Usa girar() para buscar una fila libre.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(3)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
+      "solucionReferencia": "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)\nrobot1.girar(\"norte\")\nrobot1.avanzar(2)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
         "avanzar",
@@ -39,29 +54,24 @@
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
-          3,
-          2
+          5,
+          0
         ]
       },
-      "retroalimentacion": "Combinaste movimiento y giro para recorrer un camino en dos tramos.",
+      "retroalimentacion": "Bajaste hasta una fila despejada, cruzaste y volviste a subir.",
       "pistas": [
-        "Primero muévete en horizontal, luego gira al sur.",
-        "Las direcciones son norte, sur, este y oeste."
+        "La fila 2 está despejada de lado a lado.",
+        "Baja, cruza y sube."
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          3,
-          2
-        ]
-      }
+      "mensajeNoLogrado": "Robot1 no llegó a (5,0). Busca una fila sin muros para cruzar."
     },
     {
       "id": "7.3",
       "tipo": "LIBRE",
-      "titulo": "Explora a tu manera",
-      "enunciado": "Llega a (4, 3) como quieras. Cualquier ruta válida cuenta.",
+      "titulo": "Batería y puerta",
+      "enunciado": "Ahora hay DOS objetivos: la batería en (5,0) y la puerta en (5,2). Pasa por los dos, en el orden que quieras. Cada estrella se apaga al pisarla.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(3)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)",
+      "solucionReferencia": "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)\nrobot1.girar(\"norte\")\nrobot1.avanzar(2)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
       "instruccionesPermitidas": [
         "print"
       ],
@@ -72,20 +82,24 @@
         "hablar"
       ],
       "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          4,
-          3
-        ]
+        "tipo": "objetivos"
       },
-      "retroalimentacion": "No hay una única solución correcta: lo que importa es llegar.",
+      "retroalimentacion": "Pasaste por los dos objetivos: no hay una única ruta correcta.",
       "pistas": [
-        "Puedes girar tantas veces como necesites."
+        "Puedes atenderlos en cualquier orden.",
+        "Mira qué estrella sigue encendida."
       ],
+      "mensajeNoLogrado": "Faltó pisar alguno de los dos objetivos.",
       "escenario": {
-        "objetivoPosicion": [
-          4,
-          3
+        "objetivosPosicion": [
+          [
+            5,
+            0
+          ],
+          [
+            5,
+            2
+          ]
         ]
       }
     }
@@ -93,12 +107,27 @@
   "escenario": {
     "tipo": "laboratorio",
     "ancho": 6,
-    "alto": 4,
+    "alto": 3,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      5,
+      0
+    ],
+    "obstaculos": [
+      [
+        2,
+        0
+      ],
+      [
+        3,
+        1
+      ]
+    ],
+    "mostrarEnergia": false
   },
   "estrellas": {
     "base": true,

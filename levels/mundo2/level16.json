@@ -3,7 +3,7 @@
   "mundo": 2,
   "nombre": "La memoria de Robot1",
   "concepto": "combinación de variables, tipos y operadores",
-  "narrativa": "Robot1 ya recuerda, calcula y lee sensores. Toca usarlo todo junto.",
+  "narrativa": "Robot1 debe revisar dos terminales con la batería justa. No hay margen para rodeos.",
   "fases": [
     {
       "id": "16.1",
@@ -31,7 +31,7 @@
     {
       "id": "16.2",
       "tipo": "ESCRIBIR",
-      "titulo": "Informe de estado",
+      "titulo": "Informe de batería",
       "enunciado": "Guarda la energía de Robot1 en una variable llamada bateria y muéstrala.",
       "codigoInicial": "",
       "solucionReferencia": "bateria = robot1.energia()\nprint(bateria)",
@@ -43,59 +43,74 @@
         "energia"
       ],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "100"
+        "tipo": "output_con_variable",
+        "valorEsperado": "14",
+        "variableRequerida": "bateria"
       },
       "retroalimentacion": "Robot1 puede reportar su propio estado al programa.",
       "pistas": [
         "bateria = robot1.energia()",
         "Luego print(bateria)."
-      ]
+      ],
+      "mensajeNoLogrado": "Debes guardar robot1.energia() en una variable llamada bateria y mostrarla."
     },
     {
       "id": "16.3",
       "tipo": "RESOLVER",
-      "titulo": "Ruta en dos tramos",
-      "enunciado": "Guarda 2 en una variable, avanza esa cantidad, gira al sur y avanza el doble.",
+      "titulo": "Dos terminales, una batería",
+      "enunciado": "Revisa las DOS terminales: (4,0) y (4,2). Arrancas con 14 de energía y cada casilla cuesta 1. No sobra para rodeos.",
       "codigoInicial": "",
-      "solucionReferencia": "tramo = 2\nrobot1.avanzar(tramo)\nrobot1.girar(\"sur\")\nrobot1.avanzar(tramo * 2)",
+      "solucionReferencia": "tramo = 4\nrobot1.avanzar(tramo)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [
         "avanzar",
-        "girar"
+        "girar",
+        "energia",
+        "posicion"
       ],
       "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          2,
-          4
-        ]
+        "tipo": "estado",
+        "todosLosObjetivos": true,
+        "energiaMinima": 1
       },
-      "retroalimentacion": "Una sola variable controló los dos tramos del recorrido.",
+      "retroalimentacion": "Ruta óptima: 6 casillas para dos objetivos, con energía de sobra.",
       "pistas": [
-        "El doble de tramo es tramo * 2.",
-        "Gira al \"sur\" entre los dos avances."
+        "Pisa la primera terminal de camino a la segunda.",
+        "La ruta más corta son 6 casillas en total."
       ],
+      "mensajeNoLogrado": "Debes pisar las dos terminales sin quedarte sin energía.",
       "escenario": {
-        "objetivoPosicion": [
-          2,
-          4
+        "objetivosPosicion": [
+          [
+            4,
+            0
+          ],
+          [
+            4,
+            2
+          ]
         ]
       }
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 5,
+    "ancho": 5,
+    "alto": 3,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      4,
+      0
+    ],
+    "energiaInicial": 14,
+    "costoEnergiaPorCasilla": 1
   },
   "estrellas": {
     "base": true,

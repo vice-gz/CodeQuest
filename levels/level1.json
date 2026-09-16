@@ -1,0 +1,33 @@
+{
+  "id": 1,
+  "nombre": "Hola, Robot",
+  "concepto": "print",
+  "objetivo": "Mostrar un mensaje en pantalla",
+  "aprende": "print() muestra en pantalla lo que le indiques. El texto que quieras mostrar siempre va entre comillas.\n\nEjemplo:\nprint(\"Hola mundo\")",
+  "instruccionesPermitidas": ["print"],
+  "metodosPermitidos": [],
+  "codigoInicial": "",
+  "solucionReferencia": "print(\"Hola mundo\")",
+  "pistas": [
+    "print() muestra texto en pantalla.",
+    "El texto debe ir entre comillas, por ejemplo: \"Hola\"."
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [0, 0],
+    "robotDireccion": "derecha",
+    "objetivoPosicion": null,
+    "obstaculos": []
+  },
+  "validacion": {
+    "tipo": "output",
+    "valorEsperado": "Hola mundo"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

@@ -4,12 +4,33 @@
   "nombre": "La orden equivocada",
   "concepto": "sintaxis, errores, mensajes del sistema",
   "narrativa": "Robot1 recibe órdenes mal escritas. Los mensajes de error no son castigos: son información.",
+  "ensena": [],
   "fases": [
     {
       "id": "5.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Lee el error",
+      "enunciado": "Este código falla a propósito. Ejecútalo y lee el mensaje completo en Retroalimentación: trae un código, una explicación y una sugerencia.",
+      "codigoInicial": "print(\"Hola\"",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "error_esperado",
+        "codigoError": "SYN_001"
+      },
+      "retroalimentacion": "Leer el error es parte de programar. Te dice qué pasó y dónde.",
+      "pistas": [
+        "No lo corrijas todavía: solo ejecútalo y lee."
+      ],
+      "mensajeNoLogrado": "Ejecuta el código tal como está y lee el error que aparece."
+    },
+    {
+      "id": "5.2",
       "tipo": "DEBUG",
       "titulo": "Falta un paréntesis",
-      "enunciado": "Este código tiene un error de sintaxis. Corrígelo para que muestre \"Reparado\".",
+      "enunciado": "Ahora sí, corrige el error de sintaxis para que muestre \"Reparado\".",
       "codigoInicial": "print(\"Reparado\"",
       "solucionReferencia": "print(\"Reparado\")",
       "instruccionesPermitidas": [
@@ -20,71 +41,85 @@
         "tipo": "output",
         "valorEsperado": "Reparado"
       },
-      "retroalimentacion": "SYN_001: cada paréntesis que abres debe cerrarse.",
+      "retroalimentacion": "SYN_001 resuelto: cada paréntesis que abres debe cerrarse.",
       "pistas": [
-        "Lee el código de error que aparece al ejecutar.",
-        "Falta un ) al final."
-      ]
-    },
-    {
-      "id": "5.2",
-      "tipo": "DEBUG",
-      "titulo": "Falta una comilla",
-      "enunciado": "Corrige el texto sin cerrar para que Robot1 diga \"Sistema estable\".",
-      "codigoInicial": "robot1.hablar(\"Sistema estable)",
-      "solucionReferencia": "robot1.hablar(\"Sistema estable\")",
-      "instruccionesPermitidas": [],
-      "metodosPermitidos": [
-        "hablar"
-      ],
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "LEX_002: todo texto abre y cierra con la misma comilla.",
-      "pistas": [
-        "El error dice \"Texto sin cerrar\".",
-        "Agrega la comilla que falta antes del )."
+        "Mira el final de la línea."
       ]
     },
     {
       "id": "5.3",
-      "tipo": "DEBUG",
-      "titulo": "El método no existe",
-      "enunciado": "robot1.volar() no existe. Cámbialo por una instrucción real que mueva a Robot1 a la casilla 3.",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué error tiene?",
+      "enunciado": "¿Qué falla en robot1.volar(3)?",
       "codigoInicial": "robot1.volar(3)",
-      "solucionReferencia": "robot1.avanzar(3)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
         "avanzar"
+      ],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falta un paréntesis"
+        },
+        {
+          "id": "b",
+          "texto": "El método volar() no existe en Robot1"
+        },
+        {
+          "id": "c",
+          "texto": "El argumento 3 es inválido"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: es un error semántico, no de sintaxis. La línea está bien escrita pero pide algo que no existe.",
+      "pistas": [
+        "Abre el Diccionario y revisa qué instrucciones conoce Robot1."
+      ]
+    },
+    {
+      "id": "5.4",
+      "tipo": "DEBUG",
+      "titulo": "Corrige el método",
+      "enunciado": "Cambia volar() por la instrucción real, y añade lo necesario para llegar a la meta en (3,1).",
+      "codigoInicial": "robot1.volar(3)",
+      "solucionReferencia": "robot1.avanzar(3)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar"
       ],
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
           3,
-          0
+          1
         ]
       },
-      "retroalimentacion": "SEM_002: Robot1 solo entiende los métodos de su manual.",
+      "retroalimentacion": "SEM_002 resuelto: Robot1 solo entiende los métodos de su manual.",
       "pistas": [
-        "Revisa la lista de instrucciones disponibles en esta fase."
+        "El método correcto para moverse es avanzar.",
+        "La meta está una fila más abajo: usa girar(\"sur\")."
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          3,
-          0
-        ]
-      }
+      "mensajeNoLogrado": "Robot1 debe terminar en (3,1)."
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 1,
+    "ancho": 5,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      3,
+      1
+    ],
+    "mostrarEnergia": false
   },
   "estrellas": {
     "base": true,

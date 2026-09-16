@@ -3,13 +3,13 @@
   "mundo": 2,
   "nombre": "Necesito recordar",
   "concepto": "variable, asignación, identificador, literal",
-  "narrativa": "Robot1 salió de la instalación, pero olvida todo al instante. Necesita memoria.",
+  "narrativa": "En la terminal, cada valor que escribías se usaba y se perdía. Robot1 necesita algo más: recordarlo.",
   "fases": [
     {
       "id": "9.1",
       "tipo": "EXPLORAR",
       "titulo": "La primera variable",
-      "enunciado": "Ejecuta el código y observa cómo aparece la variable en el panel de Memoria.",
+      "enunciado": "Concepto nuevo: el signo = guarda un valor con un nombre para poder reutilizarlo. Ejecuta y observa el panel de Memoria.",
       "codigoInicial": "nombre = \"Robot1\"\nprint(nombre)",
       "instruccionesPermitidas": [
         "asignacion",
@@ -21,28 +21,41 @@
       },
       "retroalimentacion": "El signo = guarda un valor con un nombre. El panel de Memoria muestra lo guardado.",
       "pistas": [
-        "Presiona ▶ Ejecutar y mira el panel de Memoria."
+        "Mira el panel de Memoria, no el mundo 2D."
       ]
     },
     {
       "id": "9.2",
-      "tipo": "MODIFICAR",
-      "titulo": "Cambia lo guardado",
-      "enunciado": "Modifica el valor guardado para que el programa muestre \"Explorador\".",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué muestra print?",
+      "enunciado": "Con nombre = \"Robot1\", ¿qué muestra print(nombre), sin comillas?",
       "codigoInicial": "nombre = \"Robot1\"\nprint(nombre)",
-      "solucionReferencia": "nombre = \"Explorador\"\nprint(nombre)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La palabra nombre"
+        },
+        {
+          "id": "b",
+          "texto": "El texto Robot1"
+        },
+        {
+          "id": "c",
+          "texto": "Un error, porque falta poner comillas"
+        }
+      ],
+      "respuestaCorrecta": "b",
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "Explorador"
+        "tipo": "ejecutado"
       },
-      "retroalimentacion": "print(nombre) no muestra la palabra \"nombre\": muestra lo que hay guardado dentro.",
+      "retroalimentacion": "Correcto: sin comillas, nombre es una variable y print muestra su contenido.",
       "pistas": [
-        "Cambia solo el texto entre comillas de la primera línea."
+        "print(\"nombre\") y print(nombre) son cosas distintas."
       ]
     },
     {
@@ -58,25 +71,29 @@
       ],
       "metodosPermitidos": [],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "Explorar"
+        "tipo": "output_con_variable",
+        "valorEsperado": "Explorar",
+        "variableRequerida": "mision"
       },
       "retroalimentacion": "Ya sabes crear un identificador y asignarle un literal.",
       "pistas": [
         "Primero mision = \"Explorar\".",
         "Luego print(mision), sin comillas."
-      ]
+      ],
+      "mensajeNoLogrado": "Debes usar una variable llamada mision y mostrarla con print()."
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
+    "ancho": 4,
     "alto": 1,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "mostrarRobot": false,
+    "mostrarEnergia": false
   },
   "estrellas": {
     "base": true,

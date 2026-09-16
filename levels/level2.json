@@ -1,0 +1,33 @@
+{
+  "id": 2,
+  "nombre": "Robot1 responde",
+  "concepto": "secuencia",
+  "objetivo": "Comprender que un programa se ejecuta en orden",
+  "aprende": "Un programa se ejecuta de arriba hacia abajo, una línea a la vez.\n\nrobot1.hablar(\"texto\") hace que Robot1 diga algo.\nrobot1.saludar() hace que Robot1 salude.",
+  "instruccionesPermitidas": [],
+  "metodosPermitidos": ["hablar", "saludar"],
+  "codigoInicial": "",
+  "solucionReferencia": "robot1.hablar(\"Hola\")\nrobot1.saludar()",
+  "pistas": [
+    "robot1.hablar(\"texto\") hace que Robot1 diga algo.",
+    "robot1.saludar() hace que Robot1 salude con una animación."
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [0, 0],
+    "robotDireccion": "derecha",
+    "objetivoPosicion": null,
+    "obstaculos": []
+  },
+  "validacion": {
+    "tipo": "secuencia",
+    "valorEsperado": ["HABLAR", "SALUDAR"]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

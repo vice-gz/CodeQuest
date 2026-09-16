@@ -38,9 +38,12 @@ async function correrFase(nivel, fase) {
     posicion: escenario.robotPosicion || [0, 0],
     direccion: escenario.robotDireccion || "este",
     energiaInicial: escenario.energiaInicial ?? 100,
+    energiaMaxima: escenario.energiaMaxima ?? null,
     costoEnergiaPorCasilla: escenario.costoEnergiaPorCasilla ?? 1,
   });
   const scene = new SceneNula(world, robot1);
+  // Respuestas que el "estudiante" escribiría en las entradas interactivas.
+  const colaInteractiva = [...(fase.entradasEstudiante || [])];
 
   const salidas = [];
   const memoria = {};
@@ -48,13 +51,18 @@ async function correrFase(nivel, fase) {
     scene,
     world,
     robot1,
-    entradasSimuladas: fase.entradasSimuladas || [],
     callbacks: {
       onSalida: (s) => salidas.push(s),
       onAsignacion: (n, v) => {
         memoria[n] = v;
       },
       onEstado: () => {},
+      pedirEntrada: async () => {
+        if (colaInteractiva.length === 0) {
+          throw new Error("la fase pide una entrada interactiva pero no definió entradasEstudiante para la prueba");
+        }
+        return colaInteractiva.shift();
+      },
     },
   });
 
@@ -64,28 +72,65 @@ async function correrFase(nivel, fase) {
   new Validator(fase).validar(ast);
   await new Interpreter(motor).ejecutar(ast);
 
-  return { salidas, memoria, robot1, estado: snapshotEstado(robot1) };
+  return { salidas, memoria, robot1, world, codigo, estado: snapshotEstado(robot1) };
 }
 
-function evaluar(fase, { salidas, robot1 }) {
+function codigoSinTextos(codigo) {
+  return codigo
+    .replace(/#.*$/gm, "")
+    .replace(/"[^"]*"/g, '""')
+    .replace(/'[^']*'/g, "''");
+}
+
+// Espejo de evaluarResultado() en main.js.
+function evaluar(fase, { salidas, robot1, world, codigo }) {
   const v = fase.validacion || { tipo: "ejecutado" };
-  if (v.tipo === "ejecutado") return true;
-  if (v.tipo === "output") {
-    return salidas.some((s) => String(s.valor) === String(v.valorEsperado));
+  const fuente = codigoSinTextos(codigo);
+  const [x, y] = robot1.posicion();
+  const pos = (e) => x === e[0] && y === e[1];
+  const inc = (val) => salidas.some((s) => String(s.valor).includes(String(val)));
+  const exact = (val) => salidas.some((s) => String(s.valor) === String(val));
+  const todosObjetivos = () =>
+    world.objetivos.every((o) => robot1.objetivosAlcanzados.includes(`${o[0]},${o[1]}`));
+  const tieneVar = (n) => new RegExp(`\\b${n}\\s*=`).test(fuente);
+
+  switch (v.tipo) {
+    case "ejecutado":
+    case "codigo_sin_error":
+      return true;
+    case "output":
+    case "output_exacto":
+      return exact(v.valorEsperado);
+    case "output_contiene":
+      return inc(v.valor ?? v.valorEsperado);
+    case "output_con_variable":
+      return exact(v.valorEsperado) && tieneVar(v.variableRequerida);
+    case "posicion":
+      return pos(v.valorEsperado);
+    case "posicion_con_operacion":
+      return pos(v.valorEsperado) && fuente.includes(v.operadorRequerido);
+    case "posicion_con_variable":
+      return pos(v.valorEsperado) && tieneVar(v.variableRequerida);
+    case "posicion_sin_numero_literal":
+      return pos(v.valorEsperado) && !new RegExp(`\\b${v.numeroProhibido}\\b`).test(fuente);
+    case "objetivos":
+      return todosObjetivos();
+    case "estado":
+    case "estado_variable": {
+      let ok = true;
+      if (v.posicionEsperada) ok = ok && pos(v.posicionEsperada);
+      if (v.direccionEsperada) ok = ok && robot1.direccion === v.direccionEsperada;
+      if (v.energiaMinima !== undefined) ok = ok && robot1.energia >= v.energiaMinima;
+      if (v.outputContiene) ok = ok && inc(v.outputContiene);
+      if (v.outputEsperado) ok = ok && exact(v.outputEsperado);
+      if (v.todosLosObjetivos) ok = ok && todosObjetivos();
+      if (v.operadorRequerido) ok = ok && fuente.includes(v.operadorRequerido);
+      if (v.variableRequerida) ok = ok && tieneVar(v.variableRequerida);
+      return ok;
+    }
+    default:
+      return false;
   }
-  if (v.tipo === "posicion") {
-    const [x, y] = robot1.posicion();
-    return x === v.valorEsperado[0] && y === v.valorEsperado[1];
-  }
-  if (v.tipo === "estado") {
-    const [x, y] = robot1.posicion();
-    let ok = true;
-    if (v.posicionEsperada) ok = ok && x === v.posicionEsperada[0] && y === v.posicionEsperada[1];
-    if (v.direccionEsperada) ok = ok && robot1.direccion === v.direccionEsperada;
-    if (v.energiaMinima !== undefined) ok = ok && robot1.energia >= v.energiaMinima;
-    return ok;
-  }
-  return false;
 }
 
 const TIPOS_FASE = new Set([
@@ -149,8 +194,13 @@ for (let id = 1; id <= TOTAL_NIVELES; id++) {
         fallos++;
       }
     } catch (e) {
-      console.log(`✗ ${fase.id} (${fase.tipo}): lanzó ${e.codigo || ""} ${e.mensaje || e.message}`);
-      fallos++;
+      const v = fase.validacion || {};
+      const esperado =
+        v.tipo === "error_esperado" && (!v.codigoError || v.codigoError === e.codigo);
+      if (!esperado) {
+        console.log(`✗ ${fase.id} (${fase.tipo}): lanzó ${e.codigo || ""} ${e.mensaje || e.message}`);
+        fallos++;
+      }
     }
   }
 }

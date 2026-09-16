@@ -3,14 +3,17 @@
   "mundo": 1,
   "nombre": "Primeros movimientos",
   "concepto": "secuencia, orden, estructura básica",
-  "narrativa": "Robot1 ya responde. Ahora debe desplazarse por una zona pequeña de la instalación.",
+  "narrativa": "Robot1 da sus primeros pasos por un pasillo recto de la instalación.",
+  "ensena": [
+    "robot1.avanzar(n)"
+  ],
   "fases": [
     {
       "id": "2.1",
       "tipo": "EXPLORAR",
-      "titulo": "Observa el movimiento",
-      "enunciado": "Ejecuta el código y mira cómo cambia la posición de Robot1 en el panel de Estado.",
-      "codigoInicial": "robot1.avanzar(2)",
+      "titulo": "Robot1 se mueve",
+      "enunciado": "Esta es una instrucción nueva: robot1.avanzar(n) mueve a Robot1 n casillas hacia donde mira. Ejecútala y observa el panel de Estado.",
+      "codigoInicial": "robot1.avanzar(1)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
         "avanzar"
@@ -18,9 +21,9 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Robot1 avanzó 2 casillas. El panel de Estado muestra su nueva posición.",
+      "retroalimentacion": "Robot1 avanzó 1 casilla. El número entre paréntesis decide cuántas.",
       "pistas": [
-        "Solo presiona ▶ Ejecutar y observa el panel de Estado."
+        "Solo presiona ▶ Ejecutar y mira cómo cambia la posición."
       ]
     },
     {
@@ -28,7 +31,7 @@
       "tipo": "MODIFICAR",
       "titulo": "Llega a la estación",
       "enunciado": "Cambia el número para que Robot1 llegue justo a la casilla 4.",
-      "codigoInicial": "robot1.avanzar(2)",
+      "codigoInicial": "robot1.avanzar(1)",
       "solucionReferencia": "robot1.avanzar(4)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
@@ -41,23 +44,17 @@
           0
         ]
       },
-      "retroalimentacion": "El número entre paréntesis decide cuántas casillas avanza Robot1.",
+      "retroalimentacion": "El argumento controla la distancia sin cambiar la instrucción.",
       "pistas": [
         "Robot1 empieza en la casilla 0.",
-        "Cuenta cuántas casillas hay hasta el objetivo."
-      ],
-      "escenario": {
-        "objetivoPosicion": [
-          4,
-          0
-        ]
-      }
+        "Cuenta las casillas hasta la estrella."
+      ]
     },
     {
       "id": "2.3",
       "tipo": "ESCRIBIR",
-      "titulo": "Dos instrucciones en orden",
-      "enunciado": "Escribe DOS instrucciones: primero que Robot1 avance 2 casillas, luego que avance 3 más.",
+      "titulo": "Una detrás de otra",
+      "enunciado": "Escribe DOS instrucciones: que avance 2 casillas y luego 3 más. Se ejecutan en orden, de arriba hacia abajo.",
       "codigoInicial": "",
       "solucionReferencia": "robot1.avanzar(2)\nrobot1.avanzar(3)",
       "instruccionesPermitidas": [],
@@ -71,10 +68,10 @@
           0
         ]
       },
-      "retroalimentacion": "Un programa se ejecuta de arriba hacia abajo, una línea a la vez.",
+      "retroalimentacion": "Un programa es una secuencia: cada línea se ejecuta después de la anterior.",
       "pistas": [
         "Escribe una instrucción por línea.",
-        "2 + 3 casillas te dejan en la casilla 5."
+        "2 + 3 casillas te dejan en la 5."
       ],
       "escenario": {
         "objetivoPosicion": [
@@ -92,7 +89,12 @@
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      4,
+      0
+    ],
+    "mostrarEnergia": false
   },
   "estrellas": {
     "base": true,

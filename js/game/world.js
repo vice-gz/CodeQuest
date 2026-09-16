@@ -1,22 +1,37 @@
 // world.js
-// Escenario 2D del laboratorio: cuadrícula, límites, objetivo, obstáculos
-// y objetos recolectables (Documento 1, sección 4; prompt de cambios,
-// sección 6 — robot1.recoger()/soltar()).
+// Escenario 2D del laboratorio: cuadrícula, límites, objetivos (uno o
+// varios), obstáculos, objetos recolectables y recargas de energía.
 
 export class World {
   constructor(escenario = {}) {
     this.tipo = escenario.tipo || "laboratorio";
     this.ancho = escenario.ancho ?? 6;
     this.alto = escenario.alto ?? 1;
-    this.objetivoPosicion = escenario.objetivoPosicion ?? null;
-    this.obstaculos = escenario.obstaculos || [];
-    // objetos: [{ posicion: [x,y], tipo: "llave" }]
+
+    // Un nivel puede declarar un objetivo único (objetivoPosicion) o varios
+    // (objetivosPosicion). Internamente siempre se maneja como lista.
+    if (Array.isArray(escenario.objetivosPosicion)) {
+      this.objetivos = escenario.objetivosPosicion.map((p) => [...p]);
+    } else if (escenario.objetivoPosicion) {
+      this.objetivos = [[...escenario.objetivoPosicion]];
+    } else {
+      this.objetivos = [];
+    }
+
+    this.obstaculos = (escenario.obstaculos || []).map((o) => [...o]);
     this.objetosIniciales = escenario.objetos || [];
-    this.objetos = this.objetosIniciales.map((o) => ({ ...o }));
+    this.recargasIniciales = escenario.recargas || [];
+    this.reiniciar();
   }
 
   reiniciar() {
-    this.objetos = this.objetosIniciales.map((o) => ({ ...o }));
+    this.objetos = this.objetosIniciales.map((o) => ({ ...o, posicion: [...o.posicion] }));
+    this.recargas = this.recargasIniciales.map((r) => ({ ...r, posicion: [...r.posicion] }));
+  }
+
+  // Compatibilidad: el objetivo "principal" es el primero declarado.
+  get objetivoPosicion() {
+    return this.objetivos[0] || null;
   }
 
   dentroDeLimites(x, y) {
@@ -25,6 +40,14 @@ export class World {
 
   hayObstaculoEn(x, y) {
     return this.obstaculos.some((o) => o[0] === x && o[1] === y);
+  }
+
+  esObjetivo(x, y) {
+    return this.objetivos.some((o) => o[0] === x && o[1] === y);
+  }
+
+  enObjetivo(x, y) {
+    return this.esObjetivo(x, y);
   }
 
   objetoEn(x, y) {
@@ -39,8 +62,10 @@ export class World {
     return objeto;
   }
 
-  enObjetivo(x, y) {
-    if (!this.objetivoPosicion) return false;
-    return x === this.objetivoPosicion[0] && y === this.objetivoPosicion[1];
+  consumirRecargaEn(x, y) {
+    const recarga = this.recargas.find((r) => r.posicion[0] === x && r.posicion[1] === y);
+    if (!recarga) return null;
+    this.recargas = this.recargas.filter((r) => r !== recarga);
+    return recarga;
   }
 }

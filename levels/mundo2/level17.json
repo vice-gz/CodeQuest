@@ -3,13 +3,13 @@
   "mundo": 2,
   "nombre": "El sistema de energía",
   "concepto": "constantes vs variables",
-  "narrativa": "Hay datos que cambian todo el tiempo y datos que nunca deberían cambiar.",
+  "narrativa": "El sistema eléctrico tiene valores fijos y valores que cambian. Confundirlos sale caro.",
   "fases": [
     {
       "id": "17.1",
       "tipo": "EXPLORAR",
       "titulo": "Un valor que no cambia",
-      "enunciado": "Ejecuta y observa: COSTO_POR_CASILLA se define una vez y se usa en el cálculo.",
+      "enunciado": "Ejecuta: COSTO_POR_CASILLA se define una vez y se usa en el cálculo.",
       "codigoInicial": "COSTO_POR_CASILLA = 2\ncasillas = 4\ngasto = COSTO_POR_CASILLA * casillas\nprint(gasto)",
       "instruccionesPermitidas": [
         "asignacion",
@@ -37,46 +37,98 @@
       ],
       "metodosPermitidos": [],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "14"
+        "tipo": "output_con_variable",
+        "valorEsperado": "14",
+        "variableRequerida": "COSTO_POR_CASILLA"
       },
       "retroalimentacion": "La constante se queda fija; lo que varía es la variable.",
       "pistas": [
         "14 dividido entre 2 te dice cuántas casillas."
-      ]
+      ],
+      "mensajeNoLogrado": "El gasto debe ser 14 y COSTO_POR_CASILLA debe seguir valiendo 2."
     },
     {
       "id": "17.3",
-      "tipo": "ESCRIBIR",
-      "titulo": "Tu propia constante",
-      "enunciado": "Define una constante ENERGIA_MAXIMA con valor 100, réstale un gasto de 30 y muestra el resultado.",
+      "tipo": "RESOLVER",
+      "titulo": "La red eléctrica",
+      "enunciado": "Robot1 arranca con 6 de energía y cada casilla cuesta 2. Hay muros en la fila 1 y dos recargas (⚡) en el camino. Llega a la meta en (5,2).",
       "codigoInicial": "",
-      "solucionReferencia": "ENERGIA_MAXIMA = 100\ngasto = 30\nrestante = ENERGIA_MAXIMA - gasto\nprint(restante)",
+      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
-      "metodosPermitidos": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar",
+        "energia"
+      ],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "70"
+        "tipo": "estado",
+        "posicionEsperada": [
+          5,
+          2
+        ],
+        "energiaMinima": 1
       },
-      "retroalimentacion": "Nombrar bien tus datos hace que el código se explique solo.",
+      "retroalimentacion": "Las recargas del camino repusieron la batería justo a tiempo.",
       "pistas": [
-        "Usa MAYÚSCULAS para la constante.",
-        "100 - 30 = 70."
-      ]
+        "La fila 2 está libre de muros.",
+        "Pisa las dos recargas: sin ellas la batería no alcanza."
+      ],
+      "mensajeNoLogrado": "Robot1 debe llegar a (5,2) con energía restante. Asegúrate de pisar las recargas."
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
     "ancho": 6,
-    "alto": 1,
+    "alto": 3,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      5,
+      2
+    ],
+    "obstaculos": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "energiaInicial": 6,
+    "energiaMaxima": 60,
+    "costoEnergiaPorCasilla": 2,
+    "recargas": [
+      {
+        "posicion": [
+          0,
+          2
+        ],
+        "cantidad": 10
+      },
+      {
+        "posicion": [
+          3,
+          2
+        ],
+        "cantidad": 10
+      }
+    ]
   },
   "estrellas": {
     "base": true,

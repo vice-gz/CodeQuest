@@ -7,9 +7,9 @@
   "fases": [
     {
       "id": "18.1",
-      "tipo": "RESOLVER",
+      "tipo": "ESCRIBIR",
       "titulo": "Mide el puente",
-      "enunciado": "El sensor dice cuántas casillas mide el puente. Léelo y muéstralo por consola.",
+      "enunciado": "El sensor mide el puente. Lee el valor con entrada(), guárdalo en largo y muéstralo. Escribe 5 cuando se te pida.",
       "codigoInicial": "",
       "solucionReferencia": "largo = entrada()\nprint(largo)",
       "instruccionesPermitidas": [
@@ -18,23 +18,27 @@
         "print"
       ],
       "metodosPermitidos": [],
-      "entradasSimuladas": [
+      "entradasEstudiante": [
         5
       ],
+      "etiquetaEntrada": "¿Cuántas casillas mide el puente?",
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "5"
+        "tipo": "output_con_variable",
+        "valorEsperado": "5",
+        "variableRequerida": "largo"
       },
       "retroalimentacion": "Antes de actuar, Robot1 midió el terreno.",
       "pistas": [
-        "Guarda entrada() en una variable y muéstrala."
-      ]
+        "largo = entrada() guarda la medida.",
+        "Luego print(largo)."
+      ],
+      "mensajeNoLogrado": "Guarda la medida en una variable llamada largo y muéstrala. Escribe 5 cuando se te pida."
     },
     {
       "id": "18.2",
       "tipo": "RESOLVER",
       "titulo": "Cruza el puente",
-      "enunciado": "Lee el largo del puente con el sensor y avanza exactamente esa cantidad.",
+      "enunciado": "Lee el largo del puente y avanza exactamente esa cantidad, sin escribir el número a mano. Escribe 5 cuando se te pida.",
       "codigoInicial": "",
       "solucionReferencia": "largo = entrada()\nrobot1.avanzar(largo)",
       "instruccionesPermitidas": [
@@ -45,32 +49,30 @@
       "metodosPermitidos": [
         "avanzar"
       ],
-      "entradasSimuladas": [
+      "entradasEstudiante": [
         5
       ],
+      "etiquetaEntrada": "¿Cuántas casillas mide el puente?",
       "validacion": {
-        "tipo": "posicion",
+        "tipo": "posicion_sin_numero_literal",
         "valorEsperado": [
           5,
           0
-        ]
+        ],
+        "numeroProhibido": "5"
       },
       "retroalimentacion": "El valor leído controló el movimiento sin que tú escribieras el número.",
       "pistas": [
-        "No escribas 5 a mano: usa la variable."
+        "No escribas robot1.avanzar(5): usa la variable.",
+        "El programa debe servir para cualquier largo."
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          5,
-          0
-        ]
-      }
+      "mensajeNoLogrado": "Robot1 debe llegar a (5,0) SIN que el número 5 aparezca en tu código: usa la variable."
     },
     {
       "id": "18.3",
       "tipo": "LIBRE",
       "titulo": "Cruza y desciende",
-      "enunciado": "Cruza el puente usando el sensor y luego baja hasta la fila 2. Resuélvelo como quieras.",
+      "enunciado": "Cruza el puente con el valor del sensor, esquiva el muro de (6,1) y baja hasta (5,2). Escribe 5 cuando se te pida.",
       "codigoInicial": "",
       "solucionReferencia": "largo = entrada()\nrobot1.avanzar(largo)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
       "instruccionesPermitidas": [
@@ -81,13 +83,16 @@
       "metodosPermitidos": [
         "avanzar",
         "girar",
+        "retroceder",
         "hablar",
         "energia",
-        "posicion"
+        "posicion",
+        "mirar"
       ],
-      "entradasSimuladas": [
+      "entradasEstudiante": [
         5
       ],
+      "etiquetaEntrada": "¿Cuántas casillas mide el puente?",
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
@@ -97,14 +102,9 @@
       },
       "retroalimentacion": "Entrada, variables y giros en un solo programa: ya piensas como programador.",
       "pistas": [
-        "Primero cruza, después gira al sur."
-      ],
-      "escenario": {
-        "objetivoPosicion": [
-          5,
-          2
-        ]
-      }
+        "Primero cruza el puente, después gira al sur.",
+        "El muro de (6,1) solo estorba si te pasas de largo."
+      ]
     }
   ],
   "escenario": {
@@ -115,7 +115,17 @@
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      5,
+      2
+    ],
+    "obstaculos": [
+      [
+        6,
+        1
+      ]
+    ]
   },
   "estrellas": {
     "base": true,

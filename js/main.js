@@ -23,6 +23,10 @@ import { StatePanel } from "./ui/statePanel.js";
 import { PhaseBar } from "./ui/phases.js";
 import { renderizarEstrellas, calcularEstrellasNivel } from "./ui/stars.js";
 
+import { Dictionary } from "./ui/dictionary.js";
+import { Tour } from "./ui/tour.js";
+import { ModoDemo, abrirDialogoDemo } from "./ui/demoMode.js";
+
 import { LocalStorageProgressRepository } from "./persistence/LocalStorageProgressRepository.js";
 
 const NIVELES_POR_MUNDO = { 1: 8, 2: 11 };
@@ -65,6 +69,13 @@ const el = {
   prediccionEnunciado: document.getElementById("prediccion-enunciado"),
   prediccionOpciones: document.getElementById("prediccion-opciones"),
 
+  btnDiccionario: document.getElementById("btn-diccionario"),
+  diccionarioPanel: document.getElementById("diccionario-panel"),
+  dicContador: document.getElementById("dic-contador"),
+  btnTour: document.getElementById("btn-tour"),
+  btnDemo: document.getElementById("btn-demo"),
+  accionesBarra: document.querySelector(".acciones-barra"),
+
   estrellasNivel: document.getElementById("estrellas-nivel"),
   feedbackContenido: document.getElementById("feedback-contenido"),
 };
@@ -77,6 +88,8 @@ const outputPanel = new OutputPanel(el.salidaContenido);
 const memoryPanel = new MemoryPanel(el.memoriaContenido);
 const statePanel = new StatePanel(el.estadoContenido);
 const phaseBar = new PhaseBar(el.barraFases);
+const diccionario = new Dictionary(el.diccionarioPanel, el.btnDiccionario, el.dicContador);
+const tour = new Tour();
 
 let nivelActualId = 1;
 let nivelData = null;
@@ -120,6 +133,7 @@ async function irANivel(id) {
   await cargarFase(faseIndice);
   renderSelectorNiveles();
   actualizarContadorTotal();
+  actualizarDiccionario();
 }
 
 async function cargarFase(indice) {
@@ -133,14 +147,15 @@ async function cargarFase(indice) {
     posicion: escenario.robotPosicion || [0, 0],
     direccion: escenario.robotDireccion || "este",
     energiaInicial: escenario.energiaInicial ?? 100,
+    energiaMaxima: escenario.energiaMaxima ?? null,
     costoEnergiaPorCasilla: escenario.costoEnergiaPorCasilla ?? 1,
   });
 
+  const mostrarRobot = escenario.mostrarRobot !== false;
   if (!scene) {
     scene = new Scene(el.lienzo, world, robot1);
-  } else {
-    scene.reiniciar(world, robot1);
   }
+  scene.reiniciar(world, robot1, { mostrarRobot });
   scene.ajustarTamano();
 
   el.etiquetaObjetivo.textContent = escenario.objetivoPosicion
@@ -156,7 +171,7 @@ async function cargarFase(indice) {
 
   outputPanel.mostrarVacio();
   memoryPanel.limpiar();
-  statePanel.actualizar(snapshotEstado(robot1));
+  statePanel.actualizar(snapshotEstado(robot1), { mostrarEnergia: escenario.mostrarEnergia !== false });
   feedback.mostrarInicial(mensajeInicialFase(faseData));
 
   const estadoNivel = repo.obtenerEstadoNivel(mundoActualId, nivelActualId);
@@ -238,7 +253,7 @@ function renderSelectorNiveles() {
     const mundoAnterior2 = nivelAnteriorId >= 1 ? mundoDeNivel(nivelAnteriorId) : null;
     const anteriorCompletado =
       nivelAnteriorId < 1 || !!progreso.mundos[mundoAnterior2]?.niveles?.[nivelAnteriorId]?.completado;
-    const desbloqueado = id === 1 || anteriorCompletado || completado;
+    const desbloqueado = ModoDemo.activo() || id === 1 || anteriorCompletado || completado;
 
     const boton = document.createElement("button");
     boton.type = "button";
@@ -256,6 +271,25 @@ function renderSelectorNiveles() {
   }
 }
 
+// Ids de todas las fases superadas en todos los niveles: es lo que decide
+// qué entradas del diccionario están desbloqueadas.
+function fasesCompletadasGlobales() {
+  const progreso = repo.cargarProgreso();
+  const ids = new Set();
+  Object.values(progreso.mundos).forEach((mundo) => {
+    Object.values(mundo.niveles || {}).forEach((nivel) => {
+      Object.entries(nivel.fases || {}).forEach(([faseId, estado]) => {
+        if (estado.completada) ids.add(faseId);
+      });
+    });
+  });
+  return ids;
+}
+
+function actualizarDiccionario() {
+  diccionario.actualizar(fasesCompletadasGlobales(), ModoDemo.activo());
+}
+
 function actualizarContadorTotal() {
   const progreso = repo.cargarProgreso();
   let total = 0;
@@ -270,7 +304,7 @@ function actualizarContadorTotal() {
 // ---------- Predicción ----------
 
 function evaluarPrediccion(opcionId, botonClic) {
-  repo.registrarIntentoFase(mundoActualId, nivelActualId, faseData.id, {});
+  const codigo = faseData.codigoInicial || "";
   const correcta = opcionId === faseData.respuestaCorrecta;
 
   el.prediccionOpciones.querySelectorAll(".opcion-prediccion").forEach((b) => {
@@ -279,9 +313,13 @@ function evaluarPrediccion(opcionId, botonClic) {
   botonClic.classList.add(correcta ? "opcion-correcta" : "opcion-incorrecta");
 
   if (correcta) {
-    completarFaseActual();
+    completarFaseActual(codigo);
   } else {
-    feedback.mostrarObjetivoNoAlcanzado("Esa no era la predicción correcta. Vuelve a intentarlo.");
+    // Cada opción distinta cuenta como un intento.
+    repo.registrarIntentoFase(mundoActualId, nivelActualId, faseData.id, { codigo: opcionId });
+    feedback.mostrarObjetivoNoAlcanzado(
+      faseData.mensajeNoLogrado || "Esa no era la predicción correcta. Vuelve a intentarlo."
+    );
   }
 }
 
@@ -294,8 +332,6 @@ async function ejecutarCodigo() {
   codeEditor.limpiarMarcaError();
 
   const codigo = codeEditor.obtenerCodigo();
-  repo.registrarIntentoFase(mundoActualId, nivelActualId, faseData.id, {});
-
   outputPanel.limpiar();
   memoryPanel.limpiar();
 
@@ -306,32 +342,41 @@ async function ejecutarCodigo() {
     const ast = new Parser(tokens).parsear();
     new Validator(faseData).validar(ast);
 
-    scene.reiniciar(world, robot1);
     robot1.reiniciar();
     world.reiniciar();
+    scene.reiniciar(world, robot1, { mostrarRobot: mostrarRobotEnFase() });
     scene.render();
+    statePanel.actualizar(snapshotEstado(robot1), { mostrarEnergia: mostrarEnergiaEnNivel() });
 
     const motor = crearMotor({
       scene,
       world,
       robot1,
-      entradasSimuladas: faseData.entradasSimuladas || [],
       callbacks: {
         onSalida: (s) => {
           salidas.push(s);
           outputPanel.agregar(s);
         },
         onAsignacion: (nombre, valor) => memoryPanel.actualizar(nombre, valor),
-        onEstado: (estado) => statePanel.actualizar(estado),
+        onEstado: (estado) =>
+          statePanel.actualizar(estado, { mostrarEnergia: mostrarEnergiaEnNivel() }),
+        // La ejecución se pausa aquí hasta que el estudiante escribe un valor.
+        pedirEntrada: () =>
+          outputPanel.pedirEntrada({
+            etiqueta: faseData.etiquetaEntrada,
+            tipo: faseData.entradaTipo || "libre",
+          }),
       },
     });
 
     const interprete = new Interpreter(motor);
     await interprete.ejecutar(ast);
-    statePanel.actualizar(snapshotEstado(robot1));
+    statePanel.actualizar(snapshotEstado(robot1), { mostrarEnergia: mostrarEnergiaEnNivel() });
 
     evaluarResultado(salidas, codigo);
   } catch (error) {
+    // El intento se registra solo cuando ya se sabe el resultado.
+    repo.registrarIntentoFase(mundoActualId, nivelActualId, faseData.id, { codigo });
     manejarError(error, codigo);
   } finally {
     enEjecucion = false;
@@ -339,35 +384,114 @@ async function ejecutarCodigo() {
   }
 }
 
+function mostrarRobotEnFase() {
+  const escenario = { ...nivelData.escenario, ...(faseData.escenario || {}) };
+  return escenario.mostrarRobot !== false;
+}
+
+function mostrarEnergiaEnNivel() {
+  const escenario = { ...nivelData.escenario, ...(faseData.escenario || {}) };
+  return escenario.mostrarEnergia !== false;
+}
+
+// Quita comentarios y textos entre comillas antes de inspeccionar el código
+// fuente, para que un número dentro de un texto no cuente como literal.
+function codigoSinTextos(codigo) {
+  return codigo
+    .replace(/#.*$/gm, "")
+    .replace(/"[^"]*"/g, '""')
+    .replace(/'[^']*'/g, "''");
+}
+
 function evaluarResultado(salidas, codigo) {
   const validacion = faseData.validacion || { tipo: "ejecutado" };
+  const fuente = codigoSinTextos(codigo);
+  const [x, y] = robot1.posicion();
   let exito = false;
 
-  if (validacion.tipo === "ejecutado") {
-    exito = true;
-  } else if (validacion.tipo === "output") {
-    exito = salidas.some((s) => String(s.valor) === String(validacion.valorEsperado));
-  } else if (validacion.tipo === "posicion") {
-    const [gx, gy] = validacion.valorEsperado;
-    const [x, y] = robot1.posicion();
-    exito = x === gx && y === gy;
-  } else if (validacion.tipo === "estado") {
-    const [x, y] = robot1.posicion();
-    exito = true;
-    if (validacion.posicionEsperada) {
-      exito = exito && x === validacion.posicionEsperada[0] && y === validacion.posicionEsperada[1];
+  const cumplePosicion = (esperada) => x === esperada[0] && y === esperada[1];
+  const salidaIncluye = (v) => salidas.some((s) => String(s.valor).includes(String(v)));
+  const salidaExacta = (v) => salidas.some((s) => String(s.valor) === String(v));
+
+  switch (validacion.tipo) {
+    case "ejecutado":
+    case "codigo_sin_error":
+      // Llegar hasta aquí ya significa que el código corrió sin lanzar error.
+      exito = true;
+      break;
+
+    case "output":
+    case "output_exacto":
+      exito = salidaExacta(validacion.valorEsperado);
+      break;
+
+    case "output_contiene":
+      exito = salidaIncluye(validacion.valor ?? validacion.valorEsperado);
+      break;
+
+    case "output_con_variable":
+      exito =
+        salidaExacta(validacion.valorEsperado) &&
+        new RegExp(`\\b${validacion.variableRequerida}\\s*=`).test(fuente);
+      break;
+
+    case "posicion":
+      exito = cumplePosicion(validacion.valorEsperado);
+      break;
+
+    case "posicion_con_operacion":
+      exito =
+        cumplePosicion(validacion.valorEsperado) &&
+        fuente.includes(validacion.operadorRequerido);
+      break;
+
+    case "posicion_con_variable":
+      exito =
+        cumplePosicion(validacion.valorEsperado) &&
+        new RegExp(`\\b${validacion.variableRequerida}\\s*=`).test(fuente);
+      break;
+
+    case "posicion_sin_numero_literal":
+      // El destino debe calcularse, no escribirse a mano.
+      exito =
+        cumplePosicion(validacion.valorEsperado) &&
+        !new RegExp(`\\b${validacion.numeroProhibido}\\b`).test(fuente);
+      break;
+
+    case "objetivos":
+      // Todos los objetivos del escenario deben haberse pisado.
+      exito = world.objetivos.every((o) => robot1.objetivosAlcanzados.includes(`${o[0]},${o[1]}`));
+      break;
+
+    case "estado":
+    case "estado_variable": {
+      exito = true;
+      if (validacion.posicionEsperada) exito = exito && cumplePosicion(validacion.posicionEsperada);
+      if (validacion.direccionEsperada) exito = exito && robot1.direccion === validacion.direccionEsperada;
+      if (validacion.energiaMinima !== undefined) exito = exito && robot1.energia >= validacion.energiaMinima;
+      if (validacion.outputContiene) exito = exito && salidaIncluye(validacion.outputContiene);
+      if (validacion.outputEsperado) exito = exito && salidaExacta(validacion.outputEsperado);
+      if (validacion.todosLosObjetivos) {
+        exito =
+          exito &&
+          world.objetivos.every((o) => robot1.objetivosAlcanzados.includes(`${o[0]},${o[1]}`));
+      }
+      if (validacion.operadorRequerido) exito = exito && fuente.includes(validacion.operadorRequerido);
+      if (validacion.variableRequerida) {
+        exito = exito && new RegExp(`\\b${validacion.variableRequerida}\\s*=`).test(fuente);
+      }
+      break;
     }
-    if (validacion.direccionEsperada) {
-      exito = exito && robot1.direccion === validacion.direccionEsperada;
-    }
-    if (validacion.energiaMinima !== undefined) {
-      exito = exito && robot1.energia >= validacion.energiaMinima;
-    }
+
+    default:
+      exito = false;
+      break;
   }
 
   if (exito) {
-    completarFaseActual();
+    completarFaseActual(codigo);
   } else {
+    repo.registrarIntentoFase(mundoActualId, nivelActualId, faseData.id, { codigo });
     repo.guardarEjecucion({
       mundoId: mundoActualId,
       nivelId: nivelActualId,
@@ -376,13 +500,30 @@ function evaluarResultado(salidas, codigo) {
       resultado: "objetivo_no_alcanzado",
     });
     feedback.mostrarObjetivoNoAlcanzado(
-      faseData.mensajeNoLogrado || "Robot1 todavía no cumple el objetivo de esta fase. Revisa tu código e inténtalo de nuevo."
+      faseData.mensajeNoLogrado ||
+        "Robot1 todavía no cumple el objetivo de esta fase. Revisa tu código e inténtalo de nuevo."
     );
   }
 }
 
-function completarFaseActual() {
-  repo.completarFase(mundoActualId, nivelActualId, faseData.id);
+function completarFaseActual(codigo) {
+  const estadoPrevio = repo.obtenerEstadoNivel(mundoActualId, nivelActualId);
+  const yaCompletada = estadoPrevio.fases[faseData.id]?.completada === true;
+
+  // Repetir una fase ya superada no debe volver a contarla ni ensuciar
+  // el cálculo de estrellas: solo se registra la primera vez.
+  if (!yaCompletada) {
+    repo.registrarIntentoFase(mundoActualId, nivelActualId, faseData.id, { codigo });
+    repo.completarFase(mundoActualId, nivelActualId, faseData.id);
+  }
+
+  repo.guardarEjecucion({
+    mundoId: mundoActualId,
+    nivelId: nivelActualId,
+    faseId: faseData.id,
+    codigo,
+    resultado: "exito",
+  });
 
   const esUltimaFase = faseIndice === nivelData.fases.length - 1;
   const estadoNivel = repo.obtenerEstadoNivel(mundoActualId, nivelActualId);
@@ -392,46 +533,67 @@ function completarFaseActual() {
       .map(([k]) => k)
   );
   phaseBar.render(nivelData.fases, faseIndice, completadas, (i) => cargarFase(i));
+  actualizarDiccionario();
 
   const todasCompletas = nivelData.fases.every((f) => completadas.has(f.id));
 
   if (todasCompletas) {
-    const estrellas = calcularEstrellasNivel(estadoNivel.fases);
+    const soloFasesDelNivel = {};
+    nivelData.fases.forEach((f) => {
+      if (estadoNivel.fases[f.id]) soloFasesDelNivel[f.id] = estadoNivel.fases[f.id];
+    });
+    const estrellas = calcularEstrellasNivel(soloFasesDelNivel);
     const siguienteId = nivelActualId + 1;
-    const hayMundoSiguiente = siguienteId <= TOTAL_NIVELES;
+    const hayNivelSiguiente = siguienteId <= TOTAL_NIVELES;
+
     repo.completarNivel(mundoActualId, nivelActualId, {
       estrellas,
-      siguienteMundo: hayMundoSiguiente ? mundoDeNivel(siguienteId) : mundoActualId,
-      siguienteNivel: hayMundoSiguiente ? siguienteId : nivelActualId,
+      totalNivelesMundo: NIVELES_POR_MUNDO[mundoActualId],
+      siguienteMundo: hayNivelSiguiente ? mundoDeNivel(siguienteId) : mundoActualId,
+      siguienteNivel: hayNivelSiguiente ? siguienteId : nivelActualId,
     });
     renderizarEstrellas(el.estrellasNivel, estrellas);
     renderSelectorNiveles();
     actualizarContadorTotal();
+    actualizarDiccionario();
 
-    const botones = [
-      { texto: "Repetir nivel", tipo: "secundario", onClick: () => cargarFase(0) },
-    ];
-    if (hayMundoSiguiente) {
-      botones.push({
-        texto: "Siguiente nivel",
-        tipo: "primario",
-        onClick: () => irANivel(siguienteId),
-      });
+    const botones = [{ texto: "Repetir nivel", tipo: "secundario", onClick: () => cargarFase(0) }];
+    if (hayNivelSiguiente) {
+      botones.push({ texto: "Siguiente nivel", tipo: "primario", onClick: () => irANivel(siguienteId) });
     }
 
     feedback.mostrarResultadoNivel({
       estrellas,
-      mensaje:
-        siguienteId > TOTAL_NIVELES
-          ? "¡Completaste los Mundos 1 y 2 de CodeQuest!"
-          : "Desbloqueaste el siguiente nivel.",
+      mensaje: hayNivelSiguiente
+        ? "Desbloqueaste el siguiente nivel."
+        : "¡Completaste los Mundos 1 y 2 de CodeQuest!",
       botones,
     });
   } else {
     const botones = [
-      { texto: "Seguir jugando", tipo: "secundario", onClick: () => feedback.mostrarInicial(mensajeInicialFase(faseData)) },
-      { texto: "Siguiente fase", tipo: "primario", onClick: () => cargarFase(faseIndice + 1) },
+      {
+        texto: "Seguir jugando",
+        tipo: "secundario",
+        onClick: () => feedback.mostrarInicial(mensajeInicialFase(faseData)),
+      },
     ];
+    if (!esUltimaFase) {
+      botones.push({
+        texto: "Siguiente fase",
+        tipo: "primario",
+        onClick: () => cargarFase(faseIndice + 1),
+      });
+    } else {
+      // Última fase superada pero quedan fases anteriores pendientes.
+      const pendiente = nivelData.fases.findIndex((f) => !completadas.has(f.id));
+      if (pendiente !== -1) {
+        botones.push({
+          texto: "Ir a la fase pendiente",
+          tipo: "primario",
+          onClick: () => cargarFase(pendiente),
+        });
+      }
+    }
     feedback.mostrarResultadoFase({
       mensaje: faseData.retroalimentacion || "¡Bien hecho!",
       botones,
@@ -441,6 +603,16 @@ function completarFaseActual() {
 
 function manejarError(error, codigo) {
   if (error instanceof CQLError) {
+    // Algunas fases EXPLORAR existen justamente para que el estudiante lea
+    // un error. En ellas, provocar el error ES cumplir el objetivo.
+    const v = faseData.validacion || {};
+    if (v.tipo === "error_esperado" && (!v.codigoError || v.codigoError === error.codigo)) {
+      feedback.mostrarError(error);
+      codeEditor.marcarLineaError(error.linea);
+      completarFaseActual(codigo);
+      return;
+    }
+
     feedback.mostrarError(error);
     codeEditor.marcarLineaError(error.linea);
     repo.guardarEjecucion({
@@ -485,6 +657,35 @@ el.btnEjecutar.addEventListener("click", ejecutarCodigo);
 el.btnReiniciar.addEventListener("click", reiniciarFase);
 el.btnPista.addEventListener("click", mostrarPista);
 
+el.btnTour.addEventListener("click", () => tour.iniciar());
+
+el.btnDemo.addEventListener("click", () => {
+  if (ModoDemo.activo()) {
+    ModoDemo.desactivar();
+    marcarInsigniaDemo();
+    renderSelectorNiveles();
+    actualizarDiccionario();
+    return;
+  }
+  abrirDialogoDemo(() => {
+    marcarInsigniaDemo();
+    renderSelectorNiveles();
+    actualizarDiccionario();
+  });
+});
+
+function marcarInsigniaDemo() {
+  const previa = el.accionesBarra.querySelector(".insignia-demo");
+  if (previa) previa.remove();
+  el.btnDemo.textContent = ModoDemo.activo() ? "Salir de demo" : "Demo";
+  if (ModoDemo.activo()) {
+    const insignia = document.createElement("span");
+    insignia.className = "insignia-demo";
+    insignia.textContent = "DEMO";
+    el.accionesBarra.insertBefore(insignia, el.btnDemo);
+  }
+}
+
 window.addEventListener("resize", () => scene && scene.ajustarTamano());
 
 // ---------- Arranque ----------
@@ -492,5 +693,11 @@ window.addEventListener("resize", () => scene && scene.ajustarTamano());
 (async function iniciar() {
   const progreso = repo.cargarProgreso();
   const inicio = Math.min(Math.max(progreso.jugador.nivelActual || 1, 1), TOTAL_NIVELES);
+  marcarInsigniaDemo();
   await irANivel(inicio);
+
+  // La primera vez, el tour explica para qué sirve cada área.
+  if (!Tour.yaSeVio()) {
+    setTimeout(() => tour.iniciar(), 500);
+  }
 })();

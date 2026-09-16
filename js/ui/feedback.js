@@ -7,6 +7,15 @@
 // Al completar una fase o un nivel aparecen botones inline dentro de este
 // mismo panel (prompt de cambios, sección 5).
 
+// Todo texto que venga de un JSON de nivel o de un mensaje de error pasa
+// por aquí antes de insertarse como HTML, para que un texto con < o >
+// no pueda inyectar marcado en el panel.
+function escapeHtml(texto) {
+  const div = document.createElement("div");
+  div.textContent = texto == null ? "" : String(texto);
+  return div.innerHTML;
+}
+
 export class Feedback {
   constructor(container) {
     this.container = container;
@@ -20,22 +29,22 @@ export class Feedback {
   mostrarInicial(mensaje) {
     this.limpiar();
     this.container.classList.add("feedback-neutral");
-    this.container.innerHTML = `<p class="feedback-texto">${mensaje}</p>`;
+    this.container.innerHTML = `<p class="feedback-texto">${escapeHtml(mensaje)}</p>`;
   }
 
   mostrarError(error) {
     this.limpiar();
     this.container.classList.add("feedback-error");
-    const linea = error.linea ? `<span class="feedback-linea">Línea ${error.linea}</span>` : "";
+    const linea = error.linea ? `<span class="feedback-linea">Línea ${escapeHtml(error.linea)}</span>` : "";
     this.container.innerHTML = `
       <div class="feedback-encabezado">
         <span class="feedback-icono">!</span>
-        <strong>${error.mensaje}</strong>
+        <strong>${escapeHtml(error.mensaje)}</strong>
         ${linea}
       </div>
-      ${error.educativo ? `<p class="feedback-texto">${error.educativo}</p>` : ""}
-      ${error.sugerencia ? `<p class="feedback-sugerencia">💡 ${error.sugerencia}</p>` : ""}
-      <p class="feedback-codigo">${error.codigo}</p>
+      ${error.educativo ? `<p class="feedback-texto">${escapeHtml(error.educativo)}</p>` : ""}
+      ${error.sugerencia ? `<p class="feedback-sugerencia">💡 ${escapeHtml(error.sugerencia)}</p>` : ""}
+      <p class="feedback-codigo">${escapeHtml(error.codigo)}</p>
     `;
   }
 
@@ -47,7 +56,7 @@ export class Feedback {
         <span class="feedback-icono">!</span>
         <strong>Todavía no</strong>
       </div>
-      <p class="feedback-texto">${mensaje}</p>
+      <p class="feedback-texto">${escapeHtml(mensaje)}</p>
     `;
   }
 
@@ -57,9 +66,9 @@ export class Feedback {
     this.container.innerHTML = `
       <div class="feedback-encabezado">
         <span class="feedback-icono">?</span>
-        <strong>Pista ${numero}</strong>
+        <strong>Pista ${escapeHtml(numero)}</strong>
       </div>
-      <p class="feedback-texto">${texto}</p>
+      <p class="feedback-texto">${escapeHtml(texto)}</p>
     `;
   }
 
@@ -74,7 +83,7 @@ export class Feedback {
         <span class="feedback-icono">✓</span>
         <strong>Fase completada</strong>
       </div>
-      <p class="feedback-texto">${mensaje}</p>
+      <p class="feedback-texto">${escapeHtml(mensaje)}</p>
     `;
     this.renderBotones(botones, "feedback-botones");
   }
@@ -94,7 +103,7 @@ export class Feedback {
         <strong>¡Nivel completado!</strong>
       </div>
       <div class="estrellas-grandes">${estrellasHtml}</div>
-      <p class="feedback-texto">${mensaje}</p>
+      <p class="feedback-texto">${escapeHtml(mensaje)}</p>
     `;
     this.renderBotones(botones, "feedback-botones feedback-botones-grandes");
   }
@@ -108,7 +117,16 @@ export class Feedback {
       boton.type = "button";
       boton.className = `boton boton-${b.tipo || "secundario"}`;
       boton.textContent = b.texto;
-      boton.addEventListener("click", b.onClick);
+      // El handler puede ser asíncrono (cargar la siguiente fase). Se
+      // deshabilita mientras corre para que un doble clic no avance dos veces.
+      boton.addEventListener("click", async () => {
+        boton.disabled = true;
+        try {
+          await b.onClick();
+        } finally {
+          boton.disabled = false;
+        }
+      });
       contenedor.appendChild(boton);
     });
     this.container.appendChild(contenedor);

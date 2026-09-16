@@ -3,99 +3,105 @@
   "mundo": 1,
   "nombre": "¿Cuánto?",
   "concepto": "parámetros, argumentos, literales numéricos",
-  "narrativa": "Las instrucciones de Robot1 aceptan valores distintos. Ese valor se llama argumento.",
+  "narrativa": "El valor entre paréntesis es lo que hace que una misma instrucción sirva para muchas cosas.",
+  "ensena": [
+    "robot1.retroceder(n)"
+  ],
   "fases": [
     {
       "id": "4.1",
       "tipo": "EXPLORAR",
-      "titulo": "El mismo método, otro valor",
-      "enunciado": "Ejecuta y observa cuánto se mueve Robot1 con el argumento 1.",
-      "codigoInicial": "robot1.avanzar(1)",
+      "titulo": "Ir y volver",
+      "enunciado": "Instrucción nueva: robot1.retroceder(n) mueve a Robot1 hacia atrás SIN cambiar hacia dónde mira. Ejecuta y compara con avanzar().",
+      "codigoInicial": "robot1.avanzar(3)\nrobot1.retroceder(1)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
-        "avanzar"
+        "avanzar",
+        "retroceder"
       ],
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "El valor entre paréntesis es el argumento: cambia el resultado sin cambiar la instrucción.",
+      "retroalimentacion": "Mismo tipo de argumento, efecto opuesto. La dirección no cambió: fíjate en el panel de Estado.",
       "pistas": [
-        "Presiona ▶ Ejecutar."
+        "Observa la posición al terminar: avanzó 3 y retrocedió 1."
       ]
     },
     {
       "id": "4.2",
       "tipo": "PREDECIR",
-      "titulo": "Predice el resultado",
-      "enunciado": "Robot1 está en la casilla 0. Si ejecutas robot1.avanzar(3), ¿en qué casilla termina?",
-      "codigoInicial": "robot1.avanzar(3)",
+      "titulo": "Predice los dos tramos",
+      "enunciado": "Robot1 está en (0,0) mirando al este. Tras avanzar(4), girar(\"sur\") y avanzar(1), ¿dónde queda?",
+      "codigoInicial": "robot1.avanzar(4)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
-        "avanzar"
+        "avanzar",
+        "girar"
       ],
       "opciones": [
         {
           "id": "a",
-          "texto": "En la casilla 1"
+          "texto": "En (4,1)"
         },
         {
           "id": "b",
-          "texto": "En la casilla 3"
+          "texto": "En (1,4)"
         },
         {
           "id": "c",
-          "texto": "En la casilla 4"
+          "texto": "En (5,1)"
         }
       ],
-      "respuestaCorrecta": "b",
+      "respuestaCorrecta": "a",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Así es: avanza tantas casillas como diga el argumento.",
+      "retroalimentacion": "Así es: 4 al este y 1 al sur dejan a Robot1 en (4,1).",
       "pistas": [
-        "Empieza en 0 y avanza 3."
+        "El primer número es la columna; el segundo, la fila."
       ]
     },
     {
       "id": "4.3",
       "tipo": "RESOLVER",
-      "titulo": "Llega exacto",
-      "enunciado": "Haz que Robot1 llegue exactamente a la casilla 5 usando una sola instrucción.",
+      "titulo": "Elige bien cada argumento",
+      "enunciado": "La meta está en (4,1). Llega usando dos avanzar() y un girar(), eligiendo el número correcto en cada uno.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(5)",
+      "solucionReferencia": "robot1.avanzar(4)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
-        "avanzar"
+        "avanzar",
+        "girar",
+        "retroceder"
       ],
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
-          5,
-          0
+          4,
+          1
         ]
       },
-      "retroalimentacion": "Un solo argumento bien elegido basta.",
+      "retroalimentacion": "Dos argumentos bien elegidos bastan para un recorrido en L.",
       "pistas": [
-        "Solo necesitas una línea.",
-        "¿Cuántas casillas hay del 0 al 5?"
-      ],
-      "escenario": {
-        "objetivoPosicion": [
-          5,
-          0
-        ]
-      }
+        "Cuenta las columnas del tramo horizontal.",
+        "Luego las filas del tramo vertical."
+      ]
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 7,
-    "alto": 1,
+    "ancho": 5,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      4,
+      1
+    ],
+    "mostrarEnergia": false
   },
   "estrellas": {
     "base": true,

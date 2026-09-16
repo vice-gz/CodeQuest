@@ -1,0 +1,33 @@
+{
+  "id": 4,
+  "nombre": "¿Cuántos pasos?",
+  "concepto": "variables numéricas",
+  "objetivo": "Usar una variable numérica como argumento",
+  "aprende": "Una variable también puede guardar un número, y ese número puede usarse como argumento de un método.\n\npasos = 3\nrobot1.avanzar(pasos)",
+  "instruccionesPermitidas": ["asignacion"],
+  "metodosPermitidos": ["avanzar"],
+  "codigoInicial": "",
+  "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)",
+  "pistas": [
+    "Recuerda que una variable puede almacenar un número.",
+    "¿Cuántos espacios debe recorrer Robot1 para llegar al objetivo?"
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [0, 0],
+    "robotDireccion": "derecha",
+    "objetivoPosicion": [3, 0],
+    "obstaculos": []
+  },
+  "validacion": {
+    "tipo": "posicion",
+    "valorEsperado": [3, 0]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

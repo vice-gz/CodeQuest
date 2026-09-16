@@ -1,0 +1,34 @@
+{
+  "id": 6,
+  "nombre": "Primer desafío",
+  "concepto": "integración",
+  "objetivo": "Aplicar todos los conceptos anteriores para llegar al objetivo",
+  "aprende": "Ya conoces print, variables, operadores y robot1.avanzar(). Úsalos como quieras: cualquier solución que lleve a Robot1 hasta la meta es válida.",
+  "instruccionesPermitidas": ["asignacion", "print"],
+  "metodosPermitidos": ["hablar", "saludar", "avanzar"],
+  "codigoInicial": "",
+  "solucionReferencia": "pasos = 5\nrobot1.avanzar(pasos)",
+  "pistas": [
+    "Puedes usar todo lo que aprendiste: variables, print, operaciones y robot1.avanzar().",
+    "Solo importa que Robot1 termine en la posición del objetivo, sin importar cómo llegue."
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [0, 0],
+    "robotDireccion": "derecha",
+    "objetivoPosicion": [5, 0],
+    "obstaculos": []
+  },
+  "validacion": {
+    "tipo": "posicion",
+    "valorEsperado": [5, 0],
+    "aceptarCualquierSolucion": true
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  }
+}

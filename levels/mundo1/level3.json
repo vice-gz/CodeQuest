@@ -3,13 +3,17 @@
   "mundo": 1,
   "nombre": "Haz que me entienda",
   "concepto": "instrucciones disponibles, llamadas a métodos, sintaxis",
-  "narrativa": "Robot1 conoce más instrucciones de las que el jugador imagina. Toca descubrirlas.",
+  "narrativa": "Robot1 revela el resto de instrucciones que entiende: hablar y girar.",
+  "ensena": [
+    "robot1.hablar(\"texto\")",
+    "robot1.girar(direccion)"
+  ],
   "fases": [
     {
       "id": "3.1",
       "tipo": "EXPLORAR",
       "titulo": "Robot1 puede hablar",
-      "enunciado": "Ejecuta el código. Fíjate en que hablar() muestra una burbuja en el mundo Y una línea en Salida.",
+      "enunciado": "Instrucción nueva: robot1.hablar(\"texto\"). Ejecútala y fíjate en que produce burbuja en el mundo Y línea en Salida.",
       "codigoInicial": "robot1.hablar(\"Sistema activo\")",
       "instruccionesPermitidas": [],
       "metodosPermitidos": [
@@ -18,9 +22,9 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "hablar() es salida visual en el mundo. print() es salida de consola. No son lo mismo.",
+      "retroalimentacion": "hablar() es salida visual en el mundo. print() es salida de consola.",
       "pistas": [
-        "Presiona ▶ Ejecutar y observa el mundo 2D y el panel de Salida."
+        "Observa el mundo 2D y el panel de Salida a la vez."
       ]
     },
     {
@@ -51,44 +55,71 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Correcto: print() es salida de consola, solo va al panel de Salida.",
+      "retroalimentacion": "Correcto: print() no toca el mundo 2D; la burbuja la produce hablar().",
       "pistas": [
-        "La burbuja sobre Robot1 la produce hablar(), no print()."
+        "Una es salida de consola y la otra salida visual."
       ]
     },
     {
       "id": "3.3",
-      "tipo": "ESCRIBIR",
-      "titulo": "Usa las dos",
-      "enunciado": "Haz que Robot1 diga \"Listo\" con hablar(), y además muestra \"Diagnostico completo\" con print().",
-      "codigoInicial": "",
-      "solucionReferencia": "robot1.hablar(\"Listo\")\nprint(\"Diagnostico completo\")",
-      "instruccionesPermitidas": [
-        "print"
-      ],
+      "tipo": "EXPLORAR",
+      "titulo": "Robot1 puede girar",
+      "enunciado": "Instrucción nueva: robot1.girar(direccion) cambia hacia dónde mira. Las direcciones son \"norte\", \"sur\", \"este\" y \"oeste\". Ejecuta y mira la Dirección en el panel de Estado.",
+      "codigoInicial": "robot1.girar(\"sur\")",
+      "instruccionesPermitidas": [],
       "metodosPermitidos": [
+        "girar"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "girar() no mueve a Robot1: solo cambia hacia dónde apunta. avanzar() seguirá esa dirección.",
+      "pistas": [
+        "Compara la Dirección en el panel de Estado antes y después.",
+        "La punta naranja del robot también gira."
+      ]
+    },
+    {
+      "id": "3.4",
+      "tipo": "RESOLVER",
+      "titulo": "Baja una fila",
+      "enunciado": "Ahora combínalas: la meta está en (2,1), una fila más abajo. Avanza, gira al sur y avanza otra vez.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(2)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar",
         "hablar"
       ],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "Diagnostico completo"
+        "tipo": "posicion",
+        "valorEsperado": [
+          2,
+          1
+        ]
       },
-      "retroalimentacion": "Ya distingues las dos formas de salida que tiene Robot1.",
+      "retroalimentacion": "Ya puedes moverte en dos dimensiones: avanzar recorre, girar decide hacia dónde.",
       "pistas": [
-        "robot1.hablar(\"texto\") para la burbuja.",
-        "print(\"texto\") para la consola."
+        "Primero muévete en horizontal.",
+        "Gira al \"sur\" para bajar y avanza 1."
       ]
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 1,
+    "ancho": 4,
+    "alto": 2,
     "robotPosicion": [
-      2,
+      0,
       0
     ],
-    "robotDireccion": "este"
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      2,
+      1
+    ],
+    "mostrarEnergia": false
   },
   "estrellas": {
     "base": true,

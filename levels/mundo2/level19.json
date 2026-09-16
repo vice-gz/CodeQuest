@@ -3,21 +3,22 @@
   "mundo": 2,
   "nombre": "La puerta del Mundo 3",
   "concepto": "integración total",
-  "narrativa": "La puerta al Mundo 3 está cerrada. Robot1 necesita la llave, energía suficiente y el código correcto.",
+  "narrativa": "La puerta al Mundo 3 está cerrada. Robot1 necesita la llave, el código y energía suficiente.",
   "fases": [
     {
       "id": "19.1",
       "tipo": "RESOLVER",
       "titulo": "Recupera la llave",
-      "enunciado": "La llave está en (3, 0). Ve por ella y recógela.",
+      "enunciado": "La llave está en (3,0), pero hay un muro en (2,0). Rodéalo, llega a la llave y recógela.",
       "codigoInicial": "",
-      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)\nrobot1.recoger()",
+      "solucionReferencia": "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)\nrobot1.girar(\"este\")\nrobot1.avanzar(2)\nrobot1.girar(\"norte\")\nrobot1.avanzar(1)\nrobot1.recoger()",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [
         "avanzar",
+        "girar",
         "recoger"
       ],
       "validacion": {
@@ -27,27 +28,18 @@
           0
         ]
       },
-      "retroalimentacion": "Llave asegurada. Revisa el panel de Estado: ya está en el inventario.",
+      "retroalimentacion": "Llave asegurada: aparece en el inventario del panel de Estado.",
       "pistas": [
-        "Avanza hasta la casilla de la llave y luego robot1.recoger()."
+        "Baja a la fila 1 para rodear el muro.",
+        "Al llegar a la llave, usa robot1.recoger()."
       ],
-      "escenario": {
-        "objetos": [
-          {
-            "posicion": [
-              3,
-              0
-            ],
-            "tipo": "llave"
-          }
-        ]
-      }
+      "mensajeNoLogrado": "Robot1 debe terminar en (3,0), la casilla de la llave."
     },
     {
       "id": "19.2",
       "tipo": "ESCRIBIR",
       "titulo": "El código de la puerta",
-      "enunciado": "El código de la puerta es el residuo de dividir 17 entre 5. Calcúlalo con % y muéstralo.",
+      "enunciado": "El código es el residuo de dividir 17 entre 5. Calcúlalo con % (no lo escribas a mano), guárdalo en codigo y muéstralo.",
       "codigoInicial": "",
       "solucionReferencia": "codigo = 17 % 5\nprint(codigo)",
       "instruccionesPermitidas": [
@@ -56,22 +48,25 @@
       ],
       "metodosPermitidos": [],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "2"
+        "tipo": "estado",
+        "outputEsperado": "2",
+        "operadorRequerido": "%",
+        "variableRequerida": "codigo"
       },
       "retroalimentacion": "El operador % devuelve el residuo: 17 entre 5 son 3 con 2 de sobra.",
       "pistas": [
         "Usa el operador %.",
-        "17 % 5 se calcula solo."
-      ]
+        "codigo = 17 % 5"
+      ],
+      "mensajeNoLogrado": "El resultado debe ser 2, calculado con % y guardado en una variable llamada codigo."
     },
     {
       "id": "19.3",
       "tipo": "LIBRE",
       "titulo": "Abre la puerta",
-      "enunciado": "Llega a la puerta en (6, 2) con al menos 90 de energía y anúncialo con print(\"Mundo 3\").",
+      "enunciado": "Última prueba: llega a la puerta en (6,2) con al menos 8 de energía y anuncia la apertura con print(\"Mundo 3\"). Cada casilla cuesta 1 y arrancas con 20.",
       "codigoInicial": "",
-      "solucionReferencia": "avance = 6\nrobot1.avanzar(avance)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nprint(\"Mundo 3\")",
+      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(6)\nprint(\"Mundo 3\")",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
@@ -93,19 +88,15 @@
           6,
           2
         ],
-        "energiaMinima": 90
+        "energiaMinima": 8,
+        "outputEsperado": "Mundo 3"
       },
       "retroalimentacion": "¡Puerta abierta! Completaste los Mundos 1 y 2 de CodeQuest.",
       "pistas": [
-        "La ruta más corta gasta menos energía.",
-        "No olvides el print final."
+        "La fila 2 está despejada: baja primero y cruza después.",
+        "No olvides el print(\"Mundo 3\") al final."
       ],
-      "escenario": {
-        "objetivoPosicion": [
-          6,
-          2
-        ]
-      }
+      "mensajeNoLogrado": "Se piden tres cosas: llegar a (6,2), conservar 8 de energía y mostrar \"Mundo 3\"."
     }
   ],
   "escenario": {
@@ -117,7 +108,34 @@
       0
     ],
     "robotDireccion": "este",
-    "energiaInicial": 100,
+    "objetivoPosicion": [
+      6,
+      2
+    ],
+    "obstaculos": [
+      [
+        2,
+        0
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        5,
+        1
+      ]
+    ],
+    "objetos": [
+      {
+        "posicion": [
+          3,
+          0
+        ],
+        "tipo": "llave"
+      }
+    ],
+    "energiaInicial": 20,
     "costoEnergiaPorCasilla": 1
   },
   "estrellas": {

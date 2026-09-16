@@ -1,14 +1,14 @@
 // ejecutor.js
-// El "motor" que conecta al Intérprete con el mundo real (Robot1 + World +
-// Scene). Cada acción del robot se anima y, al terminar, el estado real
-// del robot queda actualizado — por eso robot1.posicion()/mirar()/energia()
-// dentro del código del estudiante siempre leen el estado verdadero, sin
-// necesitar un robot "simulado" aparte (evita duplicar la lógica de
-// movimiento en dos lugares).
+// Motor que conecta al Intérprete con el mundo real (Robot1 + World + Scene).
+//
+// Fuente de verdad única: la posición lógica vive SOLO en robot1.x/y, y el
+// motor la escribe él mismo después de la animación. La escena solo guarda
+// una posición visual interpolada. Antes esto estaba duplicado (la escena
+// animaba y además robot1.avanzar() volvía a mover), lo que aplicaba el
+// movimiento dos veces ante ciertos flujos.
 //
 // También es el punto donde se notifica a los paneles en vivo (Salida,
-// Memoria, Estado) mientras el código se ejecuta — Documento de cambios,
-// sección 8.
+// Memoria, Estado) mientras el código se ejecuta — documento de cambios §8.
 
 import { Errores } from "../interpreter/errors.js";
 import { vectorDireccion } from "./movimiento.js";
@@ -23,6 +23,7 @@ export function snapshotEstado(robot1) {
     direccion: robot1.direccion,
     energia: robot1.energia,
     inventario: [...robot1.inventario],
+    objetivosAlcanzados: [...robot1.objetivosAlcanzados],
   };
 }
 
@@ -31,16 +32,23 @@ export function snapshotEstado(robot1) {
  * @param {import("./scene.js").Scene} opciones.scene
  * @param {import("./world.js").World} opciones.world
  * @param {import("./robot1.js").Robot1} opciones.robot1
- * @param {object} [opciones.callbacks]
- * @param {Array} [opciones.entradasSimuladas] - cola de valores que devuelve entrada()
+ * @param {object} [opciones.callbacks] - onSalida, onAsignacion, onEstado,
+ *   onEntradaPendiente, pedirEntrada
  */
-export function crearMotor({ scene, world, robot1, callbacks = {}, entradasSimuladas = [] }) {
-  const colaEntradas = [...entradasSimuladas];
+export function crearMotor({ scene, world, robot1, callbacks = {} }) {
   const notificarEstado = () => callbacks.onEstado?.(snapshotEstado(robot1));
 
-  // El validador detecta un literal de texto en avanzar("tres"), pero no
-  // una variable que contiene texto (pasos = "3"). Ese caso solo se puede
-  // ver en tiempo de ejecución, cuando la variable ya tiene un valor.
+  // Devuelve la posición visual al estado lógico real (tras un error a
+  // media animación, por ejemplo) para que lo dibujado no mienta.
+  function sincronizarVisual() {
+    scene.visualX = robot1.x;
+    scene.visualY = robot1.y;
+    scene.render();
+  }
+
+  // El validador detecta un literal de texto en avanzar("tres"), pero no una
+  // variable que contiene texto (pasos = "3"). Ese caso solo se puede ver en
+  // tiempo de ejecución, cuando la variable ya tiene un valor.
   function exigirNumero(metodo, valor) {
     if (typeof valor !== "number" || Number.isNaN(valor)) {
       throw Errores.accionNecesitaNumero(metodo, null);
@@ -48,15 +56,51 @@ export function crearMotor({ scene, world, robot1, callbacks = {}, entradasSimul
     return valor;
   }
 
-  async function moverA(destino) {
-    const [dx, dy] = destino;
-    if (!world.dentroDeLimites(dx, dy)) {
-      throw Errores.saleDelLaboratorio();
+  // Al pisar una casilla: recoge recargas de energía y marca objetivos.
+  function alPisar() {
+    const recarga = world.consumirRecargaEn(robot1.x, robot1.y);
+    if (recarga) {
+      robot1.recargar(recarga.cantidad);
+      callbacks.onSalida?.({ tipo: "SISTEMA", valor: `Recarga: +${recarga.cantidad} de energía` });
     }
-    if (world.hayObstaculoEn(dx, dy)) {
-      throw Errores.choqueConObstaculo();
+    if (world.esObjetivo(robot1.x, robot1.y)) {
+      robot1.marcarObjetivo([robot1.x, robot1.y]);
     }
-    await scene.moverAnimado(dx, dy);
+  }
+
+  // Robot1 recorre las casillas una por una: así un obstáculo a mitad de
+  // camino lo detiene, y las recargas y objetivos intermedios se activan
+  // al pisarlos (antes avanzar(6) saltaba de (0,0) a (6,0) sin ver nada).
+  async function desplazar(metodo, n, signo) {
+    exigirNumero(metodo, n);
+    const [vx, vy] = vectorDireccion(robot1.direccion);
+    const pasos = Math.abs(n);
+    const sentido = n < 0 ? -signo : signo;
+
+    // Duración por casilla: recorridos largos no deben eternizarse.
+    const duracion = Math.max(110, Math.min(360, 700 / Math.max(1, pasos)));
+
+    for (let i = 0; i < pasos; i++) {
+      const px = robot1.x + sentido * vx;
+      const py = robot1.y + sentido * vy;
+
+      if (!world.dentroDeLimites(px, py)) {
+        sincronizarVisual();
+        throw Errores.saleDelLaboratorio();
+      }
+      if (world.hayObstaculoEn(px, py)) {
+        sincronizarVisual();
+        throw Errores.choqueConObstaculo();
+      }
+
+      // eslint-disable-next-line no-await-in-loop
+      await scene.moverAnimado(px, py, duracion);
+      robot1.x = px;
+      robot1.y = py;
+      robot1.gastarEnergia(1);
+      alPisar();
+      notificarEstado();
+    }
   }
 
   return {
@@ -66,12 +110,15 @@ export function crearMotor({ scene, world, robot1, callbacks = {}, entradasSimul
     },
 
     async entrada() {
-      if (colaEntradas.length === 0) {
+      // entrada() siempre le pregunta al estudiante. No se rellena con
+      // valores guardados en el nivel: el sentido de la instrucción es que
+      // el dato venga de fuera del programa, escrito por la persona.
+      if (typeof callbacks.pedirEntrada !== "function") {
         throw Errores.entradaNoDisponible();
       }
-      const valor = colaEntradas.shift();
+      callbacks.onEntradaPendiente?.();
+      const valor = await callbacks.pedirEntrada();
       callbacks.onSalida?.({ tipo: "ENTRADA", valor });
-      await esperar(150);
       return valor;
     },
 
@@ -89,21 +136,11 @@ export function crearMotor({ scene, world, robot1, callbacks = {}, entradasSimul
     },
 
     async avanzar(n) {
-      exigirNumero("avanzar", n);
-      const [vx, vy] = vectorDireccion(robot1.direccion);
-      const destino = [robot1.x + vx * n, robot1.y + vy * n];
-      await moverA(destino);
-      robot1.avanzar(n);
-      notificarEstado();
+      await desplazar("avanzar", n, 1);
     },
 
     async retroceder(n) {
-      exigirNumero("retroceder", n);
-      const [vx, vy] = vectorDireccion(robot1.direccion);
-      const destino = [robot1.x - vx * n, robot1.y - vy * n];
-      await moverA(destino);
-      robot1.retroceder(n);
-      notificarEstado();
+      await desplazar("retroceder", n, -1);
     },
 
     async girar(direccion) {
