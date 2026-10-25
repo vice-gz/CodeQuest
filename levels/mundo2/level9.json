@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "Necesito recordar",
   "concepto": "variable, asignación, identificador, literal",
+  "concepto_evaluado": "variables",
   "narrativa": "En la terminal, cada valor que escribías se usaba y se perdía. Robot1 necesita algo más: recordarlo.",
   "fases": [
     {

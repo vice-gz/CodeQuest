@@ -3,7 +3,9 @@
   "mundo": 1,
   "nombre": "La salida",
   "concepto": "integración total",
+  "concepto_evaluado": "integracion_mundo_1",
   "narrativa": "Robot1 encontró la puerta, pero el pasillo se volvió un laberinto.",
+  "narrativaSiguienteMundo": "¡Has escapado de la instalación! Pero al cruzar la puerta, Robot1 se da cuenta de que no recuerda nada. Su memoria se ha borrado. Entra al Mundo 2: Memoria.",
   "ensena": [
     "robot1.recoger()"
   ],

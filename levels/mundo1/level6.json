@@ -3,6 +3,7 @@
   "mundo": 1,
   "nombre": "La terminal",
   "concepto": "entrada(), print()",
+  "concepto_evaluado": "entrada_y_salida",
   "narrativa": "La instalación tiene una terminal. Ahora los datos no los escribe el programa: los escribes tú.",
   "ensena": [
     "entrada()"

@@ -1,0 +1,156 @@
+/* ============================================================
+   CodeQuest — Avance 2: panel de administración
+   ============================================================ */
+
+.pagina-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 24px 56px;
+}
+
+.admin-pestanas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.admin-pestana {
+  padding: 9px 16px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--texto-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.admin-pestana:hover {
+  color: var(--texto);
+  background: var(--panel);
+}
+
+.admin-pestana.activa {
+  color: var(--teal);
+  background: rgba(94, 234, 212, 0.1);
+  border-color: rgba(94, 234, 212, 0.35);
+}
+
+.admin-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--borde-suave);
+}
+
+#vista-lista,
+#vista-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.celda-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.celda-acciones select.campo {
+  width: auto;
+  padding: 5px 8px;
+  font-size: 0.8rem;
+}
+
+.detalle-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detalle-cabecera h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.detalle-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.detalle-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--texto-muted);
+}
+
+.config-campo {
+  max-width: 260px;
+  margin-bottom: 8px;
+}
+
+.estado-lista {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 20px;
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+}
+
+.estado-lista dt {
+  color: var(--texto-muted);
+}
+
+.estado-lista dd {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .pagina-admin {
+    padding: 16px 14px 40px;
+  }
+}
+
+.admin-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.barra-lista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jugar — CodeQuest</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/panels.css" />
+</head>
+<body class="con-nav">
+
+<div id="nav" aria-label="Navegación principal"></div>
+<div class="aviso-red oculto" id="aviso-red" role="status"></div>
+
+<header class="barra-superior">
+  <div class="marca">
+    <span class="marca-icono" aria-hidden="true">◆</span>
+    <span class="marca-texto">CodeQuest</span>
+  </div>
+
+  <nav class="selector-niveles" id="selector-niveles" aria-label="Niveles"></nav>
+
+  <div class="acciones-barra">
+    <button class="boton boton-barra" id="btn-diccionario" type="button" aria-expanded="false" title="Instrucciones aprendidas">
+      Diccionario <span class="dic-contador" id="dic-contador">0/12</span>
+    </button>
+    <button class="boton boton-barra" id="btn-tour" type="button" title="Ver de nuevo el recorrido por la interfaz">Tour</button>
+    <div class="contador-estrellas" id="contador-estrellas-total" title="Estrellas totales">
+      <span class="icono-estrella-mini">★</span>
+      <span id="total-estrellas">0</span>
+      <span class="separador-sutil">/ <span id="total-estrellas-max">57</span></span>
+    </div>
+  </div>
+
+  <aside class="diccionario-panel oculto" id="diccionario-panel" aria-label="Diccionario de instrucciones"></aside>
+</header>
+
+<main class="contenedor-nivel">
+
+  <div class="columna columna-izquierda">
+    <section class="panel panel-aprende" aria-labelledby="titulo-aprende">
+      <div class="panel-encabezado">
+        <h2 id="titulo-aprende">Aprende</h2>
+        <span class="etiqueta-concepto" id="etiqueta-concepto">—</span>
+      </div>
+
+      <nav class="barra-fases" id="barra-fases" aria-label="Fases del nivel"></nav>
+
+      <h1 class="titulo-nivel" id="titulo-nivel">Cargando nivel…</h1>
+      <p class="texto-narrativa" id="texto-narrativa"></p>
+      <p class="texto-aprende" id="texto-aprende"></p>
+      <div class="instrucciones-permitidas">
+        <span class="instrucciones-label">Disponible en esta fase</span>
+        <div class="lista-instrucciones" id="lista-instrucciones"></div>
+      </div>
+    </section>
+
+    <section class="panel panel-codigo" aria-labelledby="titulo-codigo">
+      <div class="panel-encabezado">
+        <h2 id="titulo-codigo">Código</h2>
+        <span class="lenguaje-tag">CQL</span>
+      </div>
+      <div class="editor-envoltura">
+        <div class="numeros-linea" id="numeros-linea"><span>1</span></div>
+        <textarea
+          id="editor-codigo"
+          class="editor-textarea"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="off"
+          placeholder="Escribe tu código aquí…"
+        ></textarea>
+      </div>
+
+      <div class="prediccion-envoltura oculto" id="prediccion-envoltura">
+        <p class="prediccion-enunciado" id="prediccion-enunciado"></p>
+        <div class="prediccion-opciones" id="prediccion-opciones"></div>
+      </div>
+
+      <div class="editor-botones">
+        <button class="boton boton-primario" id="btn-ejecutar" type="button">▶ Ejecutar</button>
+        <button class="boton boton-secundario" id="btn-reiniciar" type="button">↺ Reiniciar fase</button>
+        <button class="boton boton-pista" id="btn-pista" type="button">Pista</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="columna columna-derecha">
+    <section class="panel panel-mundo" aria-labelledby="titulo-mundo">
+      <div class="panel-encabezado">
+        <h2 id="titulo-mundo">Mundo 2D · Laboratorio</h2>
+        <span class="etiqueta-objetivo" id="etiqueta-objetivo"></span>
+      </div>
+      <div class="lienzo-envoltura">
+        <canvas id="lienzo-mundo" aria-label="Escenario donde Robot1 ejecuta las instrucciones"></canvas>
+      </div>
+    </section>
+
+    <section class="panel panel-lateral panel-salida" aria-labelledby="titulo-salida">
+      <div class="panel-encabezado">
+        <h2 id="titulo-salida">Salida</h2>
+      </div>
+      <div class="salida-contenido" id="salida-contenido"></div>
+    </section>
+
+    <section class="panel panel-lateral panel-memoria" aria-labelledby="titulo-memoria">
+      <div class="panel-encabezado">
+        <h2 id="titulo-memoria">Memoria</h2>
+      </div>
+      <div class="memoria-contenido" id="memoria-contenido"></div>
+    </section>
+
+    <section class="panel panel-lateral panel-estado" aria-labelledby="titulo-estado">
+      <div class="panel-encabezado">
+        <h2 id="titulo-estado">Estado de Robot1</h2>
+      </div>
+      <div class="estado-contenido" id="estado-contenido"></div>
+    </section>
+  </div>
+
+</main>
+
+<section class="panel panel-feedback" aria-labelledby="titulo-feedback">
+  <div class="panel-encabezado">
+    <h2 id="titulo-feedback">Retroalimentación</h2>
+    <div class="estrellas-nivel" id="estrellas-nivel"></div>
+  </div>
+  <div class="feedback-panel feedback-neutral" id="feedback-contenido">
+    <p class="feedback-texto">Escribe tu código y presiona ▶ Ejecutar para ver qué hace Robot1.</p>
+  </div>
+</section>
+
+<script type="module" src="js/juego.js"></script>
+</body>
+</html>

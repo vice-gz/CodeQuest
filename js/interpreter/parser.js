@@ -2,6 +2,32 @@
 // Convierte la lista de tokens en un AST siguiendo la gramática del
 // Avance 1 (Documento 3, secciones 2.1 a 2.4).
 
+// ============================================================================
+// AVANCE 3 (Mundos 3 y 4) — lo que hay que añadir AQUÍ
+// ----------------------------------------------------------------------------
+// Tokens nuevos (se definen en lexer.js, TipoToken):
+//   IF, ELSE, ELIF, WHILE, FOR, DEF, RETURN,
+//   IGUAL (==), DISTINTO (!=), MENOR (<), MAYOR (>), MENOR_IGUAL (<=),
+//   MAYOR_IGUAL (>=), AND, OR, NOT, DOS_PUNTOS, INDENTACION
+//   (ojo: hoy ASIGNACION es "=" y no cambia; IGUAL es "==").
+//
+// Cambios previstos en el parser:
+//   1. parsearSentencia() hoy solo conoce Asignacion, LlamadaFuncion y
+//      LlamadaMetodo. Añadir ramas para los tipos de nodo nuevos:
+//        If { condicion, bloque, elifs[], bloqueElse }, While { condicion, bloque },
+//        For { variable, iterable, bloque }, Def { nombre, parametros, bloque },
+//        Return { valor }.
+//   2. Un método parsearBloque() que lea DOS_PUNTOS + NUEVA_LINEA + INDENTACION
+//      y termine cuando baje la sangría (los bloques se definen por indentación,
+//      como en Python; el editor ya inserta 4 espacios con Tab).
+//   3. Expresiones con precedencia: or < and < not < comparaciones < + - < * / %.
+//      Hoy parsearExpresion() solo cubre la aritmética de las sumas/restas/etc.
+//   4. Errores nuevos en errors.js (códigos SYN_*): falta ":", bloque sin sangría,
+//      sangría inconsistente, "else" sin "if", "return" fuera de una función.
+//   5. Actualizar test_niveles.mjs con niveles de los Mundos 3 y 4 y el campo
+//      concepto_evaluado de cada uno (p. ej. "condicionales", "ciclos").
+// ============================================================================
+
 import { TipoToken } from "./lexer.js";
 import { Errores } from "./errors.js";
 

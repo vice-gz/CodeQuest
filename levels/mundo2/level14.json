@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "Información del exterior",
   "concepto": "entrada() devuelve valores variables",
+  "concepto_evaluado": "entrada_con_variables",
   "narrativa": "Los sensores externos envían datos distintos cada vez. El programa debe funcionar igual.",
   "fases": [
     {

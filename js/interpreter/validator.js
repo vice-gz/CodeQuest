@@ -3,6 +3,24 @@
 // que existen, que las instrucciones estén permitidas en la fase actual,
 // y que solo se use como valor lo que realmente devuelve un valor.
 
+// ============================================================================
+// AVANCE 3 (Mundos 3 y 4) — validaciones nuevas que hay que añadir AQUÍ
+// ----------------------------------------------------------------------------
+//   1. validarSentencia(): casos nuevos "If", "While", "For", "Def", "Return".
+//   2. Condiciones: las comparaciones (==, !=, <, >, <=, >=) y los operadores
+//      lógicos (and, or, not) deben recibir valores del tipo correcto
+//      (hoy solo se valida que "los valores existan y sean usables").
+//   3. Alcance de variables: lo asignado dentro de un bloque ¿existe fuera de él?
+//      Decidir la regla (Python: sí, salvo dentro de funciones) y reflejarla en
+//      this.variables, que hoy es un único conjunto global.
+//   4. Funciones definidas por el estudiante: registrar su nombre y número de
+//      parámetros para validar las llamadas (hoy FUNCIONES_CONOCIDAS es fija).
+//   5. "return" solo dentro de "def"; "while" sin cambio posible en la condición
+//      como aviso educativo (posible ciclo infinito).
+//   6. instruccionesPermitidas de cada fase: añadir los nombres nuevos
+//      ("if", "while", "for", "def") junto a "print", "entrada" y "asignacion".
+// ============================================================================
+
 import { Errores } from "./errors.js";
 import { esDireccionValida } from "../game/movimiento.js";
 

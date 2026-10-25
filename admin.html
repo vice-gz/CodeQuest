@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel de administración — CodeQuest</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/perfil.css" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div id="nav" aria-label="Navegación principal"></div>
+
+<main class="pagina-admin">
+  <div class="admin-cabecera">
+    <h1 class="pagina-titulo">Panel de administración</h1>
+    <div class="detalle-acciones">
+      <button class="boton boton-secundario" type="button" id="btn-laboratorio" title="Entorno de práctica: sin estrellas ni progreso">Abrir Laboratorio Libre</button>
+      <button class="boton boton-secundario" type="button" id="btn-demo" title="Abre el juego en otra pestaña sin tocar la base de datos">Probar el juego (Modo Demo)</button>
+    </div>
+  </div>
+
+  <p class="mensaje-form mensaje-error oculto" id="admin-aviso" role="alert"></p>
+
+  <nav class="admin-pestanas" role="tablist" aria-label="Secciones del panel">
+    <button type="button" role="tab" class="admin-pestana activa" data-seccion="resumen" aria-selected="true">Resumen</button>
+    <button type="button" role="tab" class="admin-pestana" data-seccion="usuarios" aria-selected="false">Usuarios</button>
+    <button type="button" role="tab" class="admin-pestana" data-seccion="ejecuciones" aria-selected="false">Ejecuciones</button>
+    <button type="button" role="tab" class="admin-pestana" data-seccion="auditoria" aria-selected="false">Auditoría</button>
+    <button type="button" role="tab" class="admin-pestana" data-seccion="config" aria-selected="false">Configuración</button>
+  </nav>
+
+  <!-- Resumen general -->
+  <section id="seccion-resumen" class="admin-seccion">
+    <div class="datos-rejilla" id="resumen-tarjetas"><p class="texto-vacio">Cargando…</p></div>
+    <div class="graficos" id="resumen-graficos"></div>
+  </section>
+
+  <!-- Usuarios -->
+  <section id="seccion-usuarios" class="admin-seccion oculto">
+    <div id="vista-lista">
+      <form class="filtros" id="filtros-usuarios" onsubmit="return false">
+        <label class="etiqueta-campo">Buscar
+          <input class="campo" type="search" id="f-busqueda" placeholder="Nombre o email" />
+        </label>
+        <label class="etiqueta-campo">Rol
+          <select class="campo" id="f-rol">
+            <option value="">Todos</option>
+            <option value="estudiante">Alumno</option>
+            <option value="profesor">Profesor</option>
+            <option value="admin">Admin</option>
+            <option value="super_root">Super Root</option>
+          </select>
+        </label>
+        <label class="etiqueta-campo">Mundo actual
+          <select class="campo" id="f-mundo"><option value="">Todos</option></select>
+        </label>
+        <label class="etiqueta-campo">Actividad
+          <select class="campo" id="f-actividad">
+            <option value="">Cualquiera</option>
+            <option value="7">Últimos 7 días</option>
+            <option value="0">Inactivos (más de 7 días)</option>
+          </select>
+        </label>
+      </form>
+      <div class="barra-lista">
+        <p class="texto-vacio" id="usuarios-conteo"></p>
+        <button class="boton boton-secundario boton-chico" type="button" id="btn-exportar">Exportar a CSV</button>
+      </div>
+      <div id="tabla-usuarios"></div>
+    </div>
+
+    <div id="vista-detalle" class="oculto"></div>
+  </section>
+
+  <!-- Ejecuciones -->
+  <section id="seccion-ejecuciones" class="admin-seccion oculto">
+    <form class="filtros" id="filtros-ejecuciones" onsubmit="return false">
+      <label class="etiqueta-campo">Usuario
+        <select class="campo" id="e-usuario"><option value="">Todos</option></select>
+      </label>
+      <label class="etiqueta-campo">Mundo
+        <select class="campo" id="e-mundo"><option value="">Todos</option></select>
+      </label>
+      <label class="etiqueta-campo">Nivel
+        <select class="campo" id="e-nivel"><option value="">Todos</option></select>
+      </label>
+      <label class="etiqueta-campo">Fase
+        <select class="campo" id="e-fase"><option value="">Todas</option></select>
+      </label>
+      <label class="etiqueta-campo">Resultado
+        <select class="campo" id="e-resultado">
+          <option value="">Todos</option>
+          <option value="exito">Éxito</option>
+          <option value="error">Error</option>
+          <option value="objetivo_no_alcanzado">Objetivo no alcanzado</option>
+        </select>
+      </label>
+      <label class="etiqueta-campo">Código de error
+        <select class="campo" id="e-codigo"><option value="">Todos</option></select>
+      </label>
+      <label class="etiqueta-campo">Concepto evaluado
+        <select class="campo" id="e-concepto"><option value="">Todos</option></select>
+      </label>
+    </form>
+    <div id="tabla-ejecuciones"><p class="texto-vacio">Cargando…</p></div>
+    <div class="paginacion" id="paginacion-ejecuciones"></div>
+  </section>
+
+  <!-- Auditoría -->
+  <section id="seccion-auditoria" class="admin-seccion oculto">
+    <div class="barra-lista">
+      <p class="texto-vacio">Últimas 50 acciones de administración. No se pueden editar ni borrar desde la web.</p>
+      <button class="boton boton-secundario boton-chico" type="button" id="btn-recargar-auditoria">Actualizar</button>
+    </div>
+    <div id="tabla-auditoria"></div>
+  </section>
+
+  <!-- Configuración -->
+  <section id="seccion-config" class="admin-seccion oculto">
+    <div class="panel">
+      <div class="panel-encabezado"><h2>Preferencias del panel</h2></div>
+      <label class="etiqueta-campo config-campo">Filas por página en Ejecuciones
+        <select class="campo" id="c-tamano">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </label>
+      <p class="texto-vacio">Se guarda solo en este navegador.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-encabezado"><h2>Estado del sistema</h2></div>
+      <div id="config-estado"></div>
+      <button class="boton boton-secundario" type="button" id="btn-recargar">Recargar todos los datos</button>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

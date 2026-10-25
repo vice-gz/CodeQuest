@@ -3,136 +3,151 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CodeQuest — Aprende Programando</title>
+<title>CodeQuest — Aprende programando con Robot1</title>
+<meta name="description" content="CodeQuest: un juego educativo donde aprendes a programar resolviendo retos con Robot1." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="css/styles.css" />
-<link rel="stylesheet" href="css/panels.css" />
+<link rel="stylesheet" href="css/landing.css" />
 </head>
-<body>
+<body class="pagina-landing">
 
-<header class="barra-superior">
-  <div class="marca">
-    <span class="marca-icono" aria-hidden="true">◆</span>
-    <span class="marca-texto">CodeQuest</span>
-  </div>
-
-  <nav class="selector-niveles" id="selector-niveles" aria-label="Niveles"></nav>
-
-  <div class="acciones-barra">
-    <button class="boton boton-barra" id="btn-diccionario" type="button" aria-expanded="false" title="Instrucciones aprendidas">
-      Diccionario <span class="dic-contador" id="dic-contador">0/12</span>
-    </button>
-    <button class="boton boton-barra" id="btn-tour" type="button" title="Ver de nuevo el recorrido por la interfaz">Tour</button>
-    <button class="boton boton-barra" id="btn-demo" type="button" title="Acceso para revisar todos los niveles">Demo</button>
-    <div class="contador-estrellas" id="contador-estrellas-total" title="Estrellas totales">
-      <span class="icono-estrella-mini">★</span>
-      <span id="total-estrellas">0</span>
-      <span class="separador-sutil">/ <span id="total-estrellas-max">57</span></span>
-    </div>
-  </div>
-
-  <aside class="diccionario-panel oculto" id="diccionario-panel" aria-label="Diccionario de instrucciones"></aside>
+<header class="landing-nav">
+  <a class="nav-logo" href="#inicio"><span aria-hidden="true">◆</span> CodeQuest</a>
+  <nav class="landing-enlaces" aria-label="Secciones">
+    <a href="#que-es">¿Qué es?</a>
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#mundos">Mundos</a>
+    <a href="#proyecto">Proyecto</a>
+    <a href="auth.html" class="boton boton-primario boton-chico">Iniciar sesión</a>
+  </nav>
 </header>
 
-<main class="contenedor-nivel">
+<main>
 
-  <div class="columna columna-izquierda">
-    <section class="panel panel-aprende" aria-labelledby="titulo-aprende">
-      <div class="panel-encabezado">
-        <h2 id="titulo-aprende">Aprende</h2>
-        <span class="etiqueta-concepto" id="etiqueta-concepto">—</span>
-      </div>
+  <!-- 1. Hero -->
+  <section class="hero" id="inicio">
+    <p class="hero-etiqueta">Aprende Programando</p>
+    <h1>CodeQuest</h1>
+    <p class="hero-subtitulo">Aprende a programar resolviendo retos con Robot1</p>
+    <div class="hero-botones">
+      <a class="boton boton-primario boton-grande" href="auth.html?modo=registro">Empezar a jugar</a>
+      <a class="boton boton-secundario boton-grande" href="auth.html">Iniciar sesión</a>
+    </div>
+    <pre class="hero-codigo" aria-hidden="true"><span class="c-var">robot1</span>.<span class="c-fn">avanzar</span>(<span class="c-num">3</span>)
+<span class="c-fn">print</span>(<span class="c-txt">"Robot1 listo"</span>)</pre>
+  </section>
 
-      <nav class="barra-fases" id="barra-fases" aria-label="Fases del nivel"></nav>
+  <!-- 2. ¿Qué es CodeQuest? -->
+  <section class="seccion" id="que-es">
+    <h2>¿Qué es CodeQuest?</h2>
+    <p class="seccion-intro">
+      CodeQuest es un videojuego didáctico para quienes nunca han programado. Escribes instrucciones
+      en <strong>CQL</strong> (un lenguaje sencillo, muy parecido a Python) y ves cómo
+      <strong>Robot1</strong> las ejecuta en un laboratorio 2D. Si te equivocas, el juego te explica qué pasó
+      y cómo corregirlo.
+    </p>
+    <div class="rejilla-tres">
+      <article class="tarjeta">
+        <h3>Aprendes haciendo</h3>
+        <p>Cada nivel se divide en fases: explorar, modificar, predecir, escribir y depurar código.</p>
+      </article>
+      <article class="tarjeta">
+        <h3>Errores que enseñan</h3>
+        <p>Los mensajes de error están pensados para estudiantes: dicen qué falló y cómo arreglarlo.</p>
+      </article>
+      <article class="tarjeta">
+        <h3>Tu progreso se guarda</h3>
+        <p>Estrellas, niveles y fases quedan en tu cuenta para que continúes desde cualquier dispositivo.</p>
+      </article>
+    </div>
+  </section>
 
-      <h1 class="titulo-nivel" id="titulo-nivel">Cargando nivel…</h1>
-      <p class="texto-narrativa" id="texto-narrativa"></p>
-      <p class="texto-aprende" id="texto-aprende"></p>
-      <div class="instrucciones-permitidas">
-        <span class="instrucciones-label">Disponible en esta fase</span>
-        <div class="lista-instrucciones" id="lista-instrucciones"></div>
-      </div>
-    </section>
+  <!-- 3. ¿Cómo funciona? -->
+  <section class="seccion" id="como-funciona">
+    <h2>¿Cómo funciona?</h2>
+    <ol class="pasos">
+      <li class="paso">
+        <span class="paso-numero">1</span>
+        <h3>Aprender</h3>
+        <p>Lee la misión del nivel y descubre una idea nueva de programación.</p>
+      </li>
+      <li class="paso">
+        <span class="paso-numero">2</span>
+        <h3>Programar</h3>
+        <p>Escribe tu código en el editor usando solo las instrucciones que ya conoces.</p>
+      </li>
+      <li class="paso">
+        <span class="paso-numero">3</span>
+        <h3>Ejecutar</h3>
+        <p>Pulsa ▶ Ejecutar y observa a Robot1, la memoria y la salida en vivo.</p>
+      </li>
+    </ol>
+  </section>
 
-    <section class="panel panel-codigo" aria-labelledby="titulo-codigo">
-      <div class="panel-encabezado">
-        <h2 id="titulo-codigo">Código</h2>
-        <span class="lenguaje-tag">CQL</span>
-      </div>
-      <div class="editor-envoltura">
-        <div class="numeros-linea" id="numeros-linea"><span>1</span></div>
-        <textarea
-          id="editor-codigo"
-          class="editor-textarea"
-          spellcheck="false"
-          autocapitalize="off"
-          autocomplete="off"
-          placeholder="Escribe tu código aquí…"
-        ></textarea>
-      </div>
+  <!-- 4. Mundos -->
+  <section class="seccion" id="mundos">
+    <h2>Los mundos</h2>
+    <p class="seccion-intro">Dos mundos ya están disponibles. Los demás llegarán en próximos avances.</p>
+    <div class="rejilla-mundos" id="rejilla-mundos"></div>
+  </section>
 
-      <div class="prediccion-envoltura oculto" id="prediccion-envoltura">
-        <p class="prediccion-enunciado" id="prediccion-enunciado"></p>
-        <div class="prediccion-opciones" id="prediccion-opciones"></div>
-      </div>
+  <!-- 5. Sobre el proyecto -->
+  <section class="seccion" id="proyecto">
+    <h2>Sobre el proyecto</h2>
+    <div class="proyecto-datos">
+      <dl>
+        <dt>Proyecto</dt>
+        <dd>CodeQuest: Aprende Programando</dd>
+        <dt>Propósito</dt>
+        <dd>Enseñar fundamentos de programación a estudiantes principiantes mediante un videojuego educativo.</dd>
+        <dt>Institución</dt>
+        <dd><!-- EDITAR: nombre de tu institución -->Tecnológico Nacional de México campus Pachuca (TecNM Pachuca)</dd>
+        <dt>Autores</dt>
+        <dd><!-- EDITAR: autores del proyecto -->[Nombre del autor o autores]</dd>
+        <dt>Asesor/a</dt>
+        <dd><!-- EDITAR: asesor/a -->[Nombre del asesor/a]</dd>
+        <dt>Tecnologías</dt>
+        <dd class="chips">
+          <span class="chip-instruccion">HTML</span>
+          <span class="chip-instruccion">CSS</span>
+          <span class="chip-instruccion">JavaScript</span>
+          <span class="chip-instruccion">Canvas 2D</span>
+          <span class="chip-instruccion">Supabase</span>
+        </dd>
+      </dl>
+    </div>
+  </section>
 
-      <div class="editor-botones">
-        <button class="boton boton-primario" id="btn-ejecutar" type="button">▶ Ejecutar</button>
-        <button class="boton boton-secundario" id="btn-reiniciar" type="button">↺ Reiniciar fase</button>
-        <button class="boton boton-pista" id="btn-pista" type="button">Pista</button>
-      </div>
-    </section>
-  </div>
-
-  <div class="columna columna-derecha">
-    <section class="panel panel-mundo" aria-labelledby="titulo-mundo">
-      <div class="panel-encabezado">
-        <h2 id="titulo-mundo">Mundo 2D · Laboratorio</h2>
-        <span class="etiqueta-objetivo" id="etiqueta-objetivo"></span>
-      </div>
-      <div class="lienzo-envoltura">
-        <canvas id="lienzo-mundo" aria-label="Escenario donde Robot1 ejecuta las instrucciones"></canvas>
-      </div>
-    </section>
-
-    <section class="panel panel-lateral panel-salida" aria-labelledby="titulo-salida">
-      <div class="panel-encabezado">
-        <h2 id="titulo-salida">Salida</h2>
-      </div>
-      <div class="salida-contenido" id="salida-contenido"></div>
-    </section>
-
-    <section class="panel panel-lateral panel-memoria" aria-labelledby="titulo-memoria">
-      <div class="panel-encabezado">
-        <h2 id="titulo-memoria">Memoria</h2>
-      </div>
-      <div class="memoria-contenido" id="memoria-contenido"></div>
-    </section>
-
-    <section class="panel panel-lateral panel-estado" aria-labelledby="titulo-estado">
-      <div class="panel-encabezado">
-        <h2 id="titulo-estado">Estado de Robot1</h2>
-      </div>
-      <div class="estado-contenido" id="estado-contenido"></div>
-    </section>
-  </div>
-
+  <!-- Llamada final -->
+  <section class="seccion seccion-cta">
+    <h2>¿Listo para programar con Robot1?</h2>
+    <div class="hero-botones">
+      <a class="boton boton-primario boton-grande" href="auth.html?modo=registro">Empezar a jugar</a>
+      <a class="boton boton-secundario boton-grande" href="auth.html">Iniciar sesión</a>
+    </div>
+  </section>
 </main>
 
-<section class="panel panel-feedback" aria-labelledby="titulo-feedback">
-  <div class="panel-encabezado">
-    <h2 id="titulo-feedback">Retroalimentación</h2>
-    <div class="estrellas-nivel" id="estrellas-nivel"></div>
+<footer class="landing-pie">
+  <div class="pie-bloque">
+    <strong>CodeQuest · Aprende Programando</strong>
+    <span>Proyecto educativo para enseñar fundamentos de programación a estudiantes principiantes.</span>
+    <span><!-- EDITAR: autores -->Autores: [Nombre del autor o autores] · Asesor/a: [Nombre del asesor/a]</span>
+    <span>Tecnológico Nacional de México campus Pachuca (TecNM Pachuca)</span>
   </div>
-  <div class="feedback-panel feedback-neutral" id="feedback-contenido">
-    <p class="feedback-texto">Escribe tu código y presiona ▶ Ejecutar para ver qué hace Robot1.</p>
-  </div>
-</section>
+  <nav aria-label="Pie de página">
+    <a href="#que-es">¿Qué es?</a>
+    <a href="#mundos">Mundos</a>
+    <a href="#proyecto">Proyecto</a>
+    <a href="auth.html">Acceder</a>
+  </nav>
+  <small>© <span id="anio"></span> CodeQuest.</small>
+</footer>
 
-<script type="module" src="js/main.js"></script>
+<script type="module" src="js/landing.js"></script>
 </body>
 </html>

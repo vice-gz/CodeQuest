@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "El identificador incorrecto",
   "concepto": "identificadores, lectura de código",
+  "concepto_evaluado": "identificadores",
   "narrativa": "Un error de nombre basta para que Robot1 no entienda nada. Hay que leer con cuidado.",
   "fases": [
     {

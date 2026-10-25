@@ -3,7 +3,9 @@
   "mundo": 2,
   "nombre": "La puerta del Mundo 3",
   "concepto": "integración total",
+  "concepto_evaluado": "integracion_mundo_2",
   "narrativa": "La puerta al Mundo 3 está cerrada. Robot1 necesita la llave, el código y energía suficiente.",
+  "narrativaSiguienteMundo": "¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. (Próximamente en el Avance 3).",
   "fases": [
     {
       "id": "19.1",

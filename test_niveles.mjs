@@ -12,6 +12,7 @@ import { Interpreter } from "./js/interpreter/interpreter.js";
 import { World } from "./js/game/world.js";
 import { Robot1 } from "./js/game/robot1.js";
 import { crearMotor, snapshotEstado } from "./js/game/ejecutor.js";
+import { NIVEL_SANDBOX } from "./js/game/sandbox.js";
 
 // Escena nula: no dibuja nada y resuelve las animaciones al instante.
 class SceneNula {
@@ -202,6 +203,55 @@ for (let id = 1; id <= TOTAL_NIVELES; id++) {
         fallos++;
       }
     }
+  }
+}
+
+
+// ---------- Estructura de los niveles (Avance 2.3) ----------
+const ULTIMO_DE_MUNDO = { 8: 1, 19: 2 };
+for (let id = 1; id <= TOTAL_NIVELES; id++) {
+  const nivel = JSON.parse(readFileSync(`levels/mundo${mundoDeNivel(id)}/level${id}.json`, "utf8"));
+  if (!/^[a-z0-9_]+$/.test(nivel.concepto_evaluado || "")) {
+    console.log(`✗ nivel ${id}: falta concepto_evaluado (snake_case)`);
+    fallos++;
+  }
+  const debeTenerNarrativa = id in ULTIMO_DE_MUNDO;
+  const tiene = typeof nivel.narrativaSiguienteMundo === "string" && nivel.narrativaSiguienteMundo.length > 20;
+  if (debeTenerNarrativa !== tiene) {
+    console.log(`✗ nivel ${id}: narrativaSiguienteMundo ${debeTenerNarrativa ? "falta" : "sobra (solo va en el último nivel de cada mundo)"}`);
+    fallos++;
+  }
+}
+
+// ---------- Laboratorio Libre: un programa con de todo corre sin validación ----------
+{
+  const nivel = NIVEL_SANDBOX;
+  const fase = {
+    ...nivel.fases[0],
+    codigoInicial: [
+      "x = entrada()",
+      "robot1.avanzar(9)",
+      "robot1.girar(\"sur\")",
+      "robot1.avanzar(9)",
+      "robot1.hablar(\"hola\")",
+      "print(robot1.posicion())",
+      "print(robot1.energia())",
+      "robot1.soltar()",
+      "print(robot1.mirar())",
+      "print(x)",
+    ].join("\n"),
+    entradasEstudiante: ["42"],
+  };
+  fase.solucionReferencia = fase.codigoInicial;
+  try {
+    const r = await correrFase(nivel, fase);
+    const [x, y] = r.robot1.posicion();
+    if (x !== 9 || y !== 9) throw new Error(`Robot1 debía terminar en (9,9) y está en (${x},${y})`);
+    if (!r.salidas.some((s) => String(s.valor) === "42")) throw new Error("falta la salida de entrada()");
+    console.log("✓ Laboratorio Libre: cuadrícula 10×10 y todas las instrucciones funcionan");
+  } catch (e) {
+    console.log(`✗ Laboratorio Libre: ${e.codigo || ""} ${e.mensaje || e.message}`);
+    fallos++;
   }
 }
 

@@ -1,10 +1,10 @@
 # Documentación de referencia
 
-Este proyecto se construyó siguiendo tres documentos de especificación:
+Guarda aquí las versiones `.md` de los documentos de especificación:
 
-1. **Especificación Funcional** — qué se construye (niveles, interfaz, estrellas).
-2. **Arquitectura y Tecnologías** — cómo se construye (stack, pipeline del intérprete, persistencia).
-3. **Lenguaje CQL** — el lenguaje del estudiante (gramática, tokens, errores).
+1. `01_Especificacion_Funcional.md`
+2. `02_Arquitectura_y_Tecnologias.md`
+3. `03_Lenguaje_CQL.md`
+4. `04_Mundos_y_Niveles.md`
 
-Guarda aquí las versiones `.md` de esos tres documentos si quieres tenerlas
-junto al código fuente.
+La documentación del Avance 1 está en `README_avance1.md`.

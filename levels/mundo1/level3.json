@@ -3,6 +3,7 @@
   "mundo": 1,
   "nombre": "Haz que me entienda",
   "concepto": "instrucciones disponibles, llamadas a métodos, sintaxis",
+  "concepto_evaluado": "llamadas_a_metodos",
   "narrativa": "Robot1 revela el resto de instrucciones que entiende: hablar y girar.",
   "ensena": [
     "robot1.hablar(\"texto\")",

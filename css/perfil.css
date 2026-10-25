@@ -1,0 +1,286 @@
+/* ============================================================
+   CodeQuest — Avance 2: perfil de usuario
+   (también lo usa el detalle de usuario del panel de admin)
+   ============================================================ */
+
+.pagina-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 24px 56px;
+}
+
+.pagina-titulo {
+  margin: 8px 0 0;
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
+}
+
+.texto-ambar { color: var(--ambar); }
+
+.texto-vacio {
+  margin: 0;
+  color: var(--texto-muted);
+  font-size: 0.92rem;
+}
+
+/* ---------- Datos del usuario ---------- */
+
+.datos-usuario {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px 24px;
+  margin: 0;
+}
+
+.datos-usuario dt {
+  font-size: 0.75rem;
+  color: var(--texto-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.datos-usuario dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Tarjetas de datos ---------- */
+
+.datos-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.dato-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--panel-alt);
+  border: 1px solid var(--borde-suave);
+}
+
+.dato-titulo {
+  font-size: 0.74rem;
+  color: var(--texto-muted);
+}
+
+.dato-valor {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dato-detalle {
+  font-size: 0.75rem;
+  color: var(--texto-muted);
+}
+
+/* ---------- Progreso por mundo ---------- */
+
+.mundos-progreso {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.mundo-progreso {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--panel-alt);
+  border: 1px solid var(--borde-suave);
+}
+
+.mundo-progreso header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mundo-progreso h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.barra-progreso {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--bg-elevado);
+  overflow: hidden;
+}
+
+.barra-progreso span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal-oscuro), var(--teal));
+}
+
+.mundo-progreso-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  color: var(--texto-muted);
+}
+
+/* ---------- Gráficos de barras (HTML/CSS, sin librerías) ---------- */
+
+.graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.grafico {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--panel-alt);
+  border: 1px solid var(--borde-suave);
+}
+
+.grafico h3 {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: var(--texto-muted);
+  font-weight: 600;
+}
+
+.barras {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barras li {
+  display: grid;
+  grid-template-columns: minmax(70px, 38%) 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.barra-etiqueta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barra-pista {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--bg-elevado);
+  overflow: hidden;
+}
+
+.barra-relleno {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ambar);
+}
+
+.barra-valor {
+  font-family: var(--fuente-mono);
+  color: var(--texto-muted);
+}
+
+.barras .barra-vacio {
+  display: block;
+  color: var(--texto-muted);
+}
+
+/* ---------- Acciones ---------- */
+
+.acciones-perfil {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.form-linea {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.form-linea h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.form-linea .etiqueta-campo {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .pagina-perfil {
+    padding: 16px 14px 40px;
+  }
+}
+
+/* ---------- Clases y zona de peligro ---------- */
+
+.lista-clases {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.lista-clases li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--panel-alt);
+  border: 1px solid var(--borde-suave);
+}
+
+.form-unirme {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.form-unirme .etiqueta-campo {
+  flex: 1;
+  min-width: 200px;
+}
+
+.zona-peligro {
+  border-color: rgba(255, 107, 107, 0.55);
+  background: linear-gradient(160deg, rgba(255, 107, 107, 0.07), var(--panel) 55%);
+}
+
+.zona-peligro .panel-encabezado h2 {
+  color: var(--peligro);
+}
+
+.zona-peligro h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.zona-peligro p {
+  margin: 0 0 14px;
+  color: var(--texto-muted);
+  font-size: 0.92rem;
+}

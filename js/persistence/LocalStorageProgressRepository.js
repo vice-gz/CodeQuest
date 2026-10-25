@@ -46,9 +46,22 @@ function estadoFaseVacio() {
 }
 
 export class LocalStorageProgressRepository extends ProgressRepository {
+  // La clave es configurable para guardar un espejo por usuario
+  // (el repositorio de Supabase usa codequest:progreso:v2:<user_id>).
+  constructor(clave = CLAVE, almacen = globalThis.localStorage) {
+    super();
+    this.clave = clave;
+    this.almacen = almacen;
+  }
+
+  // Lectura rápida del estado actual (la usa la UI en cualquier momento).
+  obtenerProgreso() {
+    return this.cargarProgreso();
+  }
+
   guardarProgreso(progreso) {
     try {
-      localStorage.setItem(CLAVE, JSON.stringify(progreso));
+      this.almacen.setItem(this.clave, JSON.stringify(progreso));
       return true;
     } catch (e) {
       console.error("No se pudo guardar el progreso en localStorage", e);
@@ -58,7 +71,7 @@ export class LocalStorageProgressRepository extends ProgressRepository {
 
   cargarProgreso() {
     try {
-      const crudo = localStorage.getItem(CLAVE);
+      const crudo = this.almacen.getItem(this.clave);
       if (!crudo) return progresoPorDefecto();
       const datos = JSON.parse(crudo);
       return mergeProfundo(progresoPorDefecto(), datos);

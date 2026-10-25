@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mi perfil — CodeQuest</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/perfil.css" />
+</head>
+<body>
+
+<div id="nav" aria-label="Navegación principal"></div>
+
+<main class="pagina-perfil">
+  <h1 class="pagina-titulo">Mi perfil</h1>
+  <p class="mensaje-form mensaje-error oculto" id="perfil-error" role="alert"></p>
+
+  <section class="panel" aria-labelledby="t-datos">
+    <div class="panel-encabezado"><h2 id="t-datos">Datos del usuario</h2></div>
+    <dl class="datos-usuario" id="datos-usuario"></dl>
+  </section>
+
+  <section class="panel oculto" id="seccion-clases" aria-labelledby="t-clases">
+    <div class="panel-encabezado"><h2 id="t-clases">Mi clase</h2></div>
+    <div id="lista-clases"><p class="texto-vacio">Cargando…</p></div>
+    <form id="form-unirme" class="form-unirme" novalidate>
+      <label class="etiqueta-campo">Código de clase
+        <input class="campo mono" type="text" id="campo-codigo" maxlength="12" autocomplete="off" placeholder="Ej. K7P3XQ" />
+      </label>
+      <button class="boton boton-secundario" type="submit" id="btn-unirme">Unirme a una clase</button>
+    </form>
+  </section>
+
+  <section class="panel" aria-labelledby="t-general">
+    <div class="panel-encabezado"><h2 id="t-general">Progreso general</h2></div>
+    <div id="progreso-general"><p class="texto-vacio">Cargando…</p></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-mundos">
+    <div class="panel-encabezado"><h2 id="t-mundos">Progreso por mundo</h2></div>
+    <div class="mundos-progreso" id="progreso-mundos"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-graficos">
+    <div class="panel-encabezado"><h2 id="t-graficos">Estadísticas</h2></div>
+    <div class="graficos" id="graficos"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-niveles">
+    <div class="panel-encabezado"><h2 id="t-niveles">Progreso por nivel</h2></div>
+    <div id="progreso-niveles"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-ejecuciones">
+    <div class="panel-encabezado"><h2 id="t-ejecuciones">Últimas ejecuciones</h2></div>
+    <div id="ultimas-ejecuciones"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="t-acciones">
+    <div class="panel-encabezado"><h2 id="t-acciones">Acciones</h2></div>
+    <div class="acciones-perfil">
+      <form id="form-nombre" class="form-linea" novalidate>
+        <h3>Cambiar nombre</h3>
+        <label class="etiqueta-campo">Nombre
+          <input class="campo" type="text" id="campo-nombre" maxlength="60" autocomplete="name" required />
+        </label>
+        <button class="boton boton-secundario" type="submit" id="btn-nombre">Guardar nombre</button>
+      </form>
+
+      <form id="form-password" class="form-linea" novalidate>
+        <h3>Cambiar contraseña</h3>
+        <label class="etiqueta-campo">Nueva contraseña (mínimo 8 caracteres)
+          <input class="campo" type="password" id="campo-password" autocomplete="new-password" minlength="8" required />
+        </label>
+        <label class="etiqueta-campo">Confirmar contraseña
+          <input class="campo" type="password" id="campo-confirmacion" autocomplete="new-password" required />
+        </label>
+        <button class="boton boton-secundario" type="submit" id="btn-password">Cambiar contraseña</button>
+      </form>
+
+      <div class="form-linea">
+        <h3>Sesión</h3>
+        <p class="texto-vacio">Cierra la sesión en este dispositivo.</p>
+        <button class="boton boton-peligro" type="button" id="btn-salir">Cerrar sesión</button>
+      </div>
+    </div>
+  </section>
+  <section class="panel zona-peligro" id="zona-peligro" aria-labelledby="t-peligro">
+    <div class="panel-encabezado"><h2 id="t-peligro">Zona de peligro</h2></div>
+    <h3>Borrar mi progreso</h3>
+    <p>Esta acción eliminará todas tus estrellas, niveles y ejecuciones. No se puede deshacer.</p>
+    <button class="boton boton-peligro" type="button" id="btn-borrar-progreso">Borrar todo mi progreso</button>
+  </section>
+</main>
+
+<script type="module" src="js/perfil.js"></script>
+</body>
+</html>

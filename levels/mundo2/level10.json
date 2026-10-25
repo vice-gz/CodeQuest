@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "Cambia de opinión",
   "concepto": "reasignación, estado",
+  "concepto_evaluado": "reasignacion",
   "narrativa": "Robot1 despierta de nuevo. Sus planes cambian a mitad de camino.",
   "fases": [
     {

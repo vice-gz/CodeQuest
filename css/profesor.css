@@ -1,0 +1,77 @@
+/* ============================================================
+   CodeQuest — Avance 2.2: página del profesor
+   ============================================================ */
+
+.profesor-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.rejilla-clases {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.tarjeta-clase {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--borde-suave);
+}
+
+.tarjeta-clase h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.tarjeta-clase p {
+  margin: 0;
+}
+
+.codigo-clase {
+  font-family: var(--fuente-mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--teal);
+}
+
+.codigo-inline {
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+}
+
+#vista-clases,
+#vista-clase {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- Alertas tempranas ---------- */
+
+.estado-alumno {
+  min-width: 56px;
+}
+
+.estado-riesgo small {
+  display: block;
+  max-width: 220px;
+  white-space: normal;
+  color: var(--texto-muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.fila-riesgo {
+  background: rgba(255, 184, 77, 0.06);
+}

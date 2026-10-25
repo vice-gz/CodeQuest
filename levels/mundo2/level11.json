@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "No todo es lo mismo",
   "concepto": "entero, decimal, texto",
+  "concepto_evaluado": "tipos_de_datos",
   "narrativa": "Robot1 descubre que la información viene en formas distintas, y no todas se usan igual.",
   "fases": [
     {

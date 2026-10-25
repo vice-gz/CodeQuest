@@ -3,6 +3,7 @@
   "mundo": 1,
   "nombre": "¿Cuánto?",
   "concepto": "parámetros, argumentos, literales numéricos",
+  "concepto_evaluado": "parametros",
   "narrativa": "El valor entre paréntesis es lo que hace que una misma instrucción sirva para muchas cosas.",
   "ensena": [
     "robot1.retroceder(n)"

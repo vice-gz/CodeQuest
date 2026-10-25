@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "El sistema de energía",
   "concepto": "constantes vs variables",
+  "concepto_evaluado": "constantes_vs_variables",
   "narrativa": "El sistema eléctrico tiene valores fijos y valores que cambian. Confundirlos sale caro.",
   "fases": [
     {

@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "El puente",
   "concepto": "aplicar todo sin que se diga qué usar",
+  "concepto_evaluado": "integracion_libre",
   "narrativa": "Un puente estrecho separa a Robot1 del Mundo 3. Nadie le dirá cómo cruzarlo.",
   "fases": [
     {

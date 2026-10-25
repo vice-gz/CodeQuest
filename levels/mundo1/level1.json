@@ -3,6 +3,7 @@
   "mundo": 1,
   "nombre": "Despertar",
   "concepto": "programa, instrucción, ejecución, salida",
+  "concepto_evaluado": "instrucciones",
   "narrativa": "Robot1 está apagado en una instalación desconocida. El jugador ejecuta su primer programa.",
   "fases": [
     {

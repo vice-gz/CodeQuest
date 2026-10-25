@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mis clases — CodeQuest</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/perfil.css" />
+<link rel="stylesheet" href="css/profesor.css" />
+</head>
+<body>
+
+<div id="nav" aria-label="Navegación principal"></div>
+
+<main class="pagina-perfil">
+  <div id="vista-clases">
+    <div class="profesor-cabecera">
+      <h1 class="pagina-titulo">Mis clases</h1>
+      <button class="boton boton-primario" type="button" id="btn-crear-clase">+ Crear clase</button>
+    </div>
+    <p class="texto-vacio">Comparte el código de una clase con tus alumnos: lo escriben al registrarse o en su perfil.</p>
+    <p class="mensaje-form mensaje-error oculto" id="profesor-error" role="alert"></p>
+    <div class="rejilla-clases" id="rejilla-clases"><p class="texto-vacio">Cargando…</p></div>
+  </div>
+
+  <div id="vista-clase" class="oculto"></div>
+</main>
+
+<script type="module" src="js/profesor.js"></script>
+</body>
+</html>

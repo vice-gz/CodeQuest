@@ -419,3 +419,101 @@
   border-radius: 6px;
   padding: 3px 7px;
 }
+
+/* ============================================================
+   Avance 2.3 — Transición entre mundos y Laboratorio Libre
+   ============================================================ */
+
+body.sin-scroll {
+  overflow: hidden;
+}
+
+.transicion-mundo {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(94, 234, 212, 0.18), transparent 60%),
+    linear-gradient(180deg, #060914 0%, #0b1030 55%, #05060f 100%);
+  animation: transicion-entrada 0.7s ease both;
+}
+
+.transicion-caja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 640px;
+  text-align: center;
+}
+
+.transicion-etiqueta {
+  margin: 0;
+  font-family: var(--fuente-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.transicion-caja h2 {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  letter-spacing: -0.02em;
+}
+
+.transicion-estrellas {
+  margin: 0;
+  color: var(--ambar);
+  font-weight: 600;
+}
+
+.transicion-relato {
+  margin: 8px 0 12px;
+  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+  line-height: 1.6;
+  color: var(--texto);
+}
+
+.transicion-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.transicion-boton {
+  padding: 15px 30px;
+  font-size: 1.05rem;
+  text-decoration: none;
+}
+
+@keyframes transicion-entrada {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transicion-mundo {
+    animation: none;
+  }
+}
+
+/* Laboratorio Libre: sin niveles, fases, estrellas ni pistas. */
+body.modo-sandbox .selector-niveles,
+body.modo-sandbox #contador-estrellas-total,
+body.modo-sandbox #barra-fases,
+body.modo-sandbox #estrellas-nivel,
+body.modo-sandbox #btn-pista {
+  display: none !important;
+}

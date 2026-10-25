@@ -3,6 +3,7 @@
   "mundo": 1,
   "nombre": "Primeros movimientos",
   "concepto": "secuencia, orden, estructura básica",
+  "concepto_evaluado": "secuencia",
   "narrativa": "Robot1 da sus primeros pasos por un pasillo recto de la instalación.",
   "ensena": [
     "robot1.avanzar(n)"

@@ -1,6 +1,12 @@
 // lexer.js
 // Convierte el texto que escribe el estudiante en una lista de tokens.
 
+// AVANCE 3: este lexer hoy IGNORA los espacios y tabuladores al inicio de la
+// línea. Para bloques por indentación habrá que emitir INDENTACION / DEDENTACION
+// al empezar cada línea, y añadir los tokens y operadores nuevos de parser.js
+// (==, !=, <=, >=, <, >, ":"  y las palabras reservadas if, elif, else, while,
+// for, def, return, and, or, not).
+
 import { Errores } from "./errors.js";
 
 export const TipoToken = {

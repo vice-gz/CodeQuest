@@ -3,6 +3,7 @@
   "mundo": 1,
   "nombre": "El sistema desconocido",
   "concepto": "experimentación, combinación de conceptos",
+  "concepto_evaluado": "experimentacion",
   "narrativa": "El laboratorio se abre a zonas dañadas: aparecen muros. Robot1 tendrá que rodearlos.",
   "ensena": [],
   "fases": [

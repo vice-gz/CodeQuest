@@ -1,0 +1,356 @@
+/* ============================================================
+   CodeQuest — Avance 2: página de inicio (landing)
+   Usa las variables de styles.css (laboratorio nocturno).
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: var(--nav-alto);
+  padding: 0 24px;
+  background: rgba(8, 11, 24, 0.9);
+  border-bottom: 1px solid var(--borde-suave);
+  backdrop-filter: blur(6px);
+}
+
+.landing-enlaces {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.landing-enlaces a:not(.boton) {
+  padding: 8px 12px;
+  border-radius: 9px;
+  color: var(--texto-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.landing-enlaces a:not(.boton):hover {
+  color: var(--texto);
+  background: var(--panel);
+}
+
+.landing-enlaces .boton {
+  text-decoration: none;
+  margin-left: 8px;
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 96px 24px 72px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.hero-etiqueta {
+  margin: 0 0 10px;
+  font-family: var(--fuente-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.hero-subtitulo {
+  margin: 18px 0 32px;
+  max-width: 560px;
+  font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+  color: var(--texto-muted);
+}
+
+.hero-botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.boton-grande {
+  padding: 14px 26px;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.hero-codigo {
+  margin: 44px 0 0;
+  padding: 18px 26px;
+  border-radius: 14px;
+  border: 1px solid var(--borde);
+  background: var(--bg-elevado);
+  font-family: var(--fuente-mono);
+  font-size: 0.95rem;
+  text-align: left;
+  line-height: 1.7;
+}
+
+.c-var { color: var(--teal); }
+.c-fn { color: var(--morado); }
+.c-num { color: var(--ambar); }
+.c-txt { color: var(--exito); }
+
+/* ---------- Secciones ---------- */
+
+.seccion {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+
+.seccion h2 {
+  margin: 0 0 14px;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  letter-spacing: -0.02em;
+}
+
+.seccion-intro {
+  max-width: 720px;
+  margin: 0 0 32px;
+  color: var(--texto-muted);
+  font-size: 1.05rem;
+}
+
+.rejilla-tres {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.tarjeta {
+  padding: 22px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--borde-suave);
+}
+
+.tarjeta h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.tarjeta p {
+  margin: 0;
+  color: var(--texto-muted);
+  font-size: 0.93rem;
+}
+
+/* ---------- Pasos ---------- */
+
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.paso {
+  position: relative;
+  padding: 26px 22px 22px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--borde-suave);
+}
+
+.paso-numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #08201c;
+  font-weight: 700;
+}
+
+.paso h3 {
+  margin: 0 0 6px;
+}
+
+.paso p {
+  margin: 0;
+  color: var(--texto-muted);
+  font-size: 0.93rem;
+}
+
+/* ---------- Mundos ---------- */
+
+.rejilla-mundos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.mundo-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid var(--borde-suave);
+  background: var(--panel);
+}
+
+.mundo-tarjeta h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.mundo-tarjeta p {
+  margin: 0 0 6px;
+  flex: 1;
+  color: var(--texto-muted);
+  font-size: 0.92rem;
+}
+
+.mundo-numero {
+  font-family: var(--fuente-mono);
+  font-size: 0.75rem;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.mundo-activo {
+  border-color: rgba(94, 234, 212, 0.45);
+  background: linear-gradient(160deg, rgba(94, 234, 212, 0.08), var(--panel) 60%);
+}
+
+.mundo-bloqueado {
+  opacity: 0.55;
+}
+
+.mundo-bloqueado .mundo-numero {
+  color: var(--texto-muted);
+}
+
+/* ---------- Sobre el proyecto ---------- */
+
+.proyecto-datos {
+  padding: 26px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--borde-suave);
+}
+
+.proyecto-datos dl {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 14px 24px;
+  margin: 0;
+}
+
+.proyecto-datos dt {
+  color: var(--texto-muted);
+  font-size: 0.85rem;
+}
+
+.proyecto-datos dd {
+  margin: 0;
+}
+
+.proyecto-datos .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Pie ---------- */
+
+.landing-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  padding: 28px 24px;
+  border-top: 1px solid var(--borde-suave);
+  color: var(--texto-muted);
+  font-size: 0.88rem;
+}
+
+.landing-pie nav {
+  display: flex;
+  gap: 16px;
+}
+
+.landing-pie a {
+  color: var(--texto-muted);
+}
+
+.landing-pie a:hover {
+  color: var(--teal);
+}
+
+@media (max-width: 720px) {
+  .landing-nav {
+    padding: 0 16px;
+  }
+
+  .landing-enlaces a:not(.boton) {
+    display: none;
+  }
+
+  .hero {
+    padding: 64px 20px 48px;
+  }
+
+  .seccion {
+    padding: 44px 20px;
+  }
+
+  .proyecto-datos dl {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .proyecto-datos dd {
+    margin-bottom: 12px;
+  }
+}
+
+.seccion-cta {
+  text-align: center;
+}
+
+.seccion-cta .hero-botones {
+  justify-content: center;
+}
+
+.pie-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 560px;
+}
+
+.pie-bloque strong {
+  color: var(--texto);
+}

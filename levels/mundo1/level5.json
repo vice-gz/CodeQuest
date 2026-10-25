@@ -3,6 +3,7 @@
   "mundo": 1,
   "nombre": "La orden equivocada",
   "concepto": "sintaxis, errores, mensajes del sistema",
+  "concepto_evaluado": "errores_de_sintaxis",
   "narrativa": "Robot1 recibe órdenes mal escritas. Los mensajes de error no son castigos: son información.",
   "ensena": [],
   "fases": [

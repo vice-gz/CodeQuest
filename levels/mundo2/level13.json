@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "Calcula el camino",
   "concepto": "operadores aritméticos: +, -, *, /, %",
+  "concepto_evaluado": "operadores_aritmeticos",
   "narrativa": "Hay dos rutas hacia la meta y una es más larga. Robot1 debe calcular, no adivinar.",
   "fases": [
     {

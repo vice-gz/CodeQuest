@@ -1,0 +1,19 @@
+{
+  "name": "codequest",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CodeQuest: Aprende Programando — Avance 2 (autenticación, Supabase, perfil y panel de admin)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node test_niveles.mjs && node test_persistencia.mjs && node test_editor.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

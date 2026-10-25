@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Acceder — CodeQuest</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/auth.css" />
+</head>
+<body class="pagina-auth">
+
+<main class="auth-centro">
+  <a class="auth-marca" href="index.html"><span aria-hidden="true">◆</span> CodeQuest</a>
+
+  <div class="auth-tarjeta">
+    <div class="auth-pestanas" role="tablist" aria-label="Acceso">
+      <button type="button" role="tab" id="pestana-login" aria-controls="panel-login" aria-selected="true" class="auth-pestana activa">Iniciar sesión</button>
+      <button type="button" role="tab" id="pestana-registro" aria-controls="panel-registro" aria-selected="false" class="auth-pestana">Crear cuenta</button>
+    </div>
+
+    <p class="mensaje-form oculto" id="auth-mensaje" role="alert"></p>
+
+    <!-- Iniciar sesión -->
+    <form id="panel-login" class="auth-form" role="tabpanel" aria-labelledby="pestana-login" novalidate>
+      <label class="etiqueta-campo">Email
+        <input class="campo" type="email" id="login-email" autocomplete="email" required />
+      </label>
+      <label class="etiqueta-campo">Contraseña
+        <input class="campo" type="password" id="login-password" autocomplete="current-password" required />
+      </label>
+      <button class="boton boton-primario" type="submit" id="btn-login">Entrar</button>
+      <button class="boton-enlace" type="button" id="btn-olvide">¿Olvidaste tu contraseña?</button>
+    </form>
+
+    <!-- Crear cuenta -->
+    <form id="panel-registro" class="auth-form oculto" role="tabpanel" aria-labelledby="pestana-registro" novalidate>
+      <fieldset class="selector-rol">
+        <legend class="solo-lectores">Tipo de cuenta</legend>
+        <label class="opcion-rol">
+          <input type="radio" name="rol" value="estudiante" checked />
+          <span><strong>Soy alumno</strong><small>Quiero aprender a programar</small></span>
+        </label>
+        <label class="opcion-rol">
+          <input type="radio" name="rol" value="profesor" />
+          <span><strong>Soy profesor</strong><small>Quiero crear clases</small></span>
+        </label>
+      </fieldset>
+
+      <label class="etiqueta-campo">Nombre
+        <input class="campo" type="text" id="registro-nombre" autocomplete="name" maxlength="60" required />
+      </label>
+      <label class="etiqueta-campo">Email <span id="ayuda-dominio" class="auth-ayuda"></span>
+        <input class="campo" type="email" id="registro-email" autocomplete="email" required />
+      </label>
+      <label class="etiqueta-campo">Contraseña (mínimo 8 caracteres)
+        <input class="campo" type="password" id="registro-password" autocomplete="new-password" minlength="8" required />
+      </label>
+      <label class="etiqueta-campo">Confirmar contraseña
+        <input class="campo" type="password" id="registro-confirmacion" autocomplete="new-password" required />
+      </label>
+      <label class="etiqueta-campo" id="campo-codigo">Código de clase (opcional)
+        <input class="campo mono" type="text" id="registro-codigo" autocomplete="off" maxlength="12" placeholder="Ej. K7P3XQ" />
+      </label>
+      <button class="boton boton-primario" type="submit" id="btn-registro">Crear cuenta</button>
+    </form>
+
+    <!-- Recuperar contraseña -->
+    <form id="panel-recuperar" class="auth-form oculto" novalidate>
+      <p class="auth-ayuda">Te enviaremos un enlace para elegir una contraseña nueva.</p>
+      <label class="etiqueta-campo">Email de tu cuenta
+        <input class="campo" type="email" id="recuperar-email" autocomplete="email" required />
+      </label>
+      <button class="boton boton-primario" type="submit" id="btn-recuperar">Enviar enlace</button>
+      <button class="boton-enlace" type="button" id="btn-volver-login">Volver a iniciar sesión</button>
+    </form>
+
+    <!-- Nueva contraseña (llegas aquí desde el enlace del correo) -->
+    <form id="panel-nueva" class="auth-form oculto" novalidate>
+      <p class="auth-ayuda">Elige tu nueva contraseña.</p>
+      <label class="etiqueta-campo">Nueva contraseña (mínimo 8 caracteres)
+        <input class="campo" type="password" id="nueva-password" autocomplete="new-password" minlength="8" required />
+      </label>
+      <label class="etiqueta-campo">Confirmar nueva contraseña
+        <input class="campo" type="password" id="nueva-confirmacion" autocomplete="new-password" required />
+      </label>
+      <button class="boton boton-primario" type="submit" id="btn-nueva">Guardar contraseña</button>
+    </form>
+  </div>
+
+  <a class="auth-volver" href="index.html">← Volver al inicio</a>
+</main>
+
+<script type="module" src="js/authPage.js"></script>
+</body>
+</html>

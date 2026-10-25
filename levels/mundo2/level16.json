@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "La memoria de Robot1",
   "concepto": "combinación de variables, tipos y operadores",
+  "concepto_evaluado": "integracion_variables_tipos_operadores",
   "narrativa": "Robot1 debe revisar dos terminales con la batería justa. No hay margen para rodeos.",
   "fases": [
     {

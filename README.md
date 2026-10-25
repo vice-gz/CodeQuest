@@ -1,439 +1,185 @@
-# CodeQuest: Aprende Programando — Avance 1 "Conoce a Robot1"
+# CodeQuest: Aprende Programando — Avance 2.3
 
-Prototipo funcional del primer módulo de CodeQuest: un juego web educativo
-donde el estudiante escribe código en **CQL** (CodeQuest Language, un
-subconjunto de Python) y observa cómo Robot1 ejecuta esas instrucciones en
-un laboratorio 2D.
+Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persistencia en Supabase, perfil y panel de administrador**. No se implementan los Mundos 3-6. La documentación del Avance 1 está en `docs/README_avance1.md`.
 
-## 1. Crear la estructura de carpetas
+## Novedades del Avance 2.3 (cierre del Avance 2)
 
-Ya viene creada en este entregable:
+### Instalar el SQL
+Ejecuta `supabase/avance2_3.sql` en el SQL Editor (después de `avance2.sql` y `avance2_2.sql`). Es idempotente. Añade la columna `ejecuciones.concepto_evaluado` y la función `admin_alertas_clase`. **Si lo ejecutas después de actualizar el código no pierdes nada:** mientras falte la columna, las ejecuciones se guardan igual, solo sin concepto.
 
-```
-codequest/
-├── index.html
-├── css/styles.css
-├── js/
-│   ├── main.js
-│   ├── interpreter/  (lexer, parser, validator, interpreter, commands, errors)
-│   ├── game/          (robot1, world, scene)
-│   ├── ui/             (codeEditor, feedback, stars)
-│   └── persistence/    (ProgressRepository, LocalStorageProgressRepository)
-├── levels/level1.json … level6.json
-└── docs/ (referencia a los 3 documentos de especificación)
-```
+### Probar la pantalla de transición
+1. Entra con un alumno y llega al **Nivel 8** (o usa el Modo Demo del panel de admin, que tiene todos los niveles abiertos).
+2. Completa su última fase: en lugar de "Siguiente nivel" aparece una pantalla completa con el relato del Mundo 1, tus estrellas del mundo y el botón **Continuar al siguiente mundo**, que abre el Nivel 9.
+3. Haz lo mismo con el **Nivel 19**: relato del Mundo 2 y botón **Entendido** (aún no existe el Mundo 3), con atajo a tu perfil.
+Los relatos están en el JSON de los niveles 8 y 19 (`narrativaSiguienteMundo`).
 
-## 2. Ejecutar el proyecto localmente
+### Acceder al Laboratorio Libre
+- Alumno o profesor: menú superior → **Laboratorio Libre** (`juego.html?modo=sandbox`).
+- Admin / super_root: panel de admin → **Abrir Laboratorio Libre** (se abre en otra pestaña).
+Es una cuadrícula de 10×10 vacía con todas las instrucciones del Avance 2 (incluidas las variables), los 3 paneles en vivo y sin validación, estrellas ni pistas. **No guarda nada**: ni en Supabase ni en localStorage.
 
-El proyecto usa módulos ES6 (`import`/`export`), así que el navegador debe
-servirlo por **http**, no abrirlo con `file://` (los navegadores bloquean
-`fetch()` de los niveles JSON y los módulos por CORS en `file://`).
+### Ver las alertas en el panel del profesor
+`Mis clases` → **Ver alumnos**: columna **Estado** con ⚠️ (con tooltip "Este alumno puede necesitar ayuda" y el motivo) o ✅. Un alumno está en riesgo si tiene **más de 10 intentos fallidos en su nivel actual** o **más de 3 días sin actividad**. Los alumnos en riesgo salen primero. Si no has ejecutado `avance2_3.sql`, la tabla funciona igual y avisa que las alertas no están disponibles.
 
-Cualquiera de estas opciones sirve:
+### Editor
+`Tab` inserta 4 espacios; con varias líneas seleccionadas las indenta todas; `Shift+Tab` desindenta. Deshacer (Ctrl+Z) funciona. Para no atrapar a quien navega con teclado: `Esc` y luego `Tab` mueve el foco fuera del editor.
 
-```bash
-# Opción 1: servidor embebido de Python
-cd codequest
-python3 -m http.server 8000
-# abre http://localhost:8000
+### Concepto evaluado
+Cada nivel JSON tiene `concepto_evaluado` (p. ej. `variables`, `operadores_aritmeticos`) y cada ejecución lo guarda en `ejecuciones.concepto_evaluado`. El panel de admin → Ejecuciones tiene el filtro **Concepto evaluado** y una columna con el concepto.
 
-# Opción 2: paquete "serve" de Node
-npx serve codequest
+### Decisiones respecto a la especificación 2.3
+- **Alertas: "errores" = intentos fallidos** (cualquier resultado distinto de `exito`, incluido "objetivo no alcanzado"), contados **en el nivel actual**. El SQL de la especificación contaba solo `error%` de los últimos 7 días en todos los niveles, lo que no coincidía con su propio texto y dejaba pasar a quien fallaba sin que saltara un error de código.
+- **Un alumno que nunca jugó** se marca en riesgo pasados 3 días desde su inscripción (con el SQL original quedaba como "al día" para siempre).
+- El Laboratorio Libre incluye `asignacion` además de `print` y `entrada`; si no, no se podrían usar variables.
+- La función conserva el nombre `admin_alertas_clase`, pero también la puede llamar el profesor dueño de la clase (para cualquier otra persona devuelve cero filas).
 
-# Opción 3: extensión "Live Server" de VS Code
-```
-
-## 3. Probar cada nivel
-
-| Nivel | Qué escribir | Qué debe pasar |
-|---|---|---|
-| 1 | `print("Hola mundo")` | Aparece "Hola mundo" en Retroalimentación y se gana la estrella |
-| 2 | `robot1.hablar("Hola")` seguido de `robot1.saludar()` | Robot1 habla y luego saluda, en ese orden |
-| 3 | `nombre = "Robot1"` y `print(nombre)` | Se muestra "Robot1" |
-| 4 | `pasos = 3` y `robot1.avanzar(pasos)` | Robot1 llega a la casilla objetivo |
-| 5 | `pasos = 2 + 3` y `robot1.avanzar(pasos)` | Robot1 avanza 5 casillas |
-| 6 | Cualquier combinación que sume 5 pasos | Se acepta cualquier solución válida |
-
-También prueba casos de error para ver la retroalimentación educativa:
-`print(pasos)` sin definirla (`SEM_001`), `robot1.volar()` (`SEM_002`),
-`print("Hola)` sin cerrar comillas (`LEX_002`), `robot1.girarDerecha()`
-en el Nivel 1 (`SEM_007`), etc. — catálogo completo en
-`js/interpreter/errors.js`.
-
-## 4. Comprobar que localStorage funciona
-
-1. Completa un nivel y observa que el contador de estrellas del encabezado
-   sube y el punto del nivel en la barra superior se marca como completado.
-2. Abre las herramientas de desarrollador → Application/Storage →
-   Local Storage → busca la clave `codequest:progreso`.
-3. Recarga la página: el nivel actual, las estrellas y el último código
-   escrito deben conservarse.
-4. Para reiniciar todo el progreso, borra esa clave desde el navegador.
-
-## 5. Agregar un nuevo nivel
-
-Crea `levels/level7.json` siguiendo el formato del Documento 3, sección 8
-(mismos campos que `level1.json`…`level6.json`: `instruccionesPermitidas`,
-`metodosPermitidos`, `escenario`, `validacion`, `pistas`, etc.), agrega el
-número 7 al bucle de `TOTAL_NIVELES` en `js/main.js`, y al selector de
-niveles. No se requiere tocar el intérprete ni el motor del juego.
-
-## 6. Agregar nuevos comandos en el futuro
-
-Sigue el pipeline (`Lexer → Parser → Validator → Interpreter → Commands →
-Robot1/Mundo`, Documento 2, sección 5):
-
-1. Si el comando necesita nueva sintaxis, agrégala en `lexer.js`/`parser.js`.
-2. Agrega el nombre del método/función a las listas `METODOS_CONOCIDOS` /
-   `FUNCIONES_CONOCIDAS` en `validator.js`.
-3. Agrega una fábrica de comando en `commands.js`.
-4. Emite el comando desde `interpreter.js`.
-5. Anima/renderiza el nuevo comando en `scene.js` (`reproducirComandos`).
-
-## Decisiones técnicas tomadas sin especificación explícita
-
-- **Motor 2D: Canvas 2D puro**, no Phaser 3. Con 6 niveles de movimiento en
-  una sola cuadrícula horizontal, Canvas es más ligero y evita una
-  dependencia externa grande; queda documentado en `js/game/scene.js` y es
-  la alternativa que el Documento 2 (sección 3.1) ya contempla.
-- **Editor de código**: `<textarea>` propio con numeración de líneas, sin
-  CodeMirror, para no añadir dependencias en el Avance 1.
-- **Validación de output**: comparación de string exacta contra
-  `valorEsperado`.
-- **Manejo de errores**: se detiene en el primer error encontrado y se
-  muestra con su código, mensaje educativo y sugerencia.
-
-## Fuera de alcance (según Documento 1, sección 11)
-
-No se implementó: condicionales, ciclos, funciones propias del estudiante,
-POO, backend, login, panel de profesores, IA, multiplayer. La arquitectura
-(pipeline del intérprete + `ProgressRepository` desacoplado de la UI) queda
-preparada para crecer hacia esos avances sin reescribir lo ya construido.
+### Qué hacer en el Avance 3 (Mundos 3 y 4)
+Los comentarios `AVANCE 3` al inicio de `js/interpreter/parser.js`, `validator.js` y `lexer.js` listan el trabajo exacto. Resumen:
+1. **Lexer:** tokens `IF, ELSE, ELIF, WHILE, FOR, DEF, RETURN, IGUAL, DISTINTO, MENOR, MAYOR, MENOR_IGUAL, MAYOR_IGUAL, AND, OR, NOT, DOS_PUNTOS, INDENTACION` (y dejar de ignorar la sangría).
+2. **Parser:** nodos `If/While/For/Def/Return`, bloques por indentación y expresiones con precedencia lógica.
+3. **Validator:** condiciones, alcance de variables, funciones del estudiante y `return` solo dentro de `def`.
+4. **Niveles:** crear los JSON de los Mundos 3 y 4 con `concepto_evaluado`, añadir sus nombres en `construirCatalogo` (`js/persistence/progreso.js`) y la narrativa de transición del último nivel del Mundo 3.
+5. Poner nombres reales a los Mundos 3-6 de la landing (`js/landing.js`).
 
 ---
 
-# Reconstrucción: Mundos 1 y 2, sistema de fases, 3 paneles en vivo
+## Novedades del Avance 2.2 (roles, clases y auditoría)
 
-Esta versión sustituye a la anterior de 6 niveles sueltos.
+| Página | Quién entra | Qué hace |
+|---|---|---|
+| `index.html` | todos | Landing limpia, sin formularios (autores e institución en el pie) |
+| `auth.html` | todos | Login / registro (Soy alumno · Soy profesor, código de clase opcional) / recuperar contraseña |
+| `juego.html` | alumno, profesor | El juego. Admin y super_root solo entran con `?demo=true` |
+| `perfil.html` | alumno, profesor | Progreso, **Mi clase / Unirme a una clase**, **Zona de peligro** (escribir `BORRAR`) |
+| `profesor.html` | profesor (y admin) | Crear clases, ver código, ver alumnos con estrellas y último nivel |
+| `admin.html` | admin, super_root | Resumen, Usuarios (filtros, búsqueda, **CSV**), Ejecuciones, **Auditoría**, Configuración, botón **Modo Demo** |
 
-## Qué cambió
+### Instalar el SQL (en este orden, en Supabase → SQL Editor)
+1. `supabase/avance2.sql` (si aún no lo habías ejecutado).
+2. `supabase/avance2_2.sql`. Es idempotente y va en una transacción. **Reemplaza** las políticas "Profesores y admins ven todo…" (ahora un profesor solo ve a sus alumnos) y las funciones `cq_es_admin` (ahora incluye super_root) y `admin_eliminar_usuario`.
 
-- **19 niveles en 2 mundos**: Mundo 1 "Despertar" (niveles 1-8) y Mundo 2
-  "Memoria" (niveles 9-19), en `levels/mundo1/` y `levels/mundo2/`.
-- **Sistema de fases**: cada nivel tiene 3 fases. Los 7 tipos
-  (EXPLORAR, MODIFICAR, PREDECIR, ESCRIBIR, RESOLVER, DEBUG, LIBRE) están
-  en uso. La barra de fases (● activa · ✓ completada · ○ pendiente) va
-  arriba del área "Aprende".
-- **3 paneles en vivo** a la derecha: **Salida** (print/entrada/hablar),
-  **Memoria** (variables actuales) y **Estado de Robot1** (posición,
-  dirección, energía). Se actualizan durante la ejecución, no al final.
-- **Sin modales**: al completar una fase o un nivel, los botones aparecen
-  inline en el panel de Retroalimentación. El escenario nunca se tapa.
-  Botones: `Siguiente fase`, `Seguir jugando`, `Siguiente nivel`,
-  `Repetir nivel`.
-- **Robot rediseñado**: `saludar()` eliminado; `girarDerecha()`/
-  `girarIzquierda()` sustituidos por `girar("norte"|"sur"|"este"|"oeste")`
-  (acepta también arriba/abajo/izquierda/derecha). Nuevos:
-  `entrada()`, `retroceder(n)`, `mirar()`, `posicion()`, `energia()`,
-  `recoger()`, `soltar()`.
-- **print vs hablar**: `print()` solo va al panel de Salida;
-  `robot1.hablar()` produce burbuja en el mundo 2D **y** línea en Salida.
-- **Estrellas por nivel completo**: 1 = todas las fases; 2 = sin pistas;
-  3 = sin pistas y primer intento en cada fase.
-- **Persistencia por fases**: `codequest:progreso:v2` guarda
-  mundos → niveles → fases (`completada`, `intentos`, `pistas`).
-
-## Archivos
-
-**Nuevos:** `css/panels.css`, `js/ui/outputPanel.js`, `js/ui/memoryPanel.js`,
-`js/ui/statePanel.js`, `js/ui/phases.js`, `js/game/movimiento.js`,
-`js/game/ejecutor.js`, `test_niveles.mjs`, `levels/mundo1/level1-8.json`,
-`levels/mundo2/level9-19.json`.
-
-**Modificados:** `index.html`, `css/styles.css`, `js/main.js`,
-`js/interpreter/{lexer,parser,validator,interpreter,commands,errors}.js`,
-`js/game/{robot1,world,scene}.js`, `js/ui/{feedback,stars}.js`,
-`js/persistence/LocalStorageProgressRepository.js`.
-
-**Eliminados:** `levels/level1.json` … `levels/level6.json` (reemplazados
-por las carpetas por mundo).
-
-## Decisiones no especificadas en los documentos
-
-- **`js/game/ejecutor.js` (motor)**: el intérprete pasó a ser asíncrono y
-  ejecuta cada acción contra el robot real, esperando su animación. Así
-  `robot1.posicion()`, `mirar()` y `energia()` leen siempre el estado
-  verdadero en el momento en que se evalúan, sin mantener un robot
-  "simulado" en paralelo. Es también el punto único donde se notifica a
-  los tres paneles (patrón de callbacks del documento de cambios, §8).
-- **Operador `%` y literales decimales**: el Documento 3 los excluía del
-  Avance 1, pero el prompt de cambios los pide explícitamente para los
-  niveles 11 y 13. Se añadieron al lexer, parser e intérprete.
-- **Booleanos**: el nivel 11 se enseña con entero, decimal y texto. Los
-  booleanos requieren comparadores, que pertenecen al Mundo 3.
-- **Chequeo numérico en tiempo de ejecución**: el validador detecta
-  `avanzar("tres")`, pero no `pasos = "3"` seguido de `avanzar(pasos)`.
-  Ese caso se verifica al ejecutar (lo necesita el nivel 11.3).
-
-## Cómo probar los cambios
-
-```bash
-cd codequest
-python3 -m http.server 8000     # http://localhost:8000
+### Crear el primer Super Root
+Solo desde el SQL Editor (la web no puede crearlo ni modificarlo):
+```sql
+update public.perfiles set rol = 'super_root'
+where user_id = (select id from auth.users where email = 'tu-correo@ejemplo.com');
 ```
+Cierra sesión y entra de nuevo: te lleva a `admin.html`. Un trigger impide que cualquiera (incluidos los admin) cambie o elimine a un super_root desde la API.
 
-Prueba automática de los 19 niveles (requiere Node 18+):
+### Reglas de roles (las impone la base de datos, no solo la interfaz)
+- Solo un **super_root** puede crear/quitar admins o eliminar a un admin. Un admin gestiona alumnos y profesores.
+- Nadie cambia su propio rol ni elimina su propia cuenta. Un super_root no se puede resetear, degradar ni eliminar desde la web.
+- Cambiar rol, resetear y eliminar pasan por funciones SQL y quedan en `auditoria` (nadie puede escribirla ni borrarla desde la API).
 
-```bash
-cd codequest
-echo '{"type":"module"}' > package.json
-node test_niveles.mjs
-rm package.json
-```
+### Probar el flujo de Profesor
+1. En `auth.html` → *Crear cuenta* → **Soy profesor** (si Supabase exige confirmar el correo, confirma y entra).
+2. Te lleva a `perfil.html`; en el menú abre **Mis clases** → **Crear clase** (nombre y, opcional, dominio permitido).
+3. Aparece la tarjeta con el código de 6 caracteres; **Copiar código**.
 
-Corre la solución de referencia de **cada fase** por el motor real
-(Lexer → Parser → Validator → Interpreter → Robot1/Mundo) y comprueba que
-pasa su propia validación. Salida esperada: `57 fases probadas … ✓ TODO OK`.
+### Probar el flujo de Alumno
+1. Cuenta nueva como **Soy alumno** y pega el código en *Código de clase* (o, ya registrado, en `perfil.html` → *Unirme a una clase*).
+2. Vuelve a la cuenta del profesor → **Ver alumnos**: aparece con estrellas y nivel actual.
+3. Con un correo de otro dominio y una clase con dominio restringido debe rechazarte.
 
-**A mano, lo más importante:**
+### Probar la Zona de Peligro
+Como alumno con algo de progreso: `perfil.html` → **Borrar todo mi progreso** → escribe `BORRAR`. Se borran fases y ejecuciones y vuelves al nivel 1.
 
-1. Nivel 1 → las 3 fases encadenan y aparece `Siguiente fase` inline.
-2. Nivel 7 fase 2 → `robot1.girar("sur")` cambia la dirección en el panel
-   de Estado y `avanzar()` se mueve hacia abajo.
-3. Nivel 9 → el panel de Memoria muestra `nombre = "Robot1"` al ejecutar.
-4. Nivel 12 → la energía baja en el panel de Estado con cada avance.
-5. Nivel 5 y 15 → fases DEBUG: el código inicial falla a propósito y el
-   error trae código, mensaje educativo y sugerencia.
-6. DevTools → Application → Local Storage → `codequest:progreso:v2` guarda
-   las fases; recarga y el progreso sigue ahí.
-7. Estrecha la ventana a menos de 900 px: las dos columnas se apilan.
+### Probar el Modo Demo
+Como admin: botón **Probar el juego (Modo Demo)** en el panel. Abre `juego.html?demo=true` en otra pestaña, con todos los niveles abiertos y el progreso en localStorage (sin tocar la base de datos). Un alumno que escriba `?demo=true` es ignorado: sigue en su cuenta normal.
+
+### Correo institucional
+En `.env` pon `VITE_DOMINIO_INSTITUCIONAL=pachuca.tecnm.mx` y el registro solo aceptará ese dominio. **Es una ayuda en el navegador, no una barrera real**: para exigirlo en el servidor hay que usar un Auth Hook de Supabase. Para crear admins/super_root con otro correo, créalos desde Supabase → Authentication → Users → *Add user*. La restricción de dominio de cada **clase** sí se valida en el servidor.
+Añade también `http://localhost:5173/auth.html?recuperar=1` a las *Redirect URLs* de Supabase (la recuperación de contraseña ahora vuelve a `auth.html`).
+
+### Decisiones y límites
+- **El rol "profesor" lo declara cada persona al registrarse** (la especificación pide ese selector). Un profesor solo ve a los alumnos que se unen a SUS clases, pero si necesitas verificar profesores de verdad, hay que aprobarlos desde el panel (no incluido).
+- Crear clase y unirse se hacen con funciones SQL (`crear_clase`, `unirse_a_clase`): no hay INSERT directo, así el código es único y el dominio no se puede saltar.
+- Si el código de clase del registro es inválido, la cuenta se crea igual y se avisa; se puede intentar de nuevo desde el perfil.
+- Verificado: `supabase/avance2_2.sql` se probó contra PostgreSQL 16 con 62 comprobaciones de roles, RLS y funciones (aislamiento entre alumnos/profesores, candados de super_root, auditoría, registro).
 
 ---
 
-# Correcciones, entrada interactiva y rediseño de niveles
+## Estructura
 
-## 1. Bugs corregidos (los 9)
-
-| # | Archivo | Qué pasaba |
-|---|---|---|
-| 1.1 | `ejecutor.js` | El movimiento tenía dos fuentes de verdad (escena + `robot1.avanzar()`). Ahora el motor escribe `robot1.x/y` él mismo tras la animación. |
-| 1.2 | `stars.js` | Daba estrellas sin exigir todas las fases completadas, usaba `<= 1` y devolvía 1 como fallback. Ahora exige `completada === true`, `intentos === 1` y devuelve 0 si falta algo. |
-| 1.3 | `main.js` | El intento se registraba al inicio de `ejecutarCodigo()`. Ahora se registra donde ya se conoce el resultado. |
-| 1.4 | `main.js` | Faltaban tipos de validación. Ahora hay 13, incluidos `output_contiene`, `estado_variable` y `codigo_sin_error`. |
-| 1.5 | `main.js` | Repetir una fase ya superada volvía a contarla. Ahora se comprueba antes. |
-| 1.6 | `LocalStorage…` | El merge era superficial y dejaba huecos. Ahora `mergeProfundo()` rellena recursivamente. |
-| 1.7 | `LocalStorage…` | No marcaba el mundo completo. Ahora `completarNivel()` recibe `totalNivelesMundo` y lo marca. |
-| 1.8 | `LocalStorage…` | Cada clic en Ejecutar gastaba un intento. Ahora solo cuenta si el código cambió. |
-| 1.9 | `feedback.js` | Texto de niveles insertado como HTML sin escapar, y botones sin protección de doble clic. Corregidos ambos. |
-
-## 2. `entrada()` interactiva
-
-Cuando una fase no define `entradasSimuladas`, la ejecución se **pausa** y
-aparece un campo en el panel de Salida. El estudiante escribe, pulsa Enter,
-y el programa continúa. El valor se convierte a número si es numérico y se
-conserva como texto si no.
-
-Las fases con `entradasSimuladas` siguen funcionando igual (Mundo 1,
-nivel 6.1). Los niveles 6.2, 6.3, 14.2, 14.3 y las tres fases del 18 usan
-entrada real del estudiante.
-
-## 3. Rediseño de niveles
-
-- **7 niveles con obstáculos**: 2, 7, 8, 13, 17, 18, 19.
-- **2 niveles con varios objetivos**: 7 (batería + puerta) y 16 (dos terminales).
-- **2 niveles con recargas de energía**: 12 y 17, donde la batería *no*
-  alcanza sin pasar por el ⚡.
-- **Nivel 8** es un laberinto con muros repartidos; **nivel 13** ofrece dos
-  rutas de distinta longitud.
-- **Niveles 5, 11 y 15** pasaron de 3 a 4 fases mezclando EXPLORAR, PREDECIR
-  y DEBUG en vez de tres DEBUG seguidos.
-- **60 fases** en total. Reparto: EXPLORAR 16, RESOLVER 14, PREDECIR 10,
-  ESCRIBIR 7, DEBUG 6, LIBRE 4, MODIFICAR 3.
-
-Movimiento casilla por casilla: `avanzar(6)` ya no salta de (0,0) a (6,0).
-Recorre cada casilla, de modo que un obstáculo intermedio detiene a Robot1 y
-una recarga intermedia se activa al pisarla.
-
-## 4. Validaciones que verifican el proceso
-
-Nueve niveles usan validaciones que miran el código fuente, no solo el
-resultado: `posicion_con_operacion`, `posicion_con_variable`,
-`posicion_sin_numero_literal` y `output_con_variable`. Antes de inspeccionar,
-se quitan comentarios y textos entre comillas, para que un número dentro de
-un string no cuente como literal.
-
-Ejemplos: el 13.3 exige usar `*` y no aceptar el número calculado a mano; el
-18.2 rechaza que aparezca el literal `5` en el código.
-
-Se añadió además `error_esperado`: fases EXPLORAR cuyo objetivo es
-*provocar y leer* un error (5.1 y 15.1). Ahí el error **es** el éxito.
-
-## 5. Mejoras visuales
-
-Obstáculos como bloques grises, recargas como rayos verdes, y objetivos que
-se atenúan al ser alcanzados (útil con varios objetivos). El escenario
-soporta `objetivosPosicion` (lista), `recargas`, `energiaMaxima`,
-`mostrarRobot` y `mostrarEnergia`.
-
-## 6. Cómo probar
-
-```bash
-cd codequest
-echo '{"type":"module"}' > package.json
-node test_niveles.mjs      # → 60 fases probadas … ✓ TODO OK
-rm package.json
+```
+index.html (landing)  auth.html (login/registro)  juego.html  perfil.html  profesor.html  admin.html
+css/  styles.css panels.css auth.css landing.css perfil.css admin.css
+js/   supabase.js auth.js nav.js landing.js perfil.js admin.js juego.js (antes main.js)
+      datos.js util.js
+      game/catalogo.js            catálogo de niveles (fases por nivel) para juego, perfil y admin
+      persistence/                ProgressRepository, LocalStorage…, SupabaseProgressRepository, progreso.js (lógica pura)
+      ui/                         + avisos.js (toasts/modales), vistaProgreso.js, erroresCatalogo.js
+supabase/avance2.sql, avance2_2.sql, avance2_3.sql   funciones SQL, roles, clases, auditoría y alertas (en ese orden)
+test_niveles.mjs  test_persistencia.mjs  test_editor.mjs
 ```
 
-El arnés corre la solución de referencia de cada fase por el motor real y
-comprueba que pasa su propia validación, incluidas las fases con entrada
-interactiva (mediante `entradasEstudiante` en el JSON, que solo usa la prueba).
-
-A mano, lo que más conviene mirar:
-
-1. **Nivel 2 fase 3** — la pared obliga a rodear; `avanzar(5)` choca.
-2. **Nivel 6 fase 2** — aparece el campo de entrada y la ejecución se pausa.
-3. **Nivel 12 fase 3** — sin pisar el ⚡ la energía llega a 0 y no se completa.
-4. **Nivel 7 fase 3** — dos estrellas; cada una se atenúa al pisarla.
-5. **Nivel 13 fase 3** — escribe `robot1.avanzar(4)` sin usar `*`: llega a la
-   meta pero **no** se da por superada.
-6. **Nivel 18 fase 2** — escribe `robot1.avanzar(5)`: rechazado por literal.
-7. Pulsa Ejecutar dos veces con el mismo código: el contador de intentos no
-   sube y las 3 estrellas se conservan.
-
-## Decisiones no especificadas
-
-- **`error_esperado`**: el prompt pedía una fase EXPLORAR que ejecuta código
-  con error (5.1), pero ningún tipo de validación existente la daba por
-  superada. Es el caso mínimo que lo resuelve sin tocar el pipeline.
-- **`energiaMaxima`**: sin un tope configurable, una recarga no podía subir
-  la energía por encima del valor inicial, que es justo lo que el nivel 12
-  necesita.
-- **Niveles 1 y 9 siguen siendo de una fila.** El 1 es la introducción y
-  Robot1 no se mueve; el 9 ocurre "dentro de su memoria" y el robot está
-  oculto (`mostrarRobot: false`). Convertirlos a 2D sería decorativo y
-  sugeriría un movimiento que el nivel no pide.
-
----
-
-# Continuidad pedagógica, entrada real, diccionario, tour y modo demo
-
-## 1. Continuidad: nada se usa antes de enseñarse
-
-Tenías razón: el nivel 2 pedía rodear un obstáculo con `girar()`, que no se
-enseñaba hasta después. Reordené qué introduce cada nivel:
-
-| Nivel | Instrucción nueva | Fase |
-|---|---|---|
-| 1 | `print(valor)` | 1.1 |
-| 2 | `robot1.avanzar(n)` | 2.1 |
-| 3 | `robot1.hablar("texto")` y `robot1.girar(direccion)` | 3.1 y 3.3 |
-| 4 | `robot1.retroceder(n)` | 4.1 |
-| 6 | `entrada()` | 6.1 |
-| 8 | `robot1.recoger()` | 8.1 |
-| 9 | variables (`nombre = valor`) | 9.1 |
-| 12 | operadores `+ - * /` | 12.2 |
-| 13 | operador `%` | 13.1 |
-| 16 | `robot1.posicion()` y `robot1.mirar()` | 16.1 |
-
-Consecuencias concretas:
-
-- **Niveles 1 a 5 vuelven a ser simples.** Sin obstáculos. El nivel 2 es un
-  pasillo recto con `avanzar()` y nada más.
-- **`girar()` se enseña en el 3**, con una fase EXPLORAR dedicada a verlo
-  antes de tener que usarlo.
-- **Los obstáculos aparecen en el nivel 7**, cuando `girar()` lleva cuatro
-  niveles disponible. El 7.1 es una fase PREDECIR que presenta los muros
-  antes de exigir rodearlos.
-- **El nivel 6 ya no usa variables.** Usa `entrada()` como valor directo
-  (`print(entrada())`, `robot1.avanzar(entrada())`). Así el nivel 9 tiene un
-  motivo real de existir: el valor se usaba y se perdía, ahora se guarda.
-
-Hay una prueba automática para esto: recorre las 61 fases en orden y falla si
-alguna permite o usa algo que se enseña más tarde.
-
-## 2. `entrada()` ahora sí es interactiva
-
-Ya no hay valores automáticos: **eliminé `entradasSimuladas` de todos los
-niveles**. Cuando el programa llega a `entrada()`:
-
-1. La ejecución se **pausa**.
-2. Aparece un campo en el panel de Salida.
-3. Escribes y pulsas Enter.
-4. El programa continúa con **tu** valor.
-
-Sobre los tipos, una fase puede declarar `entradaTipo`:
-
-- `"numero"` — solo acepta números. Si escribes texto, el campo te dice
-  *"perro no es un número. Robot1 no puede contar casillas con un texto"* y
-  te deja corregir. Así está el 6.3.
-- `"libre"` (por defecto) — acepta lo que sea. Si luego usas ese texto en
-  `avanzar()`, salta el error educativo SEM_004. Esto es a propósito: en el
-  6.1 puedes escribir una palabra y ver qué pasa.
-
-## 3. Diccionario de instrucciones
-
-Botón nuevo en la barra superior, con contador `n/12`.
-
-Se desbloquea **por fase**, no por mundo: en cuanto completas la fase donde
-se enseña algo, esa entrada aparece. Muestra la forma general y qué hace:
-
-> `robot1.girar(direccion)`
-> Cambia hacia dónde mira Robot1. Direcciones válidas: "norte", "sur", "este", "oeste".
-
-**No da soluciones.** Sobre `print` dice que muestra un valor y que el texto
-va entre comillas, pero nunca enseña la línea corregida de una fase DEBUG.
-Hay una prueba que comprueba que ninguna descripción del diccionario contiene
-la solución de una fase DEBUG ni código listo para pegar.
-
-Descarté tu alternativa de desbloquearlo por mundo: con 8 niveles por mundo,
-un estudiante que olvida `girar()` en el nivel 4 tendría que esperar hasta el
-9 para consultarlo.
-
-## 4. Tour de bienvenida
-
-Se lanza solo la primera vez. Ocho pasos que señalan Robot1, el área Aprende,
-el editor, los tres paneles, la retroalimentación y el diccionario. Se puede
-saltar con el botón o con Escape, se navega con las flechas, y queda el botón
-"Tour" en la barra para repetirlo.
-
-## 5. Modo demo
-
-Botón "Demo" → usuario `admin`, contraseña `123`. Desbloquea los 19 niveles y
-todo el diccionario para revisarlos sin jugarlos en orden. El botón cambia a
-"Salir de demo" y aparece una insignia DEMO mientras está activo. Vive en
-`sessionStorage`, así que **no toca tu progreso real** y se cierra al cerrar
-la pestaña.
-
-**No es autenticación.** Las credenciales están en el JavaScript del
-navegador y cualquiera puede leerlas; solo sirve para revisar el juego. El
-login real vivirá en el backend cuando exista.
-
-## 6. Archivos
-
-**Nuevos:** `js/ui/dictionary.js`, `js/ui/tour.js`, `js/ui/demoMode.js`.
-
-**Modificados:** `index.html`, `css/panels.css`, `css/styles.css`,
-`js/main.js`, `js/ui/outputPanel.js`, `js/game/ejecutor.js`,
-`test_niveles.mjs`, y los JSON de los niveles 2, 3, 4, 5, 6, 7, 8, 9 y 14.
-
-## 7. Cómo probarlo
+## 1. Instalar dependencias
 
 ```bash
-cd codequest
-echo '{"type":"module"}' > package.json
-node test_niveles.mjs     # 61 fases → ✓ TODO OK
-rm package.json
+npm install
+```
+(instala `@supabase/supabase-js` y `vite`.)
+
+## 2. Configurar `.env`
+
+```bash
+cp .env.example .env
+```
+Rellena `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (Supabase → Project Settings → API). **Solo la clave anon/publishable; nunca la `service_role`.** `.env` está en `.gitignore`.
+
+Además, en Supabase → Authentication → URL Configuration, añade a *Redirect URLs* `http://localhost:5173/auth.html?recuperar=1` (y la de tu dominio al publicar) para que funcione "¿Olvidaste tu contraseña?".
+
+## 3. Instalar las funciones SQL del admin (una vez)
+
+Abre `supabase/avance2.sql`, pégalo en **Supabase → SQL Editor** y ejecútalo. Crea `admin_listar_usuarios`, `admin_resumen` y `admin_eliminar_usuario`, todas con comprobación de rol admin. Hacen falta porque el navegador no puede leer emails de otros usuarios, agrupar eficientemente ni borrar de `auth.users`. Sin ellas el panel funciona con datos parciales y avisa, pero **no puede eliminar usuarios**.
+
+## 4. Ejecutar en local
+
+```bash
+npm run dev      # http://localhost:5173
+npm run build    # sitio estático en dist/ (sube esa carpeta a tu hosting)
+npm test         # niveles + persistencia
 ```
 
-A mano:
+## 5. Probar registro y login
 
-1. Borra `localStorage` y recarga: sale el tour. Sáltalo y vuelve a lanzarlo
-   con el botón "Tour".
-2. Nivel 6.1 — ejecuta y escribe **una palabra**: se acepta y aparece en
-   Salida.
-3. Nivel 6.3 — escribe **una palabra**: el campo la rechaza explicando por
-   qué, y te deja corregir.
-4. Abre el Diccionario en el nivel 1: casi vacío. Vuelve a abrirlo en el 4:
-   ya están print, avanzar, hablar, girar y retroceder.
-5. Botón Demo → `admin` / `123`: se desbloquean los 19 niveles y el
-   diccionario completo. Sal del modo demo y tu progreso sigue intacto.
+1. Abre la landing → **Empezar a jugar** → *Crear cuenta*.
+2. Con confirmación de email activada en Supabase verás "revisa tu correo"; si no, entras directo a `juego.html`.
+3. Juega una fase y revisa en Supabase → Table Editor: `progreso_fases`, `progreso_jugador` y `ejecuciones` tienen filas con tu `user_id`.
+4. Cierra sesión y entra de nuevo: el progreso se restaura. Con sesión activa, `index.html` te redirige solo.
+5. Errores esperados: contraseña errónea → "Email o contraseña incorrectos"; email repetido → "Ya existe una cuenta con ese email".
+
+## 6. Probar el panel de admin
+
+Entra con el usuario admin (redirige a `admin.html`). Prueba: Resumen, filtros de Usuarios, **Ver detalle**, cambiar rol (otro usuario), **Resetear progreso**, **Eliminar** (hay que escribir `ELIMINAR`) y Ejecuciones con filtros y paginación. Un estudiante que abra `admin.html` es devuelto a `juego.html`.
+
+## 7. Probar que RLS funciona
+
+- Con dos cuentas de estudiante, A no debe ver nada de B. En la consola del navegador (sesión de A):
+  ```js
+  const { supabase } = await import('/js/supabase.js');
+  (await supabase.from('progreso_fases').select('user_id')).data  // solo tu user_id
+  ```
+- Como estudiante, intenta `supabase.rpc('admin_listar_usuarios')`: devuelve lista vacía; `admin_eliminar_usuario` lanza "No autorizado".
+- Intenta `supabase.from('perfiles').update({rol:'admin'}).eq('user_id', TU_ID)`: debe fallar o no afectar filas (política corregida).
+
+## 8. Añadir un campo nuevo a `perfiles`
+
+1. `alter table public.perfiles add column telefono text;` en el SQL Editor.
+2. `obtenerPerfil()` ya hace `select *`, así que el campo llega en `perfil.telefono`.
+3. Muéstralo en `perfil.js` (`pintarDatosUsuario`) y, si lo editas, haz `update` como en el formulario de nombre.
+4. Si lo debe rellenar el registro, léelo en `raw_user_meta_data` dentro de `trigger_nuevo_usuario` y pásalo en `options.data` de `registrarUsuario`.
+
+## Decisiones tomadas (no estaban en la especificación)
+
+- **Vite** como herramienta de build: es lo que permite `.env`, `npm install` y empaquetar los niveles (`import.meta.glob`) sin copiar `levels/`.
+- **Estrellas y niveles completados no se guardan**: `progreso_fases` no tiene esas columnas, así que se **derivan** de las fases con el catálogo de niveles (misma regla de `stars.js`). Repasar un nivel ya completado no cambia intentos ni pistas, para no perder estrellas.
+- **Experiencia** = 100 por nivel completado + 50 por estrella (se recalcula, nunca se duplica).
+- **Valores de `ejecuciones.resultado`**: `exito`, `objetivo_no_alcanzado` y `error_lexico|error_sintaxis|error_semantico|error_ejecucion|error_inesperado` (por prefijo del código CQL). Una predicción incorrecta ahora también se registra. Si tu tabla tiene un CHECK sobre `resultado`, ajusta `resultadoDeError()` en `js/persistence/progreso.js`.
+- **Sincronización**: lecturas desde memoria; escrituras en una cola persistente (localStorage por usuario) que se envía en segundo plano y se reintenta al volver la red. El progreso de Avance 1 guardado en `codequest:progreso:v2` **no se importa** a las cuentas.
+- **Profesor**: aterriza en `perfil.html`; no hay relación profesor–estudiantes en el esquema, así que no tiene panel propio.
+- Los Mundos 3-6 de la landing aparecen como "Próximamente" sin nombre (edítalos en `js/landing.js`). Completa institución y personas en la sección "Sobre el proyecto" de `index.html`.
+
+## Supuestos sobre tus tablas (verifícalos)
+
+`perfiles.user_id`, `progreso_fases(mundo_id, nivel_id, fase_id texto como "1.1", completada, intentos, pistas_usadas)` y `ejecuciones.created_at` (cambia `COL_FECHA` en `js/datos.js` si se llama distinto). La consulta de verificación está al final de `supabase/avance2.sql`.

@@ -3,6 +3,7 @@
   "mundo": 2,
   "nombre": "La batería",
   "concepto": "operadores, expresiones, modificación",
+  "concepto_evaluado": "operadores",
   "narrativa": "La batería de Robot1 está baja. Hay una estación de recarga en el camino.",
   "fases": [
     {
