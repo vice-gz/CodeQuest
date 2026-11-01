@@ -1,0 +1,160 @@
+{
+  "id": 36,
+  "mundo": 4,
+  "nombre": "El bucle infinito",
+  "concepto": "ciclos con condición y bucles infinitos",
+  "concepto_evaluado": "bucle_infinito",
+  "narrativa": "Un ciclo que nunca termina congelaría todo el complejo. Aquí aprenderás a detectarlo y a escribir ciclos que sí terminan.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "36.1",
+      "tipo": "DEBUG",
+      "titulo": "El ciclo que no termina",
+      "enunciado": "Este ciclo nunca termina: el elevador no se mueve y la condición siempre es verdadera. Observa el error y corrígelo para que el elevador suba hasta el piso 5. Dentro del while hay que CAMBIAR la variable de la condición.",
+      "codigoInicial": "piso = 1\nwhile piso < 5:\n    elevador.recoger()",
+      "solucionReferencia": "piso = 1\nwhile piso < 5:\n    elevador.subir(1)\n    piso = piso + 1",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "recoger"
+      ],
+      "validacion": {
+        "tipo": "elevador_piso",
+        "valorEsperado": 5,
+        "requiere": {
+          "construcciones": [
+            "while"
+          ]
+        }
+      },
+      "retroalimentacion": "Un while necesita que algo cambie dentro para poder terminar.",
+      "pistas": [
+        "¿Qué variable usa la condición? Tiene que cambiar en cada vuelta."
+      ],
+      "mensajeNoLogrado": "El elevador debe terminar en el piso 5.",
+      "solucionesIncorrectas": [
+        "piso = 1\nwhile piso < 5:\n    elevador.recoger()"
+      ]
+    },
+    {
+      "id": "36.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "Desde cualquier piso",
+      "enunciado": "Escribe un while que lleve el elevador a la planta baja (piso 1) sin importar en qué piso empiece. Pregúntale al elevador con elevador.piso(). Se prueba desde 3 pisos distintos.",
+      "codigoInicial": "",
+      "solucionReferencia": "while elevador.piso() > 1:\n    elevador.bajar(1)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "bajar",
+        "piso"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Desde el piso 5",
+          "escenario": {
+            "pasajeros": [],
+            "pisoInicial": 5
+          },
+          "esperado": {
+            "tipo": "elevador_piso",
+            "valorEsperado": 1
+          }
+        },
+        {
+          "etiqueta": "Desde el piso 3",
+          "escenario": {
+            "pasajeros": [],
+            "pisoInicial": 3
+          },
+          "esperado": {
+            "tipo": "elevador_piso",
+            "valorEsperado": 1
+          }
+        },
+        {
+          "etiqueta": "Ya en el piso 1",
+          "escenario": {
+            "pasajeros": [],
+            "pisoInicial": 1
+          },
+          "esperado": {
+            "tipo": "elevador_piso",
+            "valorEsperado": 1
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "while"
+          ]
+        }
+      },
+      "retroalimentacion": "Tu ciclo funciona desde cualquier punto de partida.",
+      "pistas": [
+        "Pregunta con elevador.piso() > 1."
+      ],
+      "mensajeNoLogrado": "Debe funcionar también si ya está en el piso 1 (no se mueve).",
+      "solucionesIncorrectas": [
+        "elevador.bajar(4)"
+      ]
+    },
+    {
+      "id": "36.3",
+      "tipo": "DEBUG",
+      "titulo": "La condición al revés",
+      "enunciado": "El elevador está en el piso 5 y debería bajar a la planta baja, pero el programa sube y se sale del edificio. Corrígelo.",
+      "codigoInicial": "while elevador.piso() > 1:\n    elevador.subir(1)",
+      "solucionReferencia": "while elevador.piso() > 1:\n    elevador.bajar(1)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "piso"
+      ],
+      "escenario": {
+        "pisoInicial": 5
+      },
+      "validacion": {
+        "tipo": "elevador_piso",
+        "valorEsperado": 1,
+        "requiere": {
+          "construcciones": [
+            "while"
+          ]
+        }
+      },
+      "retroalimentacion": "La condición estaba bien; el movimiento iba en sentido contrario.",
+      "pistas": [
+        "¿Hacia dónde debe moverse para llegar a la planta baja?"
+      ],
+      "solucionesIncorrectas": [
+        "while elevador.piso() > 1:\n    elevador.subir(1)"
+      ]
+    }
+  ]
+}

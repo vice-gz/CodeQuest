@@ -1,0 +1,512 @@
+{
+  "id": 31,
+  "mundo": 3,
+  "nombre": "El crupier final",
+  "concepto": "integración de condicionales",
+  "concepto_evaluado": "integracion_mundo_3",
+  "narrativa": "El crupier holográfico propone el desafío final: una regla con varias condiciones combinadas que decide la jugada perfecta.",
+  "narrativaSiguienteMundo": "¡La sala de estrategia se abre! Pero al cruzar, Robot1 oye un zumbido: un edificio entero depende de un elevador que no deja de fallar. Entra al Mundo 4: Automatización.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "31.1",
+      "tipo": "RESOLVER",
+      "titulo": "Desafío final",
+      "enunciado": "Si total > 21 muestra Bust; si total es 21, Blackjack; si las dos primeras cartas son iguales y carta1 es roja, Par rojo; si son iguales (negras), Par negro; si total es 17 o más, Te plantas; en cualquier otro caso, Pide carta. Se prueba en 8 mesas.",
+      "codigoInicial": "",
+      "solucionReferencia": "if total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"Blackjack\")\nelif carta1 == carta2 and color1 == \"roja\":\n    print(\"Par rojo\")\nelif carta1 == carta2:\n    print(\"Par negro\")\nelif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarColor": true
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "corazones"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 8,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Par rojo"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "treboles"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Par negro"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 5 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 1,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 6 · 19",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "corazones"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Te plantas"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 7 · 12",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pide carta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 8 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "diamantes"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "elif",
+            "else",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Combinaste condiciones, colores, pares y rangos en una sola cadena!",
+      "pistas": [
+        "Primero lo que corta todo: Bust y Blackjack.",
+        "Luego los pares, de lo más específico a lo más general."
+      ],
+      "mensajeNoLogrado": "Un par con total 21 es Blackjack, no Par; un par con total 22 es Bust."
+    },
+    {
+      "id": "31.2",
+      "tipo": "RESOLVER",
+      "titulo": "Una variable lógica",
+      "enunciado": "Guarda en seguro el resultado de total <= 21. Usa not para mostrar Bust cuando no sea seguro; si lo es, muestra Te plantas con 17 o más y Pide carta con menos. Se prueba en 6 mesas.",
+      "codigoInicial": "",
+      "solucionReferencia": "seguro = total <= 21\nif not seguro:\n    print(\"Bust\")\nelif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Te plantas"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Te plantas"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pide carta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 5 · 12",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pide carta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 6 · 22",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 2,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "not",
+            "elif"
+          ],
+          "variable": "seguro"
+        }
+      },
+      "retroalimentacion": "Guardaste una respuesta lógica y la usaste para decidir.",
+      "pistas": [
+        "seguro = total <= 21",
+        "if not seguro:"
+      ],
+      "mensajeNoLogrado": "Debes guardar seguro y usar not.",
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Bust\")\nelif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")"
+      ]
+    },
+    {
+      "id": "31.3",
+      "tipo": "LIBRE",
+      "titulo": "Mesa libre",
+      "enunciado": "Experimenta con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 3.",
+      "codigoInicial": "# Escribe tus propias reglas\nif total > 21:\n    print(\"Bust\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [
+        "poner_carta",
+        "voltear"
+      ],
+      "escenario": {
+        "mostrarCartas": true,
+        "mostrarColor": true,
+        "cartas": [
+          {
+            "valor": 10,
+            "palo": "corazones"
+          },
+          {
+            "valor": 7,
+            "palo": "picas"
+          }
+        ]
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "corazones"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 20",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 5,
+                "palo": "diamantes"
+              },
+              {
+                "valor": 6,
+                "palo": "treboles"
+              },
+              {
+                "valor": 9,
+                "palo": "corazones"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "¡Mundo 3 completado!",
+      "pistas": [
+        "Prueba cambiar de mesa."
+      ]
+    }
+  ]
+}

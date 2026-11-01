@@ -1,63 +1,53 @@
 // validator.js
-// Verifica la semántica del AST: variables definidas, funciones/métodos
-// que existen, que las instrucciones estén permitidas en la fase actual,
-// y que solo se use como valor lo que realmente devuelve un valor.
-
-// ============================================================================
-// AVANCE 3 (Mundos 3 y 4) — validaciones nuevas que hay que añadir AQUÍ
-// ----------------------------------------------------------------------------
-//   1. validarSentencia(): casos nuevos "If", "While", "For", "Def", "Return".
-//   2. Condiciones: las comparaciones (==, !=, <, >, <=, >=) y los operadores
-//      lógicos (and, or, not) deben recibir valores del tipo correcto
-//      (hoy solo se valida que "los valores existan y sean usables").
-//   3. Alcance de variables: lo asignado dentro de un bloque ¿existe fuera de él?
-//      Decidir la regla (Python: sí, salvo dentro de funciones) y reflejarla en
-//      this.variables, que hoy es un único conjunto global.
-//   4. Funciones definidas por el estudiante: registrar su nombre y número de
-//      parámetros para validar las llamadas (hoy FUNCIONES_CONOCIDAS es fija).
-//   5. "return" solo dentro de "def"; "while" sin cambio posible en la condición
-//      como aviso educativo (posible ciclo infinito).
-//   6. instruccionesPermitidas de cada fase: añadir los nombres nuevos
-//      ("if", "while", "for", "def") junto a "print", "entrada" y "asignacion".
-// ============================================================================
+// Verifica la semántica del AST: variables definidas, funciones/métodos que
+// existen (según el mundo), que las instrucciones estén permitidas en la fase
+// actual, y que solo se use como valor lo que realmente devuelve un valor.
+//
+// Avance 3 — permisos nuevos en instruccionesPermitidas de cada fase:
+//   "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"
+// Las comparaciones (==, !=, <, >, <=, >=) y True/False se aceptan cuando la fase
+// permite if, while o booleanos. Una variable asignada dentro de un bloque cuenta
+// como definida más abajo (como en Python); si esa rama no se ejecutó, el
+// intérprete avisa en tiempo de ejecución.
 
 import { Errores } from "./errors.js";
 import { esDireccionValida } from "../game/movimiento.js";
+import { BIBLIOTECA_ROBOT } from "./bibliotecas.js";
 
-// Biblioteca de instrucciones conocidas por CQL (rediseño del robot).
 const FUNCIONES_CONOCIDAS = new Set(["print", "entrada"]);
-const METODOS_CONOCIDOS = new Set([
-  "hablar",
-  "avanzar",
-  "retroceder",
-  "girar",
-  "mirar",
-  "posicion",
-  "energia",
-  "recoger",
-  "soltar",
-]);
-const METODOS_NUMERICOS = new Set(["avanzar", "retroceder"]);
-const METODOS_QUE_RETORNAN_VALOR = new Set(["mirar", "posicion", "energia"]);
 const FUNCIONES_QUE_RETORNAN_VALOR = new Set(["entrada"]);
 
 export class Validator {
   /**
    * @param {object} fase - configuración de la fase actual
    *   (instruccionesPermitidas, metodosPermitidos)
+   * @param {object} [opciones]
+   * @param {object} [opciones.biblioteca] objetos y métodos del mundo (bibliotecas.js)
+   * @param {string[]} [opciones.variablesIniciales] variables que el escenario ya define
    */
-  constructor(fase) {
+  constructor(fase, { biblioteca = BIBLIOTECA_ROBOT, variablesIniciales = [] } = {}) {
     this.fase = fase;
+    this.biblioteca = biblioteca;
     this.instruccionesPermitidas = new Set(fase?.instruccionesPermitidas || []);
     this.metodosPermitidos = new Set(fase?.metodosPermitidos || []);
-    this.variables = new Set();
+    this.variables = new Set(variablesIniciales);
   }
 
   validar(programa) {
-    for (const sentencia of programa.sentencias) {
-      this.validarSentencia(sentencia);
-    }
+    this.validarSentencias(programa.sentencias);
     return true;
+  }
+
+  validarSentencias(sentencias) {
+    for (const sentencia of sentencias) this.validarSentencia(sentencia);
+  }
+
+  permitido(clave) {
+    return this.instruccionesPermitidas.has(clave);
+  }
+
+  exigir(clave, nombreEnError, linea) {
+    if (!this.permitido(clave)) throw Errores.palabraNoPermitidaEnNivel(nombreEnError, linea);
   }
 
   validarSentencia(sentencia) {
@@ -71,13 +61,38 @@ export class Validator {
       case "LlamadaMetodo":
         this.validarLlamadaMetodo(sentencia, false);
         break;
+      case "Condicional":
+        this.validarCondicional(sentencia);
+        break;
+      case "Mientras":
+        this.exigir("while", "while", sentencia.linea);
+        this.validarExpresion(sentencia.condicion);
+        this.validarSentencias(sentencia.bloque.sentencias);
+        break;
+      case "Para":
+        this.exigir("for", "for", sentencia.linea);
+        sentencia.argumentos.forEach((a) => this.validarExpresion(a));
+        this.variables.add(sentencia.variable);
+        this.validarSentencias(sentencia.bloque.sentencias);
+        break;
       default:
         break;
     }
   }
 
+  validarCondicional(nodo) {
+    this.exigir(nodo.esElif ? "elif" : "if", nodo.esElif ? "elif" : "if", nodo.linea);
+    this.validarExpresion(nodo.condicion);
+    this.validarSentencias(nodo.bloqueSi.sentencias);
+    if (nodo.bloqueSino) {
+      const esCadenaElif = nodo.bloqueSino.sentencias.length === 1 && nodo.bloqueSino.sentencias[0].esElif === true;
+      if (!esCadenaElif) this.exigir("else", "else", nodo.bloqueSino.linea);
+      this.validarSentencias(nodo.bloqueSino.sentencias);
+    }
+  }
+
   validarAsignacion(nodo) {
-    if (!this.instruccionesPermitidas.has("asignacion")) {
+    if (!this.permitido("asignacion")) {
       throw Errores.asignacionNoPermitidaEnNivel(nodo.linea);
     }
     this.validarExpresion(nodo.expresion);
@@ -88,7 +103,7 @@ export class Validator {
     if (!FUNCIONES_CONOCIDAS.has(nodo.nombre)) {
       throw Errores.funcionNoExiste(nodo.nombre, nodo.linea);
     }
-    if (!this.instruccionesPermitidas.has(nodo.nombre)) {
+    if (!this.permitido(nodo.nombre)) {
       throw Errores.funcionNoPermitidaEnNivel(nodo.nombre, nodo.linea);
     }
     if (comoExpresion && !FUNCIONES_QUE_RETORNAN_VALOR.has(nodo.nombre)) {
@@ -101,27 +116,32 @@ export class Validator {
   }
 
   validarLlamadaMetodo(nodo, comoExpresion) {
-    if (!METODOS_CONOCIDOS.has(nodo.metodo)) {
-      throw Errores.metodoNoExiste(nodo.metodo, nodo.linea);
+    const { objeto, metodos } = this.biblioteca;
+    if (nodo.objeto !== objeto) {
+      throw Errores.objetoNoExiste(nodo.objeto, objeto, nodo.linea);
+    }
+    const definicion = metodos[nodo.metodo];
+    if (!definicion) {
+      throw Errores.metodoNoExiste(nodo.metodo, nodo.linea, objeto);
     }
     if (!this.metodosPermitidos.has(nodo.metodo)) {
-      throw Errores.metodoNoPermitidoEnNivel(`robot1.${nodo.metodo}`, nodo.linea);
+      throw Errores.metodoNoPermitidoEnNivel(`${objeto}.${nodo.metodo}`, nodo.linea);
     }
-    if (comoExpresion && !METODOS_QUE_RETORNAN_VALOR.has(nodo.metodo)) {
-      throw Errores.noRetornaValor(`robot1.${nodo.metodo}()`, nodo.linea);
+    if (comoExpresion && !definicion.retorna) {
+      throw Errores.noRetornaValor(`${objeto}.${nodo.metodo}()`, nodo.linea);
     }
 
-    if (METODOS_NUMERICOS.has(nodo.metodo) && nodo.argumentos.length > 0) {
+    if (definicion.numerico && nodo.argumentos.length > 0) {
       const arg = nodo.argumentos[0];
       if (arg.tipo === "Texto") {
-        throw Errores.accionNecesitaNumero(nodo.metodo, nodo.linea);
+        throw Errores.accionNecesitaNumero(nodo.metodo, nodo.linea, objeto);
       }
       if (arg.tipo === "Identificador" && !this.variables.has(arg.nombre)) {
         throw Errores.variableNoExiste(arg.nombre, arg.linea);
       }
     }
 
-    if (nodo.metodo === "girar" && nodo.argumentos.length > 0) {
+    if (objeto === "robot1" && nodo.metodo === "girar" && nodo.argumentos.length > 0) {
       const arg = nodo.argumentos[0];
       if (arg.tipo === "Texto" && !esDireccionValida(arg.valor)) {
         throw Errores.direccionInvalida(arg.valor, nodo.linea);
@@ -131,10 +151,17 @@ export class Validator {
     nodo.argumentos.forEach((arg) => this.validarExpresion(arg));
   }
 
+  permiteComparar() {
+    return this.permitido("if") || this.permitido("while") || this.permitido("booleanos");
+  }
+
   validarExpresion(nodo) {
     switch (nodo.tipo) {
       case "Identificador":
         if (!this.variables.has(nodo.nombre)) {
+          if (nodo.nombre === "true" || nodo.nombre === "false") {
+            throw Errores.booleanoMinuscula(nodo.nombre, nodo.linea);
+          }
           throw Errores.variableNoExiste(nodo.nombre, nodo.linea);
         }
         break;
@@ -142,14 +169,31 @@ export class Validator {
         this.validarExpresion(nodo.izquierda);
         this.validarExpresion(nodo.derecha);
         break;
+      case "Comparacion":
+        if (!this.permiteComparar()) throw Errores.palabraNoPermitidaEnNivel(nodo.operador, nodo.linea);
+        this.validarExpresion(nodo.izquierda);
+        this.validarExpresion(nodo.derecha);
+        break;
+      case "Logica":
+        this.exigir(nodo.operador, nodo.operador, nodo.linea);
+        this.validarExpresion(nodo.izquierda);
+        this.validarExpresion(nodo.derecha);
+        break;
+      case "Negacion":
+        this.exigir("not", "not", nodo.linea);
+        this.validarExpresion(nodo.operando);
+        break;
+      case "Negativo":
+        this.validarExpresion(nodo.operando);
+        break;
+      case "Booleano":
+        if (!this.permiteComparar()) throw Errores.palabraNoPermitidaEnNivel(nodo.valor ? "True" : "False", nodo.linea);
+        break;
       case "LlamadaFuncion":
         this.validarLlamadaFuncion(nodo, true);
         break;
       case "LlamadaMetodo":
         this.validarLlamadaMetodo(nodo, true);
-        break;
-      case "Numero":
-      case "Texto":
         break;
       default:
         break;

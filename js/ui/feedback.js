@@ -48,15 +48,33 @@ export class Feedback {
     `;
   }
 
-  mostrarObjetivoNoAlcanzado(mensaje) {
+  /**
+   * @param {string} mensaje
+   * @param {{etiqueta:string, ok:boolean, esperado?:string, obtenido?:string, error?:object}[]} [casos]
+   *   resultado de cada mesa / edificio probado (fases con varios casos)
+   */
+  mostrarObjetivoNoAlcanzado(mensaje, casos = []) {
     this.limpiar();
     this.container.classList.add("feedback-error");
+    const lista = casos.length
+      ? `<ul class="feedback-casos">${casos
+          .map((c) => {
+            const detalle = c.ok
+              ? ""
+              : c.error
+                ? ` — tu programa dio un error: ${c.error.mensaje || c.error.message || "desconocido"}`
+                : ` — debía ${c.esperado || "dar otro resultado"}${c.obtenido ? ` y ${c.obtenido}` : ""}`;
+            return `<li class="${c.ok ? "caso-ok" : "caso-mal"}"><span aria-hidden="true">${c.ok ? "✓" : "✗"}</span> ${escapeHtml(c.etiqueta)}${escapeHtml(detalle)}</li>`;
+          })
+          .join("")}</ul>`
+      : "";
     this.container.innerHTML = `
       <div class="feedback-encabezado">
         <span class="feedback-icono">!</span>
         <strong>Todavía no</strong>
       </div>
       <p class="feedback-texto">${escapeHtml(mensaje)}</p>
+      ${lista}
     `;
   }
 

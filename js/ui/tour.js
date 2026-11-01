@@ -6,7 +6,7 @@
 const PASOS = [
   {
     selector: ".panel-mundo",
-    titulo: "Este es Robot1",
+    titulo: "El escenario",
     texto:
       "Aquí vive Robot1, dentro del laboratorio. La cuadrícula son las casillas por las que se mueve, y la punta naranja indica hacia dónde mira.",
   },
@@ -36,7 +36,7 @@ const PASOS = [
   },
   {
     selector: ".panel-estado",
-    titulo: "El estado de Robot1",
+    titulo: "El estado",
     texto:
       "Su posición, hacia dónde mira y cuánta energía le queda. Se actualiza mientras el código corre.",
   },
@@ -129,7 +129,9 @@ export class Tour {
   pintarPaso() {
     if (!this.activo) return;
     const paso = PASOS[this.indice];
-    const objetivo = document.querySelector(paso.selector);
+    const candidato = document.querySelector(paso.selector);
+    // Un panel oculto en este mundo (p. ej. Estado en el Mundo 2) se explica sin recuadro.
+    const objetivo = candidato && candidato.offsetParent !== null ? candidato : null;
     const recuadro = this.overlay.querySelector(".tour-recuadro");
     const globo = this.overlay.querySelector(".tour-globo");
 

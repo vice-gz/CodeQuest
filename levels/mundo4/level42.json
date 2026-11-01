@@ -1,0 +1,295 @@
+{
+  "id": 42,
+  "mundo": 4,
+  "nombre": "Reportes por piso",
+  "concepto": "ciclos con reportes",
+  "concepto_evaluado": "reportes_con_ciclos",
+  "narrativa": "El jefe de seguridad quiere saber EN QUÉ pisos hay gente y que solo se atienda a los pisos pares.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1,
+    "pasajeros": [
+      2,
+      4
+    ]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "42.1",
+      "tipo": "RESOLVER",
+      "titulo": "Pisos con gente",
+      "enunciado": "Sube 4 veces y, cada vez que haya pasajeros en el piso, muestra el número de ese piso (usa elevador.piso()). No recojas a nadie. Se prueba en 5 edificios.",
+      "codigoInicial": "",
+      "solucionReferencia": "for i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        print(elevador.piso())",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "piso",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pasajeros en 2, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2",
+              "4"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 3",
+          "escenario": {
+            "pasajeros": [
+              3
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "3"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 3, 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2",
+              "3",
+              "5"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Edificio vacío",
+          "escenario": {
+            "pasajeros": []
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": []
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 2, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              2,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2",
+              "4"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "for",
+            "if"
+          ]
+        }
+      },
+      "retroalimentacion": "Una pregunta + un print dentro del ciclo = un reporte.",
+      "pistas": [
+        "print(elevador.piso()) dentro del if."
+      ],
+      "mensajeNoLogrado": "Debe mostrar cada piso con gente, en orden y una sola vez.",
+      "solucionesIncorrectas": [
+        "print(2)\nprint(4)"
+      ]
+    },
+    {
+      "id": "42.2",
+      "tipo": "RESOLVER",
+      "titulo": "Solo pisos pares",
+      "enunciado": "Sube 4 veces y recoge a los pasajeros ÚNICAMENTE en los pisos pares (2 y 4). No los bajes: solo cuenta lo que queda en la cabina. Se prueba en 5 edificios.",
+      "codigoInicial": "",
+      "solucionReferencia": "for i in range(4):\n    elevador.subir(1)\n    if elevador.piso() % 2 == 0 and elevador.hayPasajero():\n        elevador.recoger()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "recoger",
+        "piso",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pasajeros en 2, 3, 4, 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "abordo": 2
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 3, 5",
+          "escenario": {
+            "pasajeros": [
+              3,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "abordo": 0
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 4, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              4,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "abordo": 3
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2",
+          "escenario": {
+            "pasajeros": [
+              2
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "abordo": 1
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 5",
+          "escenario": {
+            "pasajeros": [
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "abordo": 0
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "for",
+            "if",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "El operador % reconoce los pisos pares.",
+      "pistas": [
+        "piso % 2 == 0 es verdadero en los pisos pares."
+      ],
+      "mensajeNoLogrado": "Los pasajeros de pisos impares deben quedarse esperando.",
+      "solucionesIncorrectas": [
+        "for i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()"
+      ]
+    },
+    {
+      "id": "42.3",
+      "tipo": "LIBRE",
+      "titulo": "Torre libre",
+      "enunciado": "Experimenta con reportes y condiciones. Nada se evalúa.",
+      "codigoInicial": "# Prueba tus propios reportes\nfor i in range(4):\n    elevador.subir(1)\n    print(elevador.piso())",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero",
+        "llevando"
+      ],
+      "escenario": {
+        "pasajeros": [
+          2,
+          3,
+          5
+        ]
+      },
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Ya generas reportes con ciclos.",
+      "pistas": [
+        "Prueba % con otros números."
+      ]
+    }
+  ]
+}

@@ -4,14 +4,23 @@
   "nombre": "Cambia de opinión",
   "concepto": "reasignación, estado",
   "concepto_evaluado": "reasignacion",
-  "narrativa": "Robot1 despierta de nuevo. Sus planes cambian a mitad de camino.",
+  "narrativa": "Un módulo de memoria no es una caja sellada: puede guardar otro valor cuando el programa lo decide.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "10.1",
       "tipo": "EXPLORAR",
-      "titulo": "Un nombre, dos valores",
-      "enunciado": "Ejecuta y observa cómo cambia el valor en el panel de Memoria.",
-      "codigoInicial": "energia = 100\nprint(energia)\nenergia = 60\nprint(energia)",
+      "titulo": "Un valor nuevo",
+      "enunciado": "Concepto nuevo: reasignar es darle otro valor a una variable que ya existe. El valor anterior se pierde. Ejecuta y mira el chip.",
+      "codigoInicial": "energia = 50\nprint(energia)\nenergia = 80\nprint(energia)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -20,17 +29,17 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "La segunda asignación reemplaza a la primera: la variable conserva el último valor.",
+      "retroalimentacion": "Reasignar reemplaza el valor anterior: el chip muestra «antes» y el valor nuevo.",
       "pistas": [
-        "El panel de Salida muestra dos valores distintos."
+        "Fíjate en el texto pequeño «antes:» dentro del chip."
       ]
     },
     {
       "id": "10.2",
       "tipo": "PREDECIR",
-      "titulo": "¿Qué se muestra al final?",
-      "enunciado": "Si pasos = 2, luego pasos = 5, y después print(pasos), ¿qué aparece?",
-      "codigoInicial": "pasos = 2\npasos = 5\nprint(pasos)",
+      "titulo": "¿Con qué valor termina?",
+      "enunciado": "¿Qué muestra este programa?",
+      "codigoInicial": "puntos = 10\npuntos = 25\nprint(puntos)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -39,73 +48,64 @@
       "opciones": [
         {
           "id": "a",
-          "texto": "2"
+          "texto": "10"
         },
         {
           "id": "b",
-          "texto": "5"
+          "texto": "25"
         },
         {
           "id": "c",
-          "texto": "2 y luego 5"
+          "texto": "35"
         }
       ],
       "respuestaCorrecta": "b",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Correcto: al mostrarla, la variable ya vale 5. El valor anterior se perdió.",
+      "retroalimentacion": "Correcto: la segunda asignación reemplaza a la primera, no se suman.",
       "pistas": [
-        "print() corre al final, cuando ya hubo dos asignaciones."
+        "Una variable guarda UN solo valor a la vez."
       ]
     },
     {
       "id": "10.3",
       "tipo": "RESOLVER",
-      "titulo": "Dos tramos, una variable",
-      "enunciado": "Usa UNA sola variable llamada pasos: dale un valor, avanza al este, reasígnala y baja al sur hasta llegar a (3,1).",
-      "codigoInicial": "",
-      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)\nrobot1.girar(\"sur\")\npasos = 1\nrobot1.avanzar(pasos)",
+      "titulo": "Carga la batería",
+      "enunciado": "La variable bateria vale 20. Cámbiala a 90 y muestra su valor.",
+      "codigoInicial": "bateria = 20",
+      "solucionReferencia": "bateria = 20\nbateria = 90\nprint(bateria)",
       "instruccionesPermitidas": [
-        "asignacion"
+        "asignacion",
+        "print"
       ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar"
-      ],
+      "metodosPermitidos": [],
       "validacion": {
-        "tipo": "posicion_con_variable",
-        "valorEsperado": [
-          3,
-          1
-        ],
-        "variableRequerida": "pasos"
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "variables",
+            "variables": {
+              "bateria": 90
+            }
+          },
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "90"
+            ]
+          }
+        ]
       },
-      "retroalimentacion": "Reasignar deja reutilizar el mismo nombre para un tramo distinto.",
+      "retroalimentacion": "Reasignaste una variable para cambiar su estado.",
       "pistas": [
-        "Primero pasos = 3 y avanza.",
-        "Después gira al sur, reasigna pasos = 1 y avanza otra vez."
+        "Escribe bateria = 90 debajo de la primera línea.",
+        "Después usa print(bateria)."
       ],
-      "mensajeNoLogrado": "Robot1 debe terminar en (3,1) usando una variable llamada pasos."
+      "mensajeNoLogrado": "bateria debe terminar valiendo 90 y debes mostrarla una sola vez.",
+      "solucionesIncorrectas": [
+        "print(90)"
+      ]
     }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 4,
-    "alto": 2,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      3,
-      1
-    ]
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+  ]
 }

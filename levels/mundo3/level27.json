@@ -1,0 +1,327 @@
+{
+  "id": 27,
+  "mundo": 3,
+  "nombre": "Decisiones dentro de decisiones",
+  "concepto": "condicionales anidados",
+  "concepto_evaluado": "condicionales_anidados",
+  "narrativa": "Algunas reglas tienen una pregunta dentro de otra, como una puerta que lleva a otra puerta.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "27.1",
+      "tipo": "DEBUG",
+      "titulo": "Falta una sangría",
+      "enunciado": "Concepto nuevo: un if puede ir DENTRO de otro; la sangría indica a cuál pertenece cada línea (cuanto más a la derecha, más adentro). A este programa le falta una sangría y da error. Corrígelo.",
+      "codigoInicial": "if total <= 21:\n    if total == 21:\n        print(\"Blackjack\")\n    else:\n        print(\"Seguro\")\nelse:\nprint(\"Bust\")",
+      "solucionReferencia": "if total <= 21:\n    if total == 21:\n        print(\"Blackjack\")\n    else:\n        print(\"Seguro\")\nelse:\n    print(\"Bust\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Seguro"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "Después de cada dos puntos, el bloque lleva sangría.",
+      "pistas": [
+        "Mira la última línea."
+      ],
+      "solucionesIncorrectas": [
+        "if total <= 21:\n    if total == 21:\n        print(\"Blackjack\")\n    else:\n        print(\"Seguro\")\nelse:\nprint(\"Bust\")"
+      ]
+    },
+    {
+      "id": "27.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué camino toma?",
+      "enunciado": "La mano suma 18. ¿Qué muestra este programa?",
+      "codigoInicial": "if total <= 21:\n    if total == 21:\n        print(\"Blackjack\")\n    else:\n        print(\"Seguro\")\nelse:\n    print(\"Bust\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 10,
+            "palo": "picas"
+          },
+          {
+            "valor": 8,
+            "palo": "picas"
+          }
+        ]
+      },
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Blackjack"
+        },
+        {
+          "id": "b",
+          "texto": "Seguro"
+        },
+        {
+          "id": "c",
+          "texto": "Bust"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "18 ≤ 21 entra al primer bloque; allí 18 == 21 es falso y se ejecuta su else.",
+      "pistas": [
+        "Primero responde la pregunta de afuera."
+      ]
+    },
+    {
+      "id": "27.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "El árbol de decisiones",
+      "enunciado": "Si total es mayor que 21 muestra Bust. Si no, y total es exactamente 21, muestra Blackjack; en el resto de los casos muestra Seguro. Usa un if dentro de otro.",
+      "codigoInicial": "",
+      "solucionReferencia": "if total <= 21:\n    if total == 21:\n        print(\"Blackjack\")\n    else:\n        print(\"Seguro\")\nelse:\n    print(\"Bust\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Seguro"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 22",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 2,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 5 · 5",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 2,
+                "palo": "picas"
+              },
+              {
+                "valor": 3,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Seguro"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "Anidaste decisiones con sangría.",
+      "pistas": [
+        "Decide primero si se pasó o no.",
+        "Dentro del caso «no se pasó», compara con 21."
+      ],
+      "mensajeNoLogrado": "Revisa cada mesa: 21 es Blackjack, menos de 21 es Seguro, más de 21 es Bust.",
+      "solucionesIncorrectas": [
+        "print(\"Seguro\")"
+      ]
+    }
+  ]
+}

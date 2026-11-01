@@ -39,6 +39,7 @@ export class MemoryPanel {
 
   formatearValor(valor) {
     if (typeof valor === "string") return `"${valor}"`;
+    if (typeof valor === "boolean") return valor ? "True" : "False";
     return String(valor);
   }
 }

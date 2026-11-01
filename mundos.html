@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mapa de mundos — CodeQuest</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/mundos.css" />
+</head>
+<body class="pagina-mapa">
+
+<div id="nav" aria-label="Navegación principal"></div>
+
+<main class="mapa">
+  <header class="mapa-encabezado">
+    <div>
+      <p class="mapa-etiqueta">Mapa de mundos</p>
+      <h1>Elige tu próximo mundo</h1>
+      <p class="mapa-subtitulo" id="mapa-resumen">Cargando tu progreso…</p>
+    </div>
+    <button class="boton boton-secundario" type="button" id="btn-conceptos">Conceptos</button>
+  </header>
+
+  <p class="mensaje-form mensaje-error oculto" id="mapa-error" role="alert"></p>
+  <p class="insignia-demo oculto" id="mapa-demo">DEMO · todos los mundos abiertos, el progreso no se guarda en la base de datos</p>
+
+  <section class="mapa-rejilla" id="mapa-rejilla" aria-label="Mundos de CodeQuest"></section>
+
+  <p class="mapa-leyenda">
+    <span><b aria-hidden="true">▶</b> Disponible</span>
+    <span><b aria-hidden="true">✔</b> Completado</span>
+    <span><b aria-hidden="true">🔒</b> Bloqueado o próximamente</span>
+  </p>
+</main>
+
+<script type="module" src="js/mundos.js"></script>
+</body>
+</html>

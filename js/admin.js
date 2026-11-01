@@ -593,7 +593,7 @@ $("btn-laboratorio").addEventListener("click", () => {
 
 $("btn-demo").addEventListener("click", () => {
   // Nueva pestaña: el juego en modo demo usa localStorage y no toca la base de datos.
-  window.open("juego.html?demo=true", "_blank", "noopener");
+  window.open("mundos.html?demo=true", "_blank", "noopener");
 });
 
 // ---------- Auditoría ----------
@@ -711,8 +711,8 @@ async function recargarTodo(avisar = false) {
 }
 
 (async function iniciar() {
-  // Si un estudiante o profesor llega aquí, vuelve a juego.html (sección 8.9).
-  yo = await protegerPagina(["admin", "super_root"], { rutaSiNoPermitido: "juego.html" });
+  // Si un estudiante o profesor llega aquí, vuelve al mapa de mundos (sección 8.9).
+  yo = await protegerPagina(["admin", "super_root"], { rutaSiNoPermitido: "mundos.html" });
   if (!yo) return;
   await renderizarNav("nav", yo);
   prepararFiltroMundos();

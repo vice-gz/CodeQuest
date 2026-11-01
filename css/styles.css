@@ -1039,3 +1039,68 @@ select.campo {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* ============================================================
+   AVANCE 3 — Botones más grandes, con sombra sólida y respuesta al ratón.
+   El color principal toma el acento del mundo (--mundo-acento) y, fuera
+   del juego, el cian de siempre.
+   ============================================================ */
+
+.boton {
+  padding: 12px 22px;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.15s ease, background 0.15s ease;
+}
+
+.boton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.45);
+}
+
+.boton:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+.boton:focus-visible {
+  outline: 3px solid var(--mundo-acento, var(--teal));
+  outline-offset: 3px;
+}
+
+.boton-primario {
+  background: var(--mundo-acento, var(--teal));
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--mundo-acento, var(--teal)) 40%, #000);
+}
+
+.boton-primario:hover:not(:disabled) {
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--mundo-acento, var(--teal)) 40%, #000);
+}
+
+.boton-primario:active:not(:disabled) {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--mundo-acento, var(--teal)) 40%, #000);
+}
+
+.boton-chico,
+.boton-barra {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+.boton-chico:hover:not(:disabled),
+.boton-barra:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton,
+  .boton:hover:not(:disabled),
+  .boton:active:not(:disabled) {
+    transition: none;
+    transform: none;
+  }
+}

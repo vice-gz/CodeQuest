@@ -1,0 +1,431 @@
+{
+  "id": 26,
+  "mundo": 3,
+  "nombre": "Varios caminos",
+  "concepto": "elif",
+  "concepto_evaluado": "condicional_elif",
+  "narrativa": "Cuando hay más de dos situaciones, encadenar muchos if se vuelve un laberinto. Hay una forma más limpia.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "26.1",
+      "tipo": "DEBUG",
+      "titulo": "Ifs que se pisan",
+      "enunciado": "Concepto nuevo: elif (\"si no, y además...\") añade otra pregunta; se evalúan en orden y solo se ejecuta la PRIMERA rama verdadera. Este programa imprime DOS mensajes cuando se pasa de 21. Corrígelo.",
+      "codigoInicial": "if total > 21:\n    print(\"Bust\")\nif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")",
+      "solucionReferencia": "if total > 21:\n    print(\"Bust\")\nelif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Te plantas"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 10",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 5,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pide carta"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "elif"
+          ]
+        }
+      },
+      "retroalimentacion": "Cambiar el segundo if por elif evita que se ejecuten dos ramas.",
+      "pistas": [
+        "La segunda pregunta debería depender de la primera."
+      ],
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Bust\")\nif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")"
+      ]
+    },
+    {
+      "id": "26.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Cuántas ramas se ejecutan?",
+      "enunciado": "La mano suma 19. ¿Qué muestra este programa?",
+      "codigoInicial": "if total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"Blackjack\")\nelif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 10,
+            "palo": "picas"
+          },
+          {
+            "valor": 9,
+            "palo": "picas"
+          }
+        ]
+      },
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Te plantas"
+        },
+        {
+          "id": "b",
+          "texto": "Te plantas y Pide carta"
+        },
+        {
+          "id": "c",
+          "texto": "Pide carta"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "19 no es > 21 ni == 21, pero sí >= 17: se ejecuta esa rama y las demás se saltan.",
+      "pistas": [
+        "Solo una rama se ejecuta."
+      ]
+    },
+    {
+      "id": "26.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Las cuatro reglas",
+      "enunciado": "Si total > 21 muestra Bust; si es 21 muestra Blackjack; si es 17 o más muestra Te plantas; en cualquier otro caso muestra Pide carta. Usa elif.",
+      "codigoInicial": "",
+      "solucionReferencia": "if total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"Blackjack\")\nelif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 19",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Te plantas"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Te plantas"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 5 · 12",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pide carta"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "elif",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "Resolviste cuatro caminos con una sola cadena.",
+      "pistas": [
+        "El orden importa: pregunta primero lo más específico.",
+        "Se escribe elif condición:"
+      ],
+      "mensajeNoLogrado": "Revisa el orden de las preguntas y que 21 sea Blackjack, no Te plantas.",
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Bust\")\nif total == 21:\n    print(\"Blackjack\")\nif total >= 17:\n    print(\"Te plantas\")\nelse:\n    print(\"Pide carta\")"
+      ]
+    },
+    {
+      "id": "26.4",
+      "tipo": "DEBUG",
+      "titulo": "El else se adelantó",
+      "enunciado": "Este programa da error: un elif nunca puede ir después de un else. Reordena las ramas para que el else sea la última.",
+      "codigoInicial": "if total > 21:\n    print(\"Bust\")\nelse:\n    print(\"Sigue\")\nelif total == 21:\n    print(\"Blackjack\")",
+      "solucionReferencia": "if total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"Blackjack\")\nelse:\n    print(\"Sigue\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Sigue"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "elif",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "El else siempre cierra la cadena.",
+      "pistas": [
+        "Cambia el orden de las ramas."
+      ],
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Bust\")\nelse:\n    print(\"Sigue\")\nelif total == 21:\n    print(\"Blackjack\")"
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@
 
 import { calcularEstrellasNivel } from "../ui/stars.js";
 
-const NOMBRES_MUNDO = { 1: "Despertar", 2: "Memoria" };
+const NOMBRES_MUNDO = { 1: "Despertar", 2: "Memoria", 3: "Lógica", 4: "Automatización", 5: "Programador", 6: "Proyecto" };
 
 /** Construye el catálogo a partir de la lista de JSON de niveles. */
 export function construirCatalogo(listaNiveles) {

@@ -1,115 +1,97 @@
 {
   "id": 12,
   "mundo": 2,
-  "nombre": "La batería",
-  "concepto": "operadores, expresiones, modificación",
+  "nombre": "Cálculo de energía",
+  "concepto": "operadores, expresiones",
   "concepto_evaluado": "operadores",
-  "narrativa": "La batería de Robot1 está baja. Hay una estación de recarga en el camino.",
+  "narrativa": "Los módulos pueden calcular. Los valores viajan por cables luminosos de un chip a otro.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "12.1",
       "tipo": "EXPLORAR",
-      "titulo": "Consulta tu energía",
-      "enunciado": "Ejecuta y observa cómo baja la energía en el panel de Estado tras avanzar.",
-      "codigoInicial": "robot1.avanzar(2)\nnivel = robot1.energia()\nprint(nivel)",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "energia"
-      ],
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "robot1.energia() devuelve un valor: puedes guardarlo y mostrarlo.",
-      "pistas": [
-        "Compara el panel de Estado antes y después."
-      ]
-    },
-    {
-      "id": "12.2",
-      "tipo": "MODIFICAR",
-      "titulo": "Calcula el gasto",
-      "enunciado": "Cambia el código para que muestre cuánta energía queda tras gastar 25 de 100.",
-      "codigoInicial": "restante = 100 - 10\nprint(restante)",
-      "solucionReferencia": "restante = 100 - 25\nprint(restante)",
+      "titulo": "Sumar módulos",
+      "enunciado": "Concepto nuevo: los operadores + y - calculan con variables. Mira cómo los valores de a y b fluyen hacia total.",
+      "codigoInicial": "a = 40\nb = 25\ntotal = a + b\nprint(total)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "75"
+        "tipo": "ejecutado"
       },
-      "retroalimentacion": "La expresión se calcula primero, y el resultado es lo que se guarda.",
+      "retroalimentacion": "Una expresión se calcula primero y su resultado se guarda en la variable.",
       "pistas": [
-        "Solo cambia el número que se resta."
+        "Sigue los cables: salen de a y b y llegan a total."
+      ]
+    },
+    {
+      "id": "12.2",
+      "tipo": "MODIFICAR",
+      "titulo": "¿Cuánta queda?",
+      "enunciado": "La reserva es 80 y se usaron 35. Modifica UNA línea para que el programa muestre cuánta energía queda (45).",
+      "codigoInicial": "reserva = 80\nusada = 35\nrestante = reserva + usada\nprint(restante)",
+      "solucionReferencia": "reserva = 80\nusada = 35\nrestante = reserva - usada\nprint(restante)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_exacto",
+        "valorEsperado": "45",
+        "requiere": {
+          "operador": "-"
+        }
+      },
+      "retroalimentacion": "La resta - calcula lo que queda.",
+      "pistas": [
+        "Lo que queda se calcula restando."
+      ],
+      "mensajeNoLogrado": "Debe mostrar 45 usando una resta.",
+      "solucionesIncorrectas": [
+        "reserva = 80\nusada = 35\nrestante = reserva + usada\nprint(restante)",
+        "reserva = 80\nusada = 35\nprint(45)"
       ]
     },
     {
       "id": "12.3",
       "tipo": "RESOLVER",
-      "titulo": "Pasa por la recarga",
-      "enunciado": "Robot1 arranca con 12 de energía y cada casilla cuesta 2. La meta está en (6,1) y hay una recarga (⚡) en (3,0). Llega con energía de sobra.",
+      "titulo": "Dos módulos, una suma",
+      "enunciado": "Dos módulos tienen 30 y 45 de energía. Guarda cada valor en una variable, suma ambas en total y muestra total (75).",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(6)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "solucionReferencia": "a = 30\nb = 45\ntotal = a + b\nprint(total)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "energia"
-      ],
+      "metodosPermitidos": [],
       "validacion": {
-        "tipo": "estado",
-        "posicionEsperada": [
-          6,
-          1
-        ],
-        "energiaMinima": 1
+        "tipo": "output_con_variable",
+        "valorEsperado": "75",
+        "variableRequerida": "total",
+        "requiere": {
+          "operador": "+"
+        }
       },
-      "retroalimentacion": "Sin la recarga la batería no alcanzaba: pasar por ⚡ la repuso a mitad de camino.",
+      "retroalimentacion": "Combinaste variables con un operador.",
       "pistas": [
-        "Cruza por la fila 0 para pisar la recarga, y baja al final.",
-        "Sin la recarga la batería no alcanza."
+        "Primero a = 30 y b = 45.",
+        "Luego total = a + b."
       ],
-      "mensajeNoLogrado": "Robot1 debe llegar a (6,1) sin quedarse sin energía. Pasa por la recarga."
+      "mensajeNoLogrado": "Debes calcular total con + y mostrarlo.",
+      "solucionesIncorrectas": [
+        "total = 75\nprint(total)"
+      ]
     }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 7,
-    "alto": 2,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      6,
-      1
-    ],
-    "energiaInicial": 12,
-    "costoEnergiaPorCasilla": 2,
-    "recargas": [
-      {
-        "posicion": [
-          3,
-          0
-        ],
-        "cantidad": 40
-      }
-    ],
-    "energiaMaxima": 100
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+  ]
 }

@@ -1,10 +1,20 @@
 // statePanel.js
-// Panel de ESTADO DE ROBOT1 (nuevo, prompt de cambios sección 5.4):
-// posición, dirección y energía (si aplica al nivel). Se actualiza en vivo.
+// Panel de ESTADO del mundo actual: posición/dirección/energía de Robot1,
+// estado del elevador, de la mesa de cartas... Cada escenario entrega sus
+// filas {etiqueta, valor} (escenario.filasEstado()). Se actualiza en vivo.
 
 export class StatePanel {
   constructor(container) {
     this.container = container;
+  }
+
+  mostrarFilas(filas) {
+    const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    this.container.innerHTML = filas
+      .map(
+        (f) => `<div class="estado-fila"><span class="estado-etiqueta">${esc(f.etiqueta)}</span><span class="estado-valor">${esc(f.valor)}</span></div>`
+      )
+      .join("");
   }
 
   actualizar({ posicion, direccion, energia }, { mostrarEnergia = true } = {}) {

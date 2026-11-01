@@ -1,121 +1,103 @@
 {
   "id": 16,
   "mundo": 2,
-  "nombre": "La memoria de Robot1",
+  "nombre": "Módulos que se combinan",
   "concepto": "combinación de variables, tipos y operadores",
   "concepto_evaluado": "integracion_variables_tipos_operadores",
-  "narrativa": "Robot1 debe revisar dos terminales con la batería justa. No hay margen para rodeos.",
-  "fases": [
-    {
-      "id": "16.1",
-      "tipo": "EXPLORAR",
-      "titulo": "Robot1 se consulta",
-      "enunciado": "Ejecuta y observa cómo Robot1 guarda su propio estado en variables.",
-      "codigoInicial": "robot1.avanzar(2)\ndonde = robot1.posicion()\nhacia = robot1.mirar()\nprint(donde)\nprint(hacia)",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "posicion",
-        "mirar"
-      ],
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "posicion() y mirar() devuelven valores: se guardan en variables como cualquier dato.",
-      "pistas": [
-        "Compara lo que muestra Salida con el panel de Estado."
-      ]
-    },
-    {
-      "id": "16.2",
-      "tipo": "ESCRIBIR",
-      "titulo": "Informe de batería",
-      "enunciado": "Guarda la energía de Robot1 en una variable llamada bateria y muéstrala.",
-      "codigoInicial": "",
-      "solucionReferencia": "bateria = robot1.energia()\nprint(bateria)",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "energia"
-      ],
-      "validacion": {
-        "tipo": "output_con_variable",
-        "valorEsperado": "14",
-        "variableRequerida": "bateria"
-      },
-      "retroalimentacion": "Robot1 puede reportar su propio estado al programa.",
-      "pistas": [
-        "bateria = robot1.energia()",
-        "Luego print(bateria)."
-      ],
-      "mensajeNoLogrado": "Debes guardar robot1.energia() en una variable llamada bateria y mostrarla."
-    },
-    {
-      "id": "16.3",
-      "tipo": "RESOLVER",
-      "titulo": "Dos terminales, una batería",
-      "enunciado": "Revisa las DOS terminales: (4,0) y (4,2). Arrancas con 14 de energía y cada casilla cuesta 1. No sobra para rodeos.",
-      "codigoInicial": "",
-      "solucionReferencia": "tramo = 4\nrobot1.avanzar(tramo)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "energia",
-        "posicion"
-      ],
-      "validacion": {
-        "tipo": "estado",
-        "todosLosObjetivos": true,
-        "energiaMinima": 1
-      },
-      "retroalimentacion": "Ruta óptima: 6 casillas para dos objetivos, con energía de sobra.",
-      "pistas": [
-        "Pisa la primera terminal de camino a la segunda.",
-        "La ruta más corta son 6 casillas en total."
-      ],
-      "mensajeNoLogrado": "Debes pisar las dos terminales sin quedarte sin energía.",
-      "escenario": {
-        "objetivosPosicion": [
-          [
-            4,
-            0
-          ],
-          [
-            4,
-            2
-          ]
-        ]
-      }
-    }
-  ],
+  "narrativa": "Los módulos recuperados ya pueden trabajar juntos: valores de distintos tipos y cálculos que dependen de otros.",
   "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 5,
-    "alto": 3,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      4,
-      0
-    ],
-    "energiaInicial": 14,
-    "costoEnergiaPorCasilla": 1
+    "tipo": "datos",
+    "capacidad": 8
   },
   "estrellas": {
     "base": true,
     "sinPistas": true,
     "primerIntento": true
-  }
+  },
+  "fases": [
+    {
+      "id": "16.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Área y etiqueta",
+      "enunciado": "Observa cómo un cálculo usa dos variables y cómo otra variable guarda un texto.",
+      "codigoInicial": "ancho = 8\nalto = 5\narea = ancho * alto\netiqueta = \"Area\"\nprint(etiqueta)\nprint(area)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Variables de distintos tipos conviven en la memoria.",
+      "pistas": [
+        "Mira los tipos: dos ENTERO y un TEXTO."
+      ]
+    },
+    {
+      "id": "16.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "El triángulo",
+      "enunciado": "Guarda 12 en base y 5 en altura. Calcula area = base * altura / 2 y muéstrala (30).",
+      "codigoInicial": "",
+      "solucionReferencia": "base = 12\naltura = 5\narea = base * altura / 2\nprint(area)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_con_variable",
+        "valorEsperado": "30",
+        "variableRequerida": "area",
+        "requiere": {
+          "operadores": [
+            "*",
+            "/"
+          ]
+        }
+      },
+      "retroalimentacion": "Una expresión puede mezclar varios operadores.",
+      "pistas": [
+        "base * altura primero, luego / 2."
+      ],
+      "mensajeNoLogrado": "area debe ser 30 y calcularse con * y /."
+    },
+    {
+      "id": "16.3",
+      "tipo": "RESOLVER",
+      "titulo": "Mensaje recuperado",
+      "enunciado": "Guarda en mensaje el texto \"Memoria recuperada\" y en modulos el resultado de 4 * 3. Muestra primero mensaje y luego modulos.",
+      "codigoInicial": "",
+      "solucionReferencia": "mensaje = \"Memoria recuperada\"\nmodulos = 4 * 3\nprint(mensaje)\nprint(modulos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "Memoria recuperada",
+              "12"
+            ]
+          },
+          {
+            "tipo": "variables",
+            "variables": {
+              "mensaje": "Memoria recuperada",
+              "modulos": 12
+            }
+          }
+        ]
+      },
+      "retroalimentacion": "Combinaste textos y números en un mismo programa.",
+      "pistas": [
+        "Dos variables y dos print."
+      ]
+    }
+  ]
 }

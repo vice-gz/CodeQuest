@@ -2,58 +2,69 @@
   "id": 15,
   "mundo": 2,
   "nombre": "El identificador incorrecto",
-  "concepto": "identificadores, lectura de código",
+  "concepto": "identificadores",
   "concepto_evaluado": "identificadores",
-  "narrativa": "Un error de nombre basta para que Robot1 no entienda nada. Hay que leer con cuidado.",
+  "narrativa": "Un nombre mal escrito deja un módulo huérfano: el programa no sabe encontrarlo.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "15.1",
       "tipo": "EXPLORAR",
-      "titulo": "El nombre no coincide",
-      "enunciado": "Este código falla. Ejecútalo y lee qué variable no encuentra el programa.",
-      "codigoInicial": "pasos = 4\nprint(paso)",
+      "titulo": "Nombres válidos",
+      "enunciado": "Concepto nuevo: el nombre de una variable (identificador) puede llevar letras, números y _, pero NO empieza con número. También importa si es mayúscula o minúscula.",
+      "codigoInicial": "energia_total = 90\nvalor2 = 7\nprint(energia_total)\nprint(valor2)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
       "validacion": {
-        "tipo": "error_esperado",
-        "codigoError": "SEM_001"
+        "tipo": "ejecutado"
       },
-      "retroalimentacion": "SEM_001: el programa buscó paso, pero lo que existe es pasos. Una letra basta.",
+      "retroalimentacion": "Buenos nombres: letras, números y _ (sin empezar con número).",
       "pistas": [
-        "No lo corrijas todavía: ejecútalo y lee el error."
-      ],
-      "mensajeNoLogrado": "Ejecuta el código tal como está y lee el error."
+        "energia_total usa guion bajo en vez de espacio."
+      ]
     },
     {
       "id": "15.2",
       "tipo": "DEBUG",
-      "titulo": "Corrige el nombre",
-      "enunciado": "Ahora corrígelo para que muestre 4.",
-      "codigoInicial": "pasos = 4\nprint(paso)",
-      "solucionReferencia": "pasos = 4\nprint(pasos)",
+      "titulo": "Empieza con número",
+      "enunciado": "El nombre 2valor no es válido porque empieza con un número. Cámbialo por valor2 para que el programa muestre 5.",
+      "codigoInicial": "2valor = 5\nprint(2valor)",
+      "solucionReferencia": "valor2 = 5\nprint(valor2)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
       "validacion": {
-        "tipo": "output",
-        "valorEsperado": "4"
+        "tipo": "output_con_variable",
+        "valorEsperado": "5",
+        "variableRequerida": "valor2"
       },
-      "retroalimentacion": "El identificador debe escribirse exactamente igual en los dos lugares.",
+      "retroalimentacion": "Un identificador no puede empezar con número.",
       "pistas": [
-        "Falta una s."
+        "Pasa el 2 al final del nombre."
+      ],
+      "solucionesIncorrectas": [
+        "2valor = 5\nprint(2valor)"
       ]
     },
     {
       "id": "15.3",
       "tipo": "PREDECIR",
-      "titulo": "Mayúsculas y minúsculas",
-      "enunciado": "Si escribes Nombre = \"Robot1\" y luego print(nombre), ¿qué pasa?",
-      "codigoInicial": "Nombre = \"Robot1\"\nprint(nombre)",
+      "titulo": "Mayúsculas importan",
+      "enunciado": "¿Qué pasa al ejecutar este programa?",
+      "codigoInicial": "Nombre = \"Ana\"\nprint(nombre)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -62,71 +73,49 @@
       "opciones": [
         {
           "id": "a",
-          "texto": "Muestra Robot1: da igual la mayúscula"
+          "texto": "Muestra Ana"
         },
         {
           "id": "b",
-          "texto": "Falla: Nombre y nombre son variables distintas"
+          "texto": "Error: la variable nombre no existe"
         },
         {
           "id": "c",
-          "texto": "Muestra un espacio vacío"
+          "texto": "Muestra Nombre"
         }
       ],
       "respuestaCorrecta": "b",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Correcto: CQL distingue mayúsculas de minúsculas, igual que Python.",
+      "retroalimentacion": "Nombre y nombre son identificadores distintos.",
       "pistas": [
-        "Compara letra por letra los dos nombres."
+        "Compara cómo se escribe la variable en cada línea."
       ]
     },
     {
       "id": "15.4",
       "tipo": "DEBUG",
-      "titulo": "Usada antes de existir",
-      "enunciado": "La variable se usa antes de crearla. Reordena el código y completa la ruta hasta (3,1).",
-      "codigoInicial": "robot1.avanzar(pasos)\npasos = 3",
-      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "titulo": "Una letra de más",
+      "enunciado": "Corrige el programa para que muestre 10. Las dos líneas deben usar exactamente el mismo nombre.",
+      "codigoInicial": "Puntos = 10\nprint(puntos)",
+      "solucionReferencia": "puntos = 10\nprint(puntos)",
       "instruccionesPermitidas": [
-        "asignacion"
+        "asignacion",
+        "print"
       ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar"
-      ],
+      "metodosPermitidos": [],
       "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          3,
-          1
-        ]
+        "tipo": "output_exacto",
+        "valorEsperado": "10"
       },
-      "retroalimentacion": "El orden importa: una variable debe existir antes de usarse.",
+      "retroalimentacion": "Los nombres deben coincidir letra por letra, también en mayúsculas.",
       "pistas": [
-        "Intercambia las dos líneas.",
-        "Después baja una fila con girar(\"sur\")."
+        "Usa minúscula en la primera línea."
+      ],
+      "solucionesIncorrectas": [
+        "Puntos = 10\nprint(puntos)"
       ]
     }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 5,
-    "alto": 2,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      3,
-      1
-    ]
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+  ]
 }

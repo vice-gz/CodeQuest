@@ -1,0 +1,272 @@
+{
+  "id": 23,
+  "mundo": 3,
+  "nombre": "Mayor, menor o igual",
+  "concepto": "comparación de orden (<, >, <=, >=)",
+  "concepto_evaluado": "comparadores_orden",
+  "narrativa": "Comparar también es decir quién es mayor. Y a veces el empate cuenta.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "23.1",
+      "tipo": "EXPLORAR",
+      "titulo": "¿Quién gana?",
+      "enunciado": "Concepto nuevo: < menor, > mayor, <= menor o igual, >= mayor o igual. Compara las dos cartas y mira el resultado en cada mesa.",
+      "codigoInicial": "if carta1 > carta2:\n    print(\"Gana la primera\")\nelse:\n    print(\"No gana la primera\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 9,
+            "palo": "picas"
+          },
+          {
+            "valor": 7,
+            "palo": "picas"
+          }
+        ]
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "> es falso con el empate: 8 no es mayor que 8.",
+      "pistas": [
+        "Prueba la mesa del empate."
+      ]
+    },
+    {
+      "id": "23.2",
+      "tipo": "PREDECIR",
+      "titulo": "Con empate",
+      "enunciado": "Las dos cartas valen 7. ¿Qué muestra este programa?",
+      "codigoInicial": "if carta1 >= carta2:\n    print(\"Gana o empata\")\nelse:\n    print(\"Pierde\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 7,
+            "palo": "picas"
+          },
+          {
+            "valor": 7,
+            "palo": "picas"
+          }
+        ]
+      },
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Gana o empata"
+        },
+        {
+          "id": "b",
+          "texto": "Pierde"
+        },
+        {
+          "id": "c",
+          "texto": "Nada"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": ">= incluye el empate: 7 >= 7 es verdadero.",
+      "pistas": [
+        "¿7 >= 7?"
+      ]
+    },
+    {
+      "id": "23.3",
+      "tipo": "MODIFICAR",
+      "titulo": "El empate también gana",
+      "enunciado": "Ahora el empate favorece a la primera carta. Modifica el programa para mostrar Gana la primera cuando carta1 sea mayor O IGUAL que carta2.",
+      "codigoInicial": "if carta1 > carta2:\n    print(\"Gana la primera\")\nelse:\n    print(\"No gana\")",
+      "solucionReferencia": "if carta1 >= carta2:\n    print(\"Gana la primera\")\nelse:\n    print(\"No gana\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Gana la primera"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "No gana"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Gana la primera"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 4",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 2,
+                "palo": "picas"
+              },
+              {
+                "valor": 2,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Gana la primera"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": ">= y <= incluyen el empate.",
+      "pistas": [
+        "Cambia > por >="
+      ],
+      "mensajeNoLogrado": "Revisa la mesa del empate.",
+      "solucionesIncorrectas": [
+        "if carta1 > carta2:\n    print(\"Gana la primera\")\nelse:\n    print(\"No gana\")"
+      ]
+    }
+  ]
+}

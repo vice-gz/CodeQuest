@@ -89,12 +89,11 @@ const prueba = async (nombre, fn) => {
 };
 
 console.log("Catálogo y funciones puras");
-await prueba("19 niveles, 2 mundos, 57 estrellas máximas", () => {
-  assert.equal(catalogo.totalNiveles, 19);
-  assert.deepEqual(Object.keys(catalogo.mundos), ["1", "2"]);
-  assert.equal(catalogo.mundos[1].niveles.length, 8);
-  assert.equal(catalogo.mundos[2].niveles.length, 11);
-  assert.equal(catalogo.maxEstrellas, 57);
+await prueba("43 niveles, 4 mundos (8, 11, 12 y 12), 129 estrellas máximas", () => {
+  assert.equal(catalogo.totalNiveles, 43);
+  assert.deepEqual(Object.keys(catalogo.mundos), ["1", "2", "3", "4"]);
+  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.niveles.length), [8, 11, 12, 12]);
+  assert.equal(catalogo.maxEstrellas, 129);
 });
 
 await prueba("nivel con todas sus fases a la primera = 3 estrellas", () => {

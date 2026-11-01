@@ -9,7 +9,7 @@ import { validarEmail, esRolAdmin } from "./util.js";
 import { correoEsInstitucional, DOMINIO_INSTITUCIONAL } from "./config.js";
 
 export const RUTA_POR_ROL = {
-  estudiante: "juego.html",
+  estudiante: "mundos.html",
   profesor: "perfil.html",
   admin: "admin.html",
   super_root: "admin.html",
@@ -212,7 +212,7 @@ export async function cambiarContrasena(nuevaPassword) {
 export async function redirigirSegunRol(perfil = null) {
   const p = perfil || (await obtenerPerfil({ forzar: true }));
   if (!p) return false;
-  window.location.href = RUTA_POR_ROL[p.rol] || "juego.html";
+  window.location.href = RUTA_POR_ROL[p.rol] || "mundos.html";
   return true;
 }
 

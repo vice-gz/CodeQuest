@@ -69,9 +69,9 @@ export const Errores = {
       sugerencia: `Ejemplo: ${nombre} = 3`,
       linea,
     }),
-  metodoNoExiste: (nombre, linea) =>
-    new CQLError("SEM_002", `El método robot1.${nombre} no existe`, {
-      educativo: "Robot1 solo entiende los métodos definidos en su manual de instrucciones.",
+  metodoNoExiste: (nombre, linea, objeto = "robot1") =>
+    new CQLError("SEM_002", `El método ${objeto}.${nombre} no existe`, {
+      educativo: `${objeto === "robot1" ? "Robot1" : "El objeto " + objeto} solo entiende los métodos definidos en su manual de instrucciones.`,
       sugerencia: "Revisa cómo se llama el método que quieres usar.",
       linea,
     }),
@@ -87,10 +87,13 @@ export const Errores = {
       sugerencia: "Ejemplo: robot1.avanzar(3) o robot1.avanzar(pasos).",
       linea,
     }),
-  accionNecesitaNumero: (metodo, linea) =>
-    new CQLError("SEM_004", `robot1.${metodo}() necesita un número`, {
-      educativo: "Este movimiento solo acepta una cantidad numérica de casillas.",
-      sugerencia: `Ejemplo: robot1.${metodo}(3) o robot1.${metodo}(pasos).`,
+  accionNecesitaNumero: (metodo, linea, objeto = "robot1") =>
+    new CQLError("SEM_004", `${metodo === "-" ? "El signo - necesita" : `${objeto}.${metodo}() necesita`} un número`, {
+      educativo:
+        metodo === "-"
+          ? "El signo - solo se puede aplicar a un número."
+          : "Este movimiento solo acepta una cantidad numérica.",
+      sugerencia: metodo === "-" ? "Ejemplo: -5 o -pasos (si pasos es un número)." : `Ejemplo: ${objeto}.${metodo}(3) o ${objeto}.${metodo}(pasos).`,
       linea,
     }),
   direccionInvalida: (valor, linea) =>
@@ -172,4 +175,145 @@ Errores.direccionInvalida = (valor, linea) =>
     educativo: 'robot1.girar() solo entiende "norte", "sur", "este" u "oeste" (o sus equivalentes).',
     sugerencia: 'Prueba con robot1.girar("norte").',
     linea,
+  });
+
+// ---------------------------------------------------------------------------
+// Avance 3: condicionales, ciclos y bloques con sangría (Mundos 3 y 4).
+// ---------------------------------------------------------------------------
+
+// Sintácticos
+Errores.faltaDosPuntos = (palabra, linea) =>
+  new CQLError("SYN_006", `Falta ":" al final de la línea del ${palabra}`, {
+    educativo: `Después de la condición de un ${palabra} (o del else) va el signo ":".`,
+    sugerencia: palabra === "else" ? "Escribe: else:" : `Ejemplo: ${palabra} x > 10:`,
+    linea,
+  });
+Errores.faltaSangria = (linea) =>
+  new CQLError("SYN_007", "Falta la sangría después de los dos puntos", {
+    educativo: "Las instrucciones que pertenecen al bloque van en las líneas de abajo, movidas 4 espacios a la derecha (tecla Tab).",
+    sugerencia: 'Ejemplo:\nif x > 10:\n    print("grande")',
+    linea,
+  });
+Errores.sangriaInesperada = (linea) =>
+  new CQLError("SYN_008", "Sangría inesperada", {
+    educativo: "Solo se mueven a la derecha las líneas que están dentro de un if, elif, else, while o for.",
+    sugerencia: "Quita los espacios del inicio de esa línea (Shift+Tab), o agrega arriba la línea que termina en \":\".",
+    linea,
+  });
+Errores.sinIfPrevio = (palabra, linea) =>
+  new CQLError("SYN_009", `Hay un ${palabra} sin if antes`, {
+    educativo: `${palabra} siempre acompaña a un if: va justo debajo del bloque del if y alineado con él.`,
+    sugerencia: `Revisa que el ${palabra} empiece en la misma columna que su if.`,
+    linea,
+  });
+Errores.sangriaInconsistente = (linea) =>
+  new CQLError("SYN_010", "La sangría no coincide con ninguna línea anterior", {
+    educativo: "Al salir de un bloque, la línea debe quedar alineada exactamente con la línea que lo abrió.",
+    sugerencia: "Usa 4 espacios por nivel (tecla Tab) y alinea las líneas del mismo nivel.",
+    linea,
+  });
+Errores.igualEnCondicion = (linea) =>
+  new CQLError("SYN_011", "Usaste = donde va ==", {
+    educativo: "Un solo = guarda un valor en una variable. Para PREGUNTAR si dos valores son iguales se usa ==.",
+    sugerencia: "Ejemplo: if total == 21:",
+    linea,
+  });
+Errores.forSoloRange = (linea) =>
+  new CQLError("SYN_012", "El for necesita range(...)", {
+    educativo: "En CodeQuest el for repite una cantidad de veces usando range().",
+    sugerencia: "Ejemplo: for i in range(3):",
+    linea,
+  });
+Errores.argumentosRange = (linea) =>
+  new CQLError("SYN_013", "range() recibe 1, 2 o 3 números", {
+    educativo: "range(n) cuenta de 0 a n-1; range(a, b) cuenta de a a b-1; range(a, b, paso) salta de paso en paso.",
+    sugerencia: "Ejemplo: range(3) repite 3 veces.",
+    linea,
+  });
+Errores.comparacionEncadenada = (linea) =>
+  new CQLError("SYN_014", "No se pueden encadenar dos comparaciones", {
+    educativo: "Cada comparación se hace por separado y se unen con and / or.",
+    sugerencia: "En vez de 1 < x < 5, escribe: x > 1 and x < 5",
+    linea,
+  });
+
+// Semánticos
+Errores.objetoNoExiste = (nombre, esperado, linea) =>
+  new CQLError("SEM_010", `El objeto ${nombre} no existe aquí`, {
+    educativo: esperado
+      ? `En este mundo el único objeto que puedes usar es ${esperado}.`
+      : "En este mundo no hay objetos con métodos: solo usas variables, print() y entrada().",
+    sugerencia: esperado ? `Ejemplo: ${esperado}.metodo(...)` : "Escribe el nombre de una variable o una instrucción permitida.",
+    linea,
+  });
+Errores.palabraNoPermitidaEnNivel = (palabra, linea) =>
+  new CQLError("SEM_007", `${palabra} no está permitido todavía en este nivel`, {
+    educativo: "Cada nivel solo desbloquea ciertas instrucciones.",
+    sugerencia: "Usa únicamente las instrucciones que aparecen en 'Disponible en esta fase'.",
+    linea,
+  });
+Errores.booleanoMinuscula = (nombre, linea) =>
+  new CQLError("SEM_001", `${nombre} no es un valor: se escribe ${nombre === "true" ? "True" : "False"}`, {
+    educativo: "Los valores lógicos se escriben con mayúscula inicial: True y False.",
+    sugerencia: `Escribe ${nombre === "true" ? "True" : "False"}`,
+    linea,
+  });
+
+// Ejecución
+Errores.cicloInfinito = (linea) =>
+  new CQLError("RUN_005", "Ciclo infinito detectado", {
+    educativo:
+      "Tu programa repitió instrucciones más de 1000 veces y se detuvo para no congelar el navegador. Casi siempre es un while cuya condición nunca se vuelve falsa.",
+    sugerencia: "Revisa que dentro del ciclo cambies la variable de la condición (por ejemplo: piso = piso + 1).",
+    linea,
+  });
+Errores.condicionNoBooleana = (texto, linea) =>
+  new CQLError("RUN_006", `La condición "${texto}" no dio True ni False`, {
+    educativo: "Un if o un while necesita una pregunta con respuesta True o False, como x > 5 o color == \"roja\".",
+    sugerencia: "Compara el valor con algo usando ==, !=, <, >, <= o >=.",
+    linea,
+  });
+Errores.comparacionInvalida = (operador, tipoA, tipoB, linea) =>
+  new CQLError("RUN_007", `No se puede comparar ${tipoA} con ${tipoB} usando ${operador}`, {
+    educativo: "Con <, >, <= y >= solo se comparan dos números o dos textos.",
+    sugerencia: "Revisa que los dos lados de la comparación sean del mismo tipo.",
+    linea,
+  });
+Errores.operandoLogicoNoBooleano = (operador, linea) =>
+  new CQLError("RUN_011", `${operador} necesita valores True o False`, {
+    educativo: "and, or y not trabajan con respuestas de comparaciones (True / False).",
+    sugerencia: "Ejemplo: total < 21 and color == \"roja\"",
+    linea,
+  });
+Errores.rangoInvalido = (linea) =>
+  new CQLError("RUN_010", "range() necesita números enteros (y el paso no puede ser 0)", {
+    educativo: "El for cuenta con números enteros.",
+    sugerencia: "Ejemplo: for i in range(3):",
+    linea,
+  });
+Errores.elevadorFueraDelEdificio = (pisos, linea = null) =>
+  new CQLError("RUN_008", "El elevador intentó salir del edificio", {
+    educativo: `El edificio tiene ${pisos} pisos (del 1 al ${pisos}). El elevador no puede subir más ni bajar de la planta baja.`,
+    sugerencia: "Revisa cuántos pisos le pides subir o bajar, o la condición de tu ciclo.",
+    linea,
+  });
+Errores.elevadorLleno = (capacidad) =>
+  new CQLError("RUN_009", "El elevador está lleno", {
+    educativo: `En la cabina caben ${capacidad} pasajeros. Hay que bajarlos antes de recoger a más.`,
+    sugerencia: "Lleva a los pasajeros a la planta baja con elevador.soltar() antes de recoger más.",
+  });
+Errores.elevadorSinEnergia = () =>
+  new CQLError("RUN_012", "El elevador se quedó sin energía", {
+    educativo: "Cada piso que recorre el elevador gasta 1% de energía y la cabina empieza con 100%.",
+    sugerencia: "Revisa que el ciclo no haga viajes de más.",
+  });
+Errores.mesaLlena = (maximo) =>
+  new CQLError("RUN_013", "La mesa está llena", {
+    educativo: `En la mesa caben ${maximo} cartas como máximo.`,
+    sugerencia: "Usa mesa.voltear() para revisar las cartas que ya pusiste.",
+  });
+Errores.colorDeCartaInvalido = (valor) =>
+  new CQLError("RUN_014", `"${valor}" no es un color de carta`, {
+    educativo: 'Las cartas son "roja" o "negra".',
+    sugerencia: 'Ejemplo: mesa.poner_carta(7, "roja")',
   });

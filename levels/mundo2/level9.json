@@ -4,13 +4,22 @@
   "nombre": "Necesito recordar",
   "concepto": "variable, asignación, identificador, literal",
   "concepto_evaluado": "variables",
-  "narrativa": "En la terminal, cada valor que escribías se usaba y se perdía. Robot1 necesita algo más: recordarlo.",
+  "narrativa": "En la terminal, cada valor que escribías se usaba y se perdía. Robot1 despierta en el Centro de Recuperación: para recordar, necesita módulos de memoria.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "9.1",
       "tipo": "EXPLORAR",
-      "titulo": "La primera variable",
-      "enunciado": "Concepto nuevo: el signo = guarda un valor con un nombre para poder reutilizarlo. Ejecuta y observa el panel de Memoria.",
+      "titulo": "El primer módulo",
+      "enunciado": "Concepto nuevo: el signo = guarda un valor con un nombre en un módulo de memoria. Ese nombre es una variable. Ejecuta y mira cómo se ilumina un chip.",
       "codigoInicial": "nombre = \"Robot1\"\nprint(nombre)",
       "instruccionesPermitidas": [
         "asignacion",
@@ -20,9 +29,9 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "El signo = guarda un valor con un nombre. El panel de Memoria muestra lo guardado.",
+      "retroalimentacion": "El signo = guarda un valor con un nombre. El chip muestra lo guardado.",
       "pistas": [
-        "Mira el panel de Memoria, no el mundo 2D."
+        "Mira los chips morados: el nombre está arriba y el valor al centro."
       ]
     },
     {
@@ -47,7 +56,7 @@
         },
         {
           "id": "c",
-          "texto": "Un error, porque falta poner comillas"
+          "texto": "Un error, porque faltan comillas"
         }
       ],
       "respuestaCorrecta": "b",
@@ -76,29 +85,15 @@
         "valorEsperado": "Explorar",
         "variableRequerida": "mision"
       },
-      "retroalimentacion": "Ya sabes crear un identificador y asignarle un literal.",
+      "retroalimentacion": "Ya sabes crear una variable y asignarle un valor.",
       "pistas": [
         "Primero mision = \"Explorar\".",
         "Luego print(mision), sin comillas."
       ],
-      "mensajeNoLogrado": "Debes usar una variable llamada mision y mostrarla con print()."
+      "mensajeNoLogrado": "Debes usar una variable llamada mision y mostrarla con print().",
+      "solucionesIncorrectas": [
+        "print(\"Explorar\")"
+      ]
     }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 4,
-    "alto": 1,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "mostrarRobot": false,
-    "mostrarEnergia": false
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+  ]
 }

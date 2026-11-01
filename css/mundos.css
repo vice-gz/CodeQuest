@@ -1,0 +1,545 @@
+/* ============================================================
+   CodeQuest — Avance 3
+   1) Mapa de mundos (mundos.html)
+   2) Tema por mundo en el juego (body[data-mundo])
+   3) Selector de casos, resultados por caso y modales de teoría
+   Cada mundo tiene su acento (js/game/paletas.js lo vuelca en
+   --mundo-acento, --mundo-acento-2, --mundo-fondo y --mundo-glow).
+   ============================================================ */
+
+/* ---------------------------------------------------------------- 1) Mapa */
+
+.mapa {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 56px;
+}
+
+.mapa-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.mapa-etiqueta {
+  margin: 0 0 6px;
+  font-family: var(--fuente-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.mapa-encabezado h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: -0.02em;
+}
+
+.mapa-subtitulo {
+  margin: 8px 0 0;
+  color: var(--texto-muted);
+}
+
+.mapa-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.mundo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--panel);
+  border: 2px solid var(--mundo-acento);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 10px 30px -12px var(--mundo-glow);
+  color: var(--mundo-acento);
+}
+
+.mundo-card.estado-completado {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 0 32px -6px var(--mundo-glow);
+}
+
+/* Bloqueado: gris y con trazo punteado (no depende solo del color). */
+.mundo-card.estado-bloqueado,
+.mundo-card.estado-proximamente {
+  border: 2px dashed #3a4170;
+  box-shadow: none;
+  color: #6c749c;
+}
+
+.mundo-card.estado-bloqueado .mundo-ilustracion,
+.mundo-card.estado-proximamente .mundo-ilustracion {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.mundo-card.mundo-actual {
+  outline: 3px solid var(--ambar);
+  outline-offset: 4px;
+}
+
+.mundo-ilustracion {
+  height: 150px;
+  background: radial-gradient(ellipse at 50% 120%, var(--mundo-glow), transparent 70%), #0a0d14;
+  border-bottom: 1px solid var(--borde);
+}
+
+.mundo-ilustracion svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mundo-cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px 20px;
+  color: var(--texto);
+}
+
+.mundo-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mundo-numero {
+  font-family: var(--fuente-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mundo-acento);
+}
+
+.estado-bloqueado .mundo-numero,
+.estado-proximamente .mundo-numero {
+  color: var(--texto-muted);
+}
+
+.mundo-estado {
+  padding: 3px 11px;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--mundo-acento);
+}
+
+.estado-bloqueado .mundo-estado,
+.estado-proximamente .mundo-estado {
+  color: var(--texto-muted);
+}
+
+.mundo-cuerpo h2 {
+  margin: 4px 0 0;
+  font-size: 1.5rem;
+}
+
+.mundo-lugar {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--texto-muted);
+}
+
+.mundo-resumen {
+  margin: 4px 0;
+  font-size: 0.92rem;
+  color: var(--texto-muted);
+}
+
+.mundo-temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.mundo-temas li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--panel-alt);
+  border: 1px solid var(--borde);
+  font-size: 0.75rem;
+}
+
+.mundo-barra {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--bg-elevado);
+  overflow: hidden;
+}
+
+.mundo-barra span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--mundo-acento);
+}
+
+.mundo-cifras {
+  display: flex;
+  justify-content: space-between;
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--texto-muted);
+}
+
+.mundo-cifras .estrella {
+  color: var(--ambar);
+}
+
+.mundo-requisito {
+  margin: 4px 0 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 184, 77, 0.08);
+  border: 1px solid rgba(255, 184, 77, 0.3);
+  font-size: 0.82rem;
+  color: var(--ambar);
+}
+
+.mundo-aqui {
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ambar);
+}
+
+.mundo-entrar {
+  margin-top: auto;
+  text-align: center;
+  text-decoration: none;
+  background: var(--mundo-acento);
+}
+
+.mundo-entrar:disabled {
+  background: transparent;
+}
+
+.mapa-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 26px 0 0;
+  font-size: 0.85rem;
+  color: var(--texto-muted);
+}
+
+@media (max-width: 560px) {
+  .mapa {
+    padding: 20px 14px 40px;
+  }
+
+  .mapa-rejilla {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- 2) Tema por mundo (juego) */
+
+body[data-mundo] .panel-mundo {
+  background: var(--mundo-fondo);
+  border: 1.5px solid var(--mundo-acento);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 0 26px -4px var(--mundo-glow), inset 0 0 40px -22px var(--mundo-glow);
+}
+
+body[data-mundo] .panel-mundo .lienzo-envoltura {
+  background: var(--mundo-fondo);
+}
+
+body[data-mundo] .panel-mundo .panel-encabezado h2,
+body[data-mundo] .panel-mundo .etiqueta-objetivo {
+  color: var(--mundo-acento);
+}
+
+body[data-mundo] .separador-mundo {
+  color: var(--mundo-acento);
+}
+
+body[data-mundo] .nivel-punto.activo {
+  background: var(--mundo-acento);
+  border-color: var(--mundo-acento);
+  color: #0a0d14;
+}
+
+body[data-mundo] .nivel-punto.completado:not(.activo) {
+  border-color: var(--mundo-acento);
+  color: var(--mundo-acento);
+}
+
+body[data-mundo] .chip-instruccion {
+  border-color: color-mix(in srgb, var(--mundo-acento) 55%, transparent);
+}
+
+/* Mundo 2: no hay robot; la memoria es la protagonista. */
+body[data-mundo="2"] .panel-memoria {
+  border-color: var(--mundo-acento);
+  box-shadow: 0 0 22px -8px var(--mundo-glow);
+}
+
+body[data-mundo="2"] .panel-memoria .panel-contenido,
+body[data-mundo="2"] .panel-memoria .memoria-contenido {
+  max-height: 300px;
+}
+
+.boton-mapa {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+body.modo-sandbox .boton-mapa {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- 3) Casos y teoría */
+
+.selector-casos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.caso-boton {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--borde);
+  background: transparent;
+  color: var(--texto-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.caso-boton:hover {
+  color: var(--texto);
+  border-color: var(--texto-muted);
+}
+
+.caso-boton.activo {
+  background: var(--mundo-acento, var(--teal));
+  border-color: var(--mundo-acento, var(--teal));
+  color: #0a0d14;
+}
+
+.caso-boton:focus-visible {
+  outline: 3px solid var(--mundo-acento, var(--teal));
+  outline-offset: 2px;
+}
+
+.feedback-casos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.feedback-casos li {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--borde-suave);
+}
+
+.feedback-casos .caso-ok {
+  color: var(--exito);
+}
+
+.feedback-casos .caso-mal {
+  color: #ffb3b3;
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.modal-teoria {
+  --teoria-acento: var(--teal);
+  border-color: var(--teoria-acento);
+  box-shadow: 0 0 40px -10px var(--teoria-acento);
+}
+
+.modal-teoria.modal-ancho {
+  width: min(720px, 100%);
+}
+
+.modal-teoria.modal-bienvenida {
+  width: min(560px, 100%);
+}
+
+.teoria-etiqueta {
+  margin: 0 0 4px;
+  font-family: var(--fuente-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teoria-acento);
+}
+
+.teoria-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.teoria-encabezado h2 {
+  margin: 0;
+}
+
+.teoria-visual {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 14px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--bg-elevado);
+  color: var(--teoria-acento);
+}
+
+.teoria-visual svg {
+  width: min(320px, 100%);
+  height: auto;
+}
+
+.teoria-codigo {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #080b16;
+  border: 1px solid var(--borde);
+  font-family: var(--fuente-mono);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: #cfe9e4;
+  overflow-x: auto;
+}
+
+.teoria-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.teoria-item {
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--panel-alt);
+}
+
+.teoria-item summary {
+  padding: 12px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.teoria-item[open] summary {
+  color: var(--teoria-acento);
+}
+
+.teoria-cuerpo {
+  padding: 0 16px 14px;
+}
+
+.teoria-cuerpo p {
+  margin: 0 0 12px;
+}
+
+@media (max-width: 640px) {
+  .modal-teoria {
+    padding: 18px;
+  }
+}
+
+/* ---------------------------------------------------------------- Página de conceptos */
+
+.pagina-conceptos {
+  --teoria-acento: var(--teal);
+}
+
+.conceptos-barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 24px;
+  height: var(--nav-alto);
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.conceptos-barra nav {
+  display: flex;
+  gap: 10px;
+}
+
+.conceptos-contenido {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px 56px;
+}
+
+.conceptos-contenido h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+}
+
+.conceptos-indice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 24px;
+}
+
+.conceptos-indice a {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--borde);
+  color: var(--texto);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.conceptos-indice a:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.conceptos-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 18px;
+}
+
+.concepto-tarjeta {
+  padding: 22px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  scroll-margin-top: 16px;
+}
+
+.concepto-tarjeta h2 {
+  margin: 0 0 4px;
+  color: var(--teal);
+}
+
+@media (max-width: 520px) {
+  .conceptos-rejilla {
+    grid-template-columns: 1fr;
+  }
+}

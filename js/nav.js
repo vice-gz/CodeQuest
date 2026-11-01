@@ -15,7 +15,11 @@ export async function renderizarNav(contenedorId = "nav", perfilDado = null) {
   const enSandbox = new URLSearchParams(window.location.search).get("modo") === "sandbox";
   // Jugar y Laboratorio Libre comparten página: se distinguen por ?modo=sandbox.
   const esActual = (href) =>
-    href.includes("modo=sandbox") ? actual === "juego.html" && enSandbox : href === "juego.html" ? actual === href && !enSandbox : actual === href;
+    href.includes("modo=sandbox")
+      ? actual === "juego.html" && enSandbox
+      : href === "mundos.html"
+        ? (actual === "mundos.html" || actual === "juego.html") && !enSandbox
+        : actual === href;
   const enlace = (href, texto) =>
     `<a href="${href}"${esActual(href) ? ' aria-current="page"' : ""}>${texto}</a>`;
 
@@ -24,14 +28,14 @@ export async function renderizarNav(contenedorId = "nav", perfilDado = null) {
   if (esRolAdmin(perfil.rol)) {
     enlaces = enlace("admin.html", "Panel de admin");
   } else {
-    enlaces = enlace("juego.html", "Jugar") + enlace("juego.html?modo=sandbox", "Laboratorio Libre");
+    enlaces = enlace("mundos.html", "Mapa de mundos") + enlace("juego.html?modo=sandbox", "Laboratorio Libre") + enlace("conceptos.html", "Conceptos");
     if (perfil.rol === "profesor") enlaces += enlace("profesor.html", "Mis clases");
     enlaces += enlace("perfil.html", "Mi perfil");
   }
 
   nav.classList.add("nav-principal");
   nav.innerHTML = `
-    <a class="nav-logo" href="${esRolAdmin(perfil.rol) ? "admin.html" : "juego.html"}"><span aria-hidden="true">◆</span> CodeQuest</a>
+    <a class="nav-logo" href="${esRolAdmin(perfil.rol) ? "admin.html" : "mundos.html"}"><span aria-hidden="true">◆</span> CodeQuest</a>
     <button class="nav-hamburguesa" id="nav-hamburguesa" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menú">☰</button>
     <div class="nav-menu" id="nav-menu">
       <div class="nav-enlaces">${enlaces}</div>

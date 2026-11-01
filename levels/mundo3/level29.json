@@ -1,0 +1,467 @@
+{
+  "id": 29,
+  "mundo": 3,
+  "nombre": "Pares",
+  "concepto": "pares y condiciones combinadas",
+  "concepto_evaluado": "pares_y_condiciones",
+  "narrativa": "Los pares son la jugada favorita del crupier: hay que decidir cuándo dividir.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "29.1",
+      "tipo": "RESOLVER",
+      "titulo": "¿Divide o no?",
+      "enunciado": "Si carta1 y carta2 son iguales Y carta1 vale 8 o más, muestra Divide; si son iguales pero menores, Par bajo; si no son iguales, No par. Se prueba en 6 mesas.",
+      "codigoInicial": "",
+      "solucionReferencia": "if carta1 == carta2 and carta1 >= 8:\n    print(\"Divide\")\nelif carta1 == carta2:\n    print(\"Par bajo\")\nelse:\n    print(\"No par\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 20",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Divide"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Divide"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 14",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Par bajo"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 8",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 4,
+                "palo": "picas"
+              },
+              {
+                "valor": 4,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Par bajo"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 5 · 19",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "No par"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 6 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Divide"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "elif",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "El par alto se pregunta primero; el par bajo queda para el elif.",
+      "pistas": [
+        "La condición más específica va primero."
+      ],
+      "mensajeNoLogrado": "Revisa 8 y 8: ya es un par alto.",
+      "solucionesIncorrectas": [
+        "if carta1 == carta2:\n    print(\"Par bajo\")\nelif carta1 >= 8:\n    print(\"Divide\")\nelse:\n    print(\"No par\")"
+      ]
+    },
+    {
+      "id": "29.2",
+      "tipo": "RESOLVER",
+      "titulo": "El crupier decide",
+      "enunciado": "Si las dos primeras cartas son iguales Y el total es menor que 21 muestra Par: divide; si no, si total > 21 muestra Bust; si no, si total == 21 muestra Blackjack; en cualquier otro caso muestra Pide carta. Se prueba en 7 mesas.",
+      "codigoInicial": "",
+      "solucionReferencia": "if carta1 == carta2 and total < 21:\n    print(\"Par: divide\")\nelif total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"Blackjack\")\nelse:\n    print(\"Pide carta\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Par: divide"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 20",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Par: divide"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 22",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 2,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 1,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 5 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "corazones"
+              },
+              {
+                "valor": 11,
+                "palo": "diamantes"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 6 · 11",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 5,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pide carta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 7 · 27",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "elif",
+            "else",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "El orden de las preguntas cambia el resultado.",
+      "pistas": [
+        "Primero el par, luego Bust, luego Blackjack."
+      ],
+      "mensajeNoLogrado": "Un par con total 21 es Blackjack y un par con total 22 es Bust.",
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"Blackjack\")\nelif carta1 == carta2:\n    print(\"Par: divide\")\nelse:\n    print(\"Pide carta\")"
+      ]
+    },
+    {
+      "id": "29.3",
+      "tipo": "LIBRE",
+      "titulo": "Mesa libre",
+      "enunciado": "Experimenta con pares y totales en distintas mesas. Nada se evalúa.",
+      "codigoInicial": "# Escribe tus propias reglas\nif carta1 == carta2:\n    print(\"Par\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [
+        "poner_carta",
+        "voltear"
+      ],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 8,
+            "palo": "picas"
+          },
+          {
+            "valor": 8,
+            "palo": "picas"
+          }
+        ]
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 13",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 4,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Dominaste los pares.",
+      "pistas": [
+        "Prueba cambiar de mesa."
+      ]
+    }
+  ]
+}

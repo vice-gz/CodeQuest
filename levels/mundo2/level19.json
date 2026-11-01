@@ -2,147 +2,100 @@
   "id": 19,
   "mundo": 2,
   "nombre": "La puerta del Mundo 3",
-  "concepto": "integración total",
+  "concepto": "integración total del Mundo 2",
   "concepto_evaluado": "integracion_mundo_2",
-  "narrativa": "La puerta al Mundo 3 está cerrada. Robot1 necesita la llave, el código y energía suficiente.",
+  "narrativa": "La puerta al Mundo 3 pide un código de acceso hecho con todo lo que Robot1 recuperó.",
   "narrativaSiguienteMundo": "¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. (Próximamente en el Avance 3).",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "19.1",
       "tipo": "RESOLVER",
-      "titulo": "Recupera la llave",
-      "enunciado": "La llave está en (3,0), pero hay un muro en (2,0). Rodéalo, llega a la llave y recógela.",
+      "titulo": "El código de acceso",
+      "enunciado": "Guarda a = 7 y b = 3. Muestra, en este orden: a + b, a - b, a * b y a % b.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)\nrobot1.girar(\"este\")\nrobot1.avanzar(2)\nrobot1.girar(\"norte\")\nrobot1.avanzar(1)\nrobot1.recoger()",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "recoger"
-      ],
-      "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          3,
-          0
-        ]
-      },
-      "retroalimentacion": "Llave asegurada: aparece en el inventario del panel de Estado.",
-      "pistas": [
-        "Baja a la fila 1 para rodear el muro.",
-        "Al llegar a la llave, usa robot1.recoger()."
-      ],
-      "mensajeNoLogrado": "Robot1 debe terminar en (3,0), la casilla de la llave."
-    },
-    {
-      "id": "19.2",
-      "tipo": "ESCRIBIR",
-      "titulo": "El código de la puerta",
-      "enunciado": "El código es el residuo de dividir 17 entre 5. Calcúlalo con % (no lo escribas a mano), guárdalo en codigo y muéstralo.",
-      "codigoInicial": "",
-      "solucionReferencia": "codigo = 17 % 5\nprint(codigo)",
+      "solucionReferencia": "a = 7\nb = 3\nprint(a + b)\nprint(a - b)\nprint(a * b)\nprint(a % b)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
       "validacion": {
-        "tipo": "estado",
-        "outputEsperado": "2",
-        "operadorRequerido": "%",
-        "variableRequerida": "codigo"
+        "tipo": "output_lineas",
+        "valores": [
+          "10",
+          "4",
+          "21",
+          "1"
+        ],
+        "requiere": {
+          "operadores": [
+            "+",
+            "-",
+            "*",
+            "%"
+          ]
+        }
       },
-      "retroalimentacion": "El operador % devuelve el residuo: 17 entre 5 son 3 con 2 de sobra.",
+      "retroalimentacion": "Usaste cuatro operadores con dos variables.",
       "pistas": [
-        "Usa el operador %.",
-        "codigo = 17 % 5"
-      ],
-      "mensajeNoLogrado": "El resultado debe ser 2, calculado con % y guardado en una variable llamada codigo."
+        "Cuatro print, uno por cada operación."
+      ]
     },
     {
-      "id": "19.3",
-      "tipo": "LIBRE",
-      "titulo": "Abre la puerta",
-      "enunciado": "Última prueba: llega a la puerta en (6,2) con al menos 8 de energía y anuncia la apertura con print(\"Mundo 3\"). Cada casilla cuesta 1 y arrancas con 20.",
+      "id": "19.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "El triple",
+      "enunciado": "Pide un número al sensor (escribe 9) y muestra su triple (27) con una variable llamada triple.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(6)\nprint(\"Mundo 3\")",
+      "solucionReferencia": "n = entrada()\ntriple = n * 3\nprint(triple)",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
         "entrada"
       ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "retroceder",
-        "hablar",
-        "recoger",
-        "energia",
-        "posicion",
-        "mirar"
+      "metodosPermitidos": [],
+      "entradasEstudiante": [
+        9
       ],
+      "etiquetaEntrada": "¿Qué número envía el sensor?",
       "validacion": {
-        "tipo": "estado",
-        "posicionEsperada": [
-          6,
-          2
-        ],
-        "energiaMinima": 8,
-        "outputEsperado": "Mundo 3"
+        "tipo": "output_con_variable",
+        "valorEsperado": "27",
+        "variableRequerida": "triple"
       },
-      "retroalimentacion": "¡Puerta abierta! Completaste los Mundos 1 y 2 de CodeQuest.",
+      "retroalimentacion": "Entrada, variable y operador en un solo programa.",
       "pistas": [
-        "La fila 2 está despejada: baja primero y cruza después.",
-        "No olvides el print(\"Mundo 3\") al final."
-      ],
-      "mensajeNoLogrado": "Se piden tres cosas: llegar a (6,2), conservar 8 de energía y mostrar \"Mundo 3\"."
-    }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 7,
-    "alto": 3,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      6,
-      2
-    ],
-    "obstaculos": [
-      [
-        2,
-        0
-      ],
-      [
-        4,
-        1
-      ],
-      [
-        5,
-        1
+        "triple = n * 3"
       ]
-    ],
-    "objetos": [
-      {
-        "posicion": [
-          3,
-          0
-        ],
-        "tipo": "llave"
-      }
-    ],
-    "energiaInicial": 20,
-    "costoEnergiaPorCasilla": 1
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+    },
+    {
+      "id": "19.3",
+      "tipo": "LIBRE",
+      "titulo": "Tu mejor programa",
+      "enunciado": "Construye el programa que quieras con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 2.",
+      "codigoInicial": "# Combina variables, tipos, operadores y entrada\nnombre = \"Robot1\"\nprint(nombre)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "entrada"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "¡Mundo 2 completado!",
+      "pistas": [
+        "Prueba pedir datos con entrada() y calcular con ellos."
+      ]
+    }
+  ]
 }

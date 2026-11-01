@@ -1,0 +1,441 @@
+{
+  "id": 24,
+  "mundo": 3,
+  "nombre": "Dos condiciones a la vez",
+  "concepto": "operador lógico and",
+  "concepto_evaluado": "operador_and",
+  "narrativa": "A veces una sola pregunta no alcanza: la mesa pide que se cumplan dos cosas a la vez.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "24.1",
+      "tipo": "DEBUG",
+      "titulo": "Roja Y segura",
+      "enunciado": "Concepto nuevo: and (\"y\") exige que AMBAS condiciones sean verdaderas. Ahora también hay color1 (\"roja\" o \"negra\"). Debe mostrar Apuesta solo si carta1 es roja Y el total es menor que 21, pero está usando or. Corrígelo.",
+      "codigoInicial": "if color1 == \"roja\" or total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")",
+      "solucionReferencia": "if color1 == \"roja\" and total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarColor": true
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 9,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Apuesta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 23",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "diamantes"
+              },
+              {
+                "valor": 5,
+                "palo": "corazones"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pasa"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pasa"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "corazones"
+              },
+              {
+                "valor": 11,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pasa"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "and exige las dos condiciones; or acepta cualquiera de las dos.",
+      "pistas": [
+        "Cambia la palabra que une las dos preguntas."
+      ],
+      "mensajeNoLogrado": "Debe cumplirse color Y total a la vez.",
+      "solucionesIncorrectas": [
+        "if color1 == \"roja\" or total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")"
+      ]
+    },
+    {
+      "id": "24.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "Zona segura",
+      "enunciado": "Si total es 15 o más Y a la vez 20 o menos, muestra Zona segura; en cualquier otro caso, Fuera. Usa and.",
+      "codigoInicial": "",
+      "solucionReferencia": "if total >= 15 and total <= 20:\n    print(\"Zona segura\")\nelse:\n    print(\"Fuera\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 14",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Fuera"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 15",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Zona segura"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Zona segura"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 20",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Zona segura"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 5 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Fuera"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 6 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Fuera"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "else",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "Un rango se escribe con dos comparaciones unidas por and.",
+      "pistas": [
+        "total >= 15 and total <= 20"
+      ],
+      "mensajeNoLogrado": "Los extremos (15 y 20) sí están dentro de la zona; 14 y 21 no.",
+      "solucionesIncorrectas": [
+        "if total >= 15 or total <= 20:\n    print(\"Zona segura\")\nelse:\n    print(\"Fuera\")"
+      ]
+    },
+    {
+      "id": "24.3",
+      "tipo": "DEBUG",
+      "titulo": "El símbolo equivocado",
+      "enunciado": "Este programa da un error porque usa un símbolo de otro lenguaje para decir «y». En CQL se escribe con la palabra and. Corrígelo.",
+      "codigoInicial": "if color1 == \"roja\" && total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")",
+      "solucionReferencia": "if color1 == \"roja\" and total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarColor": true
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 9,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Apuesta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 23",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "diamantes"
+              },
+              {
+                "valor": 5,
+                "palo": "corazones"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pasa"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pasa"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "corazones"
+              },
+              {
+                "valor": 11,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pasa"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "En CQL las condiciones se unen con las palabras and, or y not.",
+      "pistas": [
+        "Cambia && por una palabra."
+      ],
+      "solucionesIncorrectas": [
+        "if color1 == \"roja\" && total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")"
+      ]
+    }
+  ]
+}

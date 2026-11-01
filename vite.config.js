@@ -12,6 +12,8 @@ export default defineConfig({
       input: {
         index: pagina("./index.html"),
         juego: pagina("./juego.html"),
+        mundos: pagina("./mundos.html"),
+        conceptos: pagina("./conceptos.html"),
         perfil: pagina("./perfil.html"),
         auth: pagina("./auth.html"),
         profesor: pagina("./profesor.html"),

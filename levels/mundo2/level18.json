@@ -1,136 +1,91 @@
 {
   "id": 18,
   "mundo": 2,
-  "nombre": "El puente",
-  "concepto": "aplicar todo sin que se diga qué usar",
+  "nombre": "El puente de datos",
+  "concepto": "variables, operadores y entrada juntos",
   "concepto_evaluado": "integracion_libre",
-  "narrativa": "Un puente estrecho separa a Robot1 del Mundo 3. Nadie le dirá cómo cruzarlo.",
-  "fases": [
-    {
-      "id": "18.1",
-      "tipo": "ESCRIBIR",
-      "titulo": "Mide el puente",
-      "enunciado": "El sensor mide el puente. Lee el valor con entrada(), guárdalo en largo y muéstralo. Escribe 5 cuando se te pida.",
-      "codigoInicial": "",
-      "solucionReferencia": "largo = entrada()\nprint(largo)",
-      "instruccionesPermitidas": [
-        "entrada",
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [],
-      "entradasEstudiante": [
-        5
-      ],
-      "etiquetaEntrada": "¿Cuántas casillas mide el puente?",
-      "validacion": {
-        "tipo": "output_con_variable",
-        "valorEsperado": "5",
-        "variableRequerida": "largo"
-      },
-      "retroalimentacion": "Antes de actuar, Robot1 midió el terreno.",
-      "pistas": [
-        "largo = entrada() guarda la medida.",
-        "Luego print(largo)."
-      ],
-      "mensajeNoLogrado": "Guarda la medida en una variable llamada largo y muéstrala. Escribe 5 cuando se te pida."
-    },
-    {
-      "id": "18.2",
-      "tipo": "RESOLVER",
-      "titulo": "Cruza el puente",
-      "enunciado": "Lee el largo del puente y avanza exactamente esa cantidad, sin escribir el número a mano. Escribe 5 cuando se te pida.",
-      "codigoInicial": "",
-      "solucionReferencia": "largo = entrada()\nrobot1.avanzar(largo)",
-      "instruccionesPermitidas": [
-        "entrada",
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar"
-      ],
-      "entradasEstudiante": [
-        5
-      ],
-      "etiquetaEntrada": "¿Cuántas casillas mide el puente?",
-      "validacion": {
-        "tipo": "posicion_sin_numero_literal",
-        "valorEsperado": [
-          5,
-          0
-        ],
-        "numeroProhibido": "5"
-      },
-      "retroalimentacion": "El valor leído controló el movimiento sin que tú escribieras el número.",
-      "pistas": [
-        "No escribas robot1.avanzar(5): usa la variable.",
-        "El programa debe servir para cualquier largo."
-      ],
-      "mensajeNoLogrado": "Robot1 debe llegar a (5,0) SIN que el número 5 aparezca en tu código: usa la variable."
-    },
-    {
-      "id": "18.3",
-      "tipo": "LIBRE",
-      "titulo": "Cruza y desciende",
-      "enunciado": "Cruza el puente con el valor del sensor, esquiva el muro de (6,1) y baja hasta (5,2). Escribe 5 cuando se te pida.",
-      "codigoInicial": "",
-      "solucionReferencia": "largo = entrada()\nrobot1.avanzar(largo)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
-      "instruccionesPermitidas": [
-        "entrada",
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "retroceder",
-        "hablar",
-        "energia",
-        "posicion",
-        "mirar"
-      ],
-      "entradasEstudiante": [
-        5
-      ],
-      "etiquetaEntrada": "¿Cuántas casillas mide el puente?",
-      "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          5,
-          2
-        ]
-      },
-      "retroalimentacion": "Entrada, variables y giros en un solo programa: ya piensas como programador.",
-      "pistas": [
-        "Primero cruza el puente, después gira al sur.",
-        "El muro de (6,1) solo estorba si te pasas de largo."
-      ]
-    }
-  ],
+  "narrativa": "Para cruzar el puente de datos hay que combinar todo lo recuperado hasta ahora.",
   "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 7,
-    "alto": 3,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      5,
-      2
-    ],
-    "obstaculos": [
-      [
-        6,
-        1
-      ]
-    ]
+    "tipo": "datos",
+    "capacidad": 8
   },
   "estrellas": {
     "base": true,
     "sinPistas": true,
     "primerIntento": true
-  }
+  },
+  "fases": [
+    {
+      "id": "18.1",
+      "tipo": "ESCRIBIR",
+      "titulo": "Distancia",
+      "enunciado": "Guarda tiempo = 3 y velocidad = 12. Calcula distancia = tiempo * velocidad y muéstrala (36).",
+      "codigoInicial": "",
+      "solucionReferencia": "tiempo = 3\nvelocidad = 12\ndistancia = tiempo * velocidad\nprint(distancia)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_con_variable",
+        "valorEsperado": "36",
+        "variableRequerida": "distancia",
+        "requiere": {
+          "operador": "*"
+        }
+      },
+      "retroalimentacion": "Aplicaste variables y operadores.",
+      "pistas": [
+        "Tres variables: tiempo, velocidad y distancia."
+      ]
+    },
+    {
+      "id": "18.2",
+      "tipo": "RESOLVER",
+      "titulo": "Cruza con el sensor",
+      "enunciado": "Pide un valor al sensor (escribe 10), súmale 15 y muestra el resultado (25) usando una variable llamada resultado.",
+      "codigoInicial": "",
+      "solucionReferencia": "dato = entrada()\nresultado = dato + 15\nprint(resultado)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "entrada"
+      ],
+      "metodosPermitidos": [],
+      "entradasEstudiante": [
+        10
+      ],
+      "etiquetaEntrada": "¿Qué valor envía el sensor?",
+      "validacion": {
+        "tipo": "output_con_variable",
+        "valorEsperado": "25",
+        "variableRequerida": "resultado"
+      },
+      "retroalimentacion": "Combinaste entrada, variables y cálculo.",
+      "pistas": [
+        "Guarda la entrada en una variable antes de sumar."
+      ]
+    },
+    {
+      "id": "18.3",
+      "tipo": "LIBRE",
+      "titulo": "Laboratorio de memoria",
+      "enunciado": "Experimenta: crea las variables que quieras, cambia sus valores y combínalas. Nada de esto se evalúa.",
+      "codigoInicial": "# Prueba lo que quieras\nx = 5\nprint(x)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "entrada"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Ya dominas variables, tipos, operadores y entrada.",
+      "pistas": [
+        "Prueba restar, multiplicar y reasignar."
+      ]
+    }
+  ]
 }

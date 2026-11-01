@@ -1,0 +1,332 @@
+{
+  "id": 40,
+  "mundo": 4,
+  "nombre": "Evacuación completa",
+  "concepto": "evacuación con ciclos",
+  "concepto_evaluado": "evacuacion_completa",
+  "narrativa": "Empieza la evacuación del complejo. Tu programa se prueba en edificios distintos: no basta con acertar el que ves.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1,
+    "pasajeros": [
+      2,
+      4
+    ]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "40.1",
+      "tipo": "RESOLVER",
+      "titulo": "Todos a la planta baja",
+      "enunciado": "Recoge a todos los pasajeros (puede haber varios en el mismo piso) y llévalos a la planta baja. Se prueba en 5 edificios.",
+      "codigoInicial": "",
+      "solucionReferencia": "for i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pasajeros en 2, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 3",
+          "escenario": {
+            "pasajeros": [
+              3
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 3, 4, 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 4, 4, 5",
+          "escenario": {
+            "pasajeros": [
+              4,
+              4,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 5",
+          "escenario": {
+            "pasajeros": [
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if"
+          ]
+        }
+      },
+      "retroalimentacion": "Cada vuelta del barrido decide si recoger.",
+      "pistas": [
+        "Sube 4 veces recogiendo; baja 4 veces; suelta."
+      ],
+      "mensajeNoLogrado": "No olvides el piso 5 ni los pisos con más de un pasajero.",
+      "solucionesIncorrectas": [
+        "for i in range(4):\n    elevador.subir(1)\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()"
+      ]
+    },
+    {
+      "id": "40.2",
+      "tipo": "RESOLVER",
+      "titulo": "Evacuar y contar",
+      "enunciado": "Haz la evacuación y, ANTES de soltar, muestra cuántas personas van en la cabina con elevador.llevando(). Se prueba en 5 edificios, incluso uno vacío.",
+      "codigoInicial": "",
+      "solucionReferencia": "for i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\nprint(elevador.llevando())\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero",
+        "llevando"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pasajeros en 2, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 3",
+          "escenario": {
+            "pasajeros": [
+              3
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "1"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 4, 4, 5",
+          "escenario": {
+            "pasajeros": [
+              4,
+              4,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "3"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Edificio vacío",
+          "escenario": {
+            "pasajeros": []
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "0"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 3, 4, 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "4"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if"
+          ]
+        }
+      },
+      "retroalimentacion": "llevando() cuenta personas, no pisos.",
+      "pistas": [
+        "print(elevador.llevando()) justo antes de bajar."
+      ],
+      "mensajeNoLogrado": "Debe entregar a todos y mostrar cuántas personas iban.",
+      "solucionesIncorrectas": [
+        "llevados = 0\nfor i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\n        llevados = llevados + 1\nprint(llevados)\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()"
+      ]
+    },
+    {
+      "id": "40.3",
+      "tipo": "LIBRE",
+      "titulo": "Torre libre",
+      "enunciado": "Experimenta con ciclos y el elevador como quieras. Nada se evalúa.",
+      "codigoInicial": "# Prueba tus propios ciclos\nfor i in range(4):\n    elevador.subir(1)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero",
+        "llevando"
+      ],
+      "escenario": {
+        "pasajeros": [
+          2,
+          3,
+          5
+        ]
+      },
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Evacuación completada.",
+      "pistas": [
+        "Prueba combinar while, for e if."
+      ]
+    }
+  ]
+}

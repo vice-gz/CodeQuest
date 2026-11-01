@@ -4,128 +4,138 @@
   "nombre": "No todo es lo mismo",
   "concepto": "entero, decimal, texto",
   "concepto_evaluado": "tipos_de_datos",
-  "narrativa": "Robot1 descubre que la información viene en formas distintas, y no todas se usan igual.",
-  "fases": [
-    {
-      "id": "11.1",
-      "tipo": "EXPLORAR",
-      "titulo": "Tres tipos de dato",
-      "enunciado": "Ejecuta y compara en Memoria: un entero, un decimal y un texto.",
-      "codigoInicial": "cantidad = 3\nvoltaje = 4.5\netiqueta = \"bateria\"\nprint(cantidad)\nprint(voltaje)\nprint(etiqueta)",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [],
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "Los textos aparecen entre comillas en Memoria; los números no. Son tipos distintos.",
-      "pistas": [
-        "Fíjate en cómo aparece cada valor en el panel de Memoria."
-      ]
-    },
-    {
-      "id": "11.2",
-      "tipo": "PREDECIR",
-      "titulo": "¿Cuál es texto?",
-      "enunciado": "¿Cuál de estos valores es un texto y NO un número?",
-      "codigoInicial": "a = 5\nb = 5.0\nc = \"5\"",
-      "instruccionesPermitidas": [
-        "asignacion"
-      ],
-      "metodosPermitidos": [],
-      "opciones": [
-        {
-          "id": "a",
-          "texto": "a = 5"
-        },
-        {
-          "id": "b",
-          "texto": "b = 5.0"
-        },
-        {
-          "id": "c",
-          "texto": "c = \"5\""
-        }
-      ],
-      "respuestaCorrecta": "c",
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "Exacto: las comillas convierten el 5 en texto. No sirve para contar casillas.",
-      "pistas": [
-        "Busca las comillas."
-      ]
-    },
-    {
-      "id": "11.3",
-      "tipo": "DEBUG",
-      "titulo": "El tipo equivocado",
-      "enunciado": "Robot1 no puede avanzar un texto. Corrige el tipo y baja a la meta en (3,1).",
-      "codigoInicial": "pasos = \"3\"\nrobot1.avanzar(pasos)",
-      "solucionReferencia": "pasos = 3\nrobot1.avanzar(pasos)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
-      "instruccionesPermitidas": [
-        "asignacion"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar"
-      ],
-      "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          3,
-          1
-        ]
-      },
-      "retroalimentacion": "SEM_004: avanzar() necesita un número, no un texto que se le parezca.",
-      "pistas": [
-        "Quita las comillas del valor.",
-        "La meta está una fila más abajo."
-      ]
-    },
-    {
-      "id": "11.4",
-      "tipo": "DEBUG",
-      "titulo": "Sumar texto no suma",
-      "enunciado": "Aquí se intenta sumar dos textos. Corrige los tipos para que el resultado mostrado sea 8.",
-      "codigoInicial": "a = \"5\"\nb = \"3\"\ntotal = a + b\nprint(total)",
-      "solucionReferencia": "a = 5\nb = 3\ntotal = a + b\nprint(total)",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [],
-      "validacion": {
-        "tipo": "output",
-        "valorEsperado": "8"
-      },
-      "retroalimentacion": "Con textos, + los pega uno tras otro (\"53\"). Con números, suma de verdad.",
-      "pistas": [
-        "Ejecuta primero sin corregir y mira qué sale.",
-        "Quita las comillas de los dos valores."
-      ],
-      "mensajeNoLogrado": "El resultado debe ser 8, no \"53\". Revisa los tipos de a y b."
-    }
-  ],
+  "narrativa": "La información llega en formas distintas: números enteros, decimales y textos. Cada chip lo indica con una etiqueta.",
   "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 5,
-    "alto": 2,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      3,
-      1
-    ]
+    "tipo": "datos",
+    "capacidad": 8
   },
   "estrellas": {
     "base": true,
     "sinPistas": true,
     "primerIntento": true
-  }
+  },
+  "fases": [
+    {
+      "id": "11.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Tres tipos de dato",
+      "enunciado": "Concepto nuevo: los datos tienen tipo. 15 es un ENTERO, 1.75 es un DECIMAL (con punto) y \"Ana\" es un TEXTO (entre comillas). Mira la etiqueta de cada chip.",
+      "codigoInicial": "edad = 15\naltura = 1.75\nnombre = \"Ana\"\nprint(edad)\nprint(altura)\nprint(nombre)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "El tipo depende de cómo escribes el valor: sin comillas es número, con comillas es texto.",
+      "pistas": [
+        "Compara las etiquetas ENTERO, DECIMAL y TEXTO en la parte baja de los chips."
+      ]
+    },
+    {
+      "id": "11.2",
+      "tipo": "PREDECIR",
+      "titulo": "Sumar textos",
+      "enunciado": "¿Qué muestra este programa?",
+      "codigoInicial": "a = \"5\"\nb = \"3\"\nprint(a + b)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "8"
+        },
+        {
+          "id": "b",
+          "texto": "53"
+        },
+        {
+          "id": "c",
+          "texto": "Un error"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Con textos, + los pega uno detrás de otro (53). Solo con números suma (8).",
+      "pistas": [
+        "Las comillas convierten al 5 en un texto."
+      ]
+    },
+    {
+      "id": "11.3",
+      "tipo": "DEBUG",
+      "titulo": "El número disfrazado",
+      "enunciado": "Este programa debería mostrar 16, pero muestra 151. La edad es un número, no un texto. Corrígelo.",
+      "codigoInicial": "edad = \"15\"\nprint(edad + 1)",
+      "solucionReferencia": "edad = 15\nprint(edad + 1)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_lineas",
+        "valores": [
+          "16"
+        ],
+        "requiere": {
+          "operador": "+",
+          "variable": "edad"
+        }
+      },
+      "retroalimentacion": "Sin comillas, 15 es un número y se puede sumar.",
+      "pistas": [
+        "¿Las comillas son necesarias aquí?"
+      ],
+      "mensajeNoLogrado": "La salida debe ser exactamente 16.",
+      "solucionesIncorrectas": [
+        "edad = \"15\"\nprint(edad + 1)",
+        "edad = 15\nprint(16)\nedad = \"15\"\nprint(edad + 1)"
+      ]
+    },
+    {
+      "id": "11.4",
+      "tipo": "DEBUG",
+      "titulo": "El decimal con coma",
+      "enunciado": "En CQL los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 2.5 y se muestre.",
+      "codigoInicial": "precio = 2,5\nprint(precio)",
+      "solucionReferencia": "precio = 2.5\nprint(precio)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "variables",
+            "variables": {
+              "precio": 2.5
+            }
+          },
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "2.5"
+            ]
+          }
+        ]
+      },
+      "retroalimentacion": "Los decimales usan punto: 2.5.",
+      "pistas": [
+        "Cambia la coma por un punto."
+      ],
+      "solucionesIncorrectas": [
+        "precio = 2,5\nprint(precio)"
+      ]
+    }
+  ]
 }

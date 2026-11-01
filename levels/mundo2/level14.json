@@ -2,45 +2,54 @@
   "id": 14,
   "mundo": 2,
   "nombre": "Información del exterior",
-  "concepto": "entrada() devuelve valores variables",
+  "concepto": "entrada, entrada con variables",
   "concepto_evaluado": "entrada_con_variables",
-  "narrativa": "Los sensores externos envían datos distintos cada vez. El programa debe funcionar igual.",
+  "narrativa": "Hasta ahora todos los datos los escribía el programa. Ahora un sensor externo va a enviar un valor.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "14.1",
       "tipo": "EXPLORAR",
-      "titulo": "El sensor habla",
-      "enunciado": "El sensor externo ahora te pregunta a ti. Ejecuta, escribe un valor y observa cómo llega al programa: aparece en Salida y queda guardado en Memoria.",
-      "codigoInicial": "lectura = entrada()\nprint(lectura)",
+      "titulo": "El sensor pregunta",
+      "enunciado": "Concepto nuevo: entrada() pausa el programa y espera un dato de quien juega; se guarda en una variable. Cuando la terminal te lo pida, escribe 12.",
+      "codigoInicial": "valor = entrada()\nprint(valor)",
       "instruccionesPermitidas": [
-        "entrada",
         "asignacion",
-        "print"
+        "print",
+        "entrada"
       ],
       "metodosPermitidos": [],
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "entrada() devuelve un valor que el programa no conocía: por eso se guarda en una variable.",
-      "pistas": [
-        "Ejecuta y escribe cualquier número en el campo que aparece."
-      ],
       "entradasEstudiante": [
         12
       ],
-      "etiquetaEntrada": "El sensor pregunta: ¿qué valor envía?"
+      "etiquetaEntrada": "El sensor pregunta: ¿qué valor envía?",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "entrada() devuelve lo que escribió la persona.",
+      "pistas": [
+        "Escribe 12 en el campo de la terminal y pulsa Enter."
+      ]
     },
     {
       "id": "14.2",
       "tipo": "ESCRIBIR",
-      "titulo": "Opera con lo recibido",
-      "enunciado": "Ahora escribes tú el valor. Léelo con entrada(), súmale 5 y muestra el resultado. Escribe 12 cuando se te pida.",
+      "titulo": "Suma con el sensor",
+      "enunciado": "Pide el valor del sensor con entrada() (escribe 12), guárdalo en una variable, súmale 5 en total y muestra total (17).",
       "codigoInicial": "",
-      "solucionReferencia": "lectura = entrada()\ntotal = lectura + 5\nprint(total)",
+      "solucionReferencia": "valor = entrada()\ntotal = valor + 5\nprint(total)",
       "instruccionesPermitidas": [
-        "entrada",
         "asignacion",
-        "print"
+        "print",
+        "entrada"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
@@ -52,65 +61,41 @@
         "valorEsperado": "17",
         "variableRequerida": "total"
       },
-      "retroalimentacion": "Un valor de entrada se opera igual que cualquier número.",
+      "retroalimentacion": "Combinaste entrada, variables y operadores.",
       "pistas": [
-        "Guarda entrada() en una variable.",
-        "Crea otra variable llamada total con la suma."
+        "valor = entrada()",
+        "total = valor + 5"
       ],
-      "mensajeNoLogrado": "El resultado debe ser 17 y guardarse en una variable llamada total. Escribe 12 cuando se te pida."
+      "mensajeNoLogrado": "Con el valor 12, total debe ser 17."
     },
     {
       "id": "14.3",
       "tipo": "RESOLVER",
-      "titulo": "Ruta desde el sensor",
-      "enunciado": "El sensor indica la mitad del tramo horizontal. Léelo, duplícalo, avanza esa cantidad al este y luego baja 1 para llegar a (4,1). Escribe 2 cuando se te pida.",
+      "titulo": "La mitad del tramo",
+      "enunciado": "Pide el valor del sensor (escribe 8) y muestra su mitad (4) usando una división.",
       "codigoInicial": "",
-      "solucionReferencia": "mitad = entrada()\npasos = mitad * 2\nrobot1.avanzar(pasos)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "solucionReferencia": "tramo = entrada()\nprint(tramo / 2)",
       "instruccionesPermitidas": [
-        "entrada",
-        "asignacion"
+        "asignacion",
+        "print",
+        "entrada"
       ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar"
-      ],
+      "metodosPermitidos": [],
       "entradasEstudiante": [
-        2
+        8
       ],
-      "etiquetaEntrada": "¿Cuál es la mitad del tramo?",
+      "etiquetaEntrada": "¿Cuánto mide el tramo?",
       "validacion": {
-        "tipo": "estado",
-        "posicionEsperada": [
-          4,
-          1
-        ],
-        "operadorRequerido": "*"
+        "tipo": "output_exacto",
+        "valorEsperado": "4",
+        "requiere": {
+          "operador": "/"
+        }
       },
-      "retroalimentacion": "El programa funciona sin saber de antemano qué dirá el sensor.",
+      "retroalimentacion": "Lo que escribe la persona entra al programa como un dato más.",
       "pistas": [
-        "Duplicar es multiplicar por 2.",
-        "Escribe 2 en la terminal: el tramo mide 4."
-      ],
-      "mensajeNoLogrado": "Robot1 debe llegar a (4,1) y tu código debe duplicar el valor con *."
+        "Guarda la entrada y divide entre 2."
+      ]
     }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 5,
-    "alto": 2,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      4,
-      1
-    ]
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+  ]
 }

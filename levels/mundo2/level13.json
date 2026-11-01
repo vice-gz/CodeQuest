@@ -1,124 +1,104 @@
 {
   "id": 13,
   "mundo": 2,
-  "nombre": "Calcula el camino",
-  "concepto": "operadores aritméticos: +, -, *, /, %",
+  "nombre": "Calcula el reparto",
+  "concepto": "multiplicación, división, módulo",
   "concepto_evaluado": "operadores_aritmeticos",
-  "narrativa": "Hay dos rutas hacia la meta y una es más larga. Robot1 debe calcular, no adivinar.",
+  "narrativa": "Repartir recursos exige más que sumar: multiplicar, dividir y averiguar qué sobra.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "13.1",
       "tipo": "EXPLORAR",
-      "titulo": "Los cinco operadores",
-      "enunciado": "Ejecuta y observa el resultado de cada operación en el panel de Salida.",
-      "codigoInicial": "print(7 + 2)\nprint(7 - 2)\nprint(7 * 2)\nprint(7 / 2)\nprint(7 % 2)",
+      "titulo": "Tres operadores nuevos",
+      "enunciado": "Conceptos nuevos: * multiplica, / divide (entre enteros da un entero) y % da el RESIDUO: lo que sobra al dividir.",
+      "codigoInicial": "a = 17\nprint(a * 2)\nprint(a / 4)\nprint(a % 5)",
       "instruccionesPermitidas": [
+        "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "El operador % devuelve el residuo: 7 entre 2 sobra 1.",
+      "retroalimentacion": "17 / 4 da 4 (cuántas veces cabe) y 17 % 5 da 2 (lo que sobra).",
       "pistas": [
-        "Compara las cinco líneas del panel de Salida."
+        "% no es porcentaje: es el residuo de la división."
       ]
     },
     {
       "id": "13.2",
       "tipo": "PREDECIR",
-      "titulo": "Precedencia",
-      "enunciado": "¿Cuánto vale 2 + 3 * 4?",
-      "codigoInicial": "print(2 + 3 * 4)",
+      "titulo": "¿Cuánto sobra?",
+      "enunciado": "¿Qué muestra este programa?",
+      "codigoInicial": "x = 14\ny = x % 4\nprint(y)",
       "instruccionesPermitidas": [
+        "asignacion",
         "print"
       ],
       "metodosPermitidos": [],
       "opciones": [
         {
           "id": "a",
-          "texto": "20, porque se lee de izquierda a derecha"
+          "texto": "2"
         },
         {
           "id": "b",
-          "texto": "14, porque primero se multiplica"
+          "texto": "3"
         },
         {
           "id": "c",
-          "texto": "9"
+          "texto": "3.5"
         }
       ],
-      "respuestaCorrecta": "b",
+      "respuestaCorrecta": "a",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Igual que en matemáticas: * y / van antes que + y -.",
+      "retroalimentacion": "14 entre 4 cabe 3 veces (12) y sobran 2.",
       "pistas": [
-        "La multiplicación tiene prioridad sobre la suma."
+        "14 = 4 × 3 + ?"
       ]
     },
     {
       "id": "13.3",
       "tipo": "RESOLVER",
-      "titulo": "La ruta calculada",
-      "enunciado": "La meta está en (4,2). La fila 1 tiene muros: hay que rodear por la columna 0. Calcula los pasos con una multiplicación (no escribas el número directo) y llega.",
+      "titulo": "Cajas de cinco",
+      "enunciado": "Hay 23 baterías y se guardan en cajas de 5. Muestra primero cuántas cajas se llenan (4) y luego cuántas baterías sobran (3), en ese orden.",
       "codigoInicial": "",
-      "solucionReferencia": "bajada = 1 * 2\nrobot1.girar(\"sur\")\nrobot1.avanzar(bajada)\nrobot1.girar(\"este\")\nrobot1.avanzar(2 * 2)",
+      "solucionReferencia": "baterias = 23\nprint(baterias / 5)\nprint(baterias % 5)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
       ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar"
-      ],
+      "metodosPermitidos": [],
       "validacion": {
-        "tipo": "posicion_con_operacion",
-        "valorEsperado": [
-          4,
-          2
+        "tipo": "output_lineas",
+        "valores": [
+          "4",
+          "3"
         ],
-        "operadorRequerido": "*"
+        "requiere": {
+          "operadores": [
+            "/",
+            "%"
+          ]
+        }
       },
-      "retroalimentacion": "La expresión se evaluó antes de usarse como argumento: calculaste la ruta en vez de contarla a ojo.",
+      "retroalimentacion": "Usaste / para repartir y % para el sobrante.",
       "pistas": [
-        "La fila 2 está despejada: baja por la columna 0 y cruza.",
-        "Debes usar el operador * en alguna parte del código."
+        "Cajas llenas: baterias / 5.",
+        "Sobrante: baterias % 5."
       ],
-      "mensajeNoLogrado": "Robot1 debe terminar en (4,2) Y tu código debe usar una multiplicación (*)."
+      "mensajeNoLogrado": "Debe mostrar 4 y luego 3, usando / y %."
     }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 5,
-    "alto": 3,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      4,
-      2
-    ],
-    "obstaculos": [
-      [
-        1,
-        1
-      ],
-      [
-        2,
-        1
-      ],
-      [
-        3,
-        1
-      ]
-    ]
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+  ]
 }

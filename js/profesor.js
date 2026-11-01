@@ -251,7 +251,7 @@ async function eliminarClase(clase) {
 // ---------- Arranque ----------
 
 (async function iniciar() {
-  yo = await protegerPagina(["profesor", "admin", "super_root"], { rutaSiNoPermitido: "juego.html" });
+  yo = await protegerPagina(["profesor", "admin", "super_root"], { rutaSiNoPermitido: "mundos.html" });
   if (!yo) return;
   await renderizarNav("nav", yo);
   await cargarClases();

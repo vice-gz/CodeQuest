@@ -1,0 +1,266 @@
+{
+  "id": 39,
+  "mundo": 4,
+  "nombre": "Cuenta lo que haces",
+  "concepto": "contadores con condición",
+  "concepto_evaluado": "contadores_con_condicion",
+  "narrativa": "El jefe de seguridad pide números: ¿cuántos pisos tienen gente? Un contador lleva la cuenta mientras el elevador trabaja.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1,
+    "pasajeros": [
+      2,
+      4
+    ]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "39.1",
+      "tipo": "DEBUG",
+      "titulo": "El contador mentiroso",
+      "enunciado": "Este programa debe mostrar en cuántos pisos hay pasajeros, pero cuenta TODOS los pisos que visita. El contador debe sumar solo cuando hayPasajero() sea verdadero. Corrígelo.",
+      "codigoInicial": "llevados = 0\nfor i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\n    llevados = llevados + 1\nprint(llevados)",
+      "solucionReferencia": "llevados = 0\nfor i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\n        llevados = llevados + 1\nprint(llevados)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "recoger",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pisos 2 y 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Piso 3",
+          "escenario": {
+            "pasajeros": [
+              3
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "1"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pisos 2, 3 y 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "3"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if"
+          ],
+          "variable": "llevados"
+        }
+      },
+      "retroalimentacion": "La sangría decide qué líneas pertenecen al if.",
+      "pistas": [
+        "Mueve una línea para que quede dentro del if."
+      ],
+      "solucionesIncorrectas": [
+        "llevados = 0\nfor i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\n    llevados = llevados + 1\nprint(llevados)"
+      ]
+    },
+    {
+      "id": "39.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "Pisos con gente",
+      "enunciado": "Sin recoger a nadie, sube 4 veces y muestra cuántos pisos tienen al menos un pasajero esperando (usa un contador llamado pisos_con_gente). Ojo: dos pasajeros en el mismo piso cuentan UNA vez. Se prueba en 4 edificios.",
+      "codigoInicial": "",
+      "solucionReferencia": "pisos_con_gente = 0\nfor i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        pisos_con_gente = pisos_con_gente + 1\nprint(pisos_con_gente)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "piso",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pisos 2 y 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Dos en el piso 3",
+          "escenario": {
+            "pasajeros": [
+              3,
+              3
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "1"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pisos 2, 3 y 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "3"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Edificio vacío",
+          "escenario": {
+            "pasajeros": []
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "0"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "for",
+            "if"
+          ],
+          "variable": "pisos_con_gente"
+        }
+      },
+      "retroalimentacion": "El contador cuenta pisos, no personas.",
+      "pistas": [
+        "Empieza en 0 y suma 1 solo si hayPasajero() es verdadero."
+      ],
+      "mensajeNoLogrado": "Dos pasajeros en el mismo piso cuentan como un solo piso.",
+      "solucionesIncorrectas": [
+        "print(4)"
+      ]
+    },
+    {
+      "id": "39.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Tres viajes",
+      "enunciado": "Con un for, sube y baja el elevador 3 veces (un piso cada vez) y, al terminar, muestra cuántos viajes hizo (3) usando un contador llamado viajes.",
+      "codigoInicial": "",
+      "solucionReferencia": "viajes = 0\nfor i in range(3):\n    elevador.subir(1)\n    elevador.bajar(1)\n    viajes = viajes + 1\nprint(viajes)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar"
+      ],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "3"
+            ]
+          },
+          {
+            "tipo": "elevador_piso",
+            "valorEsperado": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "for"
+          ],
+          "variable": "viajes"
+        }
+      },
+      "retroalimentacion": "Un contador también sirve dentro de un for.",
+      "pistas": [
+        "viajes = 0 antes del ciclo y viajes = viajes + 1 dentro."
+      ],
+      "mensajeNoLogrado": "Debe mostrar 3 y dejar el elevador en el piso 1.",
+      "solucionesIncorrectas": [
+        "print(3)"
+      ]
+    }
+  ]
+}

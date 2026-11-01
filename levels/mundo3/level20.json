@@ -1,0 +1,287 @@
+{
+  "id": 20,
+  "mundo": 3,
+  "nombre": "Pasarse de 21",
+  "concepto": "condicional if",
+  "concepto_evaluado": "condicional_if",
+  "narrativa": "Robot1 cruza la puerta y entra a la Sala de Estrategia: una mesa de cartas holográfica que solo se abre ante quien sabe tomar decisiones.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "20.1",
+      "tipo": "EXPLORAR",
+      "titulo": "La primera decisión",
+      "enunciado": "Concepto nuevo: if (\"si\") ejecuta las líneas con sangría SOLO cuando la condición es verdadera. Aquí numero es el total de la mano. Ejecuta y cambia de mesa para ver cuándo se cumple.",
+      "codigoInicial": "if numero > 21:\n    print(\"Bust\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 10,
+            "palo": "picas"
+          },
+          {
+            "valor": 9,
+            "palo": "picas"
+          },
+          {
+            "valor": 6,
+            "palo": "picas"
+          }
+        ],
+        "variables": {
+          "numero": 25
+        }
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ],
+            "variables": {
+              "numero": 25
+            }
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ],
+            "variables": {
+              "numero": 18
+            }
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "La mesa juzga la condición: si es VERDADERO entra al bloque; si es FALSO lo salta.",
+      "pistas": [
+        "Mira el sello VERDADERO / FALSO que aparece en la mesa."
+      ]
+    },
+    {
+      "id": "20.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Dice Bust?",
+      "enunciado": "La mano suma 25. ¿Qué muestra este programa?",
+      "codigoInicial": "if numero > 21:\n    print(\"Bust\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 10,
+            "palo": "picas"
+          },
+          {
+            "valor": 9,
+            "palo": "picas"
+          },
+          {
+            "valor": 6,
+            "palo": "picas"
+          }
+        ],
+        "variables": {
+          "numero": 25
+        }
+      },
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No muestra nada"
+        },
+        {
+          "id": "b",
+          "texto": "Bust"
+        },
+        {
+          "id": "c",
+          "texto": "Un error"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "25 es mayor que 21, así que la condición se cumple.",
+      "pistas": [
+        "¿25 > 21 es verdadero o falso?"
+      ]
+    },
+    {
+      "id": "20.3",
+      "tipo": "MODIFICAR",
+      "titulo": "La casa cambia el límite",
+      "enunciado": "La casa cambió las reglas: ahora hay Bust cuando numero es mayor que 18. Modifica el programa (solo hay que cambiar un número). Se prueba en 4 mesas.",
+      "codigoInicial": "if numero > 21:\n    print(\"Bust\")",
+      "solucionReferencia": "if numero > 18:\n    print(\"Bust\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ],
+            "variables": {
+              "numero": 25
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 19",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ],
+            "variables": {
+              "numero": 19
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ],
+            "variables": {
+              "numero": 18
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": []
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 12",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ],
+            "variables": {
+              "numero": 12
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": []
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if"
+          ]
+        }
+      },
+      "retroalimentacion": "Cambiar el número de la condición cambia cuándo se activa la regla.",
+      "pistas": [
+        "El límite ahora es 18."
+      ],
+      "mensajeNoLogrado": "Con 19 hay Bust, pero con 18 exacto todavía no.",
+      "solucionesIncorrectas": [
+        "if numero > 21:\n    print(\"Bust\")",
+        "if numero >= 18:\n    print(\"Bust\")"
+      ]
+    }
+  ]
+}

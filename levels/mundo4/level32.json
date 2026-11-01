@@ -1,0 +1,116 @@
+{
+  "id": 32,
+  "mundo": 4,
+  "nombre": "El ascensor automático",
+  "concepto": "ciclo while",
+  "concepto_evaluado": "ciclo_while",
+  "narrativa": "En el complejo industrial, el elevador solo hace lo que se le ordena. Repetir la misma orden a mano es agotador: hay que enseñarle a repetirse.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "32.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Sube mientras haya pisos",
+      "enunciado": "Concepto nuevo: while (\"mientras\") repite su bloque MIENTRAS la condición sea verdadera. Cada vuelta se llama repetición. Ejecuta y mira el contador del letrero.",
+      "codigoInicial": "piso = 1\nwhile piso < 5:\n    elevador.subir(1)\n    piso = piso + 1",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir"
+      ],
+      "validacion": {
+        "tipo": "elevador_piso",
+        "valorEsperado": 5
+      },
+      "retroalimentacion": "El while pregunta antes de cada vuelta; cuando la condición es falsa, se detiene.",
+      "pistas": [
+        "Mira el letrero: cuenta cada repetición."
+      ]
+    },
+    {
+      "id": "32.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Dónde se detiene?",
+      "enunciado": "¿En qué piso queda el elevador al terminar?",
+      "codigoInicial": "piso = 1\nwhile piso < 3:\n    elevador.subir(1)\n    piso = piso + 1",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir"
+      ],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "En el piso 2"
+        },
+        {
+          "id": "b",
+          "texto": "En el piso 3"
+        },
+        {
+          "id": "c",
+          "texto": "En el piso 4"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Sube mientras piso sea menor que 3: se detiene al llegar a 3.",
+      "pistas": [
+        "Cuenta las repeticiones: piso vale 1, 2 y luego la condición falla."
+      ]
+    },
+    {
+      "id": "32.3",
+      "tipo": "MODIFICAR",
+      "titulo": "Hasta arriba",
+      "enunciado": "Este programa se detiene en el piso 3. Modifícalo para que el elevador llegue hasta el piso 5 sin dejar de usar el while.",
+      "codigoInicial": "piso = 1\nwhile piso < 3:\n    elevador.subir(1)\n    piso = piso + 1",
+      "solucionReferencia": "piso = 1\nwhile piso < 5:\n    elevador.subir(1)\n    piso = piso + 1",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir"
+      ],
+      "validacion": {
+        "tipo": "elevador_piso",
+        "valorEsperado": 5,
+        "requiere": {
+          "construcciones": [
+            "while"
+          ],
+          "variable": "piso"
+        }
+      },
+      "retroalimentacion": "Cambiar el número de la condición cambia cuántas vueltas da el ciclo.",
+      "pistas": [
+        "Solo cambia un número."
+      ],
+      "mensajeNoLogrado": "Debe terminar en el piso 5 usando el while.",
+      "solucionesIncorrectas": [
+        "piso = 1\nwhile piso < 3:\n    elevador.subir(1)\n    piso = piso + 1",
+        "piso = 1\nelevador.subir(4)"
+      ]
+    }
+  ]
+}

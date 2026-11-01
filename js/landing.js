@@ -3,24 +3,20 @@
 // (login / registro) vive en auth.html.
 
 import { escaparHtml } from "./util.js";
+import { MUNDOS_INFO } from "./game/mundosInfo.js";
+import { paletaDe } from "./game/paletas.js";
 
-// Mundos 1 y 2 están activos; del 3 al 6 solo se anuncian.
-const MUNDOS = [
-  { id: 1, nombre: "Despertar", activo: true, texto: "Tus primeros programas: Robot1 despierta, habla y se mueve. Aprendes qué es una instrucción y una salida." },
-  { id: 2, nombre: "Memoria", activo: true, texto: "Robot1 aprende a recordar: variables, valores y operaciones para calcular el camino." },
-  { id: 3, nombre: "Próximamente", activo: false, texto: "Este mundo llegará en un próximo avance." },
-  { id: 4, nombre: "Próximamente", activo: false, texto: "Este mundo llegará en un próximo avance." },
-  { id: 5, nombre: "Próximamente", activo: false, texto: "Este mundo llegará en un próximo avance." },
-  { id: 6, nombre: "Próximamente", activo: false, texto: "Este mundo llegará en un próximo avance." },
-];
+// Mundos 1 a 4 jugables; el 5 y el 6 solo se anuncian (datos en game/mundosInfo.js).
+const MUNDOS_ACTIVOS = new Set([1, 2, 3, 4]);
 
 document.getElementById("anio").textContent = String(new Date().getFullYear());
-document.getElementById("rejilla-mundos").innerHTML = MUNDOS.map(
-  (m) => `
-  <article class="mundo-tarjeta ${m.activo ? "mundo-activo" : "mundo-bloqueado"}">
-    <span class="mundo-numero">Mundo ${m.id}</span>
+document.getElementById("rejilla-mundos").innerHTML = MUNDOS_INFO.map((m) => {
+  const activo = MUNDOS_ACTIVOS.has(m.id);
+  return `
+  <article class="mundo-tarjeta ${activo ? "mundo-activo" : "mundo-bloqueado"}" style="--mundo-acento:${paletaDe(m.id).acento}">
+    <span class="mundo-numero">Mundo ${m.id} · ${escaparHtml(m.lugar)}</span>
     <h3>${escaparHtml(m.nombre)}</h3>
-    <p>${escaparHtml(m.texto)}</p>
-    <span class="etiqueta-estado ${m.activo ? "etiqueta-ok" : ""}">${m.activo ? "Disponible" : "Próximamente"}</span>
-  </article>`
-).join("");
+    <p>${escaparHtml(m.resumen)}</p>
+    <span class="etiqueta-estado ${activo ? "etiqueta-ok" : ""}">${activo ? "Disponible" : "Próximamente"}</span>
+  </article>`;
+}).join("");

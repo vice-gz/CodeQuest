@@ -103,7 +103,7 @@ export function crearMotor({ scene, world, robot1, callbacks = {} }) {
     }
   }
 
-  return {
+  const motor = {
     async print(valor) {
       callbacks.onSalida?.({ tipo: "PRINT", valor });
       await esperar(150);
@@ -181,4 +181,14 @@ export function crearMotor({ scene, world, robot1, callbacks = {} }) {
       return robot1.energia;
     },
   };
+
+  // Punto de entrada único para métodos de objetos (robot1.avanzar(3) ->
+  // metodo("robot1", "avanzar", [3])): el intérprete no sabe qué mundo es.
+  const METODOS_DEL_ROBOT = ["hablar", "avanzar", "retroceder", "girar", "recoger", "soltar", "mirar", "posicion", "energia"];
+  motor.metodo = async (objeto, nombre, args = []) => {
+    if (!METODOS_DEL_ROBOT.includes(nombre)) return undefined;
+    return motor[nombre](...args);
+  };
+
+  return motor;
 }

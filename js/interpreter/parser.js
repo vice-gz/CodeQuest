@@ -2,31 +2,22 @@
 // Convierte la lista de tokens en un AST siguiendo la gramática del
 // Avance 1 (Documento 3, secciones 2.1 a 2.4).
 
-// ============================================================================
-// AVANCE 3 (Mundos 3 y 4) — lo que hay que añadir AQUÍ
-// ----------------------------------------------------------------------------
-// Tokens nuevos (se definen en lexer.js, TipoToken):
-//   IF, ELSE, ELIF, WHILE, FOR, DEF, RETURN,
-//   IGUAL (==), DISTINTO (!=), MENOR (<), MAYOR (>), MENOR_IGUAL (<=),
-//   MAYOR_IGUAL (>=), AND, OR, NOT, DOS_PUNTOS, INDENTACION
-//   (ojo: hoy ASIGNACION es "=" y no cambia; IGUAL es "==").
+// Gramática (Avance 3; ya incluye bloques por sangría estilo Python):
+//   programa      := sentencia*
+//   sentencia     := asignacion | llamada | condicional | mientras | para
+//   bloque        := ":" NUEVA_LINEA INDENTACION sentencia+ DEDENTACION
+//   condicional   := "if" expresion bloque ("elif" expresion bloque)* ("else" bloque)?
+//   mientras      := "while" expresion bloque
+//   para          := "for" IDENT "in" "range" "(" expresion ("," expresion){0,2} ")" bloque
+//   expresion     := or ; or := and ("or" and)* ; and := not ("and" not)*
+//   not           := "not" not | comparacion
+//   comparacion   := aritmetica (("=="|"!="|"<"|">"|"<="|">=") aritmetica)?
+//   aritmetica    := termino (("+"|"-") termino)* ; termino := unario (("*"|"/"|"%") unario)*
+//   unario        := "-" unario | factor
 //
-// Cambios previstos en el parser:
-//   1. parsearSentencia() hoy solo conoce Asignacion, LlamadaFuncion y
-//      LlamadaMetodo. Añadir ramas para los tipos de nodo nuevos:
-//        If { condicion, bloque, elifs[], bloqueElse }, While { condicion, bloque },
-//        For { variable, iterable, bloque }, Def { nombre, parametros, bloque },
-//        Return { valor }.
-//   2. Un método parsearBloque() que lea DOS_PUNTOS + NUEVA_LINEA + INDENTACION
-//      y termine cuando baje la sangría (los bloques se definen por indentación,
-//      como en Python; el editor ya inserta 4 espacios con Tab).
-//   3. Expresiones con precedencia: or < and < not < comparaciones < + - < * / %.
-//      Hoy parsearExpresion() solo cubre la aritmética de las sumas/restas/etc.
-//   4. Errores nuevos en errors.js (códigos SYN_*): falta ":", bloque sin sangría,
-//      sangría inconsistente, "else" sin "if", "return" fuera de una función.
-//   5. Actualizar test_niveles.mjs con niveles de los Mundos 3 y 4 y el campo
-//      concepto_evaluado de cada uno (p. ej. "condicionales", "ciclos").
-// ============================================================================
+// Nodos nuevos del AST: Bloque, Condicional {condicion, bloqueSi, bloqueSino, esElif},
+// Mientras, Para, Comparacion, Logica, Negacion, Negativo, Booleano.
+// (elif se guarda como un Condicional anidado dentro de bloqueSino, con esElif = true.)
 
 import { TipoToken } from "./lexer.js";
 import { Errores } from "./errors.js";
@@ -54,10 +45,88 @@ export class Parser {
     const sentencias = [];
     this.saltarNuevasLineas();
     while (this.actual().tipo !== TipoToken.EOF) {
+      // Una línea con sangría que no está dentro de ningún bloque.
+      if (this.actual().tipo === TipoToken.INDENTACION || this.actual().tipo === TipoToken.DEDENTACION) {
+        throw Errores.sangriaInesperada(this.actual().linea);
+      }
       sentencias.push(this.parsearSentencia());
       this.saltarNuevasLineas();
     }
     return { tipo: "Programa", sentencias };
+  }
+
+  // bloque := ":" NUEVA_LINEA INDENTACION sentencia+ DEDENTACION
+  // `palabra` solo sirve para redactar el error ("if", "while", "else"...).
+  parsearBloque(palabra, linea) {
+    const dosPuntos = this.actual();
+    if (dosPuntos.tipo === TipoToken.ASIGNACION && palabra !== "else") throw Errores.igualEnCondicion(linea);
+    if (dosPuntos.tipo !== TipoToken.DOS_PUNTOS) throw Errores.faltaDosPuntos(palabra, linea);
+    this.avanzar();
+
+    if (this.actual().tipo !== TipoToken.NUEVA_LINEA && this.actual().tipo !== TipoToken.EOF) {
+      throw Errores.faltaSangria(linea); // código en la misma línea: if x: print(1)
+    }
+    this.saltarNuevasLineas();
+    if (this.actual().tipo !== TipoToken.INDENTACION) throw Errores.faltaSangria(linea);
+    this.avanzar();
+
+    const sentencias = [];
+    this.saltarNuevasLineas();
+    while (this.actual().tipo !== TipoToken.DEDENTACION && this.actual().tipo !== TipoToken.EOF) {
+      if (this.actual().tipo === TipoToken.INDENTACION) throw Errores.sangriaInesperada(this.actual().linea);
+      sentencias.push(this.parsearSentencia());
+      this.saltarNuevasLineas();
+    }
+    if (this.actual().tipo === TipoToken.DEDENTACION) this.avanzar();
+    return { tipo: "Bloque", sentencias, linea };
+  }
+
+  parsearCondicional(esElif = false) {
+    const clave = this.avanzar(); // IF o ELIF
+    const palabra = esElif ? "elif" : "if";
+    if (this.finDeSentencia()) throw Errores.esperabaValor(clave.linea);
+    const condicion = this.parsearExpresion();
+    const bloqueSi = this.parsearBloque(palabra, clave.linea);
+
+    let bloqueSino = null;
+    if (this.actual().tipo === TipoToken.ELIF) {
+      const anidado = this.parsearCondicional(true);
+      bloqueSino = { tipo: "Bloque", sentencias: [anidado], linea: anidado.linea };
+    } else if (this.actual().tipo === TipoToken.ELSE) {
+      const sino = this.avanzar();
+      bloqueSino = this.parsearBloque("else", sino.linea);
+    }
+    return { tipo: "Condicional", condicion, bloqueSi, bloqueSino, esElif, linea: clave.linea };
+  }
+
+  parsearMientras() {
+    const clave = this.avanzar(); // WHILE
+    if (this.finDeSentencia()) throw Errores.esperabaValor(clave.linea);
+    const condicion = this.parsearExpresion();
+    const bloque = this.parsearBloque("while", clave.linea);
+    return { tipo: "Mientras", condicion, bloque, linea: clave.linea };
+  }
+
+  // for i in range(n) | range(a, b) | range(a, b, paso)
+  parsearPara() {
+    const clave = this.avanzar(); // FOR
+    const variable = this.esperar(TipoToken.IDENTIFICADOR);
+    if (!variable) throw Errores.instruccionIncompleta(clave.linea);
+    if (!this.esperar(TipoToken.IN)) throw Errores.forSoloRange(clave.linea);
+
+    const rango = this.actual();
+    const siguiente = this.tokens[this.pos + 1];
+    if (rango.tipo !== TipoToken.IDENTIFICADOR || rango.valor !== "range" || siguiente?.tipo !== TipoToken.PAREN_IZQ) {
+      throw Errores.forSoloRange(clave.linea);
+    }
+    this.avanzar(); // range
+    this.avanzar(); // (
+    const argumentos = this.parsearArgumentos();
+    if (!this.esperar(TipoToken.PAREN_DER)) throw Errores.faltaParenCierre(clave.linea);
+    if (argumentos.length < 1 || argumentos.length > 3) throw Errores.argumentosRange(clave.linea);
+
+    const bloque = this.parsearBloque("for", clave.linea);
+    return { tipo: "Para", variable: variable.valor, argumentos, bloque, linea: clave.linea };
   }
 
   saltarNuevasLineas() {
@@ -68,11 +137,26 @@ export class Parser {
 
   finDeSentencia() {
     const t = this.actual().tipo;
-    return t === TipoToken.NUEVA_LINEA || t === TipoToken.EOF;
+    return t === TipoToken.NUEVA_LINEA || t === TipoToken.EOF || t === TipoToken.DEDENTACION;
   }
 
   parsearSentencia() {
     const token = this.actual();
+
+    switch (token.tipo) {
+      case TipoToken.IF:
+        return this.parsearCondicional(false);
+      case TipoToken.WHILE:
+        return this.parsearMientras();
+      case TipoToken.FOR:
+        return this.parsearPara();
+      case TipoToken.ELIF:
+        throw Errores.sinIfPrevio("elif", token.linea);
+      case TipoToken.ELSE:
+        throw Errores.sinIfPrevio("else", token.linea);
+      default:
+        break;
+    }
 
     if (token.tipo !== TipoToken.IDENTIFICADOR) {
       throw Errores.instruccionIncompleta(token.linea);
@@ -104,7 +188,7 @@ export class Parser {
   }
 
   finDeSentenciaToken(token) {
-    return token.tipo === TipoToken.NUEVA_LINEA || token.tipo === TipoToken.EOF;
+    return token.tipo === TipoToken.NUEVA_LINEA || token.tipo === TipoToken.EOF || token.tipo === TipoToken.DEDENTACION;
   }
 
   parsearAsignacion() {
@@ -174,45 +258,80 @@ export class Parser {
     return argumentos;
   }
 
-  // expresion := termino (("+" | "-") termino)*
+  // expresion := or
   parsearExpresion() {
-    let nodo = this.parsearTermino();
-    while (
-      this.actual().tipo === TipoToken.SUMA ||
-      this.actual().tipo === TipoToken.RESTA
-    ) {
-      const operadorTok = this.avanzar();
-      const derecha = this.parsearTermino();
-      nodo = {
-        tipo: "OperacionBinaria",
-        operador: operadorTok.valor,
-        izquierda: nodo,
-        derecha,
-        linea: operadorTok.linea,
-      };
+    return this.parsearOr();
+  }
+
+  parsearOr() {
+    let nodo = this.parsearAnd();
+    while (this.actual().tipo === TipoToken.OR) {
+      const op = this.avanzar();
+      nodo = { tipo: "Logica", operador: "or", izquierda: nodo, derecha: this.parsearAnd(), linea: op.linea };
     }
     return nodo;
   }
 
-  // termino := factor (("*" | "/" | "%") factor)*
-  parsearTermino() {
-    let nodo = this.parsearFactor();
-    while (
-      this.actual().tipo === TipoToken.MULT ||
-      this.actual().tipo === TipoToken.DIV ||
-      this.actual().tipo === TipoToken.MODULO
-    ) {
-      const operadorTok = this.avanzar();
-      const derecha = this.parsearFactor();
-      nodo = {
-        tipo: "OperacionBinaria",
-        operador: operadorTok.valor,
-        izquierda: nodo,
-        derecha,
-        linea: operadorTok.linea,
-      };
+  parsearAnd() {
+    let nodo = this.parsearNot();
+    while (this.actual().tipo === TipoToken.AND) {
+      const op = this.avanzar();
+      nodo = { tipo: "Logica", operador: "and", izquierda: nodo, derecha: this.parsearNot(), linea: op.linea };
     }
     return nodo;
+  }
+
+  parsearNot() {
+    if (this.actual().tipo === TipoToken.NOT) {
+      const op = this.avanzar();
+      return { tipo: "Negacion", operando: this.parsearNot(), linea: op.linea };
+    }
+    return this.parsearComparacion();
+  }
+
+  // comparacion := aritmetica (opComp aritmetica)?   (no se encadenan)
+  parsearComparacion() {
+    const izquierda = this.parsearAritmetica();
+    const esComparador = (t) =>
+      t === TipoToken.IGUAL || t === TipoToken.DISTINTO || t === TipoToken.MENOR ||
+      t === TipoToken.MAYOR || t === TipoToken.MENOR_IGUAL || t === TipoToken.MAYOR_IGUAL;
+    if (!esComparador(this.actual().tipo)) return izquierda;
+
+    const op = this.avanzar();
+    if (this.finDeSentencia() || this.actual().tipo === TipoToken.DOS_PUNTOS) throw Errores.esperabaValor(op.linea);
+    const derecha = this.parsearAritmetica();
+    if (esComparador(this.actual().tipo)) throw Errores.comparacionEncadenada(op.linea);
+    return { tipo: "Comparacion", operador: op.valor, izquierda, derecha, linea: op.linea };
+  }
+
+  // aritmetica := termino (("+" | "-") termino)*
+  parsearAritmetica() {
+    let nodo = this.parsearTermino();
+    while (this.actual().tipo === TipoToken.SUMA || this.actual().tipo === TipoToken.RESTA) {
+      const operadorTok = this.avanzar();
+      const derecha = this.parsearTermino();
+      nodo = { tipo: "OperacionBinaria", operador: operadorTok.valor, izquierda: nodo, derecha, linea: operadorTok.linea };
+    }
+    return nodo;
+  }
+
+  // termino := unario (("*" | "/" | "%") unario)*
+  parsearTermino() {
+    let nodo = this.parsearUnario();
+    while (this.actual().tipo === TipoToken.MULT || this.actual().tipo === TipoToken.DIV || this.actual().tipo === TipoToken.MODULO) {
+      const operadorTok = this.avanzar();
+      const derecha = this.parsearUnario();
+      nodo = { tipo: "OperacionBinaria", operador: operadorTok.valor, izquierda: nodo, derecha, linea: operadorTok.linea };
+    }
+    return nodo;
+  }
+
+  parsearUnario() {
+    if (this.actual().tipo === TipoToken.RESTA) {
+      const op = this.avanzar();
+      return { tipo: "Negativo", operando: this.parsearUnario(), linea: op.linea };
+    }
+    return this.parsearFactor();
   }
 
   // factor := NUMERO | TEXTO | IDENTIFICADOR | "(" expresion ")"
@@ -227,6 +346,11 @@ export class Parser {
     if (token.tipo === TipoToken.TEXTO) {
       this.avanzar();
       return { tipo: "Texto", valor: token.valor, linea: token.linea };
+    }
+
+    if (token.tipo === TipoToken.TRUE || token.tipo === TipoToken.FALSE) {
+      this.avanzar();
+      return { tipo: "Booleano", valor: token.tipo === TipoToken.TRUE, linea: token.linea };
     }
 
     if (token.tipo === TipoToken.IDENTIFICADOR) {

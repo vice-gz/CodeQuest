@@ -2,16 +2,25 @@
   "id": 17,
   "mundo": 2,
   "nombre": "El sistema de energía",
-  "concepto": "constantes vs variables",
+  "concepto": "valores que cambian y valores que no",
   "concepto_evaluado": "constantes_vs_variables",
-  "narrativa": "El sistema eléctrico tiene valores fijos y valores que cambian. Confundirlos sale caro.",
+  "narrativa": "Algunos datos no deben cambiar nunca (como la capacidad máxima) y otros cambian todo el tiempo (la carga actual).",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "17.1",
       "tipo": "EXPLORAR",
-      "titulo": "Un valor que no cambia",
-      "enunciado": "Ejecuta: COSTO_POR_CASILLA se define una vez y se usa en el cálculo.",
-      "codigoInicial": "COSTO_POR_CASILLA = 2\ncasillas = 4\ngasto = COSTO_POR_CASILLA * casillas\nprint(gasto)",
+      "titulo": "MAXIMO y actual",
+      "enunciado": "Concepto nuevo: por costumbre, los valores que NO deben cambiar se escriben en MAYÚSCULAS (MAXIMO). Los que cambian, en minúsculas. Mira qué chip se reasigna.",
+      "codigoInicial": "MAXIMO = 100\nactual = 40\nactual = actual + 25\nprint(actual)\nprint(MAXIMO)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -20,18 +29,46 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Por convención, un nombre EN MAYÚSCULAS avisa que ese valor no debe cambiar: es una constante.",
+      "retroalimentacion": "MAXIMO se queda igual; actual cambia con el tiempo.",
       "pistas": [
-        "Fíjate en cómo está escrito el nombre de la constante."
+        "Solo el chip de actual muestra «antes»."
       ]
     },
     {
       "id": "17.2",
       "tipo": "MODIFICAR",
-      "titulo": "Cambia solo lo variable",
-      "enunciado": "Sin tocar la constante, cambia las casillas para que el gasto sea 14.",
-      "codigoInicial": "COSTO_POR_CASILLA = 2\ncasillas = 4\ngasto = COSTO_POR_CASILLA * casillas\nprint(gasto)",
-      "solucionReferencia": "COSTO_POR_CASILLA = 2\ncasillas = 7\ngasto = COSTO_POR_CASILLA * casillas\nprint(gasto)",
+      "titulo": "Hasta el tope",
+      "enunciado": "actual vale 20 y se le suma 30. Cambia el 30 por el número correcto para que actual llegue exactamente a MAXIMO (100). Debes seguir usando una suma.",
+      "codigoInicial": "MAXIMO = 100\nactual = 20\nactual = actual + 30\nprint(actual)",
+      "solucionReferencia": "MAXIMO = 100\nactual = 20\nactual = actual + 80\nprint(actual)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_exacto",
+        "valorEsperado": "100",
+        "requiere": {
+          "operador": "+"
+        }
+      },
+      "retroalimentacion": "Calculaste cuánto faltaba para llegar al máximo.",
+      "pistas": [
+        "¿Cuánto le falta a 20 para llegar a 100?"
+      ],
+      "solucionesIncorrectas": [
+        "MAXIMO = 100\nactual = 20\nactual = actual + 30\nprint(actual)",
+        "MAXIMO = 100\nactual = MAXIMO\nprint(actual)"
+      ]
+    },
+    {
+      "id": "17.3",
+      "tipo": "RESOLVER",
+      "titulo": "¿Cuánto falta?",
+      "enunciado": "Con MAXIMO = 100 y actual = 35, calcula en faltante cuánto falta para llenar y muéstralo (65).",
+      "codigoInicial": "",
+      "solucionReferencia": "MAXIMO = 100\nactual = 35\nfaltante = MAXIMO - actual\nprint(faltante)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -39,101 +76,16 @@
       "metodosPermitidos": [],
       "validacion": {
         "tipo": "output_con_variable",
-        "valorEsperado": "14",
-        "variableRequerida": "COSTO_POR_CASILLA"
+        "valorEsperado": "65",
+        "variableRequerida": "faltante",
+        "requiere": {
+          "operador": "-"
+        }
       },
-      "retroalimentacion": "La constante se queda fija; lo que varía es la variable.",
+      "retroalimentacion": "Usaste un valor fijo y uno cambiante en la misma resta.",
       "pistas": [
-        "14 dividido entre 2 te dice cuántas casillas."
-      ],
-      "mensajeNoLogrado": "El gasto debe ser 14 y COSTO_POR_CASILLA debe seguir valiendo 2."
-    },
-    {
-      "id": "17.3",
-      "tipo": "RESOLVER",
-      "titulo": "La red eléctrica",
-      "enunciado": "Robot1 arranca con 6 de energía y cada casilla cuesta 2. Hay muros en la fila 1 y dos recargas (⚡) en el camino. Llega a la meta en (5,2).",
-      "codigoInicial": "",
-      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)",
-      "instruccionesPermitidas": [
-        "asignacion",
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "energia"
-      ],
-      "validacion": {
-        "tipo": "estado",
-        "posicionEsperada": [
-          5,
-          2
-        ],
-        "energiaMinima": 1
-      },
-      "retroalimentacion": "Las recargas del camino repusieron la batería justo a tiempo.",
-      "pistas": [
-        "La fila 2 está libre de muros.",
-        "Pisa las dos recargas: sin ellas la batería no alcanza."
-      ],
-      "mensajeNoLogrado": "Robot1 debe llegar a (5,2) con energía restante. Asegúrate de pisar las recargas."
-    }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 3,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      5,
-      2
-    ],
-    "obstaculos": [
-      [
-        1,
-        1
-      ],
-      [
-        2,
-        1
-      ],
-      [
-        3,
-        1
-      ],
-      [
-        4,
-        1
+        "faltante = MAXIMO - actual"
       ]
-    ],
-    "energiaInicial": 6,
-    "energiaMaxima": 60,
-    "costoEnergiaPorCasilla": 2,
-    "recargas": [
-      {
-        "posicion": [
-          0,
-          2
-        ],
-        "cantidad": 10
-      },
-      {
-        "posicion": [
-          3,
-          2
-        ],
-        "cantidad": 10
-      }
-    ]
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+    }
+  ]
 }

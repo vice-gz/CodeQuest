@@ -11,6 +11,7 @@
 
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/panels.css" />
+<link rel="stylesheet" href="css/mundos.css" />
 </head>
 <body class="con-nav">
 
@@ -23,12 +24,14 @@
     <span class="marca-texto">CodeQuest</span>
   </div>
 
+  <a class="boton boton-barra boton-mapa" id="btn-mapa" href="mundos.html" title="Volver al mapa de mundos">← Mundos</a>
   <nav class="selector-niveles" id="selector-niveles" aria-label="Niveles"></nav>
 
   <div class="acciones-barra">
     <button class="boton boton-barra" id="btn-diccionario" type="button" aria-expanded="false" title="Instrucciones aprendidas">
       Diccionario <span class="dic-contador" id="dic-contador">0/12</span>
     </button>
+    <button class="boton boton-barra" id="btn-conceptos" type="button" title="Glosario de programación con ejemplos">Conceptos</button>
     <button class="boton boton-barra" id="btn-tour" type="button" title="Ver de nuevo el recorrido por la interfaz">Tour</button>
     <div class="contador-estrellas" id="contador-estrellas-total" title="Estrellas totales">
       <span class="icono-estrella-mini">★</span>
@@ -96,8 +99,9 @@
         <h2 id="titulo-mundo">Mundo 2D · Laboratorio</h2>
         <span class="etiqueta-objetivo" id="etiqueta-objetivo"></span>
       </div>
+      <div class="selector-casos oculto" id="selector-casos" role="group" aria-label="Casos de prueba"></div>
       <div class="lienzo-envoltura">
-        <canvas id="lienzo-mundo" aria-label="Escenario donde Robot1 ejecuta las instrucciones"></canvas>
+        <canvas id="lienzo-mundo" aria-label="Escenario donde se ejecuta tu programa"></canvas>
       </div>
     </section>
 

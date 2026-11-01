@@ -1,0 +1,370 @@
+{
+  "id": 43,
+  "mundo": 4,
+  "nombre": "El gran operativo",
+  "concepto": "contadores con ciclos",
+  "concepto_evaluado": "integracion_mundo_4",
+  "narrativa": "El complejo entero debe evacuarse y el jefe de seguridad quiere un reporte: cuántas personas salvó el elevador.",
+  "narrativaSiguienteMundo": "¡Evacuación completada! Robot1 descubre una puerta con luces parpadeantes: el sistema de diagnóstico del complejo está lleno de errores. Allí lo espera el Mundo 5: Programador. (Próximamente.)",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1,
+    "pasajeros": [
+      2,
+      4
+    ]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "43.1",
+      "tipo": "RESOLVER",
+      "titulo": "Evacuación con reporte",
+      "enunciado": "Recoge a todos los pasajeros (hay entre 0 y 4, uno por piso), llévalos a la planta baja y muestra cuántos fueron usando un contador llamado llevados. Se prueba con 5 edificios, ¡incluso uno vacío!",
+      "codigoInicial": "",
+      "solucionReferencia": "llevados = 0\nfor i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\n        llevados = llevados + 1\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()\nprint(llevados)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pasajeros en 2, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              4
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 3",
+          "escenario": {
+            "pasajeros": [
+              3
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "1"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 3, 4, 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "4"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Edificio vacío",
+          "escenario": {
+            "pasajeros": []
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "0"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 5",
+          "escenario": {
+            "pasajeros": [
+              5
+            ]
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "1"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if"
+          ],
+          "variable": "llevados"
+        }
+      },
+      "retroalimentacion": "Automatizaste el trabajo y el reporte con ciclos, decisiones y un contador.",
+      "pistas": [
+        "Sube 4 veces; en cada piso, if hayPasajero(): recoger() y suma 1 a llevados.",
+        "Después baja 4 veces, suelta y muestra llevados."
+      ],
+      "mensajeNoLogrado": "Debe entregar a todos y mostrar la cantidad correcta (0 si no había nadie).",
+      "solucionesIncorrectas": [
+        "llevados = 0\nfor i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()\nprint(2)"
+      ]
+    },
+    {
+      "id": "43.2",
+      "tipo": "RESOLVER",
+      "titulo": "El operativo de dos viajes",
+      "enunciado": "Cabina de 2 personas y 4 pasajeros en parejas. Haz dos viajes completos (sube hasta una pareja, recógela, baja y suéltala) contándolos con la variable viajes, y al final muestra cuántos viajes hiciste (2). Se prueba en 4 edificios.",
+      "codigoInicial": "",
+      "solucionReferencia": "viajes = 0\nwhile viajes < 2:\n    while not elevador.hayPasajero():\n        elevador.subir(1)\n    elevador.recoger()\n    while elevador.piso() > 1:\n        elevador.bajar(1)\n    elevador.soltar()\n    viajes = viajes + 1\nprint(viajes)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "if",
+        "else",
+        "not"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Parejas en 2-4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              2,
+              4,
+              4
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Parejas en 3-5",
+          "escenario": {
+            "pasajeros": [
+              3,
+              3,
+              5,
+              5
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Parejas en 2-3",
+          "escenario": {
+            "pasajeros": [
+              2,
+              2,
+              3,
+              3
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Parejas en 4-5",
+          "escenario": {
+            "pasajeros": [
+              4,
+              4,
+              5,
+              5
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "elevador_entrega"
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "while"
+          ],
+          "variable": "viajes"
+        }
+      },
+      "retroalimentacion": "Ciclos anidados, contador y reporte: ¡el operativo completo!",
+      "pistas": [
+        "El ciclo de afuera cuenta los viajes; el de adentro busca a la pareja."
+      ],
+      "mensajeNoLogrado": "Deben quedar entregadas las 4 personas y mostrarse 2 viajes."
+    },
+    {
+      "id": "43.3",
+      "tipo": "LIBRE",
+      "titulo": "Torre libre",
+      "enunciado": "Experimenta con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 4.",
+      "codigoInicial": "# Prueba tus propios ciclos\nfor i in range(4):\n    elevador.subir(1)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero",
+        "llevando"
+      ],
+      "escenario": {
+        "pasajeros": [
+          2,
+          3,
+          5
+        ]
+      },
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "¡Mundo 4 completado!",
+      "pistas": [
+        "Prueba combinar while, for e if."
+      ]
+    }
+  ]
+}

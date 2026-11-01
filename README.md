@@ -1,6 +1,63 @@
-# CodeQuest: Aprende Programando — Avance 2.3
+# CodeQuest: Aprende Programando — Avance 3 (entrega final)
 
 Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persistencia en Supabase, perfil y panel de administrador**. No se implementan los Mundos 3-6. La documentación del Avance 1 está en `docs/README_avance1.md`.
+
+## Novedades del Avance 3 (mapa de mundos, escenarios y sintaxis nueva)
+
+**Flujo nuevo:** `auth.html` → **`mundos.html`** (mapa) → `juego.html?mundo=N`. El botón *Jugar* del menú abre el mapa; *← Mundos* vuelve a él.
+
+| Mundo | Escenario (`js/game/escenarios/`) | Qué se aprende | Niveles |
+|---|---|---|---|
+| 1 · Despertar | `laboratorio.js` (cuadrícula con Robot1, sin cambios) | instrucciones, print, errores | 1-8 |
+| 2 · Memoria | `datos.js` — Centro de Recuperación: chips de memoria, cables de datos, terminal. **Sin robot** | variables, tipos, operadores, entrada | 9-19 |
+| 3 · Lógica | `cartas.js` — mesa de cartas: las cartas se voltean, se iluminan en verde/rojo y cada `if` se juzga con VERDADERO/FALSO | `if`, `elif`, `else`, comparadores, `and`/`or`/`not`, anidados | 20-31 (12) |
+| 4 · Automatización | `elevador.js` — edificio de 5 pisos con elevador, energía y letrero de repeticiones | `while`, `for`/`range`, contadores, capacidad | 32-43 (12) |
+| 5 · Programador, 6 · Proyecto | — | tarjetas "Próximamente" en el mapa | — |
+
+**Los Mundos 3 y 4 tienen 12 niveles en tres bloques** (lo verifica `npm test`): **Aprender** (1-4: fases Explorar, Predecir y Modificar), **Practicar** (5-8: mezclan DEBUG —incluidos bucles infinitos y errores de sangría— y Escribir) y **Dominar** (9-12: Resolver y Libre; los niveles 10, 11 y 12 prueban el programa en 4 a 8 casos distintos).
+
+### Qué hay que hacer para estrenarlo
+1. **No hay SQL nuevo** (la base de datos no cambia). `npm install` (ahora incluye `jsdom` para las pruebas) y `npm run dev`.
+2. **Solo si ya tenías alumnos con progreso en el Mundo 2 o posterior:** el Mundo 2 se rediseñó (sin robot) y los Mundos 3 y 4 cambiaron de contenido y de numeración (ahora 20-31 y 32-43). Como las fases conservan ids parecidos (`9.1`, `20.3`…), el progreso viejo marcaría fases que ahora son otras. Para empezar limpio desde el Mundo 2, ejecuta en el SQL Editor:
+   ```sql
+   delete from public.progreso_fases where nivel_id >= 9;
+   update public.progreso_jugador set mundo_actual = 2, nivel_actual = 9 where nivel_actual >= 9;
+   ```
+   (Los alumnos que no pasaron del Mundo 1 no se ven afectados; el historial de `ejecuciones` se conserva.)
+
+### Cómo probar cada cosa
+- **Mapa y desbloqueo:** un mundo se abre al completar TODOS los niveles del anterior; el 1 siempre está abierto. El estado se indica con icono y texto (▶ Disponible, ✔ Completado, 🔒 Bloqueado/Próximamente), no solo con color. Con el **Modo Demo** del panel de admin (`mundos.html?demo=true`) están todos abiertos.
+- **Teoría:** al entrar por primera vez a un mundo aparece su bienvenida (se recuerda por usuario y mundo en el navegador). El botón **Conceptos** (juego y mapa) abre el glosario con ilustraciones: variable, algoritmo, operadores, condicional, comparadores/lógica y ciclo.
+- **Mundo 3:** escribe `if numero > 21:` + `print("Bust")` en el nivel 1. Tu regla se prueba en **4 mesas**; elige la que quieres ver con los botones de arriba del escenario. Un `print("Bust")` "a ciegas" NO pasa y el juego dice qué mesa falló y por qué.
+- **Conceptos:** `conceptos.html` (también el botón **Conceptos** del juego y del menú) explica variables, algoritmo, operadores, condicionales, comparadores y ciclos con dibujos y ejemplos; no necesita sesión.
+- **Mundo 4:** `while piso < 5:` con `elevador.subir(1)`; el panel de Estado muestra piso, pasajeros a bordo, entregados y **energía** (cada piso recorrido gasta 1%; sin energía → RUN_012).
+- **Mundo 4 (infinito):** `while piso < 5:` con `elevador.subir(1)`. Prueba `while True:` → *RUN_005 Ciclo infinito detectado* (se corta a las 1000 repeticiones; a partir de la 12.ª el elevador deja de animarse para no hacerte esperar).
+- **Sangría:** `Tab` inserta 4 espacios, `Shift+Tab` desindenta; errores con sangría explicados (SYN_006 a SYN_014).
+- **Límite de iteraciones:** `maxInstrucciones = 1000` en `js/interpreter/interpreter.js` (suma 1 por cada vuelta de `while` o `for`, global entre ciclos).
+
+### Decisiones que tomé (no estaban en la especificación)
+- **El Mundo 2 se reescribió entero** (11 niveles, mismos ids y mismos `concepto_evaluado`). Las consultas de estado de Robot1 (`energia`, `posicion`, `mirar`) ya no se enseñan allí: pasan al Laboratorio Libre y su entrada del diccionario se desbloquea al terminar el Mundo 1.
+- **"Casos" para validar lógica y ciclos:** una fase puede tener varias mesas/edificios (`casos` en el JSON). El programa se ejecuta con animación en el caso visible y en silencio en los demás; la fase solo se supera si pasa **todos**. Así no se pueden "adivinar" las respuestas. La lógica vive en `js/game/evaluacion.js` y la usan juego y pruebas.
+- **Variables de la mesa:** `carta1`, `carta2`…, `total` y, con `mostrarColor`, `color1`, `color2`… (`"roja"`/`"negra"`). En el nivel 20 el total también se llama `numero`, como pedía la especificación.
+- **Numeración:** dentro de un mundo los niveles se numeran 1..N (internamente siguen siendo 1..35). El perfil y el panel de admin siguen mostrando el id global.
+- **Desbloqueo de mundos:** se abre al completar TODOS los niveles del anterior (la especificación decía "mundo_id ≤ mundo_actual"; en juego normal equivale, pero esta regla tampoco se salta con datos viejos). `juego.html?mundo=X&nivel=N` abre el nivel N de ese mundo si ya está desbloqueado.
+- **`mesa.poner_carta(valor, color)` y `mesa.voltear()`** existen (color `"roja"` o `"negra"`, máximo 6 cartas) pero son **visuales**: no cambian `carta1`, `total` ni el resto de variables, que salen de la mano de cada mesa. Se usan en las fases Libres.
+- **El motor sigue siendo el mismo:** en vez de ramificar `ejecutor.js` por mundo, cada mundo es un escenario con la misma interfaz (`escenarios/index.js` elige cuál según `escenario.tipo` del JSON del nivel).
+- **Ilustraciones del mapa:** son SVG propios dibujados en código (no hay imágenes externas); cada mundo tiene una composición distinta.
+- **Tipografía:** se mantiene Space Grotesk (la propuesta de la especificación) y JetBrains Mono para el código.
+- **Movimiento reducido:** si el sistema lo pide, las animaciones se acortan o se omiten (`prefers-reduced-motion`).
+
+### Guía para facilitar
+`docs/GUIA_NIVELES_MUNDOS_2_A_4.md` explica, nivel por nivel y fase por fase, qué pide cada una y cómo se pasa (sin código; las soluciones están escondidas como spoiler). Se regenera con `python3 herramientas/generar_guia.py`.
+
+### Pruebas (`npm test`)
+`test_cql.mjs` (lenguaje y escenarios: 34), `test_niveles.mjs` (134 fases de 43 niveles con su solución de referencia + 57 soluciones tramposas o rotas que deben ser rechazadas, y la estructura por bloques), `test_navegacion.mjs` (desbloqueo y catálogo), `test_persistencia.mjs`, `test_editor.mjs` y `test_juego_dom.mjs`, que abre `juego.html` real en jsdom con un Supabase simulado y juega los 4 mundos, la transición, el parámetro `?nivel`, el Laboratorio Libre y el modo demo.
+Los niveles de los Mundos 2-4 se generan con `python3 herramientas/generar_niveles.py` (edita ahí y vuelve a correr; luego `npm test`).
+
+### Para el Avance 4
+Mundos 5 (depuración) y 6 (proyecto): un escenario nuevo en `js/game/escenarios/` + una entrada en `js/game/escenarios/index.js`, su paleta en `js/game/paletas.js`, niveles en `levels/mundo5/`, y quitar el "Próximamente" en `js/game/mundosInfo.js`/`landing.js`.
+
+---
 
 ## Novedades del Avance 2.3 (cierre del Avance 2)
 
@@ -32,14 +89,6 @@ Cada nivel JSON tiene `concepto_evaluado` (p. ej. `variables`, `operadores_aritm
 - **Un alumno que nunca jugó** se marca en riesgo pasados 3 días desde su inscripción (con el SQL original quedaba como "al día" para siempre).
 - El Laboratorio Libre incluye `asignacion` además de `print` y `entrada`; si no, no se podrían usar variables.
 - La función conserva el nombre `admin_alertas_clase`, pero también la puede llamar el profesor dueño de la clase (para cualquier otra persona devuelve cero filas).
-
-### Qué hacer en el Avance 3 (Mundos 3 y 4)
-Los comentarios `AVANCE 3` al inicio de `js/interpreter/parser.js`, `validator.js` y `lexer.js` listan el trabajo exacto. Resumen:
-1. **Lexer:** tokens `IF, ELSE, ELIF, WHILE, FOR, DEF, RETURN, IGUAL, DISTINTO, MENOR, MAYOR, MENOR_IGUAL, MAYOR_IGUAL, AND, OR, NOT, DOS_PUNTOS, INDENTACION` (y dejar de ignorar la sangría).
-2. **Parser:** nodos `If/While/For/Def/Return`, bloques por indentación y expresiones con precedencia lógica.
-3. **Validator:** condiciones, alcance de variables, funciones del estudiante y `return` solo dentro de `def`.
-4. **Niveles:** crear los JSON de los Mundos 3 y 4 con `concepto_evaluado`, añadir sus nombres en `construirCatalogo` (`js/persistence/progreso.js`) y la narrativa de transición del último nivel del Mundo 3.
-5. Poner nombres reales a los Mundos 3-6 de la landing (`js/landing.js`).
 
 ---
 
@@ -102,7 +151,7 @@ Añade también `http://localhost:5173/auth.html?recuperar=1` a las *Redirect UR
 ## Estructura
 
 ```
-index.html (landing)  auth.html (login/registro)  juego.html  perfil.html  profesor.html  admin.html
+index.html (landing)  auth.html  mundos.html (mapa)  juego.html  perfil.html  profesor.html  admin.html
 css/  styles.css panels.css auth.css landing.css perfil.css admin.css
 js/   supabase.js auth.js nav.js landing.js perfil.js admin.js juego.js (antes main.js)
       datos.js util.js
@@ -110,7 +159,7 @@ js/   supabase.js auth.js nav.js landing.js perfil.js admin.js juego.js (antes m
       persistence/                ProgressRepository, LocalStorage…, SupabaseProgressRepository, progreso.js (lógica pura)
       ui/                         + avisos.js (toasts/modales), vistaProgreso.js, erroresCatalogo.js
 supabase/avance2.sql, avance2_2.sql, avance2_3.sql   funciones SQL, roles, clases, auditoría y alertas (en ese orden)
-test_niveles.mjs  test_persistencia.mjs  test_editor.mjs
+test_cql.mjs  test_niveles.mjs  test_navegacion.mjs  test_persistencia.mjs  test_editor.mjs  test_juego_dom.mjs
 ```
 
 ## 1. Instalar dependencias

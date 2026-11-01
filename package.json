@@ -1,19 +1,20 @@
 {
   "name": "codequest",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
-  "description": "CodeQuest: Aprende Programando — Avance 2 (autenticación, Supabase, perfil y panel de admin)",
+  "description": "CodeQuest: Aprende Programando — Avance 3 (mapa de mundos, escenarios por mundo, if/while/for)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node test_niveles.mjs && node test_persistencia.mjs && node test_editor.mjs"
+    "test": "node test_cql.mjs && node test_niveles.mjs && node test_navegacion.mjs && node test_persistencia.mjs && node test_editor.mjs && node test_juego_dom.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0"
   },
   "devDependencies": {
-    "vite": "^5.4.0"
+    "vite": "^5.4.0",
+    "jsdom": "^25.0.1"
   }
 }
