@@ -147,10 +147,10 @@ export class EscenarioElevador extends EscenarioBase {
         e.render();
         await e.esperar(350);
       },
-      async entrada() {
+      async entrada(prompt) {
         if (typeof callbacks.pedirEntrada !== "function") throw Errores.entradaNoDisponible();
         callbacks.onEntradaPendiente?.();
-        const valor = await callbacks.pedirEntrada();
+        const valor = await callbacks.pedirEntrada({ etiqueta: prompt });
         callbacks.onSalida?.({ tipo: "ENTRADA", valor });
         return valor;
       },

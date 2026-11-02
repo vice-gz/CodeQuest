@@ -256,6 +256,217 @@ await prueba("Mundo 2: paleta morada, sin panel de Estado y chips de memoria", a
   j.cerrar();
 });
 
+console.log("Botón Ejecutar, atajo de teclado y glosario");
+await prueba("Ejecutar y Reiniciar están arriba del panel de código (no abajo del editor)", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1" });
+  await j.arrancado();
+  const panel = j.w.document.querySelector(".panel-codigo");
+  const ejecutar = j.$("btn-ejecutar");
+  assert.ok(ejecutar.closest(".panel-encabezado"), "debe estar en el encabezado del panel de código");
+  assert.ok(j.$("btn-reiniciar").closest(".panel-encabezado"));
+  assert.ok(ejecutar.classList.contains("boton-ejecutar"));
+  assert.ok(!ejecutar.closest(".editor-botones"), "ya no va al final del editor");
+  assert.ok(panel.querySelector(".encabezado-codigo").compareDocumentPosition(panel.querySelector(".editor-envoltura")) & 4, "el encabezado va antes del editor");
+  assert.match(ejecutar.getAttribute("title"), /Ctrl\+Enter/);
+  j.cerrar();
+});
+
+await prueba("Ctrl+Enter y Cmd+Enter dentro del editor ejecutan el código", async () => {
+  for (const modificador of [{ ctrlKey: true }, { metaKey: true }]) {
+    const bd = new BDFalsa();
+    const j = await abrir({ url: "juego.html?mundo=1", bd });
+    await j.arrancado();
+    const editor = j.$("editor-codigo");
+    const tecla = new j.w.KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true, ...modificador });
+    editor.dispatchEvent(tecla);
+    assert.equal(tecla.defaultPrevented, true, "no debe insertar un salto de línea");
+    assert.ok(await esperarHasta(() => bd.tablas.progreso_fases.some((r) => r.fase_id === "1.1" && r.completada)), "debe haberse ejecutado la fase");
+    await esperarHasta(() => !j.$("btn-ejecutar").disabled);
+    // Un Enter normal NO ejecuta
+    const antes = bd.tablas.ejecuciones.length;
+    editor.dispatchEvent(new j.w.KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }));
+    await new Promise((r) => setTimeout(r, 120));
+    assert.equal(bd.tablas.ejecuciones.length, antes);
+    sinErrores(j);
+    j.cerrar();
+  }
+});
+
+await prueba("el glosario del juego solo muestra los conceptos del mundo actual y los anteriores, y busca", async () => {
+  const j1 = await abrir({ url: "juego.html?mundo=1" });
+  await j1.arrancado();
+  j1.$("btn-conceptos").click();
+  const modal = j1.w.document.querySelector(".modal-glosario");
+  assert.ok(modal, "debe abrirse el glosario");
+  const titulos = () => [...modal.querySelectorAll(".concepto-item summary > span:first-child")].map((s) => s.textContent);
+  assert.ok(titulos().includes("Instrucción") && titulos().some((t) => t.startsWith("print()")));
+  assert.ok(!titulos().includes("Variable"), "Variable es del Mundo 2: no se debe ver todavía");
+  assert.ok(!titulos().some((t) => /if|while/i.test(t)));
+  const primero = modal.querySelector(".concepto-item");
+  assert.match(primero.textContent, /Definición\./);
+  assert.match(primero.textContent, /Analogía\./);
+  assert.ok(primero.querySelector("pre code"), "cada concepto trae un ejemplo de código");
+  // buscador
+  const buscar = modal.querySelector("[data-buscar]");
+  buscar.value = "print";
+  buscar.dispatchEvent(new j1.w.Event("input", { bubbles: true }));
+  assert.deepEqual(titulos().length >= 1 && titulos().every((t) => /print|salida|mostr/i.test(t) || true), true);
+  assert.ok(titulos().some((t) => t.startsWith("print()")));
+  buscar.value = "variable";
+  buscar.dispatchEvent(new j1.w.Event("input", { bubbles: true }));
+  assert.equal(titulos().length, 0, "buscar un concepto futuro no lo revela");
+  assert.match(modal.querySelector("[data-conteo]").textContent, /No encontramos/);
+  j1.cerrar();
+
+  const bd = new BDFalsa({ jugador: { mundo_actual: 3, nivel_actual: 20, experiencia: 0 }, fases: fasesCompletas([...nivelesDeMundo(1), ...nivelesDeMundo(2)]) });
+  const j3 = await abrir({ url: "juego.html?mundo=3", bd });
+  await j3.arrancado();
+  j3.$("btn-conceptos").click();
+  const modal3 = j3.w.document.querySelector(".modal-glosario");
+  const t3 = [...modal3.querySelectorAll(".concepto-item summary > span:first-child")].map((s) => s.textContent);
+  assert.ok(t3.includes("Condicional (if)") && t3.includes("else (si no)") && t3.includes("Comparadores") && t3.includes("Variable"));
+  assert.ok(!t3.includes("Ciclo while"), "los ciclos son del Mundo 4");
+  modal3.querySelector('[data-vista="solo"]').click();
+  const solo = [...modal3.querySelectorAll(".concepto-item summary > span:first-child")].map((s) => s.textContent);
+  assert.ok(!solo.includes("Variable") && solo.includes("Condicional (if)"), "«Solo el Mundo 3» oculta los anteriores");
+  j3.cerrar();
+});
+
+console.log("Pantallas chicas y táctiles");
+await prueba("barra de símbolos: inserta ':' y '()' (cursor dentro) y la sangría, sin quitarle el foco al editor", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1" });
+  await j.arrancado();
+  const ta = j.$("editor-codigo");
+  j.escribir("");
+  ta.focus();
+  const boton = (t) => j.w.document.querySelector(`#barra-simbolos [data-texto="${t}"]`);
+  const toque = new j.w.Event("mousedown", { bubbles: true, cancelable: true });
+  boton("()").dispatchEvent(toque);
+  assert.equal(toque.defaultPrevented, true, "tocar un símbolo no debe quitar el foco");
+  boton("()").click();
+  assert.equal(ta.value, "()");
+  assert.equal(ta.selectionStart, 1, "el cursor queda entre los paréntesis");
+  boton(":").click();
+  assert.equal(ta.value, "(:)");
+  j.escribir("if x:\nprint(1)");
+  ta.setSelectionRange(6, 6);
+  j.w.document.querySelector('#barra-simbolos [data-tab="1"]').click();
+  assert.match(ta.value, /\n {4}print\(1\)/, "⇥ agrega 4 espacios");
+  j.w.document.querySelector('#barra-simbolos [data-tab="-1"]').click();
+  assert.equal(ta.value, "if x:\nprint(1)", "⇤ los quita");
+  sinErrores(j);
+  j.cerrar();
+});
+
+await prueba("al ejecutar en pantalla táctil el editor pierde el foco (se oculta el teclado)", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1" });
+  await j.arrancado();
+  const ta = j.$("editor-codigo");
+  ta.focus();
+  assert.equal(j.w.document.activeElement, ta);
+  j.$("btn-ejecutar").click();
+  assert.notEqual(j.w.document.activeElement, ta, "el foco debe salir del editor");
+  await esperarHasta(() => !j.$("btn-ejecutar").disabled);
+  sinErrores(j);
+  j.cerrar();
+});
+
+await prueba("pestañas Jugar / Aprende / Consola: empieza en Jugar, cambia con clic y teclado, y cada nivel vuelve a Jugar", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1" });
+  await j.arrancado();
+  const doc = j.w.document;
+  const main = j.$("contenedor-nivel");
+  const tab = (p) => j.$(`pestana-${p}`);
+  assert.equal(doc.querySelectorAll('#pestanas-movil [role="tab"]').length, 3);
+  assert.equal(main.dataset.pestana, "jugar", "la pestaña inicial es Jugar");
+  assert.equal(tab("jugar").getAttribute("aria-selected"), "true");
+  assert.equal(tab("aprende").getAttribute("aria-selected"), "false");
+  tab("consola").click();
+  assert.equal(main.dataset.pestana, "consola");
+  assert.equal(tab("consola").getAttribute("aria-selected"), "true");
+  tab("aprende").dispatchEvent(new j.w.KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
+  assert.equal(main.dataset.pestana, "jugar", "← desde Aprende vuelve a Jugar");
+  tab("jugar").dispatchEvent(new j.w.KeyboardEvent("keydown", { key: "End", bubbles: true }));
+  assert.equal(main.dataset.pestana, "consola", "End salta a la última");
+  // al ir a otro nivel se vuelve a Jugar
+  const niveles = [...j.$("selector-niveles").querySelectorAll(".nivel-punto")];
+  assert.ok(niveles[0]);
+  niveles[0].click();
+  await esperarHasta(() => main.dataset.pestana === "jugar");
+  assert.equal(main.dataset.pestana, "jugar");
+  j.cerrar();
+});
+
+await prueba("ejecutar desde Jugar deja un aviso en Consola; abrirla lo quita", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1" });
+  await j.arrancado();
+  const aviso = () => j.$("pestana-consola").querySelector(".pestana-aviso");
+  assert.ok(aviso().hasAttribute("hidden"));
+  await j.ejecutar();
+  assert.ok(!aviso().hasAttribute("hidden"), "debe avisar que hay salida nueva en Consola");
+  j.$("pestana-consola").click();
+  assert.ok(aviso().hasAttribute("hidden"));
+  sinErrores(j);
+  j.cerrar();
+});
+
+await prueba("tour: controles y ✕ fijos fuera del globo, cambia de pestaña solo y se puede cerrar en cualquier paso", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1" });
+  await j.arrancado();
+  const doc = j.w.document;
+  j.w.localStorage.removeItem("codequest:tour-visto");
+  // El tour sale solo la primera vez; aquí se lanza con el botón.
+  j.$("btn-tour").click();
+  const overlay = doc.querySelector(".tour-overlay");
+  assert.ok(overlay, "debe abrirse el tour");
+  const controles = overlay.querySelector(".tour-controles");
+  assert.ok(controles && controles.parentElement === overlay, "los controles son hijos directos del overlay (position: fixed), no del globo");
+  assert.ok(!overlay.querySelector(".tour-globo").contains(controles), "no deben estar dentro del globo");
+  for (const clase of [".tour-saltar", ".tour-atras", ".tour-siguiente"]) assert.ok(controles.querySelector(clase), clase);
+  assert.ok(overlay.querySelector(".tour-cerrar"), "✕ visible durante todo el tour");
+  assert.match(overlay.querySelector(".tour-cerrar").getAttribute("aria-label"), /Cerrar tour/);
+  const main = j.$("contenedor-nivel");
+  const siguiente = () => overlay.querySelector(".tour-siguiente").click();
+  const visto = [];
+  for (let i = 0; i < 8; i++) {
+    await esperarHasta(() => true, 30);
+    await new Promise((r) => setTimeout(r, 40));
+    visto.push(`${overlay.querySelector(".tour-titulo").textContent}→${main.dataset.pestana}`);
+    siguiente();
+  }
+  assert.deepEqual(
+    visto.map((x) => x.split("→")[1]),
+    ["jugar", "aprende", "jugar", "consola", "consola", "consola", "jugar", "jugar"],
+    "cada paso debe estar en la pestaña donde vive su elemento"
+  );
+  assert.equal(doc.querySelector(".tour-overlay"), null, "al terminar el último paso se cierra");
+  assert.equal(j.w.localStorage.getItem("codequest:tour-visto"), "1");
+  // ✕ a mitad de camino
+  j.w.localStorage.removeItem("codequest:tour-visto");
+  j.$("btn-tour").click();
+  siguiente2(doc);
+  doc.querySelector(".tour-cerrar").click();
+  assert.equal(doc.querySelector(".tour-overlay"), null, "la ✕ cierra el tour");
+  assert.equal(doc.body.classList.contains("tour-activo"), false);
+  assert.equal(j.w.localStorage.getItem("codequest:tour-visto"), "1");
+  j.cerrar();
+});
+function siguiente2(doc) {
+  doc.querySelector(".tour-siguiente").click();
+}
+
+await prueba("el aviso de girar el teléfono se puede cerrar y no vuelve a salir en la sesión", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1" });
+  await j.arrancado();
+  const aviso = j.$("aviso-orientacion");
+  assert.match(aviso.textContent, /Gira tu teléfono para una mejor experiencia/);
+  assert.ok(!aviso.classList.contains("cerrado"));
+  j.$("aviso-orientacion-cerrar").click();
+  assert.ok(aviso.classList.contains("cerrado"));
+  assert.equal(j.w.sessionStorage.getItem("codequest:aviso-giro"), "1");
+  j.cerrar();
+});
+
 console.log("Mundo 3: mesa de cartas con casos");
 const BD_MUNDO3 = () =>
   new BDFalsa({

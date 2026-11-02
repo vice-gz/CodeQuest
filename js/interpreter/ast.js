@@ -3,7 +3,7 @@
 // mostrar "total > 21" en la mesa de cartas) y recoge las variables que usa
 // (para dibujar de dónde fluyen los valores en el Centro de Recuperación).
 
-const PRECEDENCIA = { or: 1, and: 2, not: 3, cmp: 4, "+": 5, "-": 5, "*": 6, "/": 6, "%": 6, neg: 7 };
+const PRECEDENCIA = { or: 1, and: 2, not: 3, cmp: 4, "+": 5, "-": 5, "*": 6, "/": 6, "//": 6, "%": 6, neg: 7, "**": 8 };
 
 function precedencia(nodo) {
   switch (nodo.tipo) {
@@ -31,7 +31,7 @@ export function formatearExpresion(nodo) {
   if (!nodo) return "";
   switch (nodo.tipo) {
     case "Numero":
-      return String(nodo.valor);
+      return nodo.decimal && Number.isInteger(nodo.valor) ? `${nodo.valor}.0` : String(nodo.valor);
     case "Texto":
       return `"${nodo.valor}"`;
     case "Booleano":
@@ -39,6 +39,7 @@ export function formatearExpresion(nodo) {
     case "Identificador":
       return nodo.nombre;
     case "OperacionBinaria":
+      if (nodo.operador === "**") return `${conParen(nodo.izquierda, precedencia(nodo) + 1)} ** ${conParen(nodo.derecha, precedencia(nodo))}`;
       return `${conParen(nodo.izquierda, precedencia(nodo))} ${nodo.operador} ${conParen(nodo.derecha, precedencia(nodo) + 1)}`;
     case "Comparacion":
       return `${conParen(nodo.izquierda, PRECEDENCIA.cmp + 1)} ${nodo.operador} ${conParen(nodo.derecha, PRECEDENCIA.cmp + 1)}`;

@@ -109,15 +109,15 @@ export function crearMotor({ scene, world, robot1, callbacks = {} }) {
       await esperar(150);
     },
 
-    async entrada() {
-      // entrada() siempre le pregunta al estudiante. No se rellena con
+    async entrada(prompt) {
+      // input() siempre le pregunta al estudiante. No se rellena con
       // valores guardados en el nivel: el sentido de la instrucción es que
       // el dato venga de fuera del programa, escrito por la persona.
       if (typeof callbacks.pedirEntrada !== "function") {
         throw Errores.entradaNoDisponible();
       }
       callbacks.onEntradaPendiente?.();
-      const valor = await callbacks.pedirEntrada();
+      const valor = await callbacks.pedirEntrada({ etiqueta: prompt });
       callbacks.onSalida?.({ tipo: "ENTRADA", valor });
       return valor;
     },

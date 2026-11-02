@@ -1,9 +1,9 @@
 // outputPanel.js
-// Panel de SALIDA: muestra print(), entrada() y lo que dice Robot1 con
+// Panel de SALIDA: muestra print(), input() y lo que dice Robot1 con
 // hablar() (hablar = burbuja en el mundo + línea aquí; print = solo aquí).
 //
 // Además aloja la entrada interactiva: cuando el programa llega a un
-// entrada() sin valor simulado, la ejecución se pausa y aquí aparece un
+// input() sin valor simulado, la ejecución se pausa y aquí aparece un
 // campo donde el estudiante escribe el valor.
 
 const ICONOS = {
@@ -70,16 +70,11 @@ export class OutputPanel {
    *   que produce usar texto donde se esperaba un número.
    * @returns {Promise<number|string>}
    */
-  pedirEntrada({ etiqueta, tipo = "libre" } = {}) {
+  pedirEntrada({ etiqueta } = {}) {
     this.cancelarEntrada();
 
-    const texto = etiqueta || "entrada() está esperando un valor…";
-    const ayuda =
-      tipo === "numero"
-        ? "Escribe un número."
-        : tipo === "texto"
-        ? "Escribe un texto."
-        : "Puedes escribir un número o un texto.";
+    const texto = etiqueta || "input() está esperando un valor…";
+    const ayuda = "Escribe lo que quieras: input() lo recibe siempre como texto.";
 
     const bloque = document.createElement("div");
     bloque.className = "entrada-interactiva";
@@ -94,7 +89,7 @@ export class OutputPanel {
     bloque.querySelector(".entrada-etiqueta").textContent = texto;
     bloque.querySelector(".entrada-ayuda").textContent = ayuda;
     const campo = bloque.querySelector(".entrada-campo");
-    campo.placeholder = tipo === "numero" ? "Un número, por ejemplo 3" : "Escribe aquí y pulsa Enter";
+    campo.placeholder = "Escribe aquí y pulsa Enter";
 
     this.container.appendChild(bloque);
     this.desplazarAlFinal();
@@ -118,19 +113,11 @@ export class OutputPanel {
           return;
         }
 
-        const comoNumero = Number(crudo);
-        const esNumero = Number.isFinite(comoNumero);
-
-        if (tipo === "numero" && !esNumero) {
-          marcarError(`"${crudo}" no es un número. Robot1 no puede contar casillas con un texto.`);
-          return;
-        }
-
         bloque.remove();
         this.entradaActiva = null;
 
-        if (tipo === "texto") resolve(crudo);
-        else resolve(esNumero ? comoNumero : crudo);
+        // Como en Python: input() SIEMPRE entrega texto, aunque se haya escrito un número.
+        resolve(crudo);
       };
 
       bloque.querySelector(".entrada-aceptar").addEventListener("click", confirmar);

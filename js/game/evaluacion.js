@@ -15,6 +15,7 @@ import { Interpreter } from "../interpreter/interpreter.js";
 import { evaluarValidacion, crearAyudas } from "./validaciones.js";
 import { crearEscenario, configDeFase } from "./escenarios/index.js";
 import { Errores } from "../interpreter/errors.js";
+import { aJS } from "../interpreter/valores.js";
 
 /**
  * Ejecuta un AST ya validado sobre un escenario.
@@ -33,7 +34,7 @@ export async function ejecutarPrograma({ ast, escenario, callbacks = {}, entrada
     pedirEntrada: cola
       ? async () => {
           if (!cola.length) throw Errores.sinValoresDeEntrada();
-          return cola.shift();
+          return String(cola.shift()); // input() siempre entrega texto
         }
       : callbacks.pedirEntrada,
   });
@@ -43,7 +44,9 @@ export async function ejecutarPrograma({ ast, escenario, callbacks = {}, entrada
 
   const interprete = new Interpreter(motor, { variablesIniciales });
   await interprete.ejecutar(ast);
-  return { salidas, memoria: Object.fromEntries(interprete.variables), interprete };
+  // La memoria que ven las validaciones usa números planos (un float 2.5 se compara como 2.5).
+  const memoria = Object.fromEntries([...interprete.variables].map(([nombre, valor]) => [nombre, aJS(valor)]));
+  return { salidas, memoria, interprete };
 }
 
 function describirEsperado(esperado) {

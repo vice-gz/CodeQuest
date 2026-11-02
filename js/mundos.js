@@ -79,7 +79,6 @@ async function iniciar() {
     return;
   }
   await renderizarNav("nav", perfil);
-  $("btn-conceptos").addEventListener("click", () => abrirGlosario(1));
   $("mapa-demo").classList.toggle("oculto", !demo);
 
   let filas = [];
@@ -103,6 +102,11 @@ async function iniciar() {
   $("mapa-resumen").textContent = demo
     ? "Modo demo: puedes entrar a cualquier mundo disponible."
     : `★ ${t.estrellas} de ${MAX_ESTRELLAS} estrellas · ${t.nivelesCompletados} de ${TOTAL_NIVELES} niveles completados`;
+
+  // El glosario solo enseña lo de los mundos que ya están abiertos.
+  const abierto = (id) => ["disponible", "completado"].includes(estadoDelMundo(id, catalogo, (m) => resumen.mundos[m]?.completado === true, demo));
+  const mundoMaximo = Math.max(1, ...Object.keys(catalogo.mundos).map(Number).filter(abierto));
+  $("btn-conceptos").addEventListener("click", () => abrirGlosario(mundoMaximo));
 
   $("mapa-rejilla").innerHTML = MUNDOS_INFO.map((info) => {
     const estado = estadoDelMundo(info.id, catalogo, (id) => resumen.mundos[id]?.completado === true, demo);

@@ -543,3 +543,149 @@ body.modo-sandbox .boton-mapa {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ---------------------------------------------------------------- Acciones del código (arriba y siempre a la vista) */
+
+.encabezado-codigo {
+  position: sticky;
+  top: var(--offset-sticky, 120px);
+  z-index: 15;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: -18px -20px 12px;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--borde-suave);
+  border-radius: 14px 14px 0 0;
+}
+
+.encabezado-titulo {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.acciones-codigo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Verde brillante: es la acción principal y no puede pasar desapercibida. */
+.boton-ejecutar {
+  background: #22e06b;
+  color: #04200f;
+  font-weight: 800;
+  padding: 11px 22px;
+  font-size: 1rem;
+  box-shadow: 0 4px 0 #0f8a3e, 0 0 18px -4px rgba(34, 224, 107, 0.7);
+}
+
+.boton-ejecutar:hover:not(:disabled) {
+  background: #4cf08a;
+  box-shadow: 0 6px 0 #0f8a3e, 0 0 24px -2px rgba(34, 224, 107, 0.85);
+}
+
+.boton-ejecutar:active:not(:disabled) {
+  box-shadow: 0 1px 0 #0f8a3e;
+}
+
+.boton-ejecutar:disabled {
+  background: #14532d;
+  color: #86b79a;
+  box-shadow: 0 4px 0 #0b2e1a;
+  cursor: progress;
+}
+
+.boton-ejecutar .atajo {
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: rgba(4, 32, 15, 0.18);
+  border: 1px solid rgba(4, 32, 15, 0.35);
+  font-family: var(--fuente-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.boton-reiniciar {
+  background: var(--panel-alt);
+  color: var(--texto);
+  border: 1.5px solid var(--borde);
+}
+
+@media (max-width: 520px) {
+  .boton-ejecutar .atajo {
+    display: none; /* en pantallas táctiles no hay Ctrl+Enter */
+  }
+}
+
+
+/* ---------------------------------------------------------------- Glosario con buscador */
+
+.glosario-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 10px;
+}
+
+.glosario-buscador {
+  flex: 1 1 240px;
+}
+
+.glosario-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.concepto-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.concepto-etiqueta-mundo {
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--borde);
+  color: var(--texto-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.concepto-etiqueta-mundo.nuevo {
+  border-color: var(--teoria-acento, var(--teal));
+  color: var(--teoria-acento, var(--teal));
+}
+
+.concepto-def {
+  font-size: 0.95rem;
+}
+
+.concepto-analogia {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 184, 77, 0.07);
+  border: 1px solid rgba(255, 184, 77, 0.3);
+  font-size: 0.92rem;
+}
+
+.modal-glosario {
+  max-height: 88vh;
+}
+
+.conceptos-alcance {
+  margin: 10px 0 18px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--panel-alt);
+  border: 1px solid var(--borde);
+  color: var(--texto-muted);
+  font-size: 0.9rem;
+}

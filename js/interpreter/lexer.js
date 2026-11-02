@@ -25,6 +25,8 @@ export const TipoToken = {
   MULT: "MULT",
   DIV: "DIV",
   MODULO: "MODULO",
+  DIV_ENTERA: "DIV_ENTERA", // //
+  POTENCIA: "POTENCIA", // **
   NUEVA_LINEA: "NUEVA_LINEA",
   EOF: "EOF",
   // Avance 3
@@ -207,12 +209,22 @@ export class Lexer {
           this.pos++;
           break;
         case "*":
-          this.push(TipoToken.MULT, "*");
-          this.pos++;
+          if (this.codigo[this.pos + 1] === "*") {
+            this.push(TipoToken.POTENCIA, "**");
+            this.pos += 2;
+          } else {
+            this.push(TipoToken.MULT, "*");
+            this.pos++;
+          }
           break;
         case "/":
-          this.push(TipoToken.DIV, "/");
-          this.pos++;
+          if (this.codigo[this.pos + 1] === "/") {
+            this.push(TipoToken.DIV_ENTERA, "//");
+            this.pos += 2;
+          } else {
+            this.push(TipoToken.DIV, "/");
+            this.pos++;
+          }
           break;
         case "%":
           this.push(TipoToken.MODULO, "%");
@@ -269,6 +281,7 @@ export class Lexer {
         this.pos++;
       }
       this.push(TipoToken.NUMERO, parseFloat(valor));
+      this.tokens[this.tokens.length - 1].decimal = true; // 5.0 es un float, aunque valga lo mismo que 5
       return;
     }
     this.push(TipoToken.NUMERO, parseInt(valor, 10));

@@ -41,6 +41,9 @@ export class Scene {
   ajustarTamano() {
     const contenedor = this.canvas.parentElement;
     const ancho = contenedor.clientWidth;
+    // Con las pestañas del celular el escenario queda oculto (ancho 0) fuera de «Jugar»: se conserva el
+    // tamaño anterior y se reajusta al volver.
+    if (ancho <= 0) return;
     const proporcion = this.world.alto / Math.max(1, this.world.ancho);
     const alto = Math.max(160, Math.min(320, ancho * Math.max(0.32, proporcion * 0.9)));
     const dpr = window.devicePixelRatio || 1;
@@ -238,7 +241,8 @@ export class Scene {
     ctx.restore();
   }
 
-  roundRect(ctx, x, y, w, h, r) {
+  roundRect(ctx, x, y, w, h, r0) {
+    const r = Math.max(0, Math.min(r0, Math.abs(w) / 2, Math.abs(h) / 2));
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + w, y, x + w, y + h, r);

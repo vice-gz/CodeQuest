@@ -2,6 +2,69 @@
 
 Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persistencia en Supabase, perfil y panel de administrador**. No se implementan los Mundos 3-6. La documentación del Avance 1 está en `docs/README_avance1.md`.
 
+## Migración a Python 3 (Avance 3.4)
+
+CQL ahora es un **subconjunto de Python 3**: el código que escriben los alumnos funciona igual en Python real. Se comprueba comparando la salida con la del `python3` del sistema (`test_python_compat.mjs`: 116 programas, entre ellos los errores `ZeroDivisionError`, `TypeError`, `ValueError` y `NameError`).
+
+| Antes | Ahora (como en Python) |
+|---|---|
+| `entrada()` | **`input()`** (con mensaje opcional: `input("¿Cuántos pisos?")`). `entrada()` ya no existe: da un error que dice «se llama input()» |
+| `entrada()` devolvía número si se escribía un número | **`input()` siempre devuelve texto**. Para calcular: `int(input())` o `float(input())` |
+| `17 / 4` daba `4` | **`17 / 4` da `4.25`**; `10 / 2` da `5.0` (la `/` siempre da decimal) |
+| *(no existía)* | **`//`** (división entera hacia abajo: `-7 // 2` es `-4`) y **`**`** (potencia) |
+| *(no existía)* | **`int()`, `float()`, `str()`**; `int("hola")` da un `ValueError` (`RUN_017`) |
+| `-5 % 3` daba `-2` | `-5 % 3` da `1` (el residuo toma el signo del divisor, como Python) |
+| `5` y `5.0` eran el mismo valor | Son distintos: `5.0` es decimal y se muestra `5.0` (en Memoria, etiqueta `DECIMAL`) |
+| `"5" + 3` daba `RUN_015` al ejecutar | Lo detecta el **validador antes de ejecutar**: «TypeError: No puedes sumar un texto ("5") con un número (3) directamente. Usa int("5") o str(3)» |
+| *(no existía)* | `input() + 5` se rechaza con `SEM_011` y la solución `int(input()) + 5`; los nombres `print`, `input`, `int`, `float`, `str` y `range` no se pueden usar como variables (`SEM_012`) |
+
+**Niveles ajustados:** Mundo 1 nivel 6 (ahora `int(input())`), Mundo 2 nivel 5 (`/`, `//`, `%`; 4 fases), nivel 6 «Información del exterior» (4 fases: input es texto, `int()`, suma con el sensor, `float()`), nivel 8 (el área da `30.0`; nueva fase con `str()`) y niveles 10 y 11 (`int(input())`). Diccionario, glosario, mensajes de error y las dos guías se actualizaron. El Laboratorio Libre ahora tiene **todo CQL abierto** (también `if`, `while` y `for`).
+
+**Diferencias deliberadas** (CQL es *más estricto* que Python, nunca más permisivo): `True + 1` y `"ab" * 3` son errores de tipos; las condiciones deben ser `True`/`False` (no vale `if 5:`); `(-8) ** 0.5` es un error (sin complejos); enteros de hasta 2⁵³; `print(a, b)` solo muestra el primero. Están listadas en la sección 13 de `docs/REFERENCIA_LENGUAJE_CQL.md`.
+
+**Decisión que tomé:** `print` e `input` siguen siendo identificadores especiales y no tokens de palabra clave (como en Python, donde son funciones, no palabras reservadas). Quedan **reservados**: no se pueden usar como nombre de variable (`SEM_012`).
+
+**Si ya tenías alumnos:** el Mundo 2 (niveles 13, 14, 16, 18 y 19) y el nivel 6 cambiaron de fases; ejecuta el SQL de reinicio de progreso del Avance 3 (`delete from public.progreso_fases where nivel_id >= 9; …`) o, si solo quieres cubrir lo nuevo, `delete from public.progreso_fases where nivel_id in (6, 13, 14, 16, 18, 19);`.
+
+
+## Versión para tablet y celular (Avance 3.2 y 3.3)
+
+La interfaz es responsiva: se ve bien en monitor (1920×1080), tablet (iPad / Android de 10") y celular (6"), sin scroll horizontal. Punto de quiebre principal: **992 px**. En PC no cambia nada (dos columnas).
+
+**En pantallas de 992 px o menos el juego se reparte en 3 pestañas** (en vez de apilar todo y obligar a hacer scroll):
+- **🎮 Jugar:** escenario (al 100% del ancho, sin deformarse) + editor + retroalimentación. Es la pestaña inicial de cada nivel.
+- **📖 Aprende:** concepto del nivel, fases e instrucciones disponibles.
+- **🖥️ Consola:** Salida, Memoria y Estado. Si ejecutas desde Jugar, un punto ámbar avisa que hay contenido nuevo en Consola.
+Las pestañas se manejan con el dedo, con ← → / Inicio / Fin y se anuncian como `tablist` a los lectores de pantalla.
+
+- **▶ Ejecutar flotante:** fijo al pie de la pantalla (solo en «Jugar»), verde y grande. Sube junto con el teclado virtual (se mide con `visualViewport`, que iOS necesita; además la página declara `interactive-widget=resizes-content` para Android). Mientras escribes aparece sobre el teclado una **barra de símbolos** (`⇥ ⇤ : ( ) " " = == < > .`), porque en un teclado táctil cuesta escribirlos.
+- **Al ejecutar en pantalla táctil** el editor suelta el foco (el teclado se oculta), la vista sube al escenario y, al terminar, baja al resultado.
+- **Cabecera móvil:** la barra de niveles es compacta (botones de 32 px) y deslizable con el dedo; Tour, Mapa y Conceptos salen de la barra y quedan **solo en el menú hamburguesa**. El menú tiene filas de 48 px, el nombre y el rol arriba de «Cerrar sesión» (a todo el ancho), fondo oscuro detrás y se cierra con Escape, tocando fuera o eligiendo un enlace.
+- **Aviso «Gira tu teléfono para una mejor experiencia»:** una franja delgada justo bajo la navegación, solo en celular vertical, con ✕ (no vuelve a salir en esa sesión).
+- **Tour interactivo (todas las pantallas):** cada paso hace scroll suave hasta dejar el elemento al centro; si el elemento vive en otra pestaña, cambia de pestaña solo; **Atrás / Siguiente / Saltar** están en una barra fija al pie (fuera del globo) y hay una **✕** fija arriba a la derecha durante todo el recorrido. El globo nunca queda tapado por los controles.
+- Con poca altura (celular horizontal) el escenario se limita al 80% de la pantalla y el editor se compacta.
+
+Archivos: `css/responsive.css` (se carga al final en todas las páginas), `js/ui/movil.js` (pestañas, teclado, símbolos) y `js/ui/tour.js`.
+
+### Cómo se probó
+- `npm test` incluye pruebas con jsdom de las pestañas, la barra de símbolos, el foco al ejecutar, el aviso de giro y el tour (controles fijos fuera del globo, ✕, cambio automático de pestaña).
+- **Navegador real (opcional):** `herramientas/responsive/` abre cada página (landing, acceso, conceptos, mapa, los 4 mundos, Laboratorio Libre, primer recorrido con el tour, perfil, profesor y admin con sus pestañas; también con menú, diccionario y glosario abiertos) en 8 tamaños de pantalla dentro de Chromium sin pantalla, con un Supabase simulado. Comprueba que no haya desbordes (contra el ancho REAL del dispositivo), el menú hamburguesa, las pestañas, el botón Ejecutar flotante, que el tour recorra todos sus pasos con los controles a la vista, los 44 px táctiles y las letras de 16 px. Guarda capturas en `/tmp/capturas`.
+  ```
+  npm i --no-save puppeteer-core @sparticuz/chromium
+  VITE_SUPABASE_URL=http://127.0.0.1:4173 VITE_SUPABASE_ANON_KEY=x npx vite build
+  npm run test:responsive            # o: node herramientas/responsive/medir.mjs --pagina=juego-m3 --ancho=390
+  ```
+- **Lo que no se puede probar así:** el teclado virtual real de iOS y Android (sobre todo que el botón flotante suba exactamente con él) y Safari. Antes de la muestra conviene abrir el juego en un iPhone y un Android de verdad.
+
+## Correcciones de pulido (Avance 3.1)
+
+1. **Botón Ejecutar arriba.** `▶ Ejecutar` (verde brillante) y `↺ Reiniciar` están en el encabezado del panel de Código, junto a «CQL», y se quedan pegados bajo las barras fijas al hacer scroll, así que el escenario nunca se pierde de vista. **Ctrl+Enter** (o **Cmd+Enter** en Mac) dentro del editor ejecuta; en Mac el botón muestra ⌘+Enter. Un Enter normal no ejecuta.
+2. **Glosario por mundo, con buscador y más fondo.** El botón **Conceptos** del juego y `conceptos.html` solo muestran los conceptos del mundo actual y de los anteriores (28 en total; el Mundo 1 solo ve Instrucción, Algoritmo, Método, print(), entrada() y Error). Cada concepto tiene **Definición + Analogía + Ejemplo** (y dibujo en los principales). Hay un buscador que ignora mayúsculas y acentos y un filtro «Todo hasta el Mundo N / Solo el Mundo N». En `conceptos.html` el mundo sale de `?mundo=N` o, si hay sesión de alumno, de su progreso en Supabase; docentes y admins ven todo; sin sesión, el Mundo 1. El contenido está en `js/ui/glosarioDatos.js`.
+3. **«Unir textos» (Mundo 2, Nivel 3, fase 2).** El enunciado ahora explica la **concatenación**, la respuesta sigue siendo `53` y la retroalimentación avisa: «¡Cuidado! Esto solo funciona con textos… `"5" + 3` dará un error». **Para que ese aviso sea verdad cambié el intérprete:** `+` solo une texto con texto o suma número con número; mezclarlos da `RUN_015` y restar, multiplicar, dividir o sacar residuo con texto da `RUN_016` (antes se mezclaba en silencio). Ningún nivel usaba esas mezclas; la fase 11.3 ahora dice que el programa «da un error» en vez de «muestra 151».
+4. **CSV para la tesis.** *Exportar a CSV* ahora trae, además de lo anterior: **Nombre del alumno, Email, Nivel actual** (el número que ve el alumno dentro de su mundo; el global va en otra columna)**, Estrellas totales, Total de ejecuciones, Total de errores** (ejecuciones fallidas = cualquier resultado distinto de éxito) **y Error más frecuente** (código como `SEM_001`, con su descripción en otra columna; vacío si nunca tuvo un error de código; en empate gana el primero alfabéticamente).
+   - **SQL opcional:** `supabase/avance3_1.sql` crea `admin_errores_por_usuario()`, que calcula esos dos datos en la base de datos. Sin ella el panel los calcula en el navegador leyendo las ejecuciones (más lento si hay muchas). Se probó contra PostgreSQL 16.
+
+
 ## Novedades del Avance 3 (mapa de mundos, escenarios y sintaxis nueva)
 
 **Flujo nuevo:** `auth.html` → **`mundos.html`** (mapa) → `juego.html?mundo=N`. El botón *Jugar* del menú abre el mapa; *← Mundos* vuelve a él.
@@ -47,11 +110,14 @@ Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persi
 - **Tipografía:** se mantiene Space Grotesk (la propuesta de la especificación) y JetBrains Mono para el código.
 - **Movimiento reducido:** si el sistema lo pide, las animaciones se acortan o se omiten (`prefers-reduced-motion`).
 
+### Referencia del lenguaje
+`docs/REFERENCIA_LENGUAJE_CQL.md` documenta todo CQL: lexemas, los 35 tokens, gramática, tipos, operadores y precedencia, sentencias, objetos de cada mundo (`robot1`, `mesa`, `elevador`), qué se desbloquea en cada nivel, el catálogo de 48 errores y lo que el lenguaje no tiene. Las tablas de tokens, errores y desbloqueos se generan desde el código: `node herramientas/generar_referencia_cql.mjs`.
+
 ### Guía para facilitar
 `docs/GUIA_NIVELES_MUNDOS_2_A_4.md` explica, nivel por nivel y fase por fase, qué pide cada una y cómo se pasa (sin código; las soluciones están escondidas como spoiler). Se regenera con `python3 herramientas/generar_guia.py`.
 
 ### Pruebas (`npm test`)
-`test_cql.mjs` (lenguaje y escenarios: 34), `test_niveles.mjs` (134 fases de 43 niveles con su solución de referencia + 57 soluciones tramposas o rotas que deben ser rechazadas, y la estructura por bloques), `test_navegacion.mjs` (desbloqueo y catálogo), `test_persistencia.mjs`, `test_editor.mjs` y `test_juego_dom.mjs`, que abre `juego.html` real en jsdom con un Supabase simulado y juega los 4 mundos, la transición, el parámetro `?nivel`, el Laboratorio Libre y el modo demo.
+`test_cql.mjs` (lenguaje y escenarios: 46), `test_python_compat.mjs` (116 programas comparados con el Python real), `test_niveles.mjs` (137 fases de 43 niveles con su solución de referencia + 64 soluciones tramposas o rotas que deben ser rechazadas, y la estructura por bloques), `test_navegacion.mjs` (desbloqueo, catálogo y glosario), `test_csv.mjs` (exportación), `test_persistencia.mjs`, `test_editor.mjs` y `test_juego_dom.mjs` (21 pruebas), que abre `juego.html` real en jsdom con un Supabase simulado y juega los 4 mundos, la transición, el parámetro `?nivel`, el Laboratorio Libre y el modo demo.
 Los niveles de los Mundos 2-4 se generan con `python3 herramientas/generar_niveles.py` (edita ahí y vuelve a correr; luego `npm test`).
 
 ### Para el Avance 4

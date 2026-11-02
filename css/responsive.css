@@ -1,0 +1,510 @@
+/* ============================================================
+   CodeQuest — Diseño responsivo (tablets y celulares)
+   Se carga al final en todas las páginas.
+   Punto de quiebre principal: 992 px (tablet vertical y menores).
+   En esas pantallas el juego pasa de 2 columnas a PESTAÑAS:
+     Jugar   → escenario + editor + resultado   (inicial en cada nivel)
+     Aprende → concepto del nivel e instrucciones
+     Consola → Salida, Memoria y Estado
+   y el botón ▶ Ejecutar flota siempre a la vista, sobre el teclado.
+   ============================================================ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Última línea de defensa: que nada ensanche la página hacia los lados. */
+body {
+  overflow-x: clip;
+}
+
+img,
+canvas,
+svg,
+video {
+  max-width: 100%;
+}
+
+.columna,
+.panel {
+  min-width: 0;
+}
+
+.panel-feedback {
+  grid-column: 1 / -1; /* dentro de la rejilla de escritorio ocupa todo el ancho */
+  max-width: none;
+  margin: 0;
+  padding: 18px 20px;
+}
+
+.contenedor-nivel {
+  padding-bottom: 32px;
+}
+
+.editor-textarea {
+  white-space: pre;
+  overflow: auto;
+}
+
+/* Solo existen en pantallas chicas. */
+.pestanas-movil,
+.aviso-orientacion,
+.barra-simbolos {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- Tablet y celular (≤ 992 px) */
+
+@media (max-width: 992px) {
+  /* Menú y barra de niveles ya no se quedan pegados: en pantallas chicas cada pixel cuenta. */
+  .nav-principal,
+  body.con-nav .barra-superior,
+  .barra-superior {
+    position: relative;
+    top: auto;
+  }
+
+  /* ---- Menú hamburguesa: filas amplias, separadas, con fondo oscuro detrás ---- */
+  .nav-menu {
+    gap: 0;
+    padding: 8px 0 14px;
+    max-height: calc(100vh - var(--nav-alto));
+    overflow-y: auto;
+    box-shadow: 0 24px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  .nav-enlaces {
+    gap: 2px;
+    padding: 0 10px;
+  }
+
+  .nav-enlaces a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+
+  .nav-usuario {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 14px 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--borde);
+  }
+
+  .nav-nombre {
+    max-width: none;
+    color: var(--texto);
+    font-size: 0.98rem;
+    font-weight: 600;
+  }
+
+  .nav-usuario .boton {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+
+  .nav-principal.nav-abierto::before {
+    content: "";
+    position: fixed;
+    inset: var(--nav-alto) 0 0 0;
+    background: rgba(5, 7, 16, 0.62);
+    z-index: -1;
+  }
+
+  /* ---- Una sola columna con pestañas ---- */
+  .contenedor-nivel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* (la rejilla de escritorio usa "start": aquí encogería los paneles) */
+    gap: 12px;
+    padding: 0 12px calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .columna {
+    display: contents;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  /* Pestañas: pegadas arriba al hacer scroll */
+  .pestanas-movil {
+    order: -1;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: 0 -12px;
+    padding: 8px 12px;
+    background: rgba(8, 11, 24, 0.96);
+    border-bottom: 1px solid var(--borde);
+    backdrop-filter: blur(6px);
+  }
+
+  .pestana {
+    position: relative;
+    min-height: 46px;
+    border-radius: 12px;
+    border: 1.5px solid var(--borde);
+    background: var(--panel);
+    color: var(--texto-muted);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .pestana.activa {
+    background: var(--mundo-acento, var(--teal));
+    border-color: var(--mundo-acento, var(--teal));
+    color: #0a0d14;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  .pestana:focus-visible {
+    outline: 3px solid var(--mundo-acento, var(--teal));
+    outline-offset: 2px;
+  }
+
+  .pestana-aviso {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ambar);
+    box-shadow: 0 0 0 2px var(--panel);
+  }
+
+  .pestana-aviso[hidden] {
+    display: none;
+  }
+
+  /* Qué panel se ve en cada pestaña */
+  .contenedor-nivel[data-pestana="jugar"] :is(.panel-aprende, .panel-salida, .panel-memoria, .panel-estado),
+  .contenedor-nivel[data-pestana="aprende"] :is(.panel-mundo, .panel-codigo, .panel-feedback, .panel-salida, .panel-memoria, .panel-estado),
+  .contenedor-nivel[data-pestana="consola"] :is(.panel-mundo, .panel-codigo, .panel-feedback, .panel-aprende) {
+    display: none;
+  }
+
+  /* Orden dentro de cada pestaña */
+  .panel-mundo { order: 1; }
+  .panel-codigo { order: 2; }
+  .panel-feedback { order: 3; }
+  .panel-aprende { order: 1; }
+  .panel-salida { order: 1; }
+  .panel-memoria { order: 2; }
+  .panel-estado { order: 3; }
+
+  /* Salida / Memoria / Estado: ya no son acordeones, cada uno se ve completo en «Consola». */
+  .panel-lateral > .panel-encabezado {
+    cursor: default;
+  }
+
+  /* ---- Barra de niveles: compacta; los enlaces secundarios viven en la hamburguesa ---- */
+  .barra-superior {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 8px 12px;
+  }
+
+  .barra-superior .marca,
+  #btn-mapa,
+  #btn-conceptos,
+  #btn-tour {
+    display: none !important;
+  }
+
+  .acciones-barra {
+    order: 1;
+    flex: 1;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .selector-niveles {
+    order: 2;
+    width: 100%;
+    flex: 1 1 100%;
+    gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding-bottom: 4px;
+  }
+
+  .nivel-punto {
+    flex: 0 0 auto;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    scroll-snap-align: center;
+  }
+
+  .separador-mundo {
+    padding: 0 4px;
+    font-size: 0.66rem;
+  }
+
+  .diccionario-panel {
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+
+  /* ---- Editor ---- */
+  .editor-envoltura {
+    height: clamp(190px, 34vh, 320px);
+  }
+
+  .encabezado-codigo {
+    position: static;
+    margin: 0 0 12px;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .acciones-codigo {
+    flex: 0 0 auto;
+  }
+
+  /* ▶ Ejecutar FLOTANTE: siempre a la vista, justo encima del teclado (--teclado lo mide movil.js). */
+  .contenedor-nivel #btn-ejecutar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px) + var(--teclado, 0px));
+    z-index: 60;
+    width: min(82vw, 340px);
+    height: 54px;
+    padding: 0 22px;
+    border-radius: 27px;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 0 #0f8a3e, 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 22px -2px rgba(34, 224, 107, 0.7);
+  }
+
+  .contenedor-nivel #btn-ejecutar .atajo {
+    display: none;
+  }
+
+  .contenedor-nivel:not([data-pestana="jugar"]) #btn-ejecutar {
+    display: none;
+  }
+
+  /* Barra de símbolos: aparece sobre el teclado mientras se escribe. */
+  .barra-simbolos {
+    display: none;
+  }
+
+  body.editando-codigo .contenedor-nivel[data-pestana="jugar"] .barra-simbolos {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px) + var(--teclado, 0px));
+    z-index: 59;
+    margin: 0;
+    padding: 8px 10px;
+    background: rgba(8, 11, 24, 0.97);
+    border-top: 1px solid var(--borde);
+  }
+
+  /* Modales y ventanas: nunca más anchos que la pantalla. */
+  .modal {
+    max-width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+}
+
+/* ---------------------------------------------------------------- Pantallas táctiles o chicas */
+
+@media (max-width: 992px), (pointer: coarse) {
+  /* ≥ 16 px: así Safari (iPhone) no hace zoom automático al escribir. */
+  .campo,
+  input:not([type="radio"]):not([type="checkbox"]),
+  select,
+  textarea,
+  .editor-textarea,
+  .numeros-linea {
+    font-size: 16px;
+  }
+
+  /* Los filtros y selectores de las tablas (admin, profesor) traen su propio tamaño: se igualan. */
+  select,
+  input:not([type="radio"]):not([type="checkbox"]),
+  textarea {
+    font-size: 16px !important;
+  }
+
+  .editor-textarea,
+  .numeros-linea {
+    line-height: 1.5;
+  }
+
+  /* Objetivos táctiles cómodos. */
+  .boton {
+    min-height: 44px;
+  }
+
+  .boton-chico,
+  .boton-barra {
+    min-height: 40px;
+    padding: 8px 14px;
+  }
+
+  .caso-boton,
+  .glosario-filtros .caso-boton {
+    min-height: 40px;
+    padding: 8px 14px;
+  }
+
+  .boton,
+  .simbolo,
+  .caso-boton,
+  .nivel-punto,
+  .pestana {
+    touch-action: manipulation;
+  }
+}
+
+/* Barra de símbolos (también en tablets horizontales con pantalla táctil, donde sí hay espacio). */
+.simbolo {
+  flex: 0 0 auto;
+  min-width: 46px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--borde);
+  background: var(--panel-alt);
+  color: var(--texto);
+  font-family: var(--fuente-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.simbolo:active {
+  background: var(--mundo-acento, var(--teal));
+  color: #0a0d14;
+}
+
+.barra-simbolos {
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+@media (min-width: 993px) and (pointer: coarse) {
+  .barra-simbolos {
+    display: flex;
+    margin-top: 8px;
+  }
+}
+
+.barra-simbolos.oculto {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------- Celular vertical */
+
+/* Aviso discreto: una franja delgada justo debajo de la barra de navegación. */
+@media (max-width: 600px) and (orientation: portrait) {
+  .aviso-orientacion:not(.cerrado) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 6px 2px 12px;
+    background: rgba(255, 184, 77, 0.09);
+    border-bottom: 1px solid rgba(255, 184, 77, 0.25);
+    color: var(--ambar);
+    font-size: 0.74rem;
+    line-height: 1.2;
+  }
+
+  .aviso-orientacion-texto {
+    flex: 1;
+  }
+
+  .aviso-cerrar {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 380px) {
+  .separador-sutil {
+    display: none; /* en pantallas muy angostas solo el número de estrellas, sin «/ máximo» */
+  }
+
+  .acciones-barra .boton {
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contenedor-nivel {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .pestanas-movil {
+    margin: 0 -8px;
+  }
+}
+
+/* Celular horizontal: poco alto. */
+@media (max-height: 480px) and (orientation: landscape) {
+  .editor-envoltura {
+    height: 150px;
+  }
+}
+
+/* ---------------------------------------------------------------- Barra de la página de conceptos */
+
+@media (max-width: 480px) {
+  .conceptos-barra {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .conceptos-barra nav {
+    gap: 6px;
+  }
+
+  .conceptos-barra .boton {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .conceptos-contenido {
+    padding: 22px 14px 40px;
+  }
+}

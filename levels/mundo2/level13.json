@@ -2,7 +2,7 @@
   "id": 13,
   "mundo": 2,
   "nombre": "Calcula el reparto",
-  "concepto": "multiplicación, división, módulo",
+  "concepto": "multiplicación, división, división entera y residuo",
   "concepto_evaluado": "operadores_aritmeticos",
   "narrativa": "Repartir recursos exige más que sumar: multiplicar, dividir y averiguar qué sobra.",
   "escenario": {
@@ -18,9 +18,9 @@
     {
       "id": "13.1",
       "tipo": "EXPLORAR",
-      "titulo": "Tres operadores nuevos",
-      "enunciado": "Conceptos nuevos: * multiplica, / divide (entre enteros da un entero) y % da el RESIDUO: lo que sobra al dividir.",
-      "codigoInicial": "a = 17\nprint(a * 2)\nprint(a / 4)\nprint(a % 5)",
+      "titulo": "Cuatro operadores nuevos",
+      "enunciado": "Conceptos nuevos (como en Python): * multiplica; / divide y SIEMPRE da un decimal (17 / 4 es 4.25); // es la división entera: solo la parte entera (17 // 4 es 4); y % da el RESIDUO: lo que sobra al dividir.",
+      "codigoInicial": "a = 17\nprint(a * 2)\nprint(a / 4)\nprint(a // 4)\nprint(a % 5)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -29,13 +29,48 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "17 / 4 da 4 (cuántas veces cabe) y 17 % 5 da 2 (lo que sobra).",
+      "retroalimentacion": "17 / 4 da 4.25 (decimal), 17 // 4 da 4 (cuántas veces cabe, entero) y 17 % 5 da 2 (lo que sobra).",
       "pistas": [
-        "% no es porcentaje: es el residuo de la división."
+        "% no es porcentaje: es el residuo de la división.",
+        "Fíjate en la etiqueta DECIMAL del chip cuando usas /."
       ]
     },
     {
       "id": "13.2",
+      "tipo": "PREDECIR",
+      "titulo": "La división siempre da decimal",
+      "enunciado": "En Python, ¿qué muestra este programa?",
+      "codigoInicial": "a = 10\nb = 2\nprint(a / b)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "5"
+        },
+        {
+          "id": "b",
+          "texto": "5.0"
+        },
+        {
+          "id": "c",
+          "texto": "2"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: / SIEMPRE devuelve un decimal, aunque la división sea exacta (10 / 2 es 5.0). Para obtener un entero se usa //.",
+      "pistas": [
+        "Si quisieras un entero usarías //."
+      ]
+    },
+    {
+      "id": "13.3",
       "tipo": "PREDECIR",
       "titulo": "¿Cuánto sobra?",
       "enunciado": "¿Qué muestra este programa?",
@@ -69,12 +104,12 @@
       ]
     },
     {
-      "id": "13.3",
+      "id": "13.4",
       "tipo": "RESOLVER",
       "titulo": "Cajas de cinco",
-      "enunciado": "Hay 23 baterías y se guardan en cajas de 5. Muestra primero cuántas cajas se llenan (4) y luego cuántas baterías sobran (3), en ese orden.",
+      "enunciado": "Hay 23 baterías y se guardan en cajas de 5. Muestra primero cuántas cajas se llenan (4, usa la división entera) y luego cuántas baterías sobran (3), en ese orden.",
       "codigoInicial": "",
-      "solucionReferencia": "baterias = 23\nprint(baterias / 5)\nprint(baterias % 5)",
+      "solucionReferencia": "baterias = 23\nprint(baterias // 5)\nprint(baterias % 5)",
       "instruccionesPermitidas": [
         "asignacion",
         "print"
@@ -88,17 +123,20 @@
         ],
         "requiere": {
           "operadores": [
-            "/",
+            "//",
             "%"
           ]
         }
       },
-      "retroalimentacion": "Usaste / para repartir y % para el sobrante.",
+      "retroalimentacion": "Usaste // para repartir en cajas completas y % para el sobrante.",
       "pistas": [
-        "Cajas llenas: baterias / 5.",
+        "Cajas llenas: baterias // 5.",
         "Sobrante: baterias % 5."
       ],
-      "mensajeNoLogrado": "Debe mostrar 4 y luego 3, usando / y %."
+      "mensajeNoLogrado": "Debe mostrar 4 y luego 3, usando // y %.",
+      "solucionesIncorrectas": [
+        "baterias = 23\nprint(baterias / 5)\nprint(baterias % 5)"
+      ]
     }
   ]
 }

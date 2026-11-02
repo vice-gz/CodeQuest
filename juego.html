@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
 <title>Jugar — CodeQuest</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,11 +12,19 @@
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/panels.css" />
 <link rel="stylesheet" href="css/mundos.css" />
+<link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body class="con-nav">
 
 <div id="nav" aria-label="Navegación principal"></div>
 <div class="aviso-red oculto" id="aviso-red" role="status"></div>
+
+<!-- Solo en celular vertical: franja delgada bajo la barra de navegación (se puede cerrar). -->
+<div class="aviso-orientacion" id="aviso-orientacion" role="status">
+  <span aria-hidden="true">📱↻</span>
+  <span class="aviso-orientacion-texto">Gira tu teléfono para una mejor experiencia</span>
+  <button type="button" class="aviso-cerrar" id="aviso-orientacion-cerrar" aria-label="Cerrar aviso">✕</button>
+</div>
 
 <header class="barra-superior">
   <div class="marca">
@@ -43,7 +51,21 @@
   <aside class="diccionario-panel oculto" id="diccionario-panel" aria-label="Diccionario de instrucciones"></aside>
 </header>
 
-<main class="contenedor-nivel">
+<main class="contenedor-nivel" id="contenedor-nivel" data-pestana="jugar">
+
+  <!-- Solo en celular y tablet vertical: el juego se reparte en 3 pestañas. -->
+  <div class="pestanas-movil" id="pestanas-movil" role="tablist" aria-label="Secciones del nivel">
+    <button type="button" role="tab" class="pestana" data-pestana="jugar" id="pestana-jugar" aria-selected="true" aria-controls="contenedor-nivel">
+      <span aria-hidden="true">🎮</span> Jugar
+    </button>
+    <button type="button" role="tab" class="pestana" data-pestana="aprende" id="pestana-aprende" aria-selected="false" aria-controls="contenedor-nivel" tabindex="-1">
+      <span aria-hidden="true">📖</span> Aprende
+    </button>
+    <button type="button" role="tab" class="pestana" data-pestana="consola" id="pestana-consola" aria-selected="false" aria-controls="contenedor-nivel" tabindex="-1">
+      <span aria-hidden="true">🖥️</span> Consola <span class="pestana-aviso" hidden aria-label="Hay contenido nuevo"></span>
+    </button>
+  </div>
+
 
   <div class="columna columna-izquierda">
     <section class="panel panel-aprende" aria-labelledby="titulo-aprende">
@@ -64,9 +86,19 @@
     </section>
 
     <section class="panel panel-codigo" aria-labelledby="titulo-codigo">
-      <div class="panel-encabezado">
-        <h2 id="titulo-codigo">Código</h2>
-        <span class="lenguaje-tag">CQL</span>
+      <!-- Los botones de acción van ARRIBA y pegados al borde al hacer scroll: así
+           nunca se pierde de vista el escenario al ejecutar. -->
+      <div class="panel-encabezado encabezado-codigo">
+        <div class="encabezado-titulo">
+          <h2 id="titulo-codigo">Código</h2>
+          <span class="lenguaje-tag">CQL</span>
+        </div>
+        <div class="acciones-codigo" role="group" aria-label="Acciones del código">
+          <button class="boton boton-ejecutar" id="btn-ejecutar" type="button" title="Ejecutar el código (Ctrl+Enter)">
+            ▶ Ejecutar <kbd class="atajo" id="atajo-ejecutar">Ctrl+Enter</kbd>
+          </button>
+          <button class="boton boton-reiniciar" id="btn-reiniciar" type="button" title="Volver al código inicial de la fase">↺ Reiniciar</button>
+        </div>
       </div>
       <div class="editor-envoltura">
         <div class="numeros-linea" id="numeros-linea"><span>1</span></div>
@@ -76,8 +108,25 @@
           spellcheck="false"
           autocapitalize="off"
           autocomplete="off"
+          autocorrect="off"
+          wrap="off"
+          enterkeyhint="enter"
           placeholder="Escribe tu código aquí…"
         ></textarea>
+      </div>
+
+      <!-- Símbolos difíciles de escribir en un teclado táctil (solo se ve en celular/tablet). -->
+      <div class="barra-simbolos" id="barra-simbolos" role="toolbar" aria-label="Símbolos rápidos para escribir código">
+        <button type="button" class="simbolo" data-tab="1" aria-label="Aumentar sangría (Tab)">⇥</button>
+        <button type="button" class="simbolo" data-tab="-1" aria-label="Reducir sangría (Shift+Tab)">⇤</button>
+        <button type="button" class="simbolo" data-texto=":" aria-label="Dos puntos">:</button>
+        <button type="button" class="simbolo" data-texto="()" data-atras="1" aria-label="Paréntesis">( )</button>
+        <button type="button" class="simbolo" data-texto="&quot;&quot;" data-atras="1" aria-label="Comillas">&quot; &quot;</button>
+        <button type="button" class="simbolo" data-texto=" = " aria-label="Igual (guardar)">=</button>
+        <button type="button" class="simbolo" data-texto=" == " aria-label="Doble igual (comparar)">==</button>
+        <button type="button" class="simbolo" data-texto=" &lt; " aria-label="Menor que">&lt;</button>
+        <button type="button" class="simbolo" data-texto=" &gt; " aria-label="Mayor que">&gt;</button>
+        <button type="button" class="simbolo" data-texto="." aria-label="Punto">.</button>
       </div>
 
       <div class="prediccion-envoltura oculto" id="prediccion-envoltura">
@@ -86,8 +135,6 @@
       </div>
 
       <div class="editor-botones">
-        <button class="boton boton-primario" id="btn-ejecutar" type="button">▶ Ejecutar</button>
-        <button class="boton boton-secundario" id="btn-reiniciar" type="button">↺ Reiniciar fase</button>
         <button class="boton boton-pista" id="btn-pista" type="button">Pista</button>
       </div>
     </section>
@@ -127,17 +174,19 @@
     </section>
   </div>
 
+  <section class="panel panel-feedback" aria-labelledby="titulo-feedback">
+    <div class="panel-encabezado">
+      <h2 id="titulo-feedback">Retroalimentación</h2>
+      <div class="estrellas-nivel" id="estrellas-nivel"></div>
+    </div>
+    <div class="feedback-panel feedback-neutral" id="feedback-contenido">
+      <p class="feedback-texto">Escribe tu código y presiona ▶ Ejecutar para ver qué hace Robot1.</p>
+    </div>
+  </section>
+
 </main>
 
-<section class="panel panel-feedback" aria-labelledby="titulo-feedback">
-  <div class="panel-encabezado">
-    <h2 id="titulo-feedback">Retroalimentación</h2>
-    <div class="estrellas-nivel" id="estrellas-nivel"></div>
-  </div>
-  <div class="feedback-panel feedback-neutral" id="feedback-contenido">
-    <p class="feedback-texto">Escribe tu código y presiona ▶ Ejecutar para ver qué hace Robot1.</p>
-  </div>
-</section>
+
 
 <script type="module" src="js/juego.js"></script>
 </body>

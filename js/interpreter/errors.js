@@ -77,8 +77,11 @@ export const Errores = {
     }),
   funcionNoExiste: (nombre, linea) =>
     new CQLError("SEM_003", `La función ${nombre} no existe`, {
-      educativo: "CQL solo reconoce las funciones de su biblioteca.",
-      sugerencia: 'Por ejemplo, usa print(...) para mostrar algo en pantalla.',
+      educativo:
+        nombre === "entrada"
+          ? "CodeQuest usa Python de verdad: la función para pedir un dato se llama input(), ya no entrada()."
+          : "CQL solo reconoce las funciones de Python de su biblioteca: print, input, int, float y str.",
+      sugerencia: nombre === "entrada" ? "Escribe input() en lugar de entrada()." : "Por ejemplo, usa print(...) para mostrar algo en pantalla.",
       linea,
     }),
   avanzarNecesitaNumero: (linea) =>
@@ -105,13 +108,13 @@ export const Errores = {
   noRetornaValor: (nombre, linea) =>
     new CQLError("SEM_009", `${nombre} no devuelve ningún valor`, {
       educativo: "Solo algunas instrucciones producen un valor que puedas guardar o mostrar.",
-      sugerencia: "Usa entrada(), robot1.mirar(), robot1.posicion() o robot1.energia() cuando necesites un valor.",
+      sugerencia: "Usa input(), robot1.mirar(), robot1.posicion() o robot1.energia() cuando necesites un valor.",
       linea,
     }),
   entradaNoDisponible: (linea) =>
-    new CQLError("RUN_004", "entrada() no tiene ningún valor disponible en esta fase", {
+    new CQLError("RUN_004", "input() no tiene ningún valor disponible en esta fase", {
       educativo: "En esta fase no hay datos de entrada preparados.",
-      sugerencia: "Revisa el enunciado de la fase: puede que no necesites usar entrada().",
+      sugerencia: "Revisa el enunciado de la fase: puede que no necesites usar input().",
       linea,
     }),
   printNecesitaValor: (linea) =>
@@ -121,8 +124,8 @@ export const Errores = {
       linea,
     }),
   divisionEntreCero: (linea) =>
-    new CQLError("SEM_006", "No puedes dividir entre cero", {
-      educativo: "Dividir entre cero no tiene un resultado definido.",
+    new CQLError("SEM_006", "ZeroDivisionError: no puedes dividir entre cero", {
+      educativo: "Dividir entre cero (con /, // o %) no tiene un resultado definido, y Python lo prohíbe.",
       sugerencia: "Revisa el número por el que estás dividiendo.",
       linea,
     }),
@@ -163,8 +166,8 @@ export const Errores = {
     }),
   sinValoresDeEntrada: (linea) =>
     new CQLError("RUN_004", "No hay más valores de entrada disponibles", {
-      educativo: "entrada() solo puede leer los valores que este nivel preparó para ti.",
-      sugerencia: "Revisa cuántas veces estás llamando a entrada() en tu código.",
+      educativo: "input() solo puede leer los valores que este nivel preparó para ti.",
+      sugerencia: "Revisa cuántas veces estás llamando a input() en tu código.",
       linea,
     }),
 };
@@ -316,4 +319,71 @@ Errores.colorDeCartaInvalido = (valor) =>
   new CQLError("RUN_014", `"${valor}" no es un color de carta`, {
     educativo: 'Las cartas son "roja" o "negra".',
     sugerencia: 'Ejemplo: mesa.poner_carta(7, "roja")',
+  });
+
+// ---------------------------------------------------------------------------
+// Migración a Python 100%: errores de tipos y conversiones (TypeError / ValueError).
+// ---------------------------------------------------------------------------
+
+const DESCRIPCION_TIPO = { texto: "un texto", numero: "un número", logico: "un valor lógico" };
+
+// a y b: { tipo: "texto" | "numero" | "logico", repr: "\"5\"" }
+Errores.sumaMezclada = (a, b, linea) => {
+  const texto = a.tipo === "texto" ? a : b.tipo === "texto" ? b : null;
+  const numero = a.tipo === "numero" ? a : b.tipo === "numero" ? b : null;
+  const mensaje = `TypeError: No puedes sumar ${DESCRIPCION_TIPO[a.tipo]} (${a.repr}) con ${DESCRIPCION_TIPO[b.tipo]} (${b.repr}) directamente.`;
+  return new CQLError("RUN_015", texto && numero ? `${mensaje} Usa int(${texto.repr}) o str(${numero.repr})` : mensaje, {
+    educativo: "El + une textos con textos (concatenar) y suma números con números, pero Python no mezcla ambos tipos por su cuenta.",
+    sugerencia:
+      texto && numero
+        ? `Para sumar, convierte el texto en número: int(${texto.repr}) + ${numero.repr}. Para unir, convierte el número en texto: ${texto.repr} + str(${numero.repr}).`
+        : "Usa + solo entre dos números o entre dos textos.",
+    linea,
+  });
+};
+Errores.operacionConTexto = (operador, tipoA, tipoB, linea) =>
+  new CQLError("RUN_016", `TypeError: El operador ${operador} solo funciona con números (aquí hay ${tipoA} y ${tipoB})`, {
+    educativo: "Con texto solo se puede usar + para unir dos textos. Restar, multiplicar, dividir y sacar el residuo necesitan números.",
+    sugerencia: "Revisa que las dos variables sean números (sin comillas), o conviértelas con int() o float().",
+    linea,
+  });
+Errores.valorNoNumerico = (funcion, valor, linea) =>
+  new CQLError("RUN_017", `ValueError: El valor ingresado no es un número válido (${funcion}("${valor}"))`, {
+    educativo:
+      funcion === "int"
+        ? 'int() solo convierte textos que parezcan un número entero, como "5" o "-12". No acepta letras ni decimales como "3.5".'
+        : 'float() solo convierte textos que parezcan un número, como "3.5" o "7". No acepta letras.',
+    sugerencia: `${funcion}("12") funciona; ${funcion}("hola") no. Revisa lo que escribió quien usa el programa.`,
+    linea,
+  });
+Errores.enteroDemasiadoGrande = (linea) =>
+  new CQLError("RUN_018", "OverflowError: el número es demasiado grande", {
+    educativo: "CodeQuest solo maneja enteros de hasta unas 9 mil billones (2⁵³) y decimales finitos.",
+    sugerencia: "Revisa las multiplicaciones y potencias: algo creció demasiado.",
+    linea,
+  });
+Errores.potenciaInvalida = (linea) =>
+  new CQLError("RUN_019", "ValueError: esa potencia no da un número real", {
+    educativo: "Un número negativo elevado a un exponente decimal (como (-8) ** 0.5) no es un número real.",
+    sugerencia: "Usa una base positiva o un exponente entero.",
+    linea,
+  });
+Errores.inputDevuelveTexto = (linea, ejemplo = "int(input()) + 5") =>
+  new CQLError("SEM_011", "input() devuelve texto: conviértelo a número antes de operar", {
+    educativo:
+      "En Python, input() SIEMPRE devuelve un texto, aunque la persona escriba un número. Un texto no se puede sumar, restar ni multiplicar con un número.",
+    sugerencia: `Conviértelo primero: ${ejemplo}   (usa float(input()) si el número lleva decimales).`,
+    linea,
+  });
+Errores.nombreReservado = (nombre, linea) =>
+  new CQLError("SEM_012", `"${nombre}" es una función de Python: no puede usarse como nombre de variable`, {
+    educativo: `print, input, int, float, str y range ya significan algo en Python. Si los usas como nombre de variable, dejarías de poder usarlos.`,
+    sugerencia: `Elige otro nombre, por ejemplo ${nombre}_1 o mi_${nombre}.`,
+    linea,
+  });
+Errores.argumentosFuncion = (nombre, esperado, linea) =>
+  new CQLError("SEM_013", `TypeError: ${nombre}() recibe ${esperado}`, {
+    educativo: `${nombre}() ${nombre === "input" ? "puede llevar un mensaje opcional entre comillas" : "necesita exactamente un valor para convertir"}.`,
+    sugerencia: nombre === "input" ? 'Ejemplos: input()   o   input("¿Cuántos pisos?")' : `Ejemplo: ${nombre}(input())`,
+    linea,
   });

@@ -37,8 +37,8 @@
     {
       "id": "11.2",
       "tipo": "PREDECIR",
-      "titulo": "Sumar textos",
-      "enunciado": "¿Qué muestra este programa?",
+      "titulo": "Unir textos",
+      "enunciado": "Concepto nuevo: en CQL, sumar dos textos los une en uno solo (se llama concatenar). Aquí a y b son textos porque están entre comillas. ¿Qué muestra este programa?",
       "codigoInicial": "a = \"5\"\nb = \"3\"\nprint(a + b)",
       "instruccionesPermitidas": [
         "asignacion",
@@ -63,16 +63,17 @@
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Con textos, + los pega uno detrás de otro (53). Solo con números suma (8).",
+      "retroalimentacion": "Correcto: con textos, + los une uno detrás de otro (53), no los suma. ¡Cuidado! Esto solo funciona con textos: si intentas sumar un texto y un número (por ejemplo \"5\" + 3), el programa dará un error.",
       "pistas": [
-        "Las comillas convierten al 5 en un texto."
+        "Las comillas convierten al 5 y al 3 en textos.",
+        "Unir textos no es lo mismo que sumar números."
       ]
     },
     {
       "id": "11.3",
       "tipo": "DEBUG",
       "titulo": "El número disfrazado",
-      "enunciado": "Este programa debería mostrar 16, pero muestra 151. La edad es un número, no un texto. Corrígelo.",
+      "enunciado": "Este programa debería mostrar 16, pero da un error: edad está entre comillas, así que es un TEXTO, y no se puede sumar un texto con un número. Corrígelo.",
       "codigoInicial": "edad = \"15\"\nprint(edad + 1)",
       "solucionReferencia": "edad = 15\nprint(edad + 1)",
       "instruccionesPermitidas": [
@@ -90,7 +91,7 @@
           "variable": "edad"
         }
       },
-      "retroalimentacion": "Sin comillas, 15 es un número y se puede sumar.",
+      "retroalimentacion": "Sin comillas, 15 es un número y se puede sumar. Con comillas es un texto, y sumarlo con un número da error.",
       "pistas": [
         "¿Las comillas son necesarias aquí?"
       ],

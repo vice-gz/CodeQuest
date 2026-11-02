@@ -1,3 +1,5 @@
+import { reprPython } from "../interpreter/valores.js";
+
 // memoryPanel.js
 // Panel de MEMORIA (nuevo, prompt de cambios sección 5.3): muestra las
 // variables actuales del programa. Se actualiza cada vez que se ejecuta
@@ -38,8 +40,6 @@ export class MemoryPanel {
   }
 
   formatearValor(valor) {
-    if (typeof valor === "string") return `"${valor}"`;
-    if (typeof valor === "boolean") return valor ? "True" : "False";
-    return String(valor);
+    return reprPython(valor);
   }
 }

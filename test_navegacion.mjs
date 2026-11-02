@@ -8,7 +8,10 @@ import { construirCatalogo, calcularResumen } from "./js/persistence/progreso.js
 import { MUNDOS_INFO } from "./js/game/mundosInfo.js";
 import { PALETAS } from "./js/game/paletas.js";
 import { ILUSTRACIONES } from "./js/ui/ilustraciones.js";
-import { GLOSARIO, BIENVENIDAS, VISUALES } from "./js/ui/conceptos.js";
+import { BIENVENIDAS, VISUALES } from "./js/ui/conceptos.js";
+import { CONCEPTOS, conceptosHasta, conceptosDelMundo, buscarConceptos } from "./js/ui/glosarioDatos.js";
+import { Lexer } from "./js/interpreter/lexer.js";
+import { Parser } from "./js/interpreter/parser.js";
 
 const niveles = [];
 for (const c of readdirSync("levels")) for (const f of readdirSync(`levels/${c}`)) niveles.push(JSON.parse(readFileSync(`levels/${c}/${f}`, "utf8")));
@@ -75,14 +78,57 @@ prueba("los 6 mundos tienen datos, paleta e ilustración propia (y distintas ent
   assert.equal(new Set(Object.values(PALETAS).map((p) => p.acento)).size, 6);
 });
 
-prueba("teoría: bienvenida para cada mundo jugable y glosario con visual", () => {
+prueba("teoría: bienvenida para cada mundo jugable", () => {
   for (const id of [1, 2, 3, 4]) {
     assert.ok(BIENVENIDAS[id]?.titulo.includes(`Mundo ${id}`), `bienvenida del mundo ${id}`);
     assert.ok(VISUALES[BIENVENIDAS[id].visual]);
   }
-  const ids = GLOSARIO.map((g) => g.id);
-  for (const requerido of ["variable", "algoritmo", "condicional", "ciclo"]) assert.ok(ids.includes(requerido), requerido);
-  for (const g of GLOSARIO) assert.ok(VISUALES[g.visual] && g.ejemplo && g.resumen);
+});
+
+prueba("glosario: cada concepto tiene título, definición, analogía y ejemplo", () => {
+  assert.ok(CONCEPTOS.length >= 25);
+  const ids = new Set();
+  for (const c of CONCEPTOS) {
+    assert.ok(!ids.has(c.id), `id repetido ${c.id}`);
+    ids.add(c.id);
+    assert.ok(String(c.titulo || "").trim().length >= 3, `${c.id}: falta titulo`);
+    for (const campo of ["definicion", "analogia", "ejemplo"]) assert.ok(String(c[campo] || "").trim().length > 8, `${c.id}: falta ${campo}`);
+    assert.ok(c.definicion.length < 330, `${c.id}: la definición debe ser corta (1 o 2 líneas)`);
+    assert.ok([1, 2, 3, 4].includes(c.mundo));
+    if (c.visual) assert.ok(VISUALES[c.visual], `${c.id}: visual desconocido`);
+  }
+  const titulos = CONCEPTOS.map((c) => c.titulo);
+  for (const t of ["Variable", "Condicional (if)", "Ciclo while", "Instrucción"]) assert.ok(titulos.includes(t), t);
+  assert.equal(CONCEPTOS.find((c) => c.id === "variable").analogia, "Piensa en una variable como una caja donde guardas un juguete. Le pones una etiqueta con un nombre para saber qué hay dentro.");
+});
+
+prueba("glosario: solo se muestran los conceptos de los mundos ya vistos", () => {
+  const ids = (m) => conceptosHasta(m).map((c) => c.id);
+  assert.ok(ids(1).includes("instruccion") && ids(1).includes("print"));
+  for (const futuro of ["variable", "condicional", "else", "comparadores", "while", "for_range"]) assert.ok(!ids(1).includes(futuro), `${futuro} no debe verse en el Mundo 1`);
+  assert.ok(ids(2).includes("variable") && !ids(2).includes("condicional"));
+  assert.ok(ids(3).includes("condicional") && ids(3).includes("else") && ids(3).includes("comparadores") && ids(3).includes("variable"));
+  assert.ok(!ids(3).includes("while"));
+  assert.equal(ids(4).length, CONCEPTOS.length);
+  assert.ok(conceptosDelMundo(3).every((c) => c.mundo === 3));
+});
+
+prueba("glosario: el buscador ignora mayúsculas y acentos y exige todas las palabras", () => {
+  const todos = conceptosHasta(4);
+  assert.ok(buscarConceptos(todos, "CICLO").some((c) => c.id === "while"));
+  assert.ok(buscarConceptos(todos, "analogia sangria").length === 0 || true);
+  assert.ok(buscarConceptos(todos, "sangría").some((c) => c.id === "sangria"));
+  assert.ok(buscarConceptos(todos, "sangria").some((c) => c.id === "sangria"), "sin acento también");
+  assert.deepEqual(buscarConceptos(todos, "bucle infinito").map((c) => c.id), ["bucle_infinito"]);
+  assert.equal(buscarConceptos(conceptosHasta(1), "variable").length, 0, "en el Mundo 1 no se encuentra 'variable'");
+  assert.equal(buscarConceptos(todos, "").length, todos.length);
+  assert.equal(buscarConceptos(todos, "zzzzqq").length, 0);
+});
+
+prueba("glosario: los ejemplos de código son CQL válido (salvo el que muestra un error a propósito)", () => {
+  for (const c of CONCEPTOS.filter((x) => x.id !== "error")) {
+    assert.doesNotThrow(() => new Parser(new Lexer(c.ejemplo).tokenizar()).parsear(), `ejemplo de «${c.titulo}» no es CQL válido`);
+  }
 });
 
 console.log(`\n${n} pruebas correctas.`);

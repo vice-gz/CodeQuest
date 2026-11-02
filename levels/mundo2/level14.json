@@ -2,7 +2,7 @@
   "id": 14,
   "mundo": 2,
   "nombre": "Información del exterior",
-  "concepto": "entrada, entrada con variables",
+  "concepto": "input(), int() y float()",
   "concepto_evaluado": "entrada_con_variables",
   "narrativa": "Hasta ahora todos los datos los escribía el programa. Ahora un sensor externo va a enviar un valor.",
   "escenario": {
@@ -19,82 +19,143 @@
       "id": "14.1",
       "tipo": "EXPLORAR",
       "titulo": "El sensor pregunta",
-      "enunciado": "Concepto nuevo: entrada() pausa el programa y espera un dato de quien juega; se guarda en una variable. Cuando la terminal te lo pida, escribe 12.",
-      "codigoInicial": "valor = entrada()\nprint(valor)",
+      "enunciado": "Concepto nuevo: input() pausa el programa y espera un dato de quien juega; se guarda en una variable. OJO, como en Python: input() SIEMPRE lee TEXTO, aunque escribas un número. Cuando la terminal te lo pida, escribe 12 y mira qué muestra valor + valor.",
+      "codigoInicial": "valor = input()\nprint(valor)\nprint(valor + valor)",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
-        "entrada"
+        "input"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
-        12
+        "12"
       ],
       "etiquetaEntrada": "El sensor pregunta: ¿qué valor envía?",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "entrada() devuelve lo que escribió la persona.",
+      "retroalimentacion": "valor + valor mostró 1212, no 24: input() devolvió el TEXTO \"12\", y sumar textos los une (concatena).",
       "pistas": [
-        "Escribe 12 en el campo de la terminal y pulsa Enter."
+        "Escribe 12 en el campo de la terminal y pulsa Enter.",
+        "Compara lo que muestra valor con lo que muestra valor + valor."
       ]
     },
     {
       "id": "14.2",
-      "tipo": "ESCRIBIR",
-      "titulo": "Suma con el sensor",
-      "enunciado": "Pide el valor del sensor con entrada() (escribe 12), guárdalo en una variable, súmale 5 en total y muestra total (17).",
-      "codigoInicial": "",
-      "solucionReferencia": "valor = entrada()\ntotal = valor + 5\nprint(total)",
+      "tipo": "PREDECIR",
+      "titulo": "Convertir con int()",
+      "enunciado": "En Python, si necesitas un número debes convertir el texto: int(\"12\") lo vuelve el número entero 12. ¿Qué muestra este programa?",
+      "codigoInicial": "numero = int(\"12\")\nprint(numero + 1)",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
-        "entrada"
+        "input",
+        "int",
+        "float",
+        "str"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "13"
+        },
+        {
+          "id": "b",
+          "texto": "121"
+        },
+        {
+          "id": "c",
+          "texto": "Un error"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: int(\"12\") es el número 12, y 12 + 1 es 13. Con el texto \"12\" + 1 habría dado error.",
+      "pistas": [
+        "int() convierte texto en número entero.",
+        "float() hace lo mismo pero con decimales."
+      ]
+    },
+    {
+      "id": "14.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Suma con el sensor",
+      "enunciado": "Pide el valor del sensor (escribe 12), conviértelo con int(input()), guárdalo en una variable, súmale 5 en total y muestra total (17).",
+      "codigoInicial": "",
+      "solucionReferencia": "valor = int(input())\ntotal = valor + 5\nprint(total)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
-        12
+        "12"
       ],
       "etiquetaEntrada": "El sensor pregunta: ¿qué valor envía?",
       "validacion": {
         "tipo": "output_con_variable",
         "valorEsperado": "17",
-        "variableRequerida": "total"
+        "variableRequerida": "total",
+        "requiere": {
+          "construcciones": [
+            "int"
+          ]
+        }
       },
-      "retroalimentacion": "Combinaste entrada, variables y operadores.",
+      "retroalimentacion": "Combinaste input, int(), variables y operadores.",
       "pistas": [
-        "valor = entrada()",
+        "valor = int(input())",
         "total = valor + 5"
       ],
-      "mensajeNoLogrado": "Con el valor 12, total debe ser 17."
+      "mensajeNoLogrado": "Con el valor 12, total debe ser 17. Recuerda convertir con int().",
+      "solucionesIncorrectas": [
+        "valor = input()\ntotal = valor + 5\nprint(total)"
+      ]
     },
     {
-      "id": "14.3",
+      "id": "14.4",
       "tipo": "RESOLVER",
       "titulo": "La mitad del tramo",
-      "enunciado": "Pide el valor del sensor (escribe 8) y muestra su mitad (4) usando una división.",
+      "enunciado": "Pide el valor del sensor como número decimal con float(input()) (escribe 7) y muestra su mitad (3.5) usando una división.",
       "codigoInicial": "",
-      "solucionReferencia": "tramo = entrada()\nprint(tramo / 2)",
+      "solucionReferencia": "tramo = float(input())\nprint(tramo / 2)",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
-        "entrada"
+        "input",
+        "int",
+        "float",
+        "str"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
-        8
+        "7"
       ],
       "etiquetaEntrada": "¿Cuánto mide el tramo?",
       "validacion": {
         "tipo": "output_exacto",
-        "valorEsperado": "4",
+        "valorEsperado": "3.5",
         "requiere": {
-          "operador": "/"
+          "operador": "/",
+          "construcciones": [
+            "float"
+          ]
         }
       },
-      "retroalimentacion": "Lo que escribe la persona entra al programa como un dato más.",
+      "retroalimentacion": "float() convierte el texto en decimal. Lo que escribe la persona entra al programa como un dato más.",
       "pistas": [
-        "Guarda la entrada y divide entre 2."
+        "Guarda float(input()) y divide entre 2."
+      ],
+      "mensajeNoLogrado": "Con 7, la mitad es 3.5 (usa float y /).",
+      "solucionesIncorrectas": [
+        "tramo = int(input())\nprint(tramo // 2)"
       ]
     }
   ]

@@ -8,7 +8,8 @@
 // aquí se añade "asignacion" para que también se puedan usar variables
 // (Mundo 2), que es parte de "todas las del Avance 2".
 
-export const INSTRUCCIONES_SANDBOX = ["print", "entrada", "asignacion"];
+// Todo CQL está abierto: entrada/salida, conversiones, variables, condicionales y ciclos.
+export const INSTRUCCIONES_SANDBOX = ["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"];
 export const METODOS_SANDBOX = [
   "avanzar",
   "retroceder",
@@ -42,7 +43,7 @@ export const NIVEL_SANDBOX = {
       tipo: "LIBRE",
       titulo: "Experimenta con Robot1",
       enunciado:
-        "Escribe cualquier programa y presiona ▶ Ejecutar. Puedes mover a Robot1 por la cuadrícula de 10×10, usar variables, pedir datos con entrada() y mostrar resultados con print(). Nada de esto se guarda.",
+        "Escribe cualquier programa y presiona ▶ Ejecutar. Puedes mover a Robot1 por la cuadrícula de 10×10, usar variables, pedir datos con input() y mostrar resultados con print(). Nada de esto se guarda.",
       codigoInicial: "",
       instruccionesPermitidas: INSTRUCCIONES_SANDBOX,
       metodosPermitidos: METODOS_SANDBOX,

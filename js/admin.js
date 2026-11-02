@@ -20,6 +20,7 @@ import {
 } from "./ui/vistaProgreso.js";
 import { nombreError, NOMBRES_ERROR } from "./ui/erroresCatalogo.js";
 import { notificar, confirmar } from "./ui/avisos.js";
+import { construirCsv, agregarErroresPorUsuario, erroresDesdeRpc } from "./ui/exportarCsv.js";
 import { escaparHtml, formatearFecha, formatearDia, fechaRelativa, ETIQUETA_ROL } from "./util.js";
 
 const $ = (id) => document.getElementById(id);
@@ -550,37 +551,40 @@ async function cargarEjecuciones() {
 
 // ---------- Exportar a CSV ----------
 
-// Evita la "inyección de fórmulas": Excel ejecuta celdas que empiezan con = + - @.
-function celdaCsv(valor) {
-  let t = String(valor ?? "");
-  if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`;
-  return `"${t.replace(/"/g, '""')}"`;
+// Total de errores y error más frecuente por alumno: lo calcula la base de datos
+// (admin_errores_por_usuario); si esa función aún no está instalada, se agrupa aquí
+// leyendo las ejecuciones.
+async function cargarErroresPorUsuario() {
+  const { data, error } = await supabase.rpc("admin_errores_por_usuario");
+  if (!error) return erroresDesdeRpc(data);
+  if (!funcionFaltante(error)) throw error;
+  const filas = await traerTodo(() => supabase.from("ejecuciones").select("user_id,resultado,codigo_error").order(COL_FECHA));
+  return agregarErroresPorUsuario(filas);
 }
 
-function exportarCsv() {
-  const encabezado = [
-    "Nombre", "Email", "Rol", "Mundo actual", "Nivel actual", "Experiencia", "Estrellas",
-    "Niveles completados", "Fases completadas", "Fecha de registro", "Última actividad",
-  ];
-  const filas = usuarios.map((u) => {
-    const t = resumenes.get(u.id)?.totales;
-    return [
-      u.nombre, u.email, ETIQUETA_ROL[u.rol] || u.rol, u.mundo, u.nivel, u.experiencia,
-      t?.estrellas ?? 0, t?.nivelesCompletados ?? 0, t?.fasesCompletadas ?? 0,
-      u.fechaRegistro || "", u.ultimaActividad || "",
-    ];
-  });
-  const csv = [encabezado, ...filas].map((f) => f.map(celdaCsv).join(",")).join("\r\n");
-  // BOM al inicio: así Excel abre bien los acentos.
-  const blob = new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" });
-  const enlace = document.createElement("a");
-  enlace.href = URL.createObjectURL(blob);
-  enlace.download = `codequest-usuarios-${new Date().toISOString().slice(0, 10)}.csv`;
-  document.body.appendChild(enlace);
-  enlace.click();
-  enlace.remove();
-  setTimeout(() => URL.revokeObjectURL(enlace.href), 1000);
-  notificar(`Exportados ${usuarios.length} usuarios`);
+async function exportarCsv() {
+  const boton = $("btn-exportar");
+  boton.disabled = true;
+  try {
+    await exigirAdmin();
+    const errores = await cargarErroresPorUsuario();
+    const csv = construirCsv({ usuarios, resumenes, errores, catalogo, etiquetaRol: (r) => ETIQUETA_ROL[r] || r });
+    // BOM al inicio: así Excel abre bien los acentos.
+    const blob = new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" });
+    const enlace = document.createElement("a");
+    enlace.href = URL.createObjectURL(blob);
+    enlace.download = `codequest-usuarios-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(enlace);
+    enlace.click();
+    enlace.remove();
+    setTimeout(() => URL.revokeObjectURL(enlace.href), 1000);
+    notificar(`Exportados ${usuarios.length} usuarios`);
+  } catch (e) {
+    console.error(e);
+    notificar("No se pudo preparar la exportación. Revisa tu conexión e inténtalo de nuevo.", "error");
+  } finally {
+    boton.disabled = false;
+  }
 }
 
 $("btn-exportar").addEventListener("click", exportarCsv);

@@ -616,7 +616,7 @@ button {
 
 /* ---------- Responsive ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 992px) {
   .contenedor-nivel {
     grid-template-columns: 1fr;
     padding: 16px;
@@ -752,7 +752,7 @@ body.con-nav .barra-superior {
   top: var(--nav-alto);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 992px) {
   .nav-principal {
     padding: 0 16px;
   }

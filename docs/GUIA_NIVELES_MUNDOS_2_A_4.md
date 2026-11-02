@@ -34,12 +34,12 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 | 2 (id 10) | Cambia de opinión | reasignación, estado | 3: Explorar, Predecir, Resolver |
 | 3 (id 11) | No todo es lo mismo | entero, decimal, texto | 4: Explorar, Predecir, Debug, Debug |
 | 4 (id 12) | Cálculo de energía | operadores, expresiones | 3: Explorar, Modificar, Resolver |
-| 5 (id 13) | Calcula el reparto | multiplicación, división, módulo | 3: Explorar, Predecir, Resolver |
-| 6 (id 14) | Información del exterior | entrada, entrada con variables | 3: Explorar, Escribir, Resolver |
+| 5 (id 13) | Calcula el reparto | multiplicación, división, división entera y residuo | 4: Explorar, Predecir, Predecir, Resolver |
+| 6 (id 14) | Información del exterior | input(), int() y float() | 4: Explorar, Predecir, Escribir, Resolver |
 | 7 (id 15) | El identificador incorrecto | identificadores | 4: Explorar, Debug, Predecir, Debug |
-| 8 (id 16) | Módulos que se combinan | combinación de variables, tipos y operadores | 3: Explorar, Escribir, Resolver |
+| 8 (id 16) | Módulos que se combinan | combinación de variables, tipos y operadores | 4: Explorar, Escribir, Resolver, Escribir |
 | 9 (id 17) | El sistema de energía | valores que cambian y valores que no | 3: Explorar, Modificar, Resolver |
-| 10 (id 18) | El puente de datos | variables, operadores y entrada juntos | 3: Escribir, Resolver, Libre |
+| 10 (id 18) | El puente de datos | variables, operadores, input y conversiones juntos | 3: Escribir, Resolver, Libre |
 | 11 (id 19) | La puerta del Mundo 3 | integración total del Mundo 2 | 3: Resolver, Escribir, Libre |
 
 ### Mundo 3 · Lógica
@@ -81,7 +81,7 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 ## Mundo 2 · Memoria
 
 - **Escenario:** Centro de Recuperación (módulos de memoria y terminal, **sin robot**).
-- **Qué se aprende:** Variables, tipos de dato, operadores y entrada. Se ven chips que se iluminan al guardar un valor y cables que muestran de dónde viene cada dato.
+- **Qué se aprende:** Variables, tipos de dato, operadores, input() y conversiones de tipo (int, float, str). Se ven chips que se iluminan al guardar un valor y cables que muestran de dónde viene cada dato.
 - **Niveles:** 11 · **Estrellas posibles:** 33
 
 ### Nivel 1 del Mundo 2 (id 9) — Necesito recordar
@@ -211,9 +211,9 @@ print(bateria)
 
 **Pistas del juego:** Compara las etiquetas ENTERO, DECIMAL y TEXTO en la parte baja de los chips.
 
-#### Fase 2 · PREDECIR — «Sumar textos»  `11.2`
+#### Fase 2 · PREDECIR — «Unir textos»  `11.2`
 
-**Qué hay que hacer:** ¿Qué muestra este programa?
+**Qué hay que hacer:** Concepto nuevo: en CQL, sumar dos textos los une en uno solo (se llama concatenar). Aquí a y b son textos porque están entre comillas. ¿Qué muestra este programa?
 
 **Cómo se pasa:**
 
@@ -222,7 +222,7 @@ print(bateria)
 - ▫️ Un error
 - Se pasa eligiendo: **53**.
 
-**Pistas del juego:** Las comillas convierten al 5 en un texto.
+**Pistas del juego:** Las comillas convierten al 5 y al 3 en textos. · Unir textos no es lo mismo que sumar números.
 
 <details><summary>Ver el código de la fase</summary>
 
@@ -235,7 +235,7 @@ print(a + b)
 
 #### Fase 3 · DEBUG — «El número disfrazado»  `11.3`
 
-**Qué hay que hacer:** Este programa debería mostrar 16, pero muestra 151. La edad es un número, no un texto. Corrígelo.
+**Qué hay que hacer:** Este programa debería mostrar 16, pero da un error: edad está entre comillas, así que es un TEXTO, y no se puede sumar un texto con un número. Corrígelo.
 
 **Cómo se pasa:**
 
@@ -362,19 +362,41 @@ print(total)
 
 ### Nivel 5 del Mundo 2 (id 13) — Calcula el reparto
 
-**Concepto:** multiplicación, división, módulo  ·  **Historia:** _Repartir recursos exige más que sumar: multiplicar, dividir y averiguar qué sobra._
+**Concepto:** multiplicación, división, división entera y residuo  ·  **Historia:** _Repartir recursos exige más que sumar: multiplicar, dividir y averiguar qué sobra._
 
-#### Fase 1 · EXPLORAR — «Tres operadores nuevos»  `13.1`
+#### Fase 1 · EXPLORAR — «Cuatro operadores nuevos»  `13.1`
 
-**Qué hay que hacer:** Conceptos nuevos: * multiplica, / divide (entre enteros da un entero) y % da el RESIDUO: lo que sobra al dividir.
+**Qué hay que hacer:** Conceptos nuevos (como en Python): * multiplica; / divide y SIEMPRE da un decimal (17 / 4 es 4.25); // es la división entera: solo la parte entera (17 // 4 es 4); y % da el RESIDUO: lo que sobra al dividir.
 
 **Cómo se pasa:**
 
 - Basta con ejecutar el programa sin errores.
 
-**Pistas del juego:** % no es porcentaje: es el residuo de la división.
+**Pistas del juego:** % no es porcentaje: es el residuo de la división. · Fíjate en la etiqueta DECIMAL del chip cuando usas /.
 
-#### Fase 2 · PREDECIR — «¿Cuánto sobra?»  `13.2`
+#### Fase 2 · PREDECIR — «La división siempre da decimal»  `13.2`
+
+**Qué hay que hacer:** En Python, ¿qué muestra este programa?
+
+**Cómo se pasa:**
+
+- ▫️ 5
+- ✅ 5.0
+- ▫️ 2
+- Se pasa eligiendo: **5.0**.
+
+**Pistas del juego:** Si quisieras un entero usarías //.
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+a = 10
+b = 2
+print(a / b)
+```
+</details>
+
+#### Fase 3 · PREDECIR — «¿Cuánto sobra?»  `13.3`
 
 **Qué hay que hacer:** ¿Qué muestra este programa?
 
@@ -396,84 +418,109 @@ print(y)
 ```
 </details>
 
-#### Fase 3 · RESOLVER — «Cajas de cinco»  `13.3`
+#### Fase 4 · RESOLVER — «Cajas de cinco»  `13.4`
 
-**Qué hay que hacer:** Hay 23 baterías y se guardan en cajas de 5. Muestra primero cuántas cajas se llenan (4) y luego cuántas baterías sobran (3), en ese orden.
+**Qué hay que hacer:** Hay 23 baterías y se guardan en cajas de 5. Muestra primero cuántas cajas se llenan (4, usa la división entera) y luego cuántas baterías sobran (3), en ese orden.
 
 **Cómo se pasa:**
 
 - El programa debe mostrar «4», luego «3».
-- Debe usar los operadores `/` y `%`.
+- Debe usar los operadores `//` y `%`.
 
-**Pistas del juego:** Cajas llenas: baterias / 5. · Sobrante: baterias % 5.
+**Pistas del juego:** Cajas llenas: baterias // 5. · Sobrante: baterias % 5.
 
-**Si no pasa, el juego dice:** «Debe mostrar 4 y luego 3, usando / y %.»
+**Si no pasa, el juego dice:** «Debe mostrar 4 y luego 3, usando // y %.»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
 baterias = 23
-print(baterias / 5)
+print(baterias // 5)
 print(baterias % 5)
 ```
 </details>
 
 ### Nivel 6 del Mundo 2 (id 14) — Información del exterior
 
-**Concepto:** entrada, entrada con variables  ·  **Historia:** _Hasta ahora todos los datos los escribía el programa. Ahora un sensor externo va a enviar un valor._
+**Concepto:** input(), int() y float()  ·  **Historia:** _Hasta ahora todos los datos los escribía el programa. Ahora un sensor externo va a enviar un valor._
 
 #### Fase 1 · EXPLORAR — «El sensor pregunta»  `14.1`
 
-**Qué hay que hacer:** Concepto nuevo: entrada() pausa el programa y espera un dato de quien juega; se guarda en una variable. Cuando la terminal te lo pida, escribe 12.
+**Qué hay que hacer:** Concepto nuevo: input() pausa el programa y espera un dato de quien juega; se guarda en una variable. OJO, como en Python: input() SIEMPRE lee TEXTO, aunque escribas un número. Cuando la terminal te lo pida, escribe 12 y mira qué muestra valor + valor.
 
 **Cómo se pasa:**
 
 - Basta con ejecutar el programa sin errores.
 
-> ⌨️ Esta fase pide datos con `entrada()`: cuando la terminal pregunte, escribe **12**.
+> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **12**.
 
-**Pistas del juego:** Escribe 12 en el campo de la terminal y pulsa Enter.
+**Pistas del juego:** Escribe 12 en el campo de la terminal y pulsa Enter. · Compara lo que muestra valor con lo que muestra valor + valor.
 
-#### Fase 2 · ESCRIBIR — «Suma con el sensor»  `14.2`
+#### Fase 2 · PREDECIR — «Convertir con int()»  `14.2`
 
-**Qué hay que hacer:** Pide el valor del sensor con entrada() (escribe 12), guárdalo en una variable, súmale 5 en total y muestra total (17).
+**Qué hay que hacer:** En Python, si necesitas un número debes convertir el texto: int("12") lo vuelve el número entero 12. ¿Qué muestra este programa?
+
+**Cómo se pasa:**
+
+- ✅ 13
+- ▫️ 121
+- ▫️ Un error
+- Se pasa eligiendo: **13**.
+
+**Pistas del juego:** int() convierte texto en número entero. · float() hace lo mismo pero con decimales.
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+numero = int("12")
+print(numero + 1)
+```
+</details>
+
+#### Fase 3 · ESCRIBIR — «Suma con el sensor»  `14.3`
+
+**Qué hay que hacer:** Pide el valor del sensor (escribe 12), conviértelo con int(input()), guárdalo en una variable, súmale 5 en total y muestra total (17).
 
 **Cómo se pasa:**
 
 - Debe mostrar «17» y el código tiene que crear la variable `total`.
+- Tu código debe usar: `int`.
 
-> ⌨️ Esta fase pide datos con `entrada()`: cuando la terminal pregunte, escribe **12**.
+> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **12**.
 
-**Pistas del juego:** valor = entrada() · total = valor + 5
+**Pistas del juego:** valor = int(input()) · total = valor + 5
 
-**Si no pasa, el juego dice:** «Con el valor 12, total debe ser 17.»
+**Si no pasa, el juego dice:** «Con el valor 12, total debe ser 17. Recuerda convertir con int().»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-valor = entrada()
+valor = int(input())
 total = valor + 5
 print(total)
 ```
 </details>
 
-#### Fase 3 · RESOLVER — «La mitad del tramo»  `14.3`
+#### Fase 4 · RESOLVER — «La mitad del tramo»  `14.4`
 
-**Qué hay que hacer:** Pide el valor del sensor (escribe 8) y muestra su mitad (4) usando una división.
+**Qué hay que hacer:** Pide el valor del sensor como número decimal con float(input()) (escribe 7) y muestra su mitad (3.5) usando una división.
 
 **Cómo se pasa:**
 
-- El programa debe mostrar exactamente «4».
+- El programa debe mostrar exactamente «3.5».
+- Tu código debe usar: `float`.
 - Debe usar el operador `/`.
 
-> ⌨️ Esta fase pide datos con `entrada()`: cuando la terminal pregunte, escribe **8**.
+> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **7**.
 
-**Pistas del juego:** Guarda la entrada y divide entre 2.
+**Pistas del juego:** Guarda float(input()) y divide entre 2.
+
+**Si no pasa, el juego dice:** «Con 7, la mitad es 3.5 (usa float y /).»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-tramo = entrada()
+tramo = float(input())
 print(tramo / 2)
 ```
 </details>
@@ -581,16 +628,16 @@ print(puntos)
 
 #### Fase 2 · ESCRIBIR — «El triángulo»  `16.2`
 
-**Qué hay que hacer:** Guarda 12 en base y 5 en altura. Calcula area = base * altura / 2 y muéstrala (30).
+**Qué hay que hacer:** Guarda 12 en base y 5 en altura. Calcula area = base * altura / 2 y muéstrala (recuerda que / siempre da un decimal: verás 30.0).
 
 **Cómo se pasa:**
 
-- Debe mostrar «30» y el código tiene que crear la variable `area`.
+- Debe mostrar «30.0» y el código tiene que crear la variable `area`.
 - Debe usar los operadores `*` y `/`.
 
 **Pistas del juego:** base * altura primero, luego / 2.
 
-**Si no pasa, el juego dice:** «area debe ser 30 y calcularse con * y /.»
+**Si no pasa, el juego dice:** «area debe ser 30.0 y calcularse con * y /.»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
@@ -620,6 +667,28 @@ mensaje = "Memoria recuperada"
 modulos = 4 * 3
 print(mensaje)
 print(modulos)
+```
+</details>
+
+#### Fase 4 · ESCRIBIR — «Etiqueta con número»  `16.4`
+
+**Qué hay que hacer:** Para unir un texto con un número hay que convertir el número en texto con str(); si no, Python da un error. Guarda 12 en modulos y muestra exactamente: Modulos: 12 (uniendo el texto "Modulos: " con modulos).
+
+**Cómo se pasa:**
+
+- El programa debe mostrar «Modulos: 12».
+- Tu código debe usar: `str`.
+- Debe crear una variable llamada `modulos`.
+
+**Pistas del juego:** print("Modulos: " + str(modulos))
+
+**Si no pasa, el juego dice:** «Debe mostrar Modulos: 12 usando str().»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+modulos = 12
+print("Modulos: " + str(modulos))
 ```
 </details>
 
@@ -691,7 +760,7 @@ print(faltante)
 
 ### Nivel 10 del Mundo 2 (id 18) — El puente de datos
 
-**Concepto:** variables, operadores y entrada juntos  ·  **Historia:** _Para cruzar el puente de datos hay que combinar todo lo recuperado hasta ahora._
+**Concepto:** variables, operadores, input y conversiones juntos  ·  **Historia:** _Para cruzar el puente de datos hay que combinar todo lo recuperado hasta ahora._
 
 #### Fase 1 · ESCRIBIR — «Distancia»  `18.1`
 
@@ -716,20 +785,20 @@ print(distancia)
 
 #### Fase 2 · RESOLVER — «Cruza con el sensor»  `18.2`
 
-**Qué hay que hacer:** Pide un valor al sensor (escribe 10), súmale 15 y muestra el resultado (25) usando una variable llamada resultado.
+**Qué hay que hacer:** Pide un valor al sensor (escribe 10), conviértelo con int(), súmale 15 y muestra el resultado (25) usando una variable llamada resultado.
 
 **Cómo se pasa:**
 
 - Debe mostrar «25» y el código tiene que crear la variable `resultado`.
 
-> ⌨️ Esta fase pide datos con `entrada()`: cuando la terminal pregunte, escribe **10**.
+> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **10**.
 
-**Pistas del juego:** Guarda la entrada en una variable antes de sumar.
+**Pistas del juego:** Convierte con int(input()) antes de sumar.
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-dato = entrada()
+dato = int(input())
 resultado = dato + 15
 print(resultado)
 ```
@@ -774,20 +843,20 @@ print(a % b)
 
 #### Fase 2 · ESCRIBIR — «El triple»  `19.2`
 
-**Qué hay que hacer:** Pide un número al sensor (escribe 9) y muestra su triple (27) con una variable llamada triple.
+**Qué hay que hacer:** Pide un número al sensor (escribe 9), conviértelo con int() y muestra su triple (27) con una variable llamada triple.
 
 **Cómo se pasa:**
 
 - Debe mostrar «27» y el código tiene que crear la variable `triple`.
 
-> ⌨️ Esta fase pide datos con `entrada()`: cuando la terminal pregunte, escribe **9**.
+> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **9**.
 
-**Pistas del juego:** triple = n * 3
+**Pistas del juego:** n = int(input()) · triple = n * 3
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-n = entrada()
+n = int(input())
 triple = n * 3
 print(triple)
 ```
@@ -801,7 +870,7 @@ print(triple)
 
 - No hay objetivo: escribe y ejecuta lo que quieras. La fase se completa al ejecutar.
 
-**Pistas del juego:** Prueba pedir datos con entrada() y calcular con ellos.
+**Pistas del juego:** Prueba pedir datos con int(input()) y calcular con ellos.
 
 > 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. (Próximamente en el Avance 3)._
 

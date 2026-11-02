@@ -9,19 +9,11 @@ import { EscenarioBase } from "./base.js";
 import { rr, texto, conBrillo, mascota, FUENTE_MONO, facilitar } from "./dibujo.js";
 import { BIBLIOTECA_SIN_OBJETOS } from "../../interpreter/bibliotecas.js";
 import { Errores } from "../../interpreter/errors.js";
+import { reprPython, etiquetaDeTipo } from "../../interpreter/valores.js";
 import { paletaDe } from "../paletas.js";
 
-export function formatearValor(valor) {
-  if (typeof valor === "string") return `"${valor}"`;
-  if (typeof valor === "boolean") return valor ? "True" : "False";
-  return String(valor);
-}
-
-export function tipoDeValor(valor) {
-  if (typeof valor === "string") return "TEXTO";
-  if (typeof valor === "boolean") return "LÓGICO";
-  return Number.isInteger(valor) ? "ENTERO" : "DECIMAL";
-}
+export const formatearValor = reprPython;
+export const tipoDeValor = etiquetaDeTipo;
 
 export class EscenarioDatos extends EscenarioBase {
   constructor(config, opciones) {
@@ -90,12 +82,12 @@ export class EscenarioDatos extends EscenarioBase {
         await escenario.esperar(120);
       },
 
-      async entrada() {
+      async entrada(prompt) {
         if (typeof callbacks.pedirEntrada !== "function") throw Errores.entradaNoDisponible();
         escenario.esperandoEntrada = true;
         escenario.render();
         callbacks.onEntradaPendiente?.();
-        const valor = await callbacks.pedirEntrada();
+        const valor = await callbacks.pedirEntrada({ etiqueta: prompt });
         escenario.esperandoEntrada = false;
         callbacks.onSalida?.({ tipo: "ENTRADA", valor });
         escenario.terminal.push({ texto: String(valor), tipo: "entrada" });

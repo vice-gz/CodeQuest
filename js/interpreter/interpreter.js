@@ -21,15 +21,10 @@
 
 import { Errores } from "./errors.js";
 import { formatearExpresion, variablesUsadas } from "./ast.js";
+import { Flotante, esEntero, esFlotante, esLogico, formatear, aJS, nombreDeTipo } from "./valores.js";
+import { OPERACIONES, negar, iguales, ordenar, convertirAEntero, convertirADecimal } from "./aritmetica.js";
 
 export const MAX_INSTRUCCIONES = 1000;
-
-function nombreDeTipo(valor) {
-  if (typeof valor === "number") return "un número";
-  if (typeof valor === "string") return "un texto";
-  if (typeof valor === "boolean") return "un valor lógico (True/False)";
-  return "un valor";
-}
 
 export class Interpreter {
   /**
@@ -108,7 +103,7 @@ export class Interpreter {
       // eslint-disable-next-line no-await-in-loop
       valores.push(await this.evaluar(arg));
     }
-    if (!valores.every((v) => Number.isInteger(v))) throw Errores.rangoInvalido(nodo.linea);
+    if (!valores.every(esEntero)) throw Errores.rangoInvalido(nodo.linea); // un float (aunque sea 3.0) no sirve en range()
     let inicio = 0;
     let fin;
     let paso = 1;
@@ -142,10 +137,33 @@ export class Interpreter {
     if (nodo.nombre === "print") {
       const valor = await this.evaluar(nodo.argumentos[0]);
       const fuentes = [...variablesUsadas(nodo.argumentos[0])];
-      // Los valores lógicos se muestran como en Python: True / False.
-      await this.motor.print(typeof valor === "boolean" ? (valor ? "True" : "False") : valor, { fuentes });
-    } else if (nodo.nombre === "entrada") {
-      await this.motor.entrada();
+      // Se muestra como lo haría Python: True/False, 4.25, 5.0 ...
+      await this.motor.print(esFlotante(valor) || esLogico(valor) ? formatear(valor) : valor, { fuentes });
+    } else {
+      // input(), int(), float(), str() como instrucción suelta: se ejecutan y el resultado se descarta.
+      await this.evaluarFuncion(nodo);
+    }
+  }
+
+  /** Funciones integradas que devuelven un valor: input, int, float, str. */
+  async evaluarFuncion(nodo) {
+    const args = [];
+    for (const a of nodo.argumentos) {
+      // eslint-disable-next-line no-await-in-loop
+      args.push(await this.evaluar(a));
+    }
+    switch (nodo.nombre) {
+      case "input":
+        // input() SIEMPRE devuelve texto, como en Python. El mensaje opcional se le muestra a la persona.
+        return String(await this.motor.entrada(args.length ? formatear(args[0]) : undefined));
+      case "int":
+        return convertirAEntero(args[0], nodo.linea);
+      case "float":
+        return convertirADecimal(args[0], nodo.linea);
+      case "str":
+        return formatear(args[0]);
+      default:
+        return undefined;
     }
   }
 
@@ -153,7 +171,7 @@ export class Interpreter {
     const args = [];
     for (const arg of nodo.argumentos) {
       // eslint-disable-next-line no-await-in-loop
-      args.push(await this.evaluar(arg));
+      args.push(aJS(await this.evaluar(arg))); // los motores del mundo trabajan con números planos
     }
     return this.motor.metodo(nodo.objeto, nodo.metodo, args);
   }
@@ -161,6 +179,7 @@ export class Interpreter {
   async evaluar(nodo) {
     switch (nodo.tipo) {
       case "Numero":
+        return nodo.decimal ? new Flotante(nodo.valor) : nodo.valor;
       case "Texto":
       case "Booleano":
         return nodo.valor;
@@ -178,14 +197,10 @@ export class Interpreter {
         if (typeof v !== "boolean") throw Errores.operandoLogicoNoBooleano("not", nodo.linea);
         return !v;
       }
-      case "Negativo": {
-        const v = await this.evaluar(nodo.operando);
-        if (typeof v !== "number") throw Errores.accionNecesitaNumero("-", nodo.linea);
-        return -v;
-      }
+      case "Negativo":
+        return negar(await this.evaluar(nodo.operando), nodo.linea);
       case "LlamadaFuncion":
-        if (nodo.nombre === "entrada") return this.motor.entrada();
-        return undefined;
+        return this.evaluarFuncion(nodo);
       case "LlamadaMetodo":
         return this.llamarMetodo(nodo);
       default:
@@ -196,23 +211,9 @@ export class Interpreter {
   async evaluarComparacion(nodo) {
     const izquierda = await this.evaluar(nodo.izquierda);
     const derecha = await this.evaluar(nodo.derecha);
-    switch (nodo.operador) {
-      case "==":
-        return izquierda === derecha;
-      case "!=":
-        return izquierda !== derecha;
-      default: {
-        // <, >, <=, >=: solo entre dos números o dos textos.
-        const mismoTipo = typeof izquierda === typeof derecha && ["number", "string"].includes(typeof izquierda);
-        if (!mismoTipo) {
-          throw Errores.comparacionInvalida(nodo.operador, nombreDeTipo(izquierda), nombreDeTipo(derecha), nodo.linea);
-        }
-        if (nodo.operador === "<") return izquierda < derecha;
-        if (nodo.operador === ">") return izquierda > derecha;
-        if (nodo.operador === "<=") return izquierda <= derecha;
-        return izquierda >= derecha;
-      }
-    }
+    if (nodo.operador === "==") return iguales(izquierda, derecha);
+    if (nodo.operador === "!=") return !iguales(izquierda, derecha);
+    return ordenar(nodo.operador, izquierda, derecha, nodo.linea); // < > <= >=
   }
 
   async evaluarLogica(nodo) {
@@ -229,28 +230,7 @@ export class Interpreter {
   async evaluarOperacion(nodo) {
     const izquierda = await this.evaluar(nodo.izquierda);
     const derecha = await this.evaluar(nodo.derecha);
-    switch (nodo.operador) {
-      case "+":
-        return izquierda + derecha;
-      case "-":
-        return izquierda - derecha;
-      case "*":
-        return izquierda * derecha;
-      case "/":
-        if (derecha === 0) {
-          throw Errores.divisionEntreCero(nodo.linea);
-        }
-        // División entera si ambos operandos son enteros; decimal si no.
-        return Number.isInteger(izquierda) && Number.isInteger(derecha)
-          ? Math.trunc(izquierda / derecha)
-          : izquierda / derecha;
-      case "%":
-        if (derecha === 0) {
-          throw Errores.divisionEntreCero(nodo.linea);
-        }
-        return izquierda % derecha;
-      default:
-        return undefined;
-    }
+    // Misma semántica que Python (ver aritmetica.js): / siempre da decimal, // es división entera, etc.
+    return OPERACIONES[nodo.operador](izquierda, derecha, nodo.linea);
   }
 }

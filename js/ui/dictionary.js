@@ -51,11 +51,33 @@ export const CATALOGO = [
   },
   {
     id: "entrada",
-    firma: "entrada()",
+    firma: "input()",
     categoria: "Entrada",
     descripcion:
-      "Pausa el programa y pide un valor a quien está jugando. Devuelve ese valor, así que suele guardarse en una variable.",
+      'Pausa el programa y pide un dato a quien está jugando. Como en Python, input() SIEMPRE devuelve texto, aunque se escriba un número: si lo necesitas como número, conviértelo con int() o float(). Puede llevar un mensaje: input("¿Cuántos pisos?").',
     desbloqueaEn: "6.1",
+  },
+  {
+    id: "int",
+    firma: "int(valor)",
+    categoria: "Conversión",
+    descripcion:
+      'Convierte un valor en número entero: int("12") vale 12 y int(3.9) vale 3. Si el texto no parece un número entero (int("hola"), int("3.5")) da un ValueError. Lo típico: int(input()).',
+    desbloqueaEn: "6.3",
+  },
+  {
+    id: "float",
+    firma: "float(valor)",
+    categoria: "Conversión",
+    descripcion: 'Convierte un valor en número decimal: float("3.5") vale 3.5 y float(3) vale 3.0. Si el texto no parece un número, da un ValueError.',
+    desbloqueaEn: "14.4",
+  },
+  {
+    id: "str",
+    firma: "str(valor)",
+    categoria: "Conversión",
+    descripcion: 'Convierte un valor en texto: str(5) vale "5". Sirve para unir números con textos: "Total: " + str(5).',
+    desbloqueaEn: "16.4",
   },
   {
     id: "recoger",
@@ -74,17 +96,17 @@ export const CATALOGO = [
   },
   {
     id: "operadores",
-    firma: "+  -  *  /",
+    firma: "+  -  *  /  **",
     categoria: "Operadores",
     descripcion:
-      "Operaciones aritméticas. Primero se resuelven * y /, después + y -, igual que en matemáticas.",
+      "Operaciones aritméticas. Primero se resuelve ** (potencia), después * y /, y al final + y -, igual que en matemáticas. Ojo: / SIEMPRE da un decimal (10 / 2 vale 5.0).",
     desbloqueaEn: "12.2",
   },
   {
     id: "modulo",
-    firma: "a % b",
+    firma: "a // b   a % b",
     categoria: "Operadores",
-    descripcion: "Devuelve el residuo de dividir a entre b. Por ejemplo, 7 % 2 vale 1.",
+    descripcion: "a // b es la división entera (solo la parte entera: 17 // 4 vale 4). a % b devuelve el residuo (17 % 5 vale 2).",
     desbloqueaEn: "13.1",
   },
   {

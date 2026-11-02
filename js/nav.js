@@ -48,9 +48,20 @@ export async function renderizarNav(contenedorId = "nav", perfilDado = null) {
   `;
 
   const hamburguesa = nav.querySelector("#nav-hamburguesa");
-  hamburguesa.addEventListener("click", () => {
-    const abierto = nav.classList.toggle("nav-abierto");
+  const fijarMenu = (abierto) => {
+    nav.classList.toggle("nav-abierto", abierto);
     hamburguesa.setAttribute("aria-expanded", String(abierto));
+    hamburguesa.setAttribute("aria-label", abierto ? "Cerrar menú" : "Abrir menú");
+    hamburguesa.textContent = abierto ? "✕" : "☰";
+  };
+  hamburguesa.addEventListener("click", () => fijarMenu(!nav.classList.contains("nav-abierto")));
+  // Se cierra con Escape, al tocar fuera del menú (el fondo oscuro) o al elegir un enlace.
+  document.addEventListener("keydown", (e) => e.key === "Escape" && fijarMenu(false));
+  nav.addEventListener("click", (e) => {
+    if (e.target === nav || e.target.closest(".nav-enlaces a")) fijarMenu(false);
+  });
+  document.addEventListener("click", (e) => {
+    if (nav.classList.contains("nav-abierto") && !nav.contains(e.target)) fijarMenu(false);
   });
   nav.querySelector("#btn-cerrar-sesion").addEventListener("click", cerrarSesion);
 }

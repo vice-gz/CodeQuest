@@ -118,7 +118,9 @@ export class EscenarioBase {
     if (!this.canvas) return;
     const contenedor = this.canvas.parentElement;
     const ancho = contenedor.clientWidth;
-    const alto = altoPara(ancho);
+    if (ancho <= 0) return; // escenario oculto (otra pestaña): se reajusta al volver a «Jugar»
+    // En celulares horizontales (poco alto) el escenario no debe ocupar más que la pantalla.
+    const alto = Math.min(altoPara(ancho), Math.max(240, window.innerHeight * 0.8));
     const dpr = window.devicePixelRatio || 1;
     this.canvas.width = ancho * dpr;
     this.canvas.height = alto * dpr;

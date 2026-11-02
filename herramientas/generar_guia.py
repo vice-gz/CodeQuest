@@ -16,7 +16,7 @@ SIMBOLO = {"corazones": "♥", "diamantes": "♦", "treboles": "♣", "picas": "
 ROJO = {"corazones", "diamantes"}
 MUNDOS = {
     2: ("Memoria", "Centro de Recuperación (módulos de memoria y terminal, **sin robot**)",
-        "Variables, tipos de dato, operadores y entrada. Se ven chips que se iluminan al guardar un valor y cables que muestran de dónde viene cada dato."),
+        "Variables, tipos de dato, operadores, input() y conversiones de tipo (int, float, str). Se ven chips que se iluminan al guardar un valor y cables que muestran de dónde viene cada dato."),
     3: ("Lógica", "Sala de Estrategia (mesa de cartas)",
         "Decisiones con `if`, `elif`, `else`, comparadores y `and` / `or` / `not`. Al ejecutar las cartas se voltean y cada pregunta se juzga con ✓ VERDADERO o ✗ FALSO."),
     4: ("Automatización", "Complejo industrial (edificio de 5 pisos con elevador)",
@@ -208,7 +208,7 @@ def seccion_fase(nivel, fase, n):
     L.append("")
 
     if fase.get("entradasEstudiante"):
-        L.append(f"> ⌨️ Esta fase pide datos con `entrada()`: cuando la terminal pregunte, escribe **{', '.join(str(x) for x in fase['entradasEstudiante'])}**.")
+        L.append(f"> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **{', '.join(str(x) for x in fase['entradasEstudiante'])}**.")
         L.append("")
     if fase.get("pistas"):
         L.append("**Pistas del juego:** " + " · ".join(limpiar(p) for p in fase["pistas"]))

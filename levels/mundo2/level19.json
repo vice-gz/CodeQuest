@@ -54,17 +54,20 @@
       "id": "19.2",
       "tipo": "ESCRIBIR",
       "titulo": "El triple",
-      "enunciado": "Pide un número al sensor (escribe 9) y muestra su triple (27) con una variable llamada triple.",
+      "enunciado": "Pide un número al sensor (escribe 9), conviértelo con int() y muestra su triple (27) con una variable llamada triple.",
       "codigoInicial": "",
-      "solucionReferencia": "n = entrada()\ntriple = n * 3\nprint(triple)",
+      "solucionReferencia": "n = int(input())\ntriple = n * 3\nprint(triple)",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
-        "entrada"
+        "input",
+        "int",
+        "float",
+        "str"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
-        9
+        "9"
       ],
       "etiquetaEntrada": "¿Qué número envía el sensor?",
       "validacion": {
@@ -72,9 +75,13 @@
         "valorEsperado": "27",
         "variableRequerida": "triple"
       },
-      "retroalimentacion": "Entrada, variable y operador en un solo programa.",
+      "retroalimentacion": "input, int(), variable y operador en un solo programa.",
       "pistas": [
+        "n = int(input())",
         "triple = n * 3"
+      ],
+      "solucionesIncorrectas": [
+        "n = input()\ntriple = n * 3\nprint(triple)"
       ]
     },
     {
@@ -82,11 +89,14 @@
       "tipo": "LIBRE",
       "titulo": "Tu mejor programa",
       "enunciado": "Construye el programa que quieras con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 2.",
-      "codigoInicial": "# Combina variables, tipos, operadores y entrada\nnombre = \"Robot1\"\nprint(nombre)",
+      "codigoInicial": "# Combina variables, tipos, operadores, input() y conversiones\nnombre = \"Robot1\"\nprint(nombre)",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
-        "entrada"
+        "input",
+        "int",
+        "float",
+        "str"
       ],
       "metodosPermitidos": [],
       "validacion": {
@@ -94,7 +104,7 @@
       },
       "retroalimentacion": "¡Mundo 2 completado!",
       "pistas": [
-        "Prueba pedir datos con entrada() y calcular con ellos."
+        "Prueba pedir datos con int(input()) y calcular con ellos."
       ]
     }
   ]

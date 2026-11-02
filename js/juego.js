@@ -31,6 +31,15 @@ import { Dictionary } from "./ui/dictionary.js";
 import { Tour } from "./ui/tour.js";
 import { ModoDemo } from "./ui/demoMode.js";
 import { abrirGlosario, mostrarBienvenidaMundo } from "./ui/conceptos.js";
+import {
+  configurarPestanas,
+  seguirTeclado,
+  marcarEdicion,
+  configurarAvisoOrientacion,
+  configurarBarraSimbolos,
+  prepararEjecucion,
+  mostrarResultado,
+} from "./ui/movil.js";
 import { esRolAdmin } from "./util.js";
 
 import { SupabaseProgressRepository } from "./persistence/SupabaseProgressRepository.js";
@@ -108,6 +117,11 @@ const el = {
   dicContador: document.getElementById("dic-contador"),
   btnTour: document.getElementById("btn-tour"),
   btnConceptos: document.getElementById("btn-conceptos"),
+  panelMundo: document.querySelector(".panel-mundo"),
+  panelFeedback: document.querySelector(".panel-feedback"),
+  barraSimbolos: document.getElementById("barra-simbolos"),
+  avisoOrientacion: document.getElementById("aviso-orientacion"),
+  avisoOrientacionCerrar: document.getElementById("aviso-orientacion-cerrar"),
   btnMapa: document.getElementById("btn-mapa"),
   selectorCasos: document.getElementById("selector-casos"),
   tituloMundo: document.getElementById("titulo-mundo"),
@@ -128,7 +142,8 @@ const memoryPanel = new MemoryPanel(el.memoriaContenido);
 const statePanel = new StatePanel(el.estadoContenido);
 const phaseBar = new PhaseBar(el.barraFases);
 const diccionario = new Dictionary(el.diccionarioPanel, el.btnDiccionario, el.dicContador);
-const tour = new Tour();
+// El tour cambia de pestaña (Jugar / Aprende / Consola) cuando el elemento que explica está en otra.
+const tour = new Tour({ alNecesitarPestana: (pestana) => pestanas.seleccionar(pestana, { subir: false }) });
 
 let nivelActualId = 1;
 let nivelData = null;
@@ -170,6 +185,7 @@ async function irANivel(id) {
   renderizarEstrellas(el.estrellasNivel, estadoNivel.estrellas);
 
   await cargarFase(faseIndice);
+  pestanas.seleccionar("jugar", { subir: false }); // en celular cada nivel empieza en «Jugar»
   await renderSelectorNiveles();
   await actualizarContadorTotal();
   await actualizarDiccionario();
@@ -275,6 +291,7 @@ function configurarUIPorTipoFase() {
   const esPredecir = faseData.tipo === "PREDECIR";
   el.prediccionEnvoltura.classList.toggle("oculto", !esPredecir);
   el.btnEjecutar.classList.toggle("oculto", esPredecir);
+  el.barraSimbolos?.classList.toggle("oculto", esPredecir);
 
   if (esPredecir) {
     codeEditor.deshabilitar(true);
@@ -294,7 +311,10 @@ function configurarUIPorTipoFase() {
 const NOMBRE_CHIP = {
   asignacion: "variable = valor",
   print: "print()",
-  entrada: "entrada()",
+  input: "input()",
+  int: "int()",
+  float: "float()",
+  str: "str()",
   if: "if condición:",
   elif: "elif condición:",
   else: "else:",
@@ -421,6 +441,8 @@ async function ejecutarCodigo() {
   enEjecucion = true;
   el.btnEjecutar.disabled = true;
   codeEditor.limpiarMarcaError();
+  // En el celular: se oculta el teclado y la vista sube al escenario para ver la animación.
+  prepararEjecucion({ editor: codeEditor, panelEscenario: el.panelMundo });
 
   const codigo = codeEditor.obtenerCodigo();
   outputPanel.limpiar();
@@ -448,11 +470,7 @@ async function ejecutarCodigo() {
         onAsignacion: (nombre, valor) => memoryPanel.actualizar(nombre, valor),
         onEstado: () => actualizarPanelEstado(),
         // La ejecución se pausa aquí hasta que el estudiante escribe un valor.
-        pedirEntrada: () =>
-          outputPanel.pedirEntrada({
-            etiqueta: faseData.etiquetaEntrada,
-            tipo: faseData.entradaTipo || "libre",
-          }),
+        pedirEntrada: (opciones) => outputPanel.pedirEntrada({ etiqueta: opciones?.etiqueta || faseData.etiquetaEntrada }),
       },
     });
     actualizarPanelEstado();
@@ -465,6 +483,8 @@ async function ejecutarCodigo() {
   } finally {
     enEjecucion = false;
     el.btnEjecutar.disabled = false;
+    pestanas.marcarNuevo("consola"); // punto en «Consola» si la salida quedó en otra pestaña
+    mostrarResultado(el.panelFeedback);
   }
 }
 
@@ -691,6 +711,41 @@ async function mostrarPista() {
 // ---------- Eventos ----------
 
 el.btnEjecutar.addEventListener("click", ejecutarCodigo);
+
+// Atajo Ctrl+Enter / Cmd+Enter dentro del editor: no hace nada si el botón no está disponible.
+codeEditor.alAtajoEjecutar = () => {
+  if (el.btnEjecutar.classList.contains("oculto") || el.btnEjecutar.disabled) return;
+  ejecutarCodigo();
+};
+const etiquetaAtajo = document.getElementById("atajo-ejecutar");
+if (etiquetaAtajo && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "")) etiquetaAtajo.textContent = "⌘+Enter";
+
+// La barra de acciones del código se queda pegada justo debajo de las barras fijas
+// (menú + niveles); su altura cambia en pantallas pequeñas, por eso se mide.
+function ajustarOffsetSticky() {
+  // Solo cuentan las barras que de verdad están pegadas (en celular ya no lo están).
+  const alto = (sel) => {
+    const e = document.querySelector(sel);
+    return e && getComputedStyle(e).position === "sticky" ? e.offsetHeight : 0;
+  };
+  document.documentElement.style.setProperty("--offset-sticky", `${alto(".nav-principal") + alto(".barra-superior")}px`);
+}
+ajustarOffsetSticky();
+window.addEventListener("resize", ajustarOffsetSticky);
+
+// Interfaz para pantallas chicas y táctiles (acordeones, símbolos, aviso de giro...).
+// Pestañas Jugar / Aprende / Consola (celular y tablet vertical). El canvas se reajusta al volver a Jugar.
+const pestanas = configurarPestanas({
+  contenedor: document.getElementById("contenedor-nivel"),
+  barra: document.getElementById("pestanas-movil"),
+  alCambiar: (pestana, cambio) => {
+    if (cambio && pestana === "jugar") requestAnimationFrame(() => escenario?.ajustarTamano());
+  },
+});
+seguirTeclado();
+marcarEdicion(codeEditor.textarea);
+configurarAvisoOrientacion(el.avisoOrientacion, el.avisoOrientacionCerrar);
+configurarBarraSimbolos(el.barraSimbolos, codeEditor);
 el.btnReiniciar.addEventListener("click", reiniciarFase);
 el.btnPista.addEventListener("click", mostrarPista);
 

@@ -29,7 +29,7 @@ const catalogo = construirCatalogo(niveles.map((n) => n.nivel));
 const nivelPorId = Object.fromEntries(niveles.map((n) => [n.nivel.id, n.nivel]));
 
 const TIPOS_FASE = new Set(["EXPLORAR", "MODIFICAR", "PREDECIR", "ESCRIBIR", "RESOLVER", "DEBUG", "LIBRE"]);
-const PERMISOS = new Set(["print", "entrada", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"]);
+const PERMISOS = new Set(["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"]);
 const TIPO_POR_MUNDO = { 1: "laboratorio", 2: "datos", 3: "cartas", 4: "elevador" };
 
 let fallos = 0;
@@ -109,6 +109,14 @@ for (const mundo of [3, 4]) {
   });
 }
 
+// ---------- Corrección pedagógica: "sumar textos" explica la concatenación ----------
+{
+  const f = nivelPorId[11].fases.find((x) => x.id === "11.2");
+  const ok = /concatenar/i.test(f.enunciado) && /unir|une/i.test(f.enunciado) && f.respuestaCorrecta === "b" && f.opciones.find((o) => o.id === "b").texto === "53" &&
+    /¡Cuidado!/.test(f.retroalimentacion) && /"5" \+ 3/.test(f.retroalimentacion) && /error/.test(f.retroalimentacion);
+  if (!ok) falla("11.2 debe explicar la concatenación, mantener la respuesta 53 y avisar del error al mezclar texto con número");
+}
+
 // ---------- Cada fase con su solución de referencia ----------
 for (const { nivel } of niveles) {
   for (const fase of nivel.fases) {
@@ -162,7 +170,7 @@ for (const { nivel } of niveles) {
     ...nivel.fases[0],
     entradasEstudiante: ["42"],
     codigoInicial: [
-      "x = entrada()",
+      "x = int(input())",
       "robot1.avanzar(9)",
       'robot1.girar("sur")',
       "robot1.avanzar(9)",
@@ -178,7 +186,7 @@ for (const { nivel } of niveles) {
     const { visual, escenario } = await correr(nivel, fase, fase.codigoInicial);
     const [x, y] = escenario.robot1.posicion();
     if (x !== 9 || y !== 9) throw new Error(`Robot1 debía terminar en (9,9) y está en (${x},${y})`);
-    if (!visual.salidas.some((s) => String(s.valor) === "42")) throw new Error("falta la salida de entrada()");
+    if (!visual.salidas.some((s) => String(s.valor) === "42")) throw new Error("falta la salida de input()");
     console.log("✓ Laboratorio Libre: cuadrícula 10×10 y todas las instrucciones funcionan");
   } catch (e) {
     falla(`Laboratorio Libre: ${e.codigo || ""} ${e.mensaje || e.message}`);

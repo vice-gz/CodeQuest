@@ -22,6 +22,12 @@ export class CodeEditor {
   }
 
   manejarTecla(e) {
+    // Ctrl+Enter (o Cmd+Enter en Mac) ejecuta el programa sin soltar el teclado.
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.alAtajoEjecutar?.();
+      return;
+    }
     if (e.key === "Escape") {
       this.tabLiberado = true; // el siguiente Tab mueve el foco fuera del editor
       return;
@@ -32,13 +38,17 @@ export class CodeEditor {
       return;
     }
     e.preventDefault();
+    this.aplicarTab(e.shiftKey);
+  }
 
+  /** Tab / Shift+Tab: sangría de 4 espacios. También la usan los botones ⇥ ⇤ del celular. */
+  aplicarTab(shift = false) {
     const ta = this.textarea;
     const r = calcularIndentacion({
       valor: ta.value,
       inicio: ta.selectionStart,
       fin: ta.selectionEnd,
-      shift: e.shiftKey,
+      shift,
     });
     if (r.texto === ta.value.slice(r.desde, r.hasta)) return; // nada que cambiar (Shift+Tab sin sangría)
 
@@ -53,6 +63,30 @@ export class CodeEditor {
     if (!hecho) ta.setRangeText(r.texto, r.desde, r.hasta, "end");
     ta.setSelectionRange(r.selInicio, r.selFin);
     this.actualizarNumeros();
+  }
+
+  /**
+   * Inserta texto donde está el cursor (barra de símbolos del celular, donde escribir
+   * ":" o comillas cuesta). `atras` deja el cursor entre los símbolos: "()" -> (|).
+   */
+  insertarTexto(texto, atras = 0) {
+    const ta = this.textarea;
+    if (ta.disabled) return;
+    ta.focus();
+    let hecho = false;
+    try {
+      hecho = document.execCommand("insertText", false, texto);
+    } catch {
+      hecho = false;
+    }
+    if (!hecho) ta.setRangeText(texto, ta.selectionStart, ta.selectionEnd, "end");
+    if (atras) ta.setSelectionRange(ta.selectionEnd - atras, ta.selectionEnd - atras);
+    this.actualizarNumeros();
+  }
+
+  /** Quita el foco (en el celular oculta el teclado virtual). */
+  blur() {
+    this.textarea.blur();
   }
 
   obtenerCodigo() {

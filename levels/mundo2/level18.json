@@ -2,7 +2,7 @@
   "id": 18,
   "mundo": 2,
   "nombre": "El puente de datos",
-  "concepto": "variables, operadores y entrada juntos",
+  "concepto": "variables, operadores, input y conversiones juntos",
   "concepto_evaluado": "integracion_libre",
   "narrativa": "Para cruzar el puente de datos hay que combinar todo lo recuperado hasta ahora.",
   "escenario": {
@@ -44,17 +44,20 @@
       "id": "18.2",
       "tipo": "RESOLVER",
       "titulo": "Cruza con el sensor",
-      "enunciado": "Pide un valor al sensor (escribe 10), súmale 15 y muestra el resultado (25) usando una variable llamada resultado.",
+      "enunciado": "Pide un valor al sensor (escribe 10), conviértelo con int(), súmale 15 y muestra el resultado (25) usando una variable llamada resultado.",
       "codigoInicial": "",
-      "solucionReferencia": "dato = entrada()\nresultado = dato + 15\nprint(resultado)",
+      "solucionReferencia": "dato = int(input())\nresultado = dato + 15\nprint(resultado)",
       "instruccionesPermitidas": [
         "asignacion",
         "print",
-        "entrada"
+        "input",
+        "int",
+        "float",
+        "str"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
-        10
+        "10"
       ],
       "etiquetaEntrada": "¿Qué valor envía el sensor?",
       "validacion": {
@@ -62,9 +65,9 @@
         "valorEsperado": "25",
         "variableRequerida": "resultado"
       },
-      "retroalimentacion": "Combinaste entrada, variables y cálculo.",
+      "retroalimentacion": "Combinaste input, int(), variables y cálculo.",
       "pistas": [
-        "Guarda la entrada en una variable antes de sumar."
+        "Convierte con int(input()) antes de sumar."
       ]
     },
     {
@@ -76,13 +79,16 @@
       "instruccionesPermitidas": [
         "asignacion",
         "print",
-        "entrada"
+        "input",
+        "int",
+        "float",
+        "str"
       ],
       "metodosPermitidos": [],
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Ya dominas variables, tipos, operadores y entrada.",
+      "retroalimentacion": "Ya dominas variables, tipos, operadores, input() y las conversiones.",
       "pistas": [
         "Prueba restar, multiplicar y reasignar."
       ]

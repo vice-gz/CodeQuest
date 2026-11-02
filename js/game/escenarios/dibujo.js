@@ -6,7 +6,8 @@ export const FUENTE = "'Space Grotesk', system-ui, sans-serif";
 export const FUENTE_MONO = "'JetBrains Mono', ui-monospace, monospace";
 
 export function rr(ctx, x, y, w, h, r) {
-  const radio = Math.min(r, w / 2, h / 2);
+  // Si el lienzo aún no tiene tamaño (w o h ≤ 0) el radio no puede ser negativo: arcTo lanzaría un error.
+  const radio = Math.max(0, Math.min(r, w / 2, h / 2));
   ctx.beginPath();
   ctx.moveTo(x + radio, y);
   ctx.arcTo(x + w, y, x + w, y + h, radio);

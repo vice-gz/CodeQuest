@@ -38,7 +38,7 @@
       "id": "16.2",
       "tipo": "ESCRIBIR",
       "titulo": "El triángulo",
-      "enunciado": "Guarda 12 en base y 5 en altura. Calcula area = base * altura / 2 y muéstrala (30).",
+      "enunciado": "Guarda 12 en base y 5 en altura. Calcula area = base * altura / 2 y muéstrala (recuerda que / siempre da un decimal: verás 30.0).",
       "codigoInicial": "",
       "solucionReferencia": "base = 12\naltura = 5\narea = base * altura / 2\nprint(area)",
       "instruccionesPermitidas": [
@@ -48,7 +48,7 @@
       "metodosPermitidos": [],
       "validacion": {
         "tipo": "output_con_variable",
-        "valorEsperado": "30",
+        "valorEsperado": "30.0",
         "variableRequerida": "area",
         "requiere": {
           "operadores": [
@@ -57,11 +57,11 @@
           ]
         }
       },
-      "retroalimentacion": "Una expresión puede mezclar varios operadores.",
+      "retroalimentacion": "Una expresión puede mezclar varios operadores. Como / da decimal, el resultado es 30.0.",
       "pistas": [
         "base * altura primero, luego / 2."
       ],
-      "mensajeNoLogrado": "area debe ser 30 y calcularse con * y /."
+      "mensajeNoLogrado": "area debe ser 30.0 y calcularse con * y /."
     },
     {
       "id": "16.3",
@@ -97,6 +97,44 @@
       "retroalimentacion": "Combinaste textos y números en un mismo programa.",
       "pistas": [
         "Dos variables y dos print."
+      ]
+    },
+    {
+      "id": "16.4",
+      "tipo": "ESCRIBIR",
+      "titulo": "Etiqueta con número",
+      "enunciado": "Para unir un texto con un número hay que convertir el número en texto con str(); si no, Python da un error. Guarda 12 en modulos y muestra exactamente: Modulos: 12 (uniendo el texto \"Modulos: \" con modulos).",
+      "codigoInicial": "",
+      "solucionReferencia": "modulos = 12\nprint(\"Modulos: \" + str(modulos))",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_lineas",
+        "valores": [
+          "Modulos: 12"
+        ],
+        "requiere": {
+          "construcciones": [
+            "str"
+          ],
+          "variable": "modulos"
+        }
+      },
+      "retroalimentacion": "str(12) es el texto \"12\", y así se puede unir con otro texto. \"Modulos: \" + 12 sería un error.",
+      "pistas": [
+        "print(\"Modulos: \" + str(modulos))"
+      ],
+      "mensajeNoLogrado": "Debe mostrar Modulos: 12 usando str().",
+      "solucionesIncorrectas": [
+        "modulos = 12\nprint(\"Modulos: 12\")",
+        "modulos = 12\nprint(\"Modulos: \" + modulos)"
       ]
     }
   ]

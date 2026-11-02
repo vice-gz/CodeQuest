@@ -318,7 +318,12 @@ export class Parser {
   // termino := unario (("*" | "/" | "%") unario)*
   parsearTermino() {
     let nodo = this.parsearUnario();
-    while (this.actual().tipo === TipoToken.MULT || this.actual().tipo === TipoToken.DIV || this.actual().tipo === TipoToken.MODULO) {
+    while (
+      this.actual().tipo === TipoToken.MULT ||
+      this.actual().tipo === TipoToken.DIV ||
+      this.actual().tipo === TipoToken.DIV_ENTERA ||
+      this.actual().tipo === TipoToken.MODULO
+    ) {
       const operadorTok = this.avanzar();
       const derecha = this.parsearUnario();
       nodo = { tipo: "OperacionBinaria", operador: operadorTok.valor, izquierda: nodo, derecha, linea: operadorTok.linea };
@@ -331,7 +336,17 @@ export class Parser {
       const op = this.avanzar();
       return { tipo: "Negativo", operando: this.parsearUnario(), linea: op.linea };
     }
-    return this.parsearFactor();
+    return this.parsearPotencia();
+  }
+
+  // potencia := factor ("**" unario)?   — como en Python: asociativa a la derecha y
+  // más fuerte que el signo menos de la izquierda (-2 ** 2 es -4), pero el exponente sí puede llevar signo (2 ** -1).
+  parsearPotencia() {
+    const base = this.parsearFactor();
+    if (this.actual().tipo !== TipoToken.POTENCIA) return base;
+    const op = this.avanzar();
+    if (this.finDeSentencia()) throw Errores.esperabaValor(op.linea);
+    return { tipo: "OperacionBinaria", operador: "**", izquierda: base, derecha: this.parsearUnario(), linea: op.linea };
   }
 
   // factor := NUMERO | TEXTO | IDENTIFICADOR | "(" expresion ")"
@@ -340,7 +355,7 @@ export class Parser {
 
     if (token.tipo === TipoToken.NUMERO) {
       this.avanzar();
-      return { tipo: "Numero", valor: token.valor, linea: token.linea };
+      return { tipo: "Numero", valor: token.valor, decimal: token.decimal === true, linea: token.linea };
     }
 
     if (token.tipo === TipoToken.TEXTO) {

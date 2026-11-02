@@ -5,6 +5,7 @@
 // de la base de datos), por eso se puede insertar como HTML.
 
 import { paletaDe } from "../game/paletas.js";
+import { CONCEPTOS, conceptosHasta, conceptosDelMundo, buscarConceptos } from "./glosarioDatos.js";
 
 // ---------------------------------------------------------------- Ilustraciones (SVG)
 const SVG_BASE = 'viewBox="0 0 240 110" role="img" xmlns="http://www.w3.org/2000/svg"';
@@ -60,50 +61,9 @@ const VISUALES = {
 };
 
 // ---------------------------------------------------------------- Glosario
-export const GLOSARIO = [
-  {
-    id: "variable",
-    titulo: "Variable",
-    resumen: "Una variable es una caja con nombre donde el programa guarda un valor para usarlo después. El signo = guarda el valor; el valor puede cambiar.",
-    ejemplo: 'edad = 15\nnombre = "Ana"\nedad = 16   # ahora vale 16',
-    visual: "variable",
-  },
-  {
-    id: "algoritmo",
-    titulo: "Algoritmo",
-    resumen: "Un algoritmo es una receta: una lista de pasos, en orden, que resuelve un problema. Un programa es un algoritmo escrito en un lenguaje que la computadora entiende.",
-    ejemplo: "robot1.avanzar(3)\nrobot1.recoger()\nrobot1.girar(\"norte\")",
-    visual: "algoritmo",
-  },
-  {
-    id: "operadores",
-    titulo: "Operadores",
-    resumen: "Los operadores calculan con valores: + suma, - resta, * multiplica, / divide y % da lo que sobra de una división.",
-    ejemplo: "total = 17 / 4   # 4\nsobra = 17 % 5   # 2",
-    visual: "operadores",
-  },
-  {
-    id: "condicional",
-    titulo: "Condicional",
-    resumen: "Un condicional es una pregunta con respuesta True o False que decide qué camino sigue el programa. if pregunta, elif añade otra pregunta y else es lo que se hace si ninguna se cumplió.",
-    ejemplo: 'if total > 21:\n    print("Bust")\nelif total == 21:\n    print("Blackjack")\nelse:\n    print("Sigue")',
-    visual: "condicional",
-  },
-  {
-    id: "comparadores",
-    titulo: "Comparadores y lógica",
-    resumen: "Para hacer preguntas se comparan valores: == (igual), != (distinto), <, >, <=, >=. Con and, or y not se combinan varias preguntas. OJO: = guarda un valor; == pregunta.",
-    ejemplo: 'if color1 == "roja" and total < 21:\n    print("Apuesta")',
-    visual: "comparadores",
-  },
-  {
-    id: "ciclo",
-    titulo: "Ciclo",
-    resumen: "Un ciclo repite instrucciones. while repite MIENTRAS una condición sea verdadera; for repite una cantidad conocida de veces con range(). Cada vuelta es una repetición.",
-    ejemplo: "while piso < 5:\n    elevador.subir(1)\n    piso = piso + 1\n\nfor i in range(3):\n    elevador.subir(1)",
-    visual: "ciclo",
-  },
-];
+// El contenido está en glosarioDatos.js. Aquí vive la pantalla: buscador, filtro
+// por mundo y tarjetas con definición + analogía + ejemplo.
+export { GLOSARIO, CONCEPTOS, conceptosHasta, conceptosDelMundo, buscarConceptos } from "./glosarioDatos.js";
 
 // ---------------------------------------------------------------- Bienvenidas por mundo
 export const BIENVENIDAS = {
@@ -169,26 +129,78 @@ function bloqueCodigo(codigo) {
   return `<pre class="teoria-codigo"><code>${esc(codigo)}</code></pre>`;
 }
 
-/** Glosario de conceptos con ejemplos visuales (botón "Conceptos"). */
+function tarjetaConcepto(c, { abierta, mundoActual }) {
+  const nuevo = c.mundo === mundoActual;
+  return `<details class="teoria-item concepto-item"${abierta ? " open" : ""}>
+    <summary><span>${esc(c.titulo)}</span><span class="concepto-etiqueta-mundo${nuevo ? " nuevo" : ""}">${nuevo ? "Nuevo · " : ""}Mundo ${c.mundo}</span></summary>
+    <div class="teoria-cuerpo">
+      ${c.visual && VISUALES[c.visual] ? `<div class="teoria-visual">${VISUALES[c.visual]}</div>` : ""}
+      <p class="concepto-def"><strong>Definición.</strong> ${esc(c.definicion)}</p>
+      <p class="concepto-analogia"><span aria-hidden="true">💡</span> <strong>Analogía.</strong> ${esc(c.analogia)}</p>
+      ${bloqueCodigo(c.ejemplo)}
+    </div></details>`;
+}
+
+/**
+ * Pinta el glosario dentro de `raiz`: buscador + filtro por mundo + tarjetas.
+ * Solo muestra los conceptos de `mundoActual` y de los mundos anteriores.
+ */
+export function montarGlosario(raiz, mundoActual = 1) {
+  const mundo = Math.min(Math.max(Number(mundoActual) || 1, 1), 6);
+  raiz.innerHTML = `
+    <div class="glosario-barra">
+      <label class="glosario-buscador">
+        <span class="solo-lectores">Buscar un concepto</span>
+        <input type="search" class="campo" placeholder="Buscar: variable, if, ciclo…" autocomplete="off" data-buscar />
+      </label>
+      <div class="glosario-filtros" role="group" aria-label="Qué conceptos mostrar">
+        <button type="button" class="caso-boton activo" data-vista="hasta" aria-pressed="true">Todo hasta el Mundo ${mundo}</button>
+        <button type="button" class="caso-boton" data-vista="solo" aria-pressed="false">Solo el Mundo ${mundo}</button>
+      </div>
+    </div>
+    <p class="texto-vacio" data-conteo role="status"></p>
+    <div class="teoria-lista" data-lista></div>`;
+  const entrada = raiz.querySelector("[data-buscar]");
+  const lista = raiz.querySelector("[data-lista]");
+  const conteo = raiz.querySelector("[data-conteo]");
+  let vista = "hasta";
+
+  const pintar = () => {
+    const base = vista === "solo" ? conceptosDelMundo(mundo) : conceptosHasta(mundo);
+    const texto = entrada.value;
+    const visibles = buscarConceptos(base, texto);
+    const buscando = texto.trim() !== "";
+    lista.innerHTML = visibles.map((c, i) => tarjetaConcepto(c, { abierta: buscando || (vista === "solo" ? i === 0 : c.mundo === mundo && i === base.findIndex((x) => x.mundo === mundo)), mundoActual: mundo })).join("");
+    conteo.textContent = visibles.length
+      ? `${visibles.length} concepto${visibles.length === 1 ? "" : "s"}${buscando ? " encontrado" + (visibles.length === 1 ? "" : "s") : ""}.`
+      : `No encontramos «${texto.trim()}» entre los conceptos de los mundos que llevas. Prueba con otra palabra.`;
+  };
+  entrada.addEventListener("input", pintar);
+  raiz.querySelectorAll("[data-vista]").forEach((b) =>
+    b.addEventListener("click", () => {
+      vista = b.dataset.vista;
+      raiz.querySelectorAll("[data-vista]").forEach((x) => {
+        x.classList.toggle("activo", x === b);
+        x.setAttribute("aria-pressed", String(x === b));
+      });
+      pintar();
+    })
+  );
+  pintar();
+  return { entrada, pintar };
+}
+
+/** Glosario en ventana (botón "Conceptos" del juego y del mapa). */
 export function abrirGlosario(mundoActual = 1) {
-  const { caja, cerrar } = crearModal("modal-ancho");
+  const { caja, cerrar } = crearModal("modal-ancho modal-glosario");
   caja.style.setProperty("--teoria-acento", paletaDe(mundoActual).acento);
   caja.innerHTML = `
     <div class="teoria-encabezado"><h2>Conceptos de programación</h2>
       <button type="button" class="boton boton-secundario boton-chico" data-cerrar>Cerrar</button></div>
-    <div class="teoria-lista">
-      ${GLOSARIO.map(
-        (g, i) => `<details class="teoria-item"${i === 0 ? " open" : ""}>
-          <summary>${esc(g.titulo)}</summary>
-          <div class="teoria-cuerpo">
-            <div class="teoria-visual">${VISUALES[g.visual]}</div>
-            <p>${esc(g.resumen)}</p>
-            ${bloqueCodigo(g.ejemplo)}
-          </div></details>`
-      ).join("")}
-    </div>`;
+    <div data-glosario></div>`;
+  montarGlosario(caja.querySelector("[data-glosario]"), mundoActual);
   caja.querySelector("[data-cerrar]").addEventListener("click", cerrar);
-  caja.querySelector("[data-cerrar]").focus();
+  caja.querySelector("[data-buscar]").focus();
 }
 
 const claveVista = (usuarioId, mundo) => `codequest:teoria:${usuarioId || "anon"}:${mundo}`;

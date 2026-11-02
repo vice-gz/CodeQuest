@@ -135,10 +135,10 @@ export class EscenarioCartas extends EscenarioBase {
         await escenario.esperar(420);
       },
 
-      async entrada() {
+      async entrada(prompt) {
         if (typeof callbacks.pedirEntrada !== "function") throw Errores.entradaNoDisponible();
         callbacks.onEntradaPendiente?.();
-        const valor = await callbacks.pedirEntrada();
+        const valor = await callbacks.pedirEntrada({ etiqueta: prompt });
         callbacks.onSalida?.({ tipo: "ENTRADA", valor });
         return valor;
       },

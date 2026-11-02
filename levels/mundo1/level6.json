@@ -2,25 +2,26 @@
   "id": 6,
   "mundo": 1,
   "nombre": "La terminal",
-  "concepto": "entrada(), print()",
+  "concepto": "input(), int(), print()",
   "concepto_evaluado": "entrada_y_salida",
   "narrativa": "La instalación tiene una terminal. Ahora los datos no los escribe el programa: los escribes tú.",
   "ensena": [
-    "entrada()"
+    "input()",
+    "int()"
   ],
   "fases": [
     {
       "id": "6.1",
       "tipo": "EXPLORAR",
       "titulo": "La terminal te pregunta",
-      "enunciado": "Instrucción nueva: entrada() pausa el programa y te pide un valor. Ejecuta, escribe lo que quieras en el campo que aparece y observa el panel de Salida.",
-      "codigoInicial": "entrada()",
+      "enunciado": "Instrucción nueva: input() pausa el programa y te pide un valor. Ejecuta, escribe lo que quieras en el campo que aparece y observa el panel de Salida.",
+      "codigoInicial": "input()",
       "instruccionesPermitidas": [
-        "entrada"
+        "input"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
-        7
+        "7"
       ],
       "etiquetaEntrada": "Escribe cualquier valor para probar la terminal",
       "validacion": {
@@ -35,26 +36,26 @@
       "id": "6.2",
       "tipo": "ESCRIBIR",
       "titulo": "Usa lo que escribes",
-      "enunciado": "entrada() DEVUELVE un valor, así que puedes ponerlo justo donde harías falta un dato: dentro de print(). Escribe un programa que muestre lo que teclees. Escribe 7 cuando se te pida.",
+      "enunciado": "input() DEVUELVE un valor, así que puedes ponerlo justo donde harías falta un dato: dentro de print(). Escribe un programa que muestre lo que teclees. Escribe 7 cuando se te pida.",
       "codigoInicial": "",
-      "solucionReferencia": "print(entrada())",
+      "solucionReferencia": "print(input())",
       "instruccionesPermitidas": [
-        "entrada",
+        "input",
         "print"
       ],
       "metodosPermitidos": [],
       "entradasEstudiante": [
-        7
+        "7"
       ],
       "etiquetaEntrada": "La terminal pregunta: ¿qué valor envías?",
       "validacion": {
         "tipo": "output",
         "valorEsperado": "7"
       },
-      "retroalimentacion": "entrada() se evaluó primero y su resultado pasó a print(). El valor se usó y se perdió: guardarlo vendrá después.",
+      "retroalimentacion": "input() se evaluó primero y su resultado pasó a print(). El valor se usó y se perdió: guardarlo vendrá después.",
       "pistas": [
         "Puedes escribir una instrucción dentro de otra.",
-        "print(entrada()) muestra lo que teclees."
+        "print(input()) muestra lo que teclees."
       ],
       "mensajeNoLogrado": "Debes mostrar con print() el valor que escribes en la terminal. Escribe 7 cuando se te pida."
     },
@@ -62,21 +63,21 @@
       "id": "6.3",
       "tipo": "RESOLVER",
       "titulo": "Tú marcas el rumbo",
-      "enunciado": "Ahora la terminal SOLO acepta números: si escribes texto, te lo dirá. Haz que Robot1 avance las casillas que teclees, luego gire al sur y avance 1, para llegar a (3,1). Escribe 3 cuando se te pida.",
+      "enunciado": "En Python, input() SIEMPRE lee texto, incluso si escribes un número. Para contar casillas necesitas un número entero: conviértelo con int(input()). Haz que Robot1 avance las casillas que teclees, luego gire al sur y avance 1, para llegar a (3,1). Escribe 3 cuando se te pida.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(entrada())\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "solucionReferencia": "robot1.avanzar(int(input()))\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
       "instruccionesPermitidas": [
-        "entrada"
+        "input",
+        "int"
       ],
       "metodosPermitidos": [
         "avanzar",
         "girar"
       ],
       "entradasEstudiante": [
-        3
+        "3"
       ],
       "etiquetaEntrada": "¿Cuántas casillas avanza Robot1 al este?",
-      "entradaTipo": "numero",
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
@@ -84,12 +85,15 @@
           1
         ]
       },
-      "retroalimentacion": "Un valor que tú escribiste controló el movimiento de Robot1, sin estar en el código.",
+      "retroalimentacion": "Un valor que tú escribiste (convertido con int()) controló el movimiento de Robot1, sin estar en el código.",
       "pistas": [
-        "Puedes poner entrada() como argumento de avanzar().",
+        "Puedes poner int(input()) como argumento de avanzar().",
         "Después gira al sur y avanza 1."
       ],
-      "mensajeNoLogrado": "Robot1 debe terminar en (3,1) usando el valor que escribes en la terminal."
+      "mensajeNoLogrado": "Robot1 debe terminar en (3,1) usando el valor que escribes en la terminal.",
+      "solucionesIncorrectas": [
+        "robot1.avanzar(input())\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)"
+      ]
     }
   ],
   "escenario": {

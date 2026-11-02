@@ -16,7 +16,7 @@ export const MUNDOS_INFO = [
     nombre: "Memoria",
     lugar: "Centro de Recuperación de datos",
     resumen: "Robot1 perdió la memoria. Recupera módulos guardando datos en variables y calculando con ellos.",
-    aprenderas: ["Variables y tipos de dato", "Operadores + - * / %", "Entrada con entrada()"],
+    aprenderas: ["Variables y tipos de dato", "Operadores + - * / // % **", "input() y conversiones int / float / str"],
   },
   {
     id: 3,

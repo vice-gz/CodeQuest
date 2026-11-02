@@ -12,7 +12,7 @@ import { ejecutarPrograma } from "./js/game/evaluacion.js";
 import { variablesDeMano } from "./js/game/escenarios/cartas.js";
 import { evaluarValidacion } from "./js/game/validaciones.js";
 
-const TODO = ["print", "entrada", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"];
+const TODO = ["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"];
 const fase = (extra = {}) => ({ instruccionesPermitidas: TODO, metodosPermitidos: [], ...extra });
 
 function parsear(codigo) {
@@ -261,6 +261,106 @@ await prueba("Elevador: la energía baja 1% por piso y se agota con RUN_012", as
   assert.equal(r.escenario.energia, 94);
   assert.equal(r.escenario.snapshot().energia, 94);
   await lanza("for i in range(60):\n    elevador.subir(1)\n    elevador.bajar(1)", "RUN_012", { tipo: "elevador", fasePermisos: fase(ELEV) });
+});
+
+console.log("Texto y números");
+await prueba("sumar textos los une (concatenar); texto + número da el TypeError de Python con la solución", async () => {
+  assert.deepEqual((await correr('a = "5"\nb = "3"\nprint(a + b)\nprint("Rob" + "ot1")')).lineas, ["53", "Robot1"]);
+  assert.deepEqual((await correr("print(5 + 3)")).lineas, ["8"]);
+  // El validador lo detecta ANTES de ejecutar, con el mensaje pedido
+  const e = await lanza('print("5" + 3)', "RUN_015");
+  assert.equal(e.mensaje, 'TypeError: No puedes sumar un texto ("5") con un número (3) directamente. Usa int("5") o str(3)');
+  assert.ok(e.educativo && e.sugerencia);
+  const e2 = await lanza('x = 3\nprint(x + "5")', "RUN_015");
+  assert.match(e2.mensaje, /un número \(x\) con un texto \("5"\)/);
+  // …y si el tipo solo se conoce al ejecutar, el intérprete lanza el mismo error con los valores reales
+  const e3 = await lanza('edad = "15"\nif True:\n    edad = edad\nprint(edad + 1)', "RUN_015");
+  assert.match(e3.mensaje, /Usa int\(/);
+});
+await prueba("restar, multiplicar, dividir o sacar residuo con texto también da error", async () => {
+  await lanza('print("a" * 2)', "RUN_016");
+  await lanza('print("10" - 4)', "RUN_016");
+  await lanza('print("10" / 2)', "RUN_016");
+  await lanza('print(7 % "2")', "RUN_016");
+  await lanza("print(True + 1)", "RUN_015"); // más estricto que Python (allí True + 1 es 2)
+});
+
+console.log("Python 3: input(), conversiones y división");
+await prueba("input() devuelve SIEMPRE texto (como en Python); entrada() ya no existe", async () => {
+  assert.deepEqual((await correr("n = input()\nprint(n + n)", { entradas: ["12"] })).lineas, ["1212"]);
+  assert.deepEqual((await correr("n = int(input())\nprint(n + n)", { entradas: ["12"] })).lineas, ["24"]);
+  const e = await lanza("x = entrada()", "SEM_003");
+  assert.match(e.sugerencia, /input\(\)/);
+});
+await prueba("input() sumado a un número se rechaza ANTES de ejecutar y explica int(input())", async () => {
+  const e = await lanza("print(input() + 5)", "SEM_011", { entradas: ["3"] });
+  assert.match(e.sugerencia, /int\(input\(\)\) \+ 5/);
+  const e2 = await lanza("n = input()\nprint(n * 2)", "SEM_011", { entradas: ["3"] });
+  assert.match(e2.sugerencia, /int\(n\) \* 2/);
+  await lanza("n = input()\nprint(n - 1)", "SEM_011", { entradas: ["3"] });
+  // una vez convertida la variable ya se puede operar
+  assert.deepEqual((await correr("n = input()\nn = int(n)\nprint(n + 1)", { entradas: ["3"] })).lineas, ["4"]);
+  // texto con texto sí se puede
+  assert.deepEqual((await correr('n = input()\nprint(n + "!")', { entradas: ["hola"] })).lineas, ["hola!"]);
+});
+await prueba("input() acepta un mensaje opcional y avisa si le dan demasiados argumentos", async () => {
+  const mensajes = [];
+  const escenario = crearEscenario({ tipo: "datos" }, { canvas: null });
+  const ast = parsear('nombre = input("¿Cómo te llamas?")\nprint(nombre)');
+  new Validator(fase(), { biblioteca: escenario.biblioteca }).validar(ast);
+  const r = await ejecutarPrograma({ ast, escenario, callbacks: { pedirEntrada: async (o) => (mensajes.push(o.etiqueta), "Ana") } });
+  assert.deepEqual(mensajes, ["¿Cómo te llamas?"]);
+  assert.deepEqual(r.salidas.filter((x) => x.tipo === "PRINT").map((x) => x.valor), ["Ana"]);
+  await lanza('x = input("a", "b")', "SEM_013");
+});
+await prueba("int(), float() y str() convierten como en Python", async () => {
+  const salida = async (c) => (await correr(c)).lineas;
+  assert.deepEqual(await salida('print(int("5"))\nprint(int(" 7 "))\nprint(int(3.9))\nprint(int(-3.9))'), ["5", "7", "3", "-3"]);
+  assert.deepEqual(await salida('print(float("3.5"))\nprint(float(3))\nprint(float("7"))'), ["3.5", "3.0", "7.0"]);
+  assert.deepEqual(await salida('print(str(5))\nprint(str(2.5))\nprint(str(True))\nprint("n=" + str(3))'), ["5", "2.5", "True", "n=3"]);
+  assert.deepEqual(await salida('x = float("2")\nprint(x)\nx = int(x)\nprint(x)'), ["2.0", "2"]);
+});
+await prueba("int(\"hola\") lanza el ValueError educativo (RUN_017); int/float/str exigen un argumento", async () => {
+  const e = await lanza('print(int("hola"))', "RUN_017");
+  assert.match(e.mensaje, /ValueError: El valor ingresado no es un número válido/);
+  await lanza('n = int(input())', "RUN_017", { entradas: ["abc"] });
+  await lanza('print(int("3.5"))', "RUN_017");
+  await lanza('print(float("x"))', "RUN_017");
+  await lanza("print(int())", "SEM_013");
+  await lanza("print(str(1, 2))", "SEM_013");
+});
+await prueba("las conversiones respetan los permisos de la fase", async () => {
+  const sinConversiones = fase({ instruccionesPermitidas: ["print", "input", "asignacion"] });
+  await lanza('print(int("5"))', "SEM_007", { fasePermisos: sinConversiones });
+  await lanza("x = input()", "SEM_007", { fasePermisos: fase({ instruccionesPermitidas: ["print", "asignacion"] }) });
+});
+await prueba("los nombres de las funciones de Python no se pueden usar como variable", async () => {
+  for (const nombre of ["print", "input", "int", "float", "str", "range"]) await lanza(`${nombre} = 5`, "SEM_012");
+  await lanza("for str in range(3):\n    print(1)", "SEM_012");
+});
+await prueba("/ SIEMPRE da decimal y // da la parte entera (como Python)", async () => {
+  const salida = async (c) => (await correr(c)).lineas;
+  assert.deepEqual(await salida("print(17 / 4)\nprint(10 / 2)\nprint(17 // 4)\nprint(-7 // 2)\nprint(7.5 // 2)"), ["4.25", "5.0", "4", "-4", "3.0"]);
+  assert.deepEqual(await salida("print(17 % 5)\nprint(-5 % 3)\nprint(5.5 % 2)"), ["2", "1", "1.5"]);
+  assert.deepEqual(await salida("print(2 ** 3)\nprint(2 ** -1)\nprint(-2 ** 2)\nprint(2 ** 3 ** 2)"), ["8", "0.5", "-4", "512"]);
+  await lanza("print(1 // 0)", "SEM_006");
+  await lanza("print(1 % 0)", "SEM_006");
+  await lanza("print(1 / 0)", "SEM_006");
+  await lanza("print((-8) ** 0.5)", "RUN_019");
+  await lanza("print(10 ** 20)", "RUN_018");
+});
+await prueba("los decimales se ven como en Python y el panel de Memoria distingue 5 de 5.0", async () => {
+  const r = await correr("a = 5\nb = 5.0\nc = 10 / 2\nd = 0.1 + 0.2");
+  assert.equal(r.escenario.slots.get("a").valor, 5);
+  assert.equal(r.escenario.slots.get("b").valor.v, 5);
+  assert.deepEqual(r.memoria.d, 0.30000000000000004);
+  const memoria = await correr("print(5.0)\nprint(0.00001)\nprint(100000.0 * 10000000000000)");
+  assert.deepEqual(memoria.lineas, ["5.0", "1e-05", "1e+18"]);
+});
+await prueba("range() solo acepta enteros: un float (aunque sea 3.0) da error, como en Python", async () => {
+  await lanza("for i in range(3.0):\n    print(i)", "RUN_010");
+  await lanza("for i in range(1 / 1):\n    print(i)", "RUN_010");
+  assert.deepEqual((await correr("for i in range(int(3.0)):\n    print(i)")).lineas, ["0", "1", "2"]);
 });
 
 console.log("Mesa de cartas: comandos");
