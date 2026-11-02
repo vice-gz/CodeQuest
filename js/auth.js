@@ -7,10 +7,11 @@
 import { supabase, configuracionValida } from "./supabase.js";
 import { validarEmail, esRolAdmin } from "./util.js";
 import { correoEsInstitucional, DOMINIO_INSTITUCIONAL } from "./config.js";
+import { PROVEEDORES, nombreDesdeProveedor, esUsuarioNuevo, esNombreGenerico, mensajeErrorOAuth, necesitaCompletarRegistro } from "./oauthUtil.js";
 
 export const RUTA_POR_ROL = {
   estudiante: "mundos.html",
-  profesor: "perfil.html",
+  profesor: "profesor.html", // «Mis clases»: ahí crea sus clases y ve a sus alumnos
   admin: "admin.html",
   super_root: "admin.html",
 };
@@ -151,6 +152,195 @@ export async function registrarUsuario(nombre, email, password, { rol = "estudia
     const registro = await aplicarRegistro();
     return { ok: true, requiereConfirmacion: false, ...registro };
   } catch (e) {
+    return { ok: false, mensaje: traducirError(e) };
+  }
+}
+
+// ---------- Acceso con Google y GitHub (OAuth 2.0 vía Supabase Auth) ----------
+// Flujo (el mismo botón sirve para entrar y para crear cuenta):
+//   1. iniciarSesionOAuth() manda a la persona al proveedor.
+//   2. Al volver a auth.html, completarLoginOAuth() comprueba el perfil. Si es su PRIMERA vez
+//      devuelve necesitaOnboarding: la página muestra «Un último paso: ¿alumno o profesor?».
+//   3. finalizarRegistroOAuth() guarda esa elección (el servidor decide si concede el rol de
+//      profesor con aplicar_registro) y la persona entra.
+// Si ya tenía cuenta, entra directo con el rol que ya tiene: no se le pregunta nada.
+//
+// OJO con el perfil: en tu proyecto el disparador trigger_nuevo_usuario (sobre auth.users)
+// se ejecuta con CUALQUIER alta, también las de Google y GitHub, así que normalmente el
+// perfil ya existe al volver. Aun así aquí se comprueba y, si por algo faltara, se crea
+// (como estudiante): es idempotente y tolera que otra parte ya lo haya creado.
+
+const CLAVE_PROVEEDOR_PENDIENTE = "codequest:oauth-proveedor";
+const CLAVE_BIENVENIDA_PROFE = "codequest:bienvenida-profe";
+
+/** Qué proveedor se eligió (solo para decir «Entrando con Google…» al volver). */
+export function leerProveedorPendiente() {
+  try {
+    return sessionStorage.getItem(CLAVE_PROVEEDOR_PENDIENTE) || "";
+  } catch {
+    return "";
+  }
+}
+
+export function limpiarProveedorPendiente() {
+  try {
+    sessionStorage.removeItem(CLAVE_PROVEEDOR_PENDIENTE);
+  } catch {
+    /* nada */
+  }
+}
+
+/** Lleva a la persona a Google o GitHub. */
+export async function iniciarSesionOAuth(proveedor) {
+  const definicion = PROVEEDORES[proveedor];
+  if (!definicion) return { ok: false, mensaje: "Ese proveedor no está disponible" };
+  try {
+    try {
+      sessionStorage.setItem(CLAVE_PROVEEDOR_PENDIENTE, proveedor);
+    } catch {
+      /* sin sessionStorage: solo se pierde el nombre en el mensaje */
+    }
+    // Esta URL debe estar en Supabase -> Authentication -> URL Configuration -> Redirect URLs.
+    const redirectTo = new URL("auth.html", window.location.href).href;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: proveedor,
+      options: { scopes: definicion.scopes, redirectTo },
+    });
+    if (error) {
+      limpiarProveedorPendiente();
+      console.error("OAuth:", error);
+      return { ok: false, mensaje: mensajeErrorOAuth({ mensaje: error.message, codigoError: error.code, status: error.status }, definicion.nombre) };
+    }
+    return { ok: true }; // el navegador se va al proveedor
+  } catch (e) {
+    limpiarProveedorPendiente();
+    console.error("OAuth:", e);
+    return { ok: false, mensaje: mensajeErrorOAuth({ mensaje: String(e?.message || e) }, definicion.nombre) };
+  }
+}
+
+async function leerFilaPropia(tabla, userId) {
+  const { data, error } = await supabase.from(tabla).select("*").eq("user_id", userId).maybeSingle();
+  if (error) console.error(`No se pudo leer ${tabla}:`, error);
+  return data || null;
+}
+
+/** Garantiza perfil (estudiante) y progreso inicial de una cuenta de OAuth. Devuelve { perfil, progreso } (perfil null si falló). */
+async function asegurarPerfilOAuth(user, nuevo) {
+  let perfil = await leerFilaPropia("perfiles", user.id);
+
+  if (!perfil) {
+    const { error } = await supabase.from("perfiles").insert({ user_id: user.id, nombre: nombreDesdeProveedor(user), rol: "estudiante" });
+    // 23505 = ya existe (el disparador de la base de datos se adelantó): no es un problema.
+    if (error && error.code !== "23505") {
+      console.error("No se pudo crear el perfil:", error);
+      return { perfil: null, progreso: null };
+    }
+    perfil = await leerFilaPropia("perfiles", user.id);
+  }
+
+  let progreso = await leerFilaPropia("progreso_jugador", user.id);
+  if (!progreso) {
+    const inicial = { user_id: user.id, mundo_actual: 1, nivel_actual: 1, experiencia: 0 };
+    const { error } = await supabase.from("progreso_jugador").insert(inicial);
+    if (error && error.code !== "23505") console.warn("No se pudo crear el progreso inicial:", error.message);
+    progreso = inicial;
+  }
+
+  // Cuenta nueva con un nombre genérico: se usa el que da Google/GitHub (después se puede editar en el perfil).
+  if (perfil && nuevo && esNombreGenerico(perfil.nombre)) {
+    const nombre = nombreDesdeProveedor(user);
+    const { error } = await supabase.from("perfiles").update({ nombre }).eq("user_id", user.id);
+    if (!error) perfil = { ...perfil, nombre };
+  }
+  return { perfil, progreso };
+}
+
+/**
+ * Se llama al volver de Google/GitHub (la sesión ya la dejó puesta supabase-js).
+ * Devuelve { ok:false, mensaje } o { ok:true, perfil, necesitaOnboarding, ... }.
+ * Si necesitaOnboarding es true NO se ha aplicado nada todavía: la página pregunta
+ * alumno/profesor y llama a finalizarRegistroOAuth().
+ */
+export async function completarLoginOAuth() {
+  const nombreProveedor = PROVEEDORES[leerProveedorPendiente()]?.nombre || "tu cuenta";
+  try {
+    const user = await obtenerUsuarioActual();
+    if (!user) return { ok: false, mensaje: "No se pudo completar el acceso. Inténtalo de nuevo" };
+    const nuevo = esUsuarioNuevo(user);
+
+    const { perfil: perfilInicial, progreso } = await asegurarPerfilOAuth(user, nuevo);
+    let perfil = perfilInicial;
+    if (!perfil) {
+      await supabase.auth.signOut();
+      limpiarProveedorPendiente();
+      return { ok: false, mensaje: "No encontramos tu perfil. Contacta al administrador" };
+    }
+
+    // Correo institucional (ayuda para el usuario, no una barrera de seguridad: ver config.js).
+    if (!esRolAdmin(perfil.rol) && !correoEsInstitucional(user.email)) {
+      await supabase.auth.signOut();
+      limpiarProveedorPendiente();
+      perfilEnMemoria = null;
+      return {
+        ok: false,
+        mensaje: user.email
+          ? `Usa tu correo institucional (@${DOMINIO_INSTITUCIONAL}). Entraste con ${user.email}`
+          : `${nombreProveedor} no compartió un correo. Se necesita tu correo institucional (@${DOMINIO_INSTITUCIONAL})`,
+      };
+    }
+
+    limpiarProveedorPendiente();
+
+    // Primera vez y todavía no dijo cómo usará CodeQuest: la página se lo pregunta.
+    if (necesitaCompletarRegistro(user, perfil, progreso)) {
+      perfilEnMemoria = null;
+      return { ok: true, necesitaOnboarding: true, perfil: { ...perfil, email: user.email }, nuevo };
+    }
+
+    const registro = await aplicarRegistro();
+    perfil = await obtenerPerfil({ forzar: true });
+    return { ok: true, necesitaOnboarding: false, perfil, nuevo, aviso: registro.aviso || null };
+  } catch (e) {
+    console.error("OAuth:", e);
+    return { ok: false, mensaje: mensajeErrorOAuth({ mensaje: String(e?.message || e) }, nombreProveedor) };
+  }
+}
+
+/**
+ * Último paso de una cuenta nueva de Google/GitHub: guarda si es alumno o profesor (y el código
+ * de clase de un alumno). El rol de profesor lo concede el SERVIDOR (aplicar_registro), una sola
+ * vez por cuenta: el navegador no puede escribirlo directo en `perfiles`.
+ */
+export async function finalizarRegistroOAuth({ rol = "estudiante", codigoClase = "" } = {}) {
+  try {
+    const user = await obtenerUsuarioActual();
+    if (!user) return { ok: false, mensaje: "Tu sesión terminó. Inicia sesión de nuevo" };
+
+    const pedido = rol === "profesor" ? "profesor" : "estudiante"; // lo que no sea profesor es alumno
+    const datos = { rol_solicitado: pedido, cq_registro_completo: true };
+    const codigo = String(codigoClase || "").trim();
+    if (pedido === "estudiante" && codigo) datos.codigo_clase = codigo;
+
+    const { error } = await supabase.auth.updateUser({ data: datos });
+    if (error) return { ok: false, mensaje: traducirError(error) };
+
+    const registro = await aplicarRegistro();
+    const perfil = await obtenerPerfil({ forzar: true });
+    if (!perfil) return { ok: false, mensaje: "No encontramos tu perfil. Contacta al administrador" };
+
+    // Si pidió ser profesor y el servidor no lo concedió, se le dice la verdad.
+    const rolNoAplicado = pedido === "profesor" && perfil.rol !== "profesor";
+    if (perfil.rol === "profesor") {
+      try {
+        localStorage.setItem(CLAVE_BIENVENIDA_PROFE, "1"); // profesor.js muestra el saludo una vez
+      } catch {
+        /* nada */
+      }
+    }
+    return { ok: true, perfil, aviso: registro.aviso || null, rolNoAplicado };
+  } catch (e) {
+    console.error("OAuth:", e);
     return { ok: false, mensaje: traducirError(e) };
   }
 }

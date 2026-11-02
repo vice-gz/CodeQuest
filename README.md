@@ -2,6 +2,34 @@
 
 Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persistencia en Supabase, perfil y panel de administrador**. No se implementan los Mundos 3-6. La documentación del Avance 1 está en `docs/README_avance1.md`.
 
+## Dashboard de la tesis: gráficas y filtro por grupo (Avance 3.7)
+
+La pestaña **Resumen** del panel de administración ahora es un dashboard, y un **filtro global por grupo** arriba de todo controla qué datos se ven.
+
+- **Filtro «Ver datos de»:** *Todos los usuarios*, *Sin grupo asignado* (alumnos que no están en ninguna clase) y cada **clase** existente (con su número de alumnos). Al cambiarlo se actualizan **al instante** los KPIs, las 3 gráficas, la tabla de **Usuarios**, el selector y la tabla de **Ejecuciones** y la **exportación a CSV**. (No aplica a Auditoría ni Configuración.)
+- **4 KPIs:** Total de alumnos · Estrellas promedio · Ejecuciones totales · Tasa de éxito (ejecuciones que lograron el objetivo ÷ ejecuciones totales; «—» si todavía no hay ejecuciones). **Solo cuentan alumnos**: un profesor o administrador que juegue con su cuenta no ensucia los datos de la muestra.
+- **3 gráficas con Chart.js:** *Errores más frecuentes* (barras, top 5 de códigos como `SEM_001`; al pasar el cursor sale el nombre del error), *Alumnos por mundo* (dona) y *Ejecuciones por día, últimos 7 días* (líneas, con 0 en los días sin actividad y en la zona horaria de quien mira el panel).
+- **Exportar a CSV:** el botón se movió al dashboard y exporta **solo a los usuarios del filtro** (el archivo se llama, p. ej., `codequest-isc-1a-2026-11-02.csv`). Con «Todos» exporta todas las cuentas, como antes.
+- **Chart.js llega por CDN** (versión fija 4.4.1, en `admin.html`). Si no hay internet, los KPIs y las tablas funcionan y se explica que faltan las gráficas. Para presentar sin internet, abre el panel antes (con conexión) o descarga `chart.umd.js` y cambia la ruta del `<script>`.
+- **SQL nuevo: `supabase/avance3_3.sql`** (ejecutar en el SQL Editor, es idempotente). El administrador no puede leer `clases` ni `inscripciones` directamente (RLS), así que el filtro por grupo necesita `admin_grupos()`, `admin_inscripciones()` y `admin_dashboard_datos()` (resumen compacto de las ejecuciones, calculado en la base de datos). Sin ese SQL el panel sigue funcionando (calcula el resumen en el navegador) pero sin filtro por grupo, y avisa cómo instalarlo.
+- **Pruebas:** `test_dashboard_admin.mjs` (16, con resultados calculados a mano por grupo) y `test_dashboard_sql.mjs` (corre las funciones SQL en un PostgreSQL real temporal y las compara con el cálculo en JavaScript en tres zonas horarias; se omite si no hay PostgreSQL).
+- **Cambio:** las tarjetas antiguas «Nivel más completado / Nivel con más errores / Concepto con más errores» de la pestaña Resumen se reemplazaron por este dashboard.
+
+## Login con Google y GitHub (Avance 3.5)
+
+`auth.html` ahora permite **registrarse e iniciar sesión con Google o GitHub** (OAuth 2.0 con Supabase Auth), además del correo y la contraseña. Los botones están en las pestañas «Iniciar sesión» y «Crear cuenta», bajo el separador «O continúa con:».
+
+- **Hay que configurarlo fuera del código** (Supabase, Google Cloud y GitHub): la guía paso a paso, la lista de pruebas y la tabla de problemas están en **`docs/LOGIN_SOCIAL.md`**. Lo mínimo: activar los proveedores en *Supabase → Authentication → Providers* y agregar `…/auth.html` en *URL Configuration → Redirect URLs*.
+- **Perfil y progreso:** tu proyecto ya tiene el disparador `trigger_nuevo_usuario`, que se ejecuta también con las altas de OAuth, así que el perfil normalmente ya existe al volver. El navegador solo lo crea (como `estudiante`) si faltara, sin duplicar nada si ya existe.
+- **Pantalla de acceso:** los botones de Google y GitHub van **arriba y grandes** («Entra a CodeQuest»), con el formulario de correo debajo (pestañas «Ya tengo cuenta» / «Soy nuevo»). Los mismos botones sirven para entrar y para crear cuenta.
+- **«Un último paso»:** si es la primera vez que la persona entra con Google/GitHub, al volver ve «¡Hola, Ana! Un último paso: cuéntanos cómo vas a usar CodeQuest» con dos tarjetas (**Soy alumno**, ya marcada, y **Soy profesor**) y, para alumnos, un código de clase opcional. Un alumno llega a `mundos.html`; un profesor, a **`profesor.html`** con el saludo «¡Hola Profe! Configura tu primera clase en el panel». Si cierra la pestaña sin contestar, se le vuelve a preguntar. Quien ya tenía cuenta entra directo, sin esta pantalla.
+- **Rol:** lo **concede el servidor** (`aplicar_registro`, una sola vez, igual que en el registro con correo): el navegador no puede escribirlo directo en `perfiles`. Si pidió ser profesor y no se concede, la página lo dice y la cuenta queda como alumno.
+- **Cambio de ruta:** los profesores ahora aterrizan en `profesor.html` («Mis clases») al iniciar sesión, no en `perfil.html`. Para volver a lo anterior, cambia `profesor: "profesor.html"` en `RUTA_POR_ROL` (`js/auth.js`).
+- **Correo institucional:** si `VITE_DOMINIO_INSTITUCIONAL` está definido, quien entre con otro dominio se rechaza y se cierra su sesión (excepto administradores).
+- **Cuentas con el mismo correo:** Supabase las vincula solo cuando el proveedor confirma el correo; si no puede, la página lo explica.
+- **Pruebas:** `test_auth_oauth.mjs` (21) abre la página real con un Supabase simulado: cuenta nueva con y sin disparador, cuenta existente por rol, profesor, dominio, errores del proveedor.
+
+
 ## Migración a Python 3 (Avance 3.4)
 
 CQL ahora es un **subconjunto de Python 3**: el código que escriben los alumnos funciona igual en Python real. Se comprueba comparando la salida con la del `python3` del sistema (`test_python_compat.mjs`: 116 programas, entre ellos los errores `ZeroDivisionError`, `TypeError`, `ValueError` y `NameError`).

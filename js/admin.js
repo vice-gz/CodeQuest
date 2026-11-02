@@ -8,7 +8,7 @@ import { supabase, HOST_SUPABASE } from "./supabase.js";
 import { protegerPagina, exigirAdmin, mensajeRpc } from "./auth.js";
 import { renderizarNav } from "./nav.js";
 import { catalogo } from "./game/catalogo.js";
-import { calcularResumen, agruparFilasPorUsuario, contarErrores } from "./persistence/progreso.js";
+import { calcularResumen, agruparFilasPorUsuario } from "./persistence/progreso.js";
 import { traerTodo, cargarJugador, cargarFases, cargarUltimasEjecuciones, cargarCodigosError, COL_FECHA } from "./datos.js";
 import {
   renderResumen as renderResumenProgreso,
@@ -16,8 +16,24 @@ import {
   renderTablaNiveles,
   renderGraficos,
   renderEjecuciones,
-  renderBarras,
 } from "./ui/vistaProgreso.js";
+import {
+  FILTRO_TODOS,
+  FILTRO_SIN_GRUPO,
+  DIAS_GRAFICA,
+  construirMembresias,
+  valorFiltroClase,
+  claseDeFiltro,
+  usuariosDelFiltro,
+  alumnosDelFiltro,
+  calcularKpis,
+  topErrores,
+  alumnosPorMundo,
+  ejecucionesPorDia,
+  diaLocal,
+  agregarEjecuciones,
+} from "./ui/dashboardDatos.js";
+import { crearGraficas } from "./ui/dashboardGraficas.js";
 import { nombreError, NOMBRES_ERROR } from "./ui/erroresCatalogo.js";
 import { notificar, confirmar } from "./ui/avisos.js";
 import { construirCsv, agregarErroresPorUsuario, erroresDesdeRpc } from "./ui/exportarCsv.js";
@@ -25,11 +41,22 @@ import { escaparHtml, formatearFecha, formatearDia, fechaRelativa, ETIQUETA_ROL 
 
 const $ = (id) => document.getElementById(id);
 const DIAS_ACTIVO = 7;
+const LIMITE_IDS_FILTRO = 150;
 
 let yo = null; // perfil del admin conectado
 let usuarios = []; // [{id, nombre, email, rol, ...}]
 let resumenes = new Map(); // userId -> resumen de progreso
-let funcionesSql = { listar: true, resumen: true };
+let funcionesSql = { listar: true };
+// Dashboard y filtro por grupo (supabase/avance3_3.sql)
+let grupos = []; // [{id, nombre, codigo, profesor, alumnos}]
+let membresias = construirMembresias([]);
+let gruposDisponibles = false; // ¿están instaladas admin_grupos / admin_inscripciones?
+let datosDash = { usuarios: [], errores: [], dias: [] }; // resumen de ejecuciones (ver dashboardDatos.js)
+let dashDesdeSql = false; // true = lo calculó la base de datos
+let filtro = FILTRO_TODOS; // «todos» | «sin_grupo» | «clase:<id>»
+let seccionActual = "resumen";
+let graficas = null; // las 3 gráficas de Chart.js (null si Chart.js no cargó)
+const zonaHoraria = () => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 let detalleAbiertoId = null;
 let paginaEjecuciones = 0;
 
@@ -115,88 +142,143 @@ async function cargarResumenResumenes() {
   usuarios.forEach((u) => resumenes.set(u.id, calcularResumen(porUsuario.get(u.id) || [], catalogo)));
 }
 
-async function cargarResumenServidor() {
-  const { data, error } = await supabase.rpc("admin_resumen");
-  if (!error && data) {
-    funcionesSql.resumen = true;
-    return { ...data, aproximado: false };
+// ---------- Grupos y datos del dashboard ----------
+
+async function cargarGrupos() {
+  try {
+    const [g, inscripciones] = await Promise.all([
+      supabase.rpc("admin_grupos"),
+      // Más de 1000 filas llegan por páginas (límite de Supabase por consulta).
+      traerTodo(() => supabase.rpc("admin_inscripciones")),
+    ]);
+    if (g.error) throw g.error;
+    gruposDisponibles = true;
+    grupos = g.data.map((r) => ({ id: r.clase_id, nombre: r.nombre, codigo: r.codigo_acceso, profesor: r.profesor_nombre, alumnos: r.alumnos }));
+    membresias = construirMembresias(inscripciones);
+  } catch (e) {
+    gruposDisponibles = false;
+    grupos = [];
+    membresias = construirMembresias([]);
+    if (!funcionFaltante(e)) console.warn("No se pudieron cargar los grupos:", e.message || e);
   }
-  if (error && !funcionFaltante(error)) throw error;
-
-  // Alternativa aproximada con consultas normales (máx. 1000 filas por consulta).
-  funcionesSql.resumen = false;
-  const desde = new Date(Date.now() - DIAS_ACTIVO * 86400000).toISOString();
-  const [total, recientes, errores] = await Promise.all([
-    supabase.from("ejecuciones").select("*", { count: "exact", head: true }),
-    supabase.from("ejecuciones").select("user_id").gte(COL_FECHA, desde).limit(1000),
-    supabase.from("ejecuciones").select("mundo_id,nivel_id,codigo_error,resultado").like("resultado", "error%").limit(1000),
-  ]);
-  const porNivel = {};
-  (errores.data || []).forEach((e) => {
-    const k = `${e.mundo_id}|${e.nivel_id}`;
-    porNivel[k] = (porNivel[k] || 0) + 1;
-  });
-  return {
-    aproximado: true,
-    total_usuarios: usuarios.length,
-    usuarios_activos_7d: new Set((recientes.data || []).map((r) => r.user_id)).size,
-    total_ejecuciones: total.count ?? 0,
-    errores_por_nivel: Object.entries(porNivel)
-      .map(([k, n]) => ({ mundo_id: Number(k.split("|")[0]), nivel_id: Number(k.split("|")[1]), total: n }))
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 5),
-    errores_por_codigo: contarErrores(errores.data || [], 5).map((e) => ({ codigo_error: e.codigo, total: e.total })),
-  };
 }
 
-// ---------- Resumen general ----------
-
-function tarjeta(titulo, valor, detalle = "") {
-  return `<div class="dato-tarjeta"><span class="dato-titulo">${escaparHtml(titulo)}</span>
-    <span class="dato-valor">${valor}</span>${detalle ? `<span class="dato-detalle">${escaparHtml(detalle)}</span>` : ""}</div>`;
+async function cargarDatosDashboard() {
+  const zona = zonaHoraria();
+  try {
+    const { data, error } = await supabase.rpc("admin_dashboard_datos", { p_dias: DIAS_GRAFICA, p_zona: zona });
+    if (!error && data) {
+      dashDesdeSql = true;
+      datosDash = data;
+      return;
+    }
+    if (error && !funcionFaltante(error)) throw error;
+    // Sin la función SQL: mismo resumen, calculado aquí con las filas de ejecuciones (más lento).
+    dashDesdeSql = false;
+    const filas = await traerTodo(() => supabase.from("ejecuciones").select("user_id,resultado,codigo_error,created_at").order(COL_FECHA));
+    datosDash = agregarEjecuciones(filas, { dias: DIAS_GRAFICA, zona });
+  } catch (e) {
+    console.error(e);
+    datosDash = { usuarios: [], errores: [], dias: [] };
+    $("graficas-aviso").textContent = "No se pudo cargar el resumen de ejecuciones. Revisa tu conexión y los permisos.";
+    $("graficas-aviso").classList.remove("oculto");
+  }
 }
 
-function pintarResumen(r) {
-  const totalEstrellas = [...resumenes.values()].reduce((s, x) => s + x.totales.estrellas, 0);
+// ---------- Filtro por grupo ----------
 
-  // Nivel más completado: cuántos usuarios lo terminaron.
-  const completados = {};
-  resumenes.forEach((res) =>
-    Object.values(res.niveles).forEach((n) => {
-      if (n.completado) completados[n.id] = (completados[n.id] || 0) + 1;
-    })
-  );
-  const topNivel = Object.entries(completados).sort((a, b) => b[1] - a[1])[0];
-  const nivelMas = topNivel ? catalogo.niveles[topNivel[0]] : null;
+/** Usuarios (tablas y CSV) y alumnos (KPIs y gráficas) que entran en el filtro actual. */
+const alcance = () => ({
+  usuarios: usuariosDelFiltro(usuarios, filtro, membresias),
+  alumnos: alumnosDelFiltro(usuarios, filtro, membresias),
+});
 
-  const peorNivel = r.errores_por_nivel?.[0];
-  const peorCodigo = r.errores_por_codigo?.[0];
+const grupoActual = () => grupos.find((g) => g.id === claseDeFiltro(filtro)) || null;
 
-  $("resumen-tarjetas").innerHTML =
-    tarjeta("Usuarios registrados", r.total_usuarios) +
-    tarjeta("Usuarios activos", r.usuarios_activos_7d, `últimos ${DIAS_ACTIVO} días`) +
-    tarjeta("Ejecuciones", r.total_ejecuciones) +
-    tarjeta("Estrellas ganadas", `<span class="texto-ambar">★</span> ${totalEstrellas}`, "entre todos los usuarios") +
-    tarjeta("Nivel más completado", nivelMas ? `Nivel ${nivelMas.id}` : "—", nivelMas ? `${nivelMas.nombre} · ${topNivel[1]} usuario(s)` : "Nadie ha completado niveles") +
-    tarjeta("Nivel con más errores", peorNivel ? `Nivel ${peorNivel.nivel_id}` : "—", peorNivel ? `${peorNivel.total} errores` : "Sin errores") +
-    tarjeta("Concepto con más errores", peorCodigo ? escaparHtml(peorCodigo.codigo_error) : "—", peorCodigo ? `${NOMBRES_ERROR[peorCodigo.codigo_error] || ""} · ${peorCodigo.total}` : "Sin errores");
+function nombreDelFiltro() {
+  if (filtro === FILTRO_SIN_GRUPO) return "Sin grupo asignado";
+  return grupoActual()?.nombre || "Todos los usuarios";
+}
 
-  $("resumen-graficos").innerHTML =
-    renderBarras(
-      "Niveles con más errores (top 5)",
-      (r.errores_por_nivel || []).map((e) => ({ etiqueta: `Nivel ${e.nivel_id}`, valor: e.total })),
-      { vacio: "Sin errores registrados." }
-    ) +
-    renderBarras(
-      "Errores más comunes (top 5)",
-      (r.errores_por_codigo || []).map((e) => ({ etiqueta: nombreError(e.codigo_error), valor: e.total })),
-      { vacio: "Sin errores registrados." }
+const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
+
+function pintarFiltro() {
+  const sel = $("filtro-grupos");
+  const opciones = [
+    '<option value="todos">Todos los usuarios</option>',
+    `<option value="sin_grupo"${gruposDisponibles ? "" : " disabled"}>Sin grupo asignado</option>`,
+  ];
+  if (grupos.length) {
+    opciones.push(
+      `<optgroup label="Grupos">${grupos
+        .map((g) => `<option value="${escaparHtml(valorFiltroClase(g.id))}">${escaparHtml(g.nombre)} (${plural(g.alumnos, "alumno", "alumnos")})</option>`)
+        .join("")}</optgroup>`
     );
-
-  const avisos = [];
-  if (!funcionesSql.listar || !funcionesSql.resumen) {
-    avisos.push("Faltan las funciones SQL del Avance 2 (supabase/avance2.sql): sin ellas no se muestran los emails y las estadísticas son aproximadas.");
   }
+  sel.innerHTML = opciones.join("");
+  // Se conserva la elección si el grupo todavía existe (p. ej. tras «Recargar datos»).
+  const sigue = [...sel.options].some((o) => o.value === filtro && !o.disabled);
+  filtro = sigue ? filtro : FILTRO_TODOS;
+  sel.value = filtro;
+}
+
+function pintarDetalleFiltro() {
+  const { usuarios: lista, alumnos } = alcance();
+  const g = grupoActual();
+  let texto;
+  if (filtro === FILTRO_SIN_GRUPO) texto = `Alumnos que no están inscritos en ninguna clase: ${alumnos.length}.`;
+  else if (g) texto = `Profesor: ${g.profesor || "—"} · código ${g.codigo} · ${plural(alumnos.length, "alumno", "alumnos")}.`;
+  else texto = `Cuentan ${plural(alumnos.length, "alumno", "alumnos")} (${lista.length} cuentas; profesores y administradores no entran en los KPIs ni en las gráficas).`;
+  if (!gruposDisponibles) texto += " Para filtrar por grupo ejecuta supabase/avance3_3.sql en Supabase.";
+  $("filtro-detalle").textContent = texto;
+  $("exportar-detalle").textContent = `Se exportarán ${plural(lista.length, "usuario", "usuarios")} de: ${nombreDelFiltro()}.`;
+}
+
+// ---------- Dashboard (KPIs + gráficas) ----------
+
+function kpi(titulo, valor, detalle) {
+  return `<div class="kpi-tarjeta"><span class="kpi-titulo">${escaparHtml(titulo)}</span><span class="kpi-valor">${valor}</span><span class="kpi-detalle">${escaparHtml(detalle)}</span></div>`;
+}
+
+const numero = (n, decimales = 0) => Number(n).toLocaleString("es-MX", { maximumFractionDigits: decimales, minimumFractionDigits: decimales });
+
+function pintarDashboard() {
+  const { alumnos } = alcance();
+  const k = calcularKpis(alumnos, resumenes, datosDash);
+  const maxEstrellas = catalogo.totalNiveles * 3;
+
+  $("kpis").innerHTML =
+    kpi("Total de alumnos", numero(k.alumnos), nombreDelFiltro()) +
+    kpi("Estrellas promedio", `<span class="texto-ambar">★</span> ${numero(k.estrellasPromedio, 1)}`, `por alumno, de ${maxEstrellas} posibles`) +
+    kpi("Ejecuciones totales", numero(k.ejecuciones), "veces que se ejecutó código") +
+    kpi("Tasa de éxito", k.tasaExito === null ? "—" : `${numero(k.tasaExito, 1)}%`, k.tasaExito === null ? "aún sin ejecuciones" : `${numero(k.exitos)} de ${numero(k.ejecuciones)} ejecuciones lograron el objetivo`);
+
+  graficas?.actualizar({
+    errores: topErrores(alumnos, datosDash, 5),
+    mundos: alumnosPorMundo(alumnos, Object.values(catalogo.mundos).map((m) => m.id)).map((m) => ({ ...m, nombre: catalogo.mundos[m.mundo].nombre })),
+    dias: ejecucionesPorDia(alumnos, datosDash, diaLocal(Date.now(), zonaHoraria()), DIAS_GRAFICA),
+  });
+}
+
+/** Cambió el filtro: se actualiza TODO (KPIs, gráficas, tablas, selector de ejecuciones y exportación). */
+function aplicarFiltro() {
+  pintarDetalleFiltro();
+  pintarDashboard();
+  pintarUsuarios();
+  poblarSelectoresEjecuciones();
+  paginaEjecuciones = 0;
+  if (seccionActual === "ejecuciones") cargarEjecuciones();
+}
+
+$("filtro-grupos").addEventListener("change", (e) => {
+  filtro = e.target.value;
+  aplicarFiltro();
+});
+
+function mostrarAvisosSql() {
+  const avisos = [];
+  if (!funcionesSql.listar) avisos.push("Faltan las funciones SQL del Avance 2 (supabase/avance2.sql): sin ellas no se muestran los emails.");
+  if (!gruposDisponibles || !dashDesdeSql) avisos.push("Para filtrar por grupo y acelerar el dashboard ejecuta supabase/avance3_3.sql en Supabase.");
   mostrarAviso(avisos.join(" "));
 }
 
@@ -209,7 +291,7 @@ function usuariosFiltrados() {
   const act = $("f-actividad").value;
   const limite = Date.now() - DIAS_ACTIVO * 86400000;
 
-  return usuarios.filter((u) => {
+  return alcance().usuarios.filter((u) => {
     if (q && !`${u.nombre} ${u.email}`.toLowerCase().includes(q)) return false;
     if (rol && u.rol !== rol) return false;
     if (mundo && String(u.mundo) !== mundo) return false;
@@ -222,7 +304,8 @@ function usuariosFiltrados() {
 
 function pintarUsuarios() {
   const lista = usuariosFiltrados();
-  $("usuarios-conteo").textContent = `${lista.length} de ${usuarios.length} usuarios`;
+  const total = alcance().usuarios.length;
+  $("usuarios-conteo").textContent = `${lista.length} de ${total} usuarios${filtro === FILTRO_TODOS ? "" : ` · ${nombreDelFiltro()}`}`;
   if (!lista.length) {
     $("tabla-usuarios").innerHTML = '<p class="texto-vacio">No hay usuarios con esos filtros.</p>';
     return;
@@ -476,7 +559,7 @@ function llenarSelect(sel, valores, etiquetaFn) {
 }
 
 function poblarSelectoresEjecuciones() {
-  llenarSelect($("e-usuario"), usuarios.map((u) => ({ valor: u.id, texto: `${u.nombre}${u.email !== "—" ? ` (${u.email})` : ""}` })));
+  llenarSelect($("e-usuario"), alcance().usuarios.map((u) => ({ valor: u.id, texto: `${u.nombre}${u.email !== "—" ? ` (${u.email})` : ""}` })));
   llenarSelect($("e-mundo"), Object.values(catalogo.mundos).map((m) => ({ valor: m.id, texto: `Mundo ${m.id} · ${m.nombre}` })));
   llenarSelect($("e-codigo"), Object.keys(NOMBRES_ERROR).map((c) => ({ valor: c, texto: nombreError(c) })));
   const conceptos = [...new Set(Object.values(catalogo.niveles).map((n) => n.concepto_evaluado).filter(Boolean))];
@@ -500,7 +583,16 @@ async function cargarEjecuciones() {
   const tam = tamanoPagina();
   const desde = paginaEjecuciones * tam;
 
+  // Con un grupo seleccionado, solo las ejecuciones de esos alumnos.
+  const idsGrupo = filtro === FILTRO_TODOS ? null : alcance().usuarios.map((u) => u.id);
+  if (idsGrupo && !idsGrupo.length) {
+    cont.innerHTML = '<p class="texto-vacio">No hay alumnos en este grupo, así que no hay ejecuciones.</p>';
+    $("paginacion-ejecuciones").innerHTML = "";
+    return;
+  }
+  const demasiados = idsGrupo && idsGrupo.length > LIMITE_IDS_FILTRO; // la dirección de la consulta tendría que llevar cientos de ids
   let q = supabase.from("ejecuciones").select("*", { count: "exact" });
+  if (idsGrupo && !demasiados) q = q.in("user_id", idsGrupo);
   const f = {
     user_id: $("e-usuario").value,
     mundo_id: $("e-mundo").value,
@@ -528,6 +620,9 @@ async function cargarEjecuciones() {
     return;
   }
   renderEjecuciones(cont, data, { nombres: nombrePorId(), mostrarConcepto: true });
+  if (demasiados) {
+    cont.insertAdjacentHTML("afterbegin", `<p class="mensaje-form mensaje-error">Este grupo tiene más de ${LIMITE_IDS_FILTRO} alumnos: la tabla muestra las ejecuciones de todos los usuarios.</p>`);
+  }
 
   const paginas = Math.max(1, Math.ceil((count || 0) / tam));
   $("paginacion-ejecuciones").innerHTML = `
@@ -562,23 +657,34 @@ async function cargarErroresPorUsuario() {
   return agregarErroresPorUsuario(filas);
 }
 
+const aSlug = (t) =>
+  String(t)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+
 async function exportarCsv() {
   const boton = $("btn-exportar");
+  // SOLO los usuarios del filtro seleccionado (no todo el sistema).
+  const lista = alcance().usuarios;
+  if (!lista.length) return notificar("No hay usuarios en este grupo para exportar", "error");
   boton.disabled = true;
   try {
     await exigirAdmin();
     const errores = await cargarErroresPorUsuario();
-    const csv = construirCsv({ usuarios, resumenes, errores, catalogo, etiquetaRol: (r) => ETIQUETA_ROL[r] || r });
+    const csv = construirCsv({ usuarios: lista, resumenes, errores, catalogo, etiquetaRol: (r) => ETIQUETA_ROL[r] || r });
     // BOM al inicio: así Excel abre bien los acentos.
     const blob = new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" });
     const enlace = document.createElement("a");
     enlace.href = URL.createObjectURL(blob);
-    enlace.download = `codequest-usuarios-${new Date().toISOString().slice(0, 10)}.csv`;
+    enlace.download = `codequest-${filtro === FILTRO_TODOS ? "todos" : aSlug(nombreDelFiltro())}-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(enlace);
     enlace.click();
     enlace.remove();
     setTimeout(() => URL.revokeObjectURL(enlace.href), 1000);
-    notificar(`Exportados ${usuarios.length} usuarios`);
+    notificar(`Exportados ${plural(lista.length, "usuario", "usuarios")} (${nombreDelFiltro()})`);
   } catch (e) {
     console.error(e);
     notificar("No se pudo preparar la exportación. Revisa tu conexión e inténtalo de nuevo.", "error");
@@ -658,7 +764,7 @@ function pintarConfig() {
     <dt>Administrador</dt><dd>${escaparHtml(yo.nombre)} (${escaparHtml(yo.email)})</dd>
     <dt>Niveles en el catálogo</dt><dd>${catalogo.totalNiveles} en ${Object.keys(catalogo.mundos).length} mundos</dd>
     <dt>Función admin_listar_usuarios</dt><dd>${funcionesSql.listar ? '<span class="etiqueta-estado etiqueta-ok">Instalada</span>' : '<span class="etiqueta-estado etiqueta-error">Falta</span>'}</dd>
-    <dt>Función admin_resumen</dt><dd>${funcionesSql.resumen ? '<span class="etiqueta-estado etiqueta-ok">Instalada</span>' : '<span class="etiqueta-estado etiqueta-error">Falta</span>'}</dd>
+    <dt>Funciones del dashboard (avance3_3.sql)</dt><dd>${gruposDisponibles && dashDesdeSql ? '<span class="etiqueta-estado etiqueta-ok">Instaladas</span>' : '<span class="etiqueta-estado etiqueta-error">Faltan</span>'}</dd>
   </dl>`;
 }
 
@@ -673,6 +779,9 @@ $("btn-recargar").addEventListener("click", () => recargarTodo(true));
 // ---------- Pestañas y arranque ----------
 
 function irASeccion(nombre) {
+  seccionActual = nombre;
+  // El filtro por grupo solo aplica a Resumen, Usuarios y Ejecuciones.
+  $("admin-filtro").classList.toggle("oculto", nombre === "auditoria" || nombre === "config");
   document.querySelectorAll(".admin-pestana").forEach((b) => {
     const activa = b.dataset.seccion === nombre;
     b.classList.toggle("activa", activa);
@@ -688,11 +797,12 @@ function irASeccion(nombre) {
 
 document.querySelectorAll(".admin-pestana").forEach((b) => b.addEventListener("click", () => irASeccion(b.dataset.seccion)));
 
-let ultimoResumenServidor = null;
 async function refrescarResumen() {
   try {
-    ultimoResumenServidor = await cargarResumenServidor();
-    pintarResumen(ultimoResumenServidor);
+    await Promise.all([cargarGrupos(), cargarDatosDashboard()]);
+    pintarFiltro();
+    pintarDetalleFiltro();
+    pintarDashboard();
   } catch (e) {
     console.error(e);
   }
@@ -702,15 +812,19 @@ async function recargarTodo(avisar = false) {
   try {
     usuarios = await cargarUsuarios();
     await cargarResumenResumenes();
-    ultimoResumenServidor = await cargarResumenServidor();
-    pintarResumen(ultimoResumenServidor);
+    if (graficas) $("graficas-aviso").classList.add("oculto"); // si Chart.js no cargó, ese aviso se queda
+    await Promise.all([cargarGrupos(), cargarDatosDashboard()]);
+    pintarFiltro();
+    pintarDetalleFiltro();
+    pintarDashboard();
     pintarUsuarios();
     poblarSelectoresEjecuciones();
     pintarConfig();
+    mostrarAvisosSql();
     if (avisar) notificar("Datos actualizados");
   } catch (e) {
     console.error(e);
-    $("resumen-tarjetas").innerHTML = '<p class="mensaje-form mensaje-error">No se pudieron cargar los datos. Revisa tu conexión y los permisos RLS.</p>';
+    $("kpis").innerHTML = '<p class="mensaje-form mensaje-error">No se pudieron cargar los datos. Revisa tu conexión y los permisos RLS.</p>';
   }
 }
 
@@ -720,5 +834,11 @@ async function recargarTodo(avisar = false) {
   if (!yo) return;
   await renderizarNav("nav", yo);
   prepararFiltroMundos();
+  // Chart.js llega por CDN: si no hay internet, el panel sigue funcionando sin las gráficas.
+  graficas = crearGraficas();
+  if (!graficas) {
+    $("graficas-aviso").textContent = "No se pudieron cargar las gráficas (Chart.js se descarga de internet). Los números y las tablas siguen funcionando.";
+    $("graficas-aviso").classList.remove("oculto");
+  }
   await recargarTodo();
 })();

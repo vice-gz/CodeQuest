@@ -154,3 +154,153 @@
   justify-content: space-between;
   gap: 10px;
 }
+
+
+/* ---------------------------------------------------------------- Filtro global por grupo */
+
+.admin-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 16px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--bg-elevado);
+}
+
+.admin-filtro .etiqueta-campo {
+  min-width: min(100%, 280px);
+  font-weight: 600;
+}
+
+.filtro-detalle {
+  margin: 0;
+  padding-bottom: 8px;
+  color: var(--texto-muted);
+  font-size: 0.88rem;
+}
+
+/* ---------------------------------------------------------------- KPIs grandes */
+
+.kpi-rejilla {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.kpi-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: var(--bg-elevado);
+}
+
+.kpi-titulo {
+  color: var(--texto-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.kpi-valor {
+  font-size: 2.3rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.kpi-detalle {
+  color: var(--texto-muted);
+  font-size: 0.8rem;
+}
+
+/* ---------------------------------------------------------------- Gráficas */
+
+.dash-graficas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.grafica-ancha {
+  grid-column: 1 / -1;
+}
+
+.grafica-tarjeta {
+  margin: 0;
+}
+
+.grafica-pie {
+  margin: -4px 0 10px;
+  color: var(--texto-muted);
+  font-size: 0.82rem;
+}
+
+.grafica-caja {
+  position: relative;
+  height: 280px; /* Chart.js necesita una altura fija para ser responsivo */
+}
+
+.grafica-caja canvas {
+  max-width: 100%;
+}
+
+.grafica-vacia {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 12px;
+  text-align: center;
+  color: var(--texto-muted);
+  background: var(--bg-elevado);
+}
+
+.exportar-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.exportar-panel h2 {
+  margin: 0 0 2px;
+  font-size: 1.05rem;
+}
+
+.exportar-panel p {
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .kpi-rejilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .dash-graficas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kpi-valor {
+    font-size: 1.9rem;
+  }
+
+  .grafica-caja {
+    height: 250px;
+  }
+}
+
+@media (max-width: 420px) {
+  .kpi-rejilla {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

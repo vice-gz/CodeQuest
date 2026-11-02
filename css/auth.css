@@ -112,6 +112,7 @@
 
 .opcion-rol {
   position: relative;
+  display: flex; /* las dos tarjetas miden lo mismo aunque una lleve más texto */
   cursor: pointer;
 }
 
@@ -123,6 +124,7 @@
 }
 
 .opcion-rol span {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -145,5 +147,203 @@
 
 .opcion-rol input:focus-visible + span {
   outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+
+/* ---------------------------------------------------------------- Acceso con Google y GitHub */
+
+.auth-social {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.auth-separador {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 2px;
+  color: var(--texto-muted);
+  font-size: 0.85rem;
+}
+
+.auth-separador::before,
+.auth-separador::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--borde);
+}
+
+.boton-social {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  gap: 12px;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.icono-social {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+/* Google: fondo blanco (su guía de marca); GitHub: gris oscuro con letra blanca. */
+.boton-google {
+  background: #ffffff;
+  color: #1f1f1f;
+  border: 1px solid #dadce0;
+}
+
+.boton-google:hover:not(:disabled) {
+  background: #f4f6f8;
+}
+
+.boton-github {
+  background: #24292f;
+  color: #ffffff;
+  border: 1px solid #57606a;
+}
+
+.boton-github:hover:not(:disabled) {
+  background: #32383f;
+}
+
+.boton-social:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+
+/* ---------------------------------------------------------------- Selector de rol (alumno / profesor) con iconos */
+
+.icono-rol {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 4px;
+  color: var(--teal);
+}
+
+.selector-rol .opcion-rol input:checked + span .icono-rol {
+  color: var(--ambar);
+}
+
+/* ---------------------------------------------------------------- Encabezado y botones de Google / GitHub arriba */
+
+.auth-encabezado {
+  margin: 0 0 18px;
+  text-align: center;
+}
+
+.auth-encabezado h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+
+.auth-encabezado p {
+  margin: 0;
+  color: var(--texto-muted);
+  font-size: 0.95rem;
+}
+
+.auth-social {
+  margin: 0 0 4px;
+}
+
+.auth-social .boton-social {
+  min-height: 52px;
+  font-size: 1rem;
+}
+
+.ayuda-social {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.auth-social .auth-separador {
+  margin: 10px 0 14px;
+}
+
+/* ---------------------------------------------------------------- «Un último paso»: alumno o profesor */
+
+.bienvenida-cabecera {
+  text-align: center;
+}
+
+.bienvenida-cabecera h2 {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+}
+
+.tarjetas-rol {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.tarjeta-rol {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.tarjeta-rol input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+
+.tarjeta-rol span {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  grid-template-areas: "icono titulo" "icono detalle";
+  column-gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 14px;
+  border: 2px solid var(--borde);
+  background: var(--bg-elevado);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.tarjeta-rol .icono-rol {
+  grid-area: icono;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+}
+
+.tarjeta-rol strong {
+  grid-area: titulo;
+  font-size: 1.05rem;
+}
+
+.tarjeta-rol small {
+  grid-area: detalle;
+  color: var(--texto-muted);
+  font-size: 0.82rem;
+}
+
+.tarjeta-rol input:checked + span {
+  border-color: var(--teal);
+  background: rgba(94, 234, 212, 0.1);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.18);
+}
+
+.tarjeta-rol input:checked + span .icono-rol {
+  color: var(--ambar);
+}
+
+.tarjeta-rol input:focus-visible + span {
+  outline: 3px solid var(--teal);
   outline-offset: 2px;
 }

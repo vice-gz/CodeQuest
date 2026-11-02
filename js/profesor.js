@@ -255,4 +255,14 @@ async function eliminarClase(clase) {
   if (!yo) return;
   await renderizarNav("nav", yo);
   await cargarClases();
+
+  // Profesor que acaba de crear su cuenta con Google/GitHub: un saludo, una sola vez.
+  try {
+    if (localStorage.getItem("codequest:bienvenida-profe") === "1") {
+      localStorage.removeItem("codequest:bienvenida-profe");
+      notificar("¡Hola Profe! Configura tu primera clase en el panel", "exito", 7000);
+    }
+  } catch {
+    /* sin localStorage: no hay saludo */
+  }
 })();

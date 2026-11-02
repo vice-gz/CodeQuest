@@ -29,6 +29,17 @@
 
   <p class="mensaje-form mensaje-error oculto" id="admin-aviso" role="alert"></p>
 
+  <!-- Filtro global: Resumen, Usuarios, Ejecuciones y la exportación CSV usan este grupo -->
+  <div class="admin-filtro" id="admin-filtro">
+    <label class="etiqueta-campo" for="filtro-grupos">Ver datos de
+      <select class="campo" id="filtro-grupos" aria-describedby="filtro-detalle">
+        <option value="todos">Todos los usuarios</option>
+        <option value="sin_grupo">Sin grupo asignado</option>
+      </select>
+    </label>
+    <p class="filtro-detalle" id="filtro-detalle" role="status"></p>
+  </div>
+
   <nav class="admin-pestanas" role="tablist" aria-label="Secciones del panel">
     <button type="button" role="tab" class="admin-pestana activa" data-seccion="resumen" aria-selected="true">Resumen</button>
     <button type="button" role="tab" class="admin-pestana" data-seccion="usuarios" aria-selected="false">Usuarios</button>
@@ -37,10 +48,45 @@
     <button type="button" role="tab" class="admin-pestana" data-seccion="config" aria-selected="false">Configuración</button>
   </nav>
 
-  <!-- Resumen general -->
+  <!-- Dashboard: KPIs, gráficas y exportación (todo respeta el filtro de grupo) -->
   <section id="seccion-resumen" class="admin-seccion">
-    <div class="datos-rejilla" id="resumen-tarjetas"><p class="texto-vacio">Cargando…</p></div>
-    <div class="graficos" id="resumen-graficos"></div>
+    <div class="kpi-rejilla" id="kpis"><p class="texto-vacio">Cargando…</p></div>
+
+    <div class="dash-graficas">
+      <article class="panel grafica-tarjeta">
+        <div class="panel-encabezado"><h2>Errores más frecuentes</h2></div>
+        <p class="grafica-pie">Los 5 códigos de error que más aparecen: dónde se atoran los alumnos.</p>
+        <div class="grafica-caja">
+          <canvas id="grafica-errores" role="img" aria-label="Gráfica de barras de los errores más frecuentes"></canvas>
+          <p class="grafica-vacia oculto" id="vacia-errores">Sin errores registrados en este grupo.</p>
+        </div>
+      </article>
+      <article class="panel grafica-tarjeta">
+        <div class="panel-encabezado"><h2>Alumnos por mundo</h2></div>
+        <p class="grafica-pie">En qué mundo está hoy cada alumno: qué tan rápido avanza la clase.</p>
+        <div class="grafica-caja">
+          <canvas id="grafica-mundos" role="img" aria-label="Gráfica de dona con los alumnos por mundo"></canvas>
+          <p class="grafica-vacia oculto" id="vacia-mundos">No hay alumnos en este grupo.</p>
+        </div>
+      </article>
+      <article class="panel grafica-tarjeta grafica-ancha">
+        <div class="panel-encabezado"><h2>Ejecuciones por día (últimos 7 días)</h2></div>
+        <p class="grafica-pie">Cuántas veces ejecutaron código: sirve para ver cuándo practican.</p>
+        <div class="grafica-caja">
+          <canvas id="grafica-dias" role="img" aria-label="Gráfica de líneas con las ejecuciones de los últimos 7 días"></canvas>
+          <p class="grafica-vacia oculto" id="vacia-dias">Sin ejecuciones en los últimos 7 días.</p>
+        </div>
+      </article>
+    </div>
+    <p class="mensaje-form mensaje-error oculto" id="graficas-aviso" role="alert"></p>
+
+    <div class="panel exportar-panel">
+      <div>
+        <h2>Exportar para la tesis</h2>
+        <p class="texto-vacio" id="exportar-detalle">Descarga un CSV con los datos del grupo seleccionado.</p>
+      </div>
+      <button class="boton boton-primario" type="button" id="btn-exportar">Exportar a CSV</button>
+    </div>
   </section>
 
   <!-- Usuarios -->
@@ -72,7 +118,6 @@
       </form>
       <div class="barra-lista">
         <p class="texto-vacio" id="usuarios-conteo"></p>
-        <button class="boton boton-secundario boton-chico" type="button" id="btn-exportar">Exportar a CSV</button>
       </div>
       <div id="tabla-usuarios"></div>
     </div>
@@ -145,6 +190,8 @@
   </section>
 </main>
 
+<!-- Chart.js 4.4.1 (versión fija) por CDN. Si no hay internet, el panel sigue funcionando sin las gráficas. -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js" defer></script>
 <script type="module" src="js/admin.js"></script>
 </body>
 </html>

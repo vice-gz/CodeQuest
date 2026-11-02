@@ -68,6 +68,22 @@ function rpc(nombre) {
       };
     case "admin_errores_por_usuario":
       return d.perfiles.map((p, i) => ({ usuario_id: p.user_id, total_ejecuciones: 10 + i, total_errores: 4 + i, error_mas_frecuente: "SEM_001" }));
+    case "admin_grupos":
+      return [
+        { clase_id: "c1", nombre: "Programación 1 · Grupo A con un nombre bastante largo para probar", codigo_acceso: "K7P3XQ", profesor_nombre: "Laura Hernández", alumnos: 3 },
+        { clase_id: "c2", nombre: "Taller", codigo_acceso: "M2N8ZB", profesor_nombre: "Laura Hernández", alumnos: 1 },
+      ];
+    case "admin_inscripciones":
+      return [{ clase_id: "c1", estudiante_id: "u2" }, { clase_id: "c1", estudiante_id: "u3" }, { clase_id: "c1", estudiante_id: "u4" }, { clase_id: "c2", estudiante_id: "u5" }];
+    case "admin_dashboard_datos": {
+      const dia = (k) => new Date(Date.now() - k * 86400000).toISOString().slice(0, 10);
+      const ids = ["u2", "u3", "u4", "u5", "u6", "u7"];
+      return {
+        usuarios: ids.map((id, i) => ({ usuario_id: id, total: 20 + i * 7, exitos: 8 + i * 3 })),
+        errores: ids.flatMap((id, i) => [{ usuario_id: id, codigo_error: ["SEM_001", "SYN_006", "RUN_005", "SYN_001", "SEM_007", "RUN_015"][i], total: 12 - i * 2 }, { usuario_id: id, codigo_error: "SEM_001", total: 3 + i }]),
+        dias: ids.flatMap((id, i) => [0, 1, 2, 3, 4, 5, 6].map((k) => ({ usuario_id: id, dia: dia(k), total: ((i + k * 3) % 5) + 1 }))),
+      };
+    }
     case "admin_auditoria":
       return [{ id: 1, fecha: iso(1), admin_nombre: "Admin", admin_email: "a@x.mx", accion: "cambiar_rol", objetivo_id: "u2", detalles: { nombre: "Beto Ruiz", rol_anterior: "estudiante", rol_nuevo: "profesor" } }];
     case "mis_clases":

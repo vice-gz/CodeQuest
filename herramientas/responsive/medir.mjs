@@ -13,7 +13,7 @@
 //       2) node herramientas/responsive/medir.mjs [--pagina=juego] [--ancho=390] [--detalle]
 
 import { spawn } from "node:child_process";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import chromium from "@sparticuz/chromium";
@@ -200,6 +200,15 @@ for (const esc of ESCENARIOS) {
     await page.setViewport({ width: vp.ancho, height: vp.alto, deviceScaleFactor: 1, isMobile: vp.movil, hasTouch: vp.movil });
     const errores = [];
     page.on("pageerror", (e) => errores.push(e.message));
+    if (esc.admin) {
+      // Chart.js llega por CDN: aquí se sirve la copia local de node_modules (npm i --no-save chart.js@4.4.1).
+      await page.setRequestInterception(true);
+      page.on("request", (req) => {
+        if (req.url().includes("cdn.jsdelivr.net/npm/chart.js")) {
+          req.respond({ status: 200, contentType: "application/javascript", body: readFileSync(new URL("../../node_modules/chart.js/dist/chart.umd.js", import.meta.url)) });
+        } else req.continue();
+      });
+    }
     page.on("console", (m) => m.type() === "error" && !/Failed to load resource|ERR_/.test(m.text()) && errores.push(m.text()));
     if (esc.rol) {
       const token = sesion();
@@ -315,6 +324,33 @@ for (const esc of ESCENARIOS) {
     }
 
     if (esc.admin) {
+      // Dashboard: Chart.js cargó, las 3 gráficas se dibujaron con tamaño real y el filtro por grupo cambia los KPIs.
+      const dash = await page.evaluate(async () => {
+        const fallos = [];
+        if (!window.Chart) return ["Chart.js no cargó (¿falta npm i --no-save chart.js@4.4.1?)"];
+        const kpis = () => Object.fromEntries([...document.querySelectorAll(".kpi-tarjeta")].map((t) => [t.querySelector(".kpi-titulo").textContent, t.querySelector(".kpi-valor").textContent.trim()]));
+        for (const id of ["grafica-errores", "grafica-mundos", "grafica-dias"]) {
+          const c = document.getElementById(id);
+          const r = c.getBoundingClientRect();
+          if (!window.Chart.getChart(c)) fallos.push(`${id}: no hay gráfica de Chart.js`);
+          if (r.width < 150 || r.height < 150) fallos.push(`${id}: tamaño ${Math.round(r.width)}×${Math.round(r.height)}`);
+          if (r.right > window.innerWidth + 1) fallos.push(`${id}: se sale de la pantalla`);
+        }
+        const antes = kpis();
+        if (Object.keys(antes).length !== 4) fallos.push(`debe haber 4 KPIs y hay ${Object.keys(antes).length}`);
+        const sel = document.getElementById("filtro-grupos");
+        const caja = sel.getBoundingClientRect();
+        if (caja.right > window.innerWidth + 1) fallos.push("el selector de grupo se sale de la pantalla");
+        sel.value = [...sel.options].find((o) => o.value.startsWith("clase:"))?.value;
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+        await new Promise((r) => setTimeout(r, 400));
+        const despues = kpis();
+        if (despues["Total de alumnos"] !== "3" || antes["Total de alumnos"] === despues["Total de alumnos"]) fallos.push(`el filtro no cambió los KPIs (${antes["Total de alumnos"]} → ${despues["Total de alumnos"]})`);
+        return fallos;
+      });
+      dash.forEach((x) => problemas.push(`[dashboard] ${x}`));
+      await new Promise((r) => setTimeout(r, 600));
+      await capturar(page, `/tmp/capturas/${esc.id}-dashboard-${vp.nombre}.png`);
       for (const pestana of ["usuarios", "ejecuciones", "auditoria"]) {
         await page.evaluate((p) => document.querySelector(`[data-seccion="${p}"]`)?.click(), pestana);
         await new Promise((r) => setTimeout(r, 700));

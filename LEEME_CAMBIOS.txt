@@ -1,0 +1,22 @@
+CodeQuest — Dashboard del administrador (gráficas con Chart.js + filtro por grupo)
+
+Cómo aplicarlo
+  1. Copia estos archivos sobre los de tu proyecto, respetando las carpetas (reemplazan a los que ya tienes).
+  2. En Supabase -> SQL Editor ejecuta  supabase/avance3_3.sql  (es idempotente).
+     Sin ese SQL el panel funciona pero SIN el filtro por grupo (y avisa cómo instalarlo).
+  3. Abre admin.html con conexión a internet (Chart.js se descarga de un CDN).
+
+Archivos
+  admin.html                      filtro «Ver datos de», 4 KPIs, 3 gráficas y botón de exportar
+  css/admin.css                   estilos del filtro, KPIs y gráficas
+  js/admin.js                     filtro global, dashboard y exportación del grupo seleccionado
+  js/ui/dashboardDatos.js         (nuevo) lógica de filtros, KPIs y datos de las gráficas
+  js/ui/dashboardGraficas.js      (nuevo) las 3 gráficas con Chart.js
+  supabase/avance3_3.sql          (nuevo) admin_grupos(), admin_inscripciones(), admin_dashboard_datos()
+  test_dashboard_admin.mjs        (nuevo) 16 pruebas del panel
+  test_dashboard_sql.mjs          (nuevo) prueba las funciones SQL en un PostgreSQL real temporal
+  package.json                    el script "test" incluye las pruebas nuevas
+  README.md                       sección «Dashboard de la tesis»
+  herramientas/responsive/*.mjs   solo para la revisión de pantallas en navegador (opcional)
+
+Para comprobar:  npm test      (o solo: node test_dashboard_admin.mjs)

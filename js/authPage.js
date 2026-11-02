@@ -1,6 +1,7 @@
 // authPage.js
 // Página de acceso: login, registro (alumno o profesor, con código de clase
-// opcional), recuperación de contraseña y redirección si ya hay sesión.
+// opcional), acceso con Google / GitHub, recuperación de contraseña y
+// redirección si ya hay sesión.
 
 import { supabase, configuracionValida } from "./supabase.js";
 import {
@@ -12,7 +13,13 @@ import {
   obtenerUsuarioActual,
   obtenerPerfil,
   redirigirSegunRol,
+  iniciarSesionOAuth,
+  completarLoginOAuth,
+  finalizarRegistroOAuth,
+  leerProveedorPendiente,
+  limpiarProveedorPendiente,
 } from "./auth.js";
+import { PROVEEDORES, leerParametrosOAuth, hayRetornoOAuth, mensajeErrorOAuth } from "./oauthUtil.js";
 import { DOMINIO_INSTITUCIONAL } from "./config.js";
 import { validarEmail } from "./util.js";
 
@@ -25,6 +32,9 @@ const el = {
   registro: $("panel-registro"),
   recuperar: $("panel-recuperar"),
   nueva: $("panel-nueva"),
+  bienvenida: $("panel-bienvenida"),
+  social: $("bloque-social"),
+  encabezado: $("auth-encabezado"),
 };
 
 if (DOMINIO_INSTITUCIONAL) {
@@ -63,6 +73,10 @@ function mostrarPanel(cual) {
   el.registro.classList.toggle("oculto", !enRegistro);
   el.recuperar.classList.toggle("oculto", cual !== "recuperar");
   el.nueva.classList.toggle("oculto", cual !== "nueva");
+  el.bienvenida.classList.toggle("oculto", cual !== "bienvenida");
+  // Los botones de Google/GitHub y el título solo van en las pantallas de «entrar».
+  el.social.classList.toggle("oculto", !(enLogin || enRegistro));
+  el.encabezado.classList.toggle("oculto", !(enLogin || enRegistro));
 
   document.querySelector(".auth-pestanas").classList.toggle("oculto", !(enLogin || enRegistro));
   el.pestanaLogin.classList.toggle("activa", enLogin);
@@ -148,6 +162,108 @@ el.registro.addEventListener("submit", async (e) => {
   await redirigirSegunRol();
 });
 
+// ---------- Acceso con Google y GitHub ----------
+// Los mismos botones sirven para entrar y para crear cuenta. Si es la primera vez, al volver del
+// proveedor se muestra «Un último paso» (alumno o profesor); si ya tenía cuenta, entra directo.
+
+const botonesSociales = [...document.querySelectorAll(".boton-social")];
+
+function bloquearSociales(bloqueado) {
+  botonesSociales.forEach((b) => {
+    b.disabled = bloqueado;
+  });
+}
+
+botonesSociales.forEach((boton) =>
+  boton.addEventListener("click", async () => {
+    limpiarMensaje();
+    const proveedor = boton.dataset.proveedor;
+    bloquearSociales(true);
+    mostrarMensaje(`Conectando con ${PROVEEDORES[proveedor].nombre}…`, "ok");
+    const r = await iniciarSesionOAuth(proveedor);
+    if (!r.ok) {
+      bloquearSociales(false);
+      mostrarMensaje(r.mensaje);
+    }
+    // Si todo va bien, el navegador ya se está yendo a la pantalla del proveedor.
+  })
+);
+
+/** Muestra el resultado final del registro (o de un login normal) y lleva a la persona a su página. */
+async function terminarEntrada(r, perfil) {
+  if (r.rolNoAplicado) {
+    mostrarMensaje("Tu cuenta se creó como alumno porque no se pudo activar el rol de profesor. Pide a un administrador que lo cambie.", "ok");
+    setTimeout(() => redirigirSegunRol(perfil), 4000);
+    return;
+  }
+  if (r.aviso) {
+    mostrarMensaje(`Tu cuenta se creó, pero no pudimos unirte a la clase: ${r.aviso} Puedes intentarlo de nuevo desde tu perfil.`, "ok");
+    setTimeout(() => redirigirSegunRol(perfil), 3500);
+    return;
+  }
+  await redirigirSegunRol(perfil);
+}
+
+/** Pantalla «Un último paso» (primera vez con Google/GitHub). */
+function mostrarBienvenida(perfil) {
+  mostrarPanel("bienvenida");
+  const primerNombre = String(perfil?.nombre || "").trim().split(/\s+/)[0];
+  $("bienvenida-titulo").textContent = primerNombre ? `¡Hola, ${primerNombre}!` : "¡Hola!";
+  $("btn-bienvenida").focus();
+}
+
+const rolBienvenida = () => document.querySelector('input[name="rol-bienvenida"]:checked')?.value || "estudiante";
+document.querySelectorAll('input[name="rol-bienvenida"]').forEach((r) =>
+  // El código de clase solo lo usa un alumno.
+  r.addEventListener("change", () => $("campo-codigo-bienvenida").classList.toggle("oculto", rolBienvenida() !== "estudiante"))
+);
+
+el.bienvenida.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  limpiarMensaje();
+  const boton = $("btn-bienvenida");
+  ocupado(boton, true, "Guardando…");
+  const rol = rolBienvenida();
+  const r = await finalizarRegistroOAuth({ rol, codigoClase: rol === "estudiante" ? $("bienvenida-codigo").value : "" });
+  if (!r.ok) {
+    ocupado(boton, false);
+    return mostrarMensaje(r.mensaje);
+  }
+  await terminarEntrada(r, r.perfil);
+});
+
+/** Al volver del proveedor: muestra el error, o termina de entrar. Devuelve true si se encargó de la página. */
+async function manejarRetornoOAuth() {
+  const params = leerParametrosOAuth(window.location);
+  if (!hayRetornoOAuth(params)) return false;
+
+  const nombreProveedor = PROVEEDORES[leerProveedorPendiente()]?.nombre || "el proveedor";
+  // Quita los tokens de la barra de direcciones (no deben quedarse en el historial).
+  window.history.replaceState(null, "", window.location.pathname);
+
+  if (params.error) {
+    limpiarProveedorPendiente();
+    mostrarMensaje(mensajeErrorOAuth(params, nombreProveedor));
+    return true;
+  }
+
+  mostrarMensaje(`Entrando con ${nombreProveedor}…`, "ok");
+  bloquearSociales(true);
+  const r = await completarLoginOAuth();
+  if (!r.ok) {
+    bloquearSociales(false);
+    mostrarMensaje(r.mensaje);
+    return true;
+  }
+  limpiarMensaje();
+  if (r.necesitaOnboarding) {
+    mostrarBienvenida(r.perfil);
+    return true;
+  }
+  await terminarEntrada(r, r.perfil);
+  return true;
+}
+
 // ---------- Recuperar contraseña ----------
 
 el.recuperar.addEventListener("submit", async (e) => {
@@ -203,6 +319,9 @@ el.nueva.addEventListener("submit", async (e) => {
     else mostrarMensaje("Abriendo el enlace de recuperación…", "ok");
     return;
   }
+
+  // Regreso de Google / GitHub (o error del proveedor).
+  if (await manejarRetornoOAuth()) return;
 
   // Sesión ya activa: ir directo a la página que corresponde al rol.
   if ((await obtenerUsuarioActual()) && (await obtenerPerfil({ forzar: true }))) {
