@@ -6,12 +6,16 @@ import { EscenarioLaboratorio } from "./laboratorio.js";
 import { EscenarioDatos } from "./datos.js";
 import { EscenarioCartas } from "./cartas.js";
 import { EscenarioElevador } from "./elevador.js";
+import { EscenarioFabrica } from "./fabrica.js";
+import { EscenarioDiagrama } from "./diagrama.js";
 
 const ESCENARIOS = {
   laboratorio: EscenarioLaboratorio,
   datos: EscenarioDatos,
   cartas: EscenarioCartas,
   elevador: EscenarioElevador,
+  fabrica: EscenarioFabrica,
+  diagrama: EscenarioDiagrama,
 };
 
 export function crearEscenario(config = {}, opciones = {}) {

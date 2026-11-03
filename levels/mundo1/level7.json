@@ -68,7 +68,7 @@
     },
     {
       "id": "7.3",
-      "tipo": "LIBRE",
+      "tipo": "RESOLVER",
       "titulo": "Batería y puerta",
       "enunciado": "Ahora hay DOS objetivos: la batería en (5,0) y la puerta en (5,2). Pasa por los dos, en el orden que quieras. Cada estrella se apaga al pisarla.",
       "codigoInicial": "",
@@ -102,7 +102,10 @@
             2
           ]
         ]
-      }
+      },
+      "solucionesIncorrectas": [
+        "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)"
+      ]
     }
   ],
   "escenario": {

@@ -90,7 +90,7 @@ CQL, como Python, usa la **sangría** para agrupar instrucciones en bloques. El 
 
 ### 2.4 Tabla de tokens
 
-Hay **37 tipos de token**. Esta tabla sale del propio lexer:
+Hay **40 tipos de token**. Esta tabla sale del propio lexer:
 
 #### Palabras clave
 
@@ -107,6 +107,9 @@ Hay **37 tipos de token**. Esta tabla sale del propio lexer:
 | `NOT` | `not` | «no» lógico: invierte True/False |
 | `TRUE` | `True` | Valor lógico verdadero (con T mayúscula) |
 | `FALSE` | `False` | Valor lógico falso (con F mayúscula) |
+| `DEF` | `def` | Define una función: def nombre(parametros): |
+| `RETURN` | `return` | Devuelve un valor desde una función y la termina |
+| `NONE` | `None` | El valor «nada»: lo que devuelve una función sin return |
 
 #### Valores y nombres
 
@@ -201,7 +204,9 @@ Notación: `*` = cero o más veces, `+` = una o más, `?` = opcional, `|` = o. L
 
 ```text
 programa      := sentencia*
-sentencia     := asignacion | llamada | condicional | mientras | para
+sentencia     := asignacion | llamada | condicional | mientras | para | def | return
+def           := "def" IDENTIFICADOR "(" (IDENTIFICADOR ("," IDENTIFICADOR)*)? ")" bloque     ← solo al margen izquierdo
+return        := "return" expresion?                                                            ← solo dentro de un def
 
 asignacion    := IDENTIFICADOR "=" expresion NUEVA_LINEA
 llamada       := IDENTIFICADOR "(" argumentos? ")"                 (print, input, int, float, str)
@@ -247,6 +252,7 @@ CQL es de **tipado dinámico**: no se declara el tipo; lo decide el valor, y una
 | **Decimal** (`float`) | dígitos, punto, dígitos | `1.75`, `2.5`, `5.0` | `DECIMAL` |
 | **Texto** (`str`) | entre comillas | `"Ana"`, `'hola'` | `TEXTO` |
 | **Lógico** (`bool`) | `True` / `False` | `True`, `3 > 2` | `LÓGICO` |
+| **None** | `None` | lo que devuelve una función sin `return` | `NONE` |
 
 Reglas importantes:
 
@@ -369,7 +375,25 @@ Los argumentos pueden ser expresiones, pero deben dar **enteros** y el paso no p
 - **Métodos de un objeto**: `robot1.avanzar(3)`, `elevador.subir(1)`, `mesa.voltear()`.
 - Los métodos que **devuelven valor** también se pueden usar dentro de expresiones: `if elevador.hayPasajero():`, `print(robot1.energia())`. Usar en una expresión un método que no devuelve valor es el error `SEM_009`.
 
-### 6.6 Comentarios y líneas vacías
+### 6.6 Funciones: `def`, parámetros y `return` (Mundo 5)
+
+```python
+def calcular_area(ancho, alto):     # define la función (aún no se ejecuta nada)
+    return ancho * alto             # devuelve el resultado y termina la función
+
+a = calcular_area(2, 3)            # llama a la función: a vale 6
+print(calcular_area(4, 5))         # 20
+```
+
+- **Definir y llamar.** `def` solo *guarda* la función; cada llamada `nombre(valores)` la ejecuta. La función debe estar definida **antes** de la línea que la llama (`SEM_017`), pero dentro de una función sí se puede llamar a otra que se defina después.
+- **Parámetros.** Son los nombres entre paréntesis del `def`; cada llamada debe dar **exactamente un valor por parámetro** (`SEM_014`, TypeError).
+- **`return`.** Devuelve un valor y termina la función ahí mismo (lo que haya después no se ejecuta). Sin `return` —o con `return` a secas— la función devuelve `None`, y operar con `None` da un error de tipos.
+- **Variables locales.** Lo que se asigna dentro de una función es **local**: no existe fuera (`SEM_015`) y, si la función asigna una variable, esa variable es local en TODA la función, aunque haya una global con el mismo nombre (`RUN_023`, UnboundLocalError). Las variables globales sí se pueden **leer** desde la función. No existen `global` ni `nonlocal`.
+- **Recursión.** Una función puede llamarse a sí misma; el límite es de 100 llamadas anidadas (`RUN_021`, RecursionError).
+- **Nombre sin paréntesis** (`x = doble`) no ejecuta nada: error `SEM_016`. `def` solo va al margen izquierdo (`SYN_018`); `return` fuera de una función es `SYN_017`. Los nombres `print`, `input`, `int`, `float` y `str` no se pueden usar como nombre de función ni de parámetro.
+- **Mundo 5:** cada `def` se dibuja como una **máquina** en la fábrica; cada llamada la enciende (entra el argumento, sale el `return`).
+
+### 6.7 Comentarios y líneas vacías
 
 ```python
 # Un comentario en su propia línea
@@ -405,6 +429,8 @@ Cada mundo tiene **su propio objeto** (o ninguno). Usar un objeto que no es del 
 | 2 · Memoria | *(ninguno)* | solo variables, `print`, `input` y las conversiones `int`, `float`, `str` |
 | 3 · Lógica | `mesa` | poner_carta(n), voltear() |
 | 4 · Automatización | `elevador` | subir(n), bajar(n), recoger(), soltar(), piso() → valor, hayPasajero() → valor, llevando() → valor |
+| 5 · Modularidad | `robot1` (a veces) | los del robot; la fábrica dibuja cada función como una máquina |
+| Nivel 0 (antes del Mundo 1) | *(sin código)* | se ordenan tarjetas de un diagrama de flujo: Inicio, pasos y Fin |
 
 ### 8.1 `robot1` (cuadrícula del laboratorio)
 
@@ -462,6 +488,29 @@ El **piso 1 es la planta baja**; el edificio llega hasta el piso 5. Los pasajero
 
 ---
 
+### 8.5 Mundo 5 · Modularidad (la fábrica de robots)
+
+No hay un objeto nuevo: lo que se dibuja son **tus funciones**, como una **línea de ensamble con visualización paso a paso**:
+
+| Qué ocurre en el código | Qué se ve en la fábrica |
+|---|---|
+| `def nombre(...)` | Se **construye una máquina** sobre la línea (no trabaja todavía) |
+| Una **llamada** `nombre(5, 3)` | Una **caja de materiales** `[5, 3]` viaja por la cinta hasta la máquina |
+| La función se ejecuta | La máquina se **ilumina** y aparecen **chips** flotantes con las variables locales: `a = 5`, `b = 3`, `resultado = 8` |
+| `print(...)` | Sale una **burbuja de texto** |
+| `return valor` | Sale una **caja de producto terminado** (verde, brillante) con el valor |
+| Sin `return` | Sale una **caja gris** con `None` |
+
+El panel de estado lista las máquinas, cuántas llamadas van y la última (`doble(4) → 8`). Las variables locales no aparecen en Memoria. Algunos niveles añaden una pista con **Robot1** (`robot1.avanzar(n)` dentro de una función) para llegar a una bandera.
+
+Validaciones propias de la fábrica (las usan los niveles): la función *se definió* con tal nombre y número de parámetros, *se llamó* al menos N veces, y *devolvió* un valor (no solo lo mostró).
+
+### 8.6 Nivel 0 y Niveles Jefe
+
+- **Nivel 0 (antes del Mundo 1):** no se escribe código. Se hace clic en las tarjetas de un **diagrama de flujo** (`Inicio`, pasos como `Caminar 3 pasos` o `Abrir la puerta`, y `Fin`) en el orden correcto; cada tarjeta correcta se ejecuta en un pasillo y, si no tocaba todavía, Robot1 choca y se empieza de nuevo. Es el equivalente visual de «un programa es una lista de instrucciones en orden».
+- **Nivel 8 del Mundo 5 · El Gran Ensamblaje (Jefe):** hay que definir exactamente tres funciones, `cabeza()`, `brazos()` y `piernas()`, y llamarlas en ese orden; un **Robot1 gigante** se arma en pantalla conforme se ejecutan las llamadas. Sin pistas y con el editor en blanco.
+- **Niveles Jefe** (último nivel de los Mundos 1 a 4): usan el CQL de su mundo, pero **sin botón de pistas**, con el editor en blanco y un solo enunciado; los de los Mundos 2 a 4 se prueban en varios casos.
+
 ## 9. Qué se desbloquea y cuándo
 
 El lenguaje se **va abriendo nivel por nivel**: cada fase declara qué instrucciones permite, y usar una que todavía no se ha aprendido da un error educativo (`SEM_007`: «no está permitido todavía en este nivel»), no un fallo misterioso. Los **permisos** que puede abrir una fase son: `print`, `input`, `int`, `float`, `str`, `asignacion`, `if`, `elif`, `else`, `while`, `for`, `and`, `or`, `not` y `booleanos` (los comparadores y `True`/`False` se permiten cuando está abierto `if`, `while` o `booleanos`), más la lista de métodos del objeto del mundo.
@@ -483,6 +532,10 @@ Esta tabla es la del **Diccionario** del juego:
 | `nombre = valor` | Variables | Mundo 2 · Nivel 1 (Necesito recordar), fase 9.1 | Guarda un valor con un nombre para reutilizarlo después. Aparece en el panel de Memoria. |
 | `+  -  *  /  **` | Operadores | Mundo 2 · Nivel 4 (Cálculo de energía), fase 12.2 | Operaciones aritméticas. Primero se resuelve ** (potencia), después * y /, y al final + y -, igual que en matemáticas. Ojo: / SIEMPRE da un decimal (10 / 2 vale 5.0). |
 | `a // b   a % b` | Operadores | Mundo 2 · Nivel 5 (Calcula el reparto), fase 13.1 | a // b es la división entera (solo la parte entera: 17 // 4 vale 4). a % b devuelve el residuo (17 % 5 vale 2). |
+| `def nombre(parametros):` | Funciones | Mundo 5 · Nivel 1 (Construyendo máquinas), fase 48.1 | Define una función: un bloque de código con nombre que puedes usar (llamar) las veces que quieras. Los parámetros son los valores que recibe. Las variables que crees dentro son locales: solo existen ahí. |
+| `nombre(valores)` | Funciones | Mundo 5 · Nivel 1 (Construyendo máquinas), fase 48.1 | Llama (ejecuta) una función que ya definiste con def. Si tiene parámetros, hay que darle un valor por cada uno. |
+| `return valor` | Funciones | Mundo 5 · Nivel 4 (El producto terminado), fase 51.1 | Termina la función y devuelve un valor a quien la llamó: resultado = calcular_doble(4). Si una función no tiene return (o solo dice return), devuelve None. |
+| `None` | Funciones | Mundo 5 · Nivel 4 (El producto terminado), fase 51.1 | El valor que significa «nada». Una función sin return devuelve None, y print(None) muestra None. |
 | `robot1.energia()` | Estado | Mundo 1 · Nivel 8 (La salida), fase 8.3 | Devuelve la energía que le queda a Robot1. Pruébala en el Laboratorio Libre. |
 | `robot1.posicion()` | Estado | Mundo 1 · Nivel 8 (La salida), fase 8.3 | Devuelve la posición actual de Robot1 como (columna,fila). Pruébala en el Laboratorio Libre. |
 | `robot1.mirar()` | Estado | Mundo 1 · Nivel 8 (La salida), fase 8.3 | Devuelve la dirección hacia la que mira Robot1. Pruébala en el Laboratorio Libre. |
@@ -515,7 +568,7 @@ Todos los errores de CQL tienen un **código**, un **mensaje**, una explicación
 
 | Código | Mensaje | Qué significa | Cómo se arregla |
 |---|---|---|---|
-| `LEX_001` | Carácter no reconocido: ‹x› | El carácter "‹x›" no forma parte del lenguaje CQL. | Revisa que no haya símbolos de más, como @, $ o ?. |
+| `LEX_001` | Carácter no reconocido: ‹x› | El carácter "‹x›" no forma parte del lenguaje de este juego (un subconjunto de Python). | Revisa que no haya símbolos de más, como @, $ o ?. |
 | `LEX_002` | Texto sin cerrar | Todo texto debe abrir y cerrar con la misma comilla. | Agrega la comilla que falta, por ejemplo: "Hola". |
 
 #### Sintácticos (la estructura del código está mal escrita)
@@ -536,6 +589,12 @@ Todos los errores de CQL tienen un **código**, un **mensaje**, una explicación
 | `SYN_012` | El for necesita range(...) | En CodeQuest el for repite una cantidad de veces usando range(). | Ejemplo: for i in range(3): |
 | `SYN_013` | range() recibe 1, 2 o 3 números | range(n) cuenta de 0 a n-1; range(a, b) cuenta de a a b-1; range(a, b, paso) salta de paso en paso. | Ejemplo: range(3) repite 3 veces. |
 | `SYN_014` | No se pueden encadenar dos comparaciones | Cada comparación se hace por separado y se unen con and / or. | En vez de 1 < x < 5, escribe: x > 1 and x < 5 |
+| `SYN_015` | ‹x› después de def | Una función se define así: la palabra def, el nombre, paréntesis con los parámetros y dos puntos. | Ejemplo: def saludar():   o   def sumar(a, b): |
+| `SYN_016` | Los parámetros de la función están mal escritos | Los parámetros son nombres de variable separados por comas, entre los paréntesis del def. | Ejemplo: def calcular_area(ancho, alto): |
+| `SYN_016` | SyntaxError: el parámetro "‹x›" está repetido | Cada parámetro necesita un nombre distinto. | Cambia el nombre de uno de los parámetros. |
+| `SYN_017` | SyntaxError: "return" solo se puede usar dentro de una función | return devuelve un valor desde una función y termina esa función. Fuera de una función no tiene sentido. | Escribe el return dentro del def, con sangría. |
+| `SYN_018` | Las funciones se definen al inicio del programa, no dentro de otros bloques | En CodeQuest, def va al margen izquierdo: no dentro de un if, un ciclo u otra función. | Mueve el def al margen izquierdo, sin sangría. |
+| `SYN_019` | Los decimales se escriben con punto, no con coma (línea ‹x›) | En Python los decimales se escriben con punto, no con coma. Con una coma, Python ve dos números separados, no un decimal. | Cambia la coma por un punto: por ejemplo, 2.5 en lugar de 2,5. |
 
 #### Semánticos (la instrucción existe pero no se puede usar así aquí)
 
@@ -544,7 +603,7 @@ Todos los errores de CQL tienen un **código**, un **mensaje**, una explicación
 | `SEM_001` | ‹x› no es un valor: se escribe False | Los valores lógicos se escriben con mayúscula inicial: True y False. | Escribe False |
 | `SEM_001` | La variable ‹x› no existe todavía | Recuerda: antes de usar una variable, debes darle un valor. | Ejemplo: ‹x› = 3 |
 | `SEM_002` | El método ‹x›.‹x› no existe | El objeto ‹x› solo entiende los métodos definidos en su manual de instrucciones. | Revisa cómo se llama el método que quieres usar. |
-| `SEM_003` | La función ‹x› no existe | CQL solo reconoce las funciones de Python de su biblioteca: print, input, int, float y str. | Por ejemplo, usa print(...) para mostrar algo en pantalla. |
+| `SEM_003` | La función ‹x› no existe | Aquí solo se usan estas funciones de Python: print, input, int, float y str (más las que definas tú con def). | Por ejemplo, usa print(...) para mostrar algo en pantalla. |
 | `SEM_004` | ‹x›.‹x›() necesita un número | Este movimiento solo acepta una cantidad numérica. | Ejemplo: ‹x›.‹x›(3) o ‹x›.‹x›(pasos). |
 | `SEM_004` | robot1.avanzar() necesita un número | Robot1 solo puede avanzar una cantidad numérica de casillas. | Ejemplo: robot1.avanzar(3) o robot1.avanzar(pasos). |
 | `SEM_005` | print() necesita un valor | print() muestra algo en pantalla, así que necesita saber qué mostrar. | Ejemplo: print("Hola mundo") |
@@ -559,6 +618,10 @@ Todos los errores de CQL tienen un **código**, un **mensaje**, una explicación
 | `SEM_011` | input() devuelve texto: conviértelo a número antes de operar | En Python, input() SIEMPRE devuelve un texto, aunque la persona escriba un número. Un texto no se puede sumar, restar ni multiplicar con un número. | Conviértelo primero: ‹x›   (usa float(input()) si el número lleva decimales). |
 | `SEM_012` | "‹x›" es una función de Python: no puede usarse como nombre de variable | print, input, int, float, str y range ya significan algo en Python. Si los usas como nombre de variable, dejarías de poder usarlos. | Elige otro nombre, por ejemplo ‹x›_1 o mi_‹x›. |
 | `SEM_013` | TypeError: ‹x›() recibe ‹x› | ‹x›() necesita exactamente un valor para convertir. | Ejemplo: ‹x›(input()) |
+| `SEM_014` | TypeError: ‹x›() recibe ‹x› argumento(s) pero le diste ‹x› | Al llamar a una función hay que darle exactamente un valor por cada parámetro que tiene en su def. | Dale ‹x› valor(es) entre paréntesis: ‹x›() |
+| `SEM_015` | NameError: la variable "‹x›" solo existe dentro de la función ‹x›() | Las variables que se crean dentro de una función son LOCALES: desaparecen cuando la función termina. Desde fuera no se pueden usar. | Haz que ‹x›() devuelva el valor con return, y guárdalo al llamarla: resultado = ‹x›(...) |
+| `SEM_016` | "‹x›" es una función: para usarla hay que llamarla con paréntesis | El nombre solo, sin paréntesis, no ejecuta la función. | Escribe ‹x›() (con los valores que necesite entre los paréntesis). |
+| `SEM_017` | NameError: la función ‹x›() todavía no está definida en este punto | Python lee el programa de arriba hacia abajo: una función tiene que estar definida (def) ANTES de la línea donde la llamas. | Mueve el def ‹x› más arriba que la llamada. |
 
 #### De ejecución (fallan mientras el programa corre)
 
@@ -584,6 +647,10 @@ Todos los errores de CQL tienen un **código**, un **mensaje**, una explicación
 | `RUN_017` | ValueError: El valor ingresado no es un número válido (‹x›("‹x›")) | float() solo convierte textos que parezcan un número, como "3.5" o "7". No acepta letras. | ‹x›("12") funciona; ‹x›("hola") no. Revisa lo que escribió quien usa el programa. |
 | `RUN_018` | OverflowError: el número es demasiado grande | CodeQuest solo maneja enteros de hasta unas 9 mil billones (2⁵³) y decimales finitos. | Revisa las multiplicaciones y potencias: algo creció demasiado. |
 | `RUN_019` | ValueError: esa potencia no da un número real | Un número negativo elevado a un exponente decimal (como (-8) ** 0.5) no es un número real. | Usa una base positiva o un exponente entero. |
+| `RUN_020` | NameError: la función ‹x›() no está definida | Se llamó a una función que todavía no se había definido con def. | Define la función con def ‹x›(): antes de llamarla. |
+| `RUN_021` | RecursionError: demasiadas llamadas de función una dentro de otra | Una función se llamó a sí misma (o a otra) una y otra vez sin parar. El límite en CodeQuest es de 100 llamadas anidadas. | Revisa que la función tenga una condición que la detenga. |
+| `RUN_022` | TypeError: ‹x›() no puede convertir None | None es lo que devuelve una función que no tiene return: no es un número ni un texto. | Agrega return con el valor en la función que estás llamando. |
+| `RUN_023` | UnboundLocalError: la variable "‹x›" es local en ‹x›() y todavía no tiene valor | Si una función asigna una variable (x = ...), esa variable es LOCAL en toda la función: no se puede leer la de afuera con el mismo nombre antes de asignarle un valor. | Recibe el valor como parámetro y devuelve el nuevo con return: def f(n): return n + 1   y afuera:  total = f(total) |
 
 ---
 
@@ -593,7 +660,7 @@ CQL es deliberadamente pequeño. Todo esto **no existe** (y la mayoría produce 
 
 | No existe | Qué pasa si se intenta |
 |---|---|
-| Funciones propias (`def`), `return` | `def f():` → error de sintaxis |
+| `def` dentro de un `if`, un ciclo u otro `def`; valores por omisión (`def f(a=1)`), `*args`, `lambda`, `global`, `nonlocal` | `SYN_018` o error de sintaxis |
 | Listas, diccionarios, tuplas (`[ ]`, `{ }`) | `LEX_001`: carácter no reconocido |
 | Recorrer con `for x in lista` | `SYN_012`: el for solo acepta `range(...)` |
 | `break`, `continue`, `pass` | Se leen como nombres de variable sin sentido |
@@ -669,6 +736,51 @@ elevador.soltar()
 print(elevador.llevando())   # 0
 ```
 
+### Mundo 5 — funciones
+
+```python
+def calcular_area(ancho, alto):
+    return ancho * alto
+
+a1 = calcular_area(2, 3)
+a2 = calcular_area(4, 5)
+print(a1)             # 6
+print(a2)             # 20
+print(a1 + a2)        # 26
+
+def saludar(nombre):
+    print("Hola " + nombre)   # sin return: devuelve None
+
+saludar("Robot1")
+```
+
+Un error típico del Mundo 5 (la variable local no existe afuera):
+
+```python
+def calcular():
+    resultado = 5 * 4
+calcular()
+print(resultado)
+```
+
+```text
+SEM_015 · NameError: la variable "resultado" solo existe dentro de la función calcular()
+Haz que calcular() devuelva el valor con return, y guárdalo al llamarla: resultado = calcular(...)
+```
+
+### Mundo 4, Nivel Jefe — la energía se planea
+
+```python
+# 5 pisos, cabina de 4 y batería de 10: un solo viaje de subida y uno de bajada gasta 8
+for i in range(4):
+    elevador.subir(1)
+    if elevador.hayPasajero():
+        elevador.recoger()
+for i in range(4):
+    elevador.bajar(1)
+elevador.soltar()
+```
+
 ### Un error de tipos, como en Python
 
 ```python
@@ -699,7 +811,7 @@ Ejemplo: if x > 10:
 
 ## 13. Compatibilidad con Python 3
 
-CQL es un **subconjunto de Python 3**: todo programa de CQL que funciona se comporta igual en Python real. La prueba `test_python_compat.mjs` ejecuta más de cien programas en el Python del sistema y en CQL y compara la salida (o el tipo de error: `ZeroDivisionError`, `TypeError`, `ValueError`, `NameError`).
+CQL es un **subconjunto de Python 3**: todo programa de CQL que funciona se comporta igual en Python real. La prueba `test_python_compat.mjs` ejecuta más de 150 programas (36 con funciones) en el Python del sistema y en CQL y compara la salida (o el tipo de error: `ZeroDivisionError`, `TypeError`, `ValueError`, `NameError`, `UnboundLocalError`, `RecursionError`).
 
 **Diferencias deliberadas** (CQL es *más estricto* que Python para enseñar mejor; nunca acepta algo que Python rechace):
 
@@ -711,7 +823,8 @@ CQL es un **subconjunto de Python 3**: todo programa de CQL que funciona se comp
 | `(-8) ** 0.5` da un número complejo | Error (`RUN_019`) | CQL no tiene números complejos |
 | Los enteros no tienen límite | Enteros de hasta 2⁵³ (`RUN_018`) | Representación interna |
 | `print(a, b)` imprime los dos | Solo muestra el primero | Una sola salida por `print` |
-| Todo el vocabulario de Python (listas, `def`, `import`…) | No existe | CQL es un subconjunto |
+| `def` dentro de un bloque (Python lo permite); parámetros opcionales, `*args`, `lambda`, `global` | Error (`SYN_018` / sintaxis) | Las funciones se enseñan en su forma más simple |
+| Todo el vocabulario de Python (listas, `import`, clases…) | No existe | CQL es un subconjunto |
 | `print`, `input`, `int`… son funciones que se pueden reasignar | Son nombres reservados (`SEM_012`) | Evita romper las funciones por accidente |
 
 Además, CQL muestra algunos errores **antes de ejecutar** (el validador sabe, por ejemplo, que `input()` es texto) y con mensajes educativos; Python los daría al llegar a esa línea.

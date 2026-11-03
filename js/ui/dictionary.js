@@ -110,6 +110,36 @@ export const CATALOGO = [
     desbloqueaEn: "13.1",
   },
   {
+    id: "def",
+    firma: "def nombre(parametros):",
+    categoria: "Funciones",
+    descripcion:
+      "Define una función: un bloque de código con nombre que puedes usar (llamar) las veces que quieras. Los parámetros son los valores que recibe. Las variables que crees dentro son locales: solo existen ahí.",
+    desbloqueaEn: "48.1",
+  },
+  {
+    id: "llamada",
+    firma: "nombre(valores)",
+    categoria: "Funciones",
+    descripcion: "Llama (ejecuta) una función que ya definiste con def. Si tiene parámetros, hay que darle un valor por cada uno.",
+    desbloqueaEn: "48.1",
+  },
+  {
+    id: "return",
+    firma: "return valor",
+    categoria: "Funciones",
+    descripcion:
+      "Termina la función y devuelve un valor a quien la llamó: resultado = calcular_doble(4). Si una función no tiene return (o solo dice return), devuelve None.",
+    desbloqueaEn: "51.1",
+  },
+  {
+    id: "none",
+    firma: "None",
+    categoria: "Funciones",
+    descripcion: "El valor que significa «nada». Una función sin return devuelve None, y print(None) muestra None.",
+    desbloqueaEn: "51.1",
+  },
+  {
     id: "energia",
     firma: "robot1.energia()",
     categoria: "Estado",

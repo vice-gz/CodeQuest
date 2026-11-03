@@ -1,0 +1,235 @@
+{
+  "id": 0,
+  "mundo": 1,
+  "nombre": "Antes de empezar: el algoritmo",
+  "concepto": "algoritmo y diagrama de flujo",
+  "concepto_evaluado": "algoritmo_diagrama_flujo",
+  "narrativa": "Antes de entrar al laboratorio, Robot1 necesita aprender lo más importante: seguir un algoritmo, una lista de pasos en el orden correcto.",
+  "escenario": {
+    "tipo": "diagrama",
+    "largo": 5,
+    "puertaX": 4
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "0.1",
+      "tipo": "ORDENAR",
+      "titulo": "La puerta del laboratorio",
+      "enunciado": "Un ALGORITMO es una lista de pasos, en orden, que resuelve un problema. Robot1 está frente a una puerta: haz clic en las tarjetas en el orden correcto para que llegue y la abra. Cada diagrama de flujo empieza en Inicio y termina en Fin.",
+      "codigoInicial": "",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [],
+      "escenario": {
+        "tipo": "diagrama",
+        "largo": 5,
+        "puertaX": 4
+      },
+      "tarjetas": [
+        {
+          "id": "abrir",
+          "texto": "Abrir la puerta",
+          "accion": {
+            "tipo": "abrir"
+          }
+        },
+        {
+          "id": "fin",
+          "texto": "Fin",
+          "forma": "fin"
+        },
+        {
+          "id": "inicio",
+          "texto": "Inicio",
+          "forma": "inicio"
+        },
+        {
+          "id": "caminar3",
+          "texto": "Caminar 3 pasos",
+          "accion": {
+            "tipo": "caminar",
+            "pasos": 3
+          }
+        }
+      ],
+      "ordenCorrecto": [
+        "inicio",
+        "caminar3",
+        "abrir",
+        "fin"
+      ],
+      "validacion": {
+        "tipo": "orden"
+      },
+      "retroalimentacion": "¡Lo lograste! Escribiste tu primer algoritmo: pasos en el orden correcto. Si cambias el orden, el resultado cambia.",
+      "pistas": [
+        "Un diagrama siempre empieza con Inicio.",
+        "Robot1 tiene que estar junto a la puerta antes de abrirla."
+      ],
+      "mensajeNoLogrado": "Esa tarjeta no iba todavía: ¡Robot1 chocó! Piensa qué tiene que pasar primero y vuelve a empezar."
+    },
+    {
+      "id": "0.2",
+      "tipo": "ORDENAR",
+      "titulo": "La puerta con llave",
+      "enunciado": "Ahora la puerta está cerrada con llave, y la llave está tirada en el pasillo. Ordena el algoritmo completo para que Robot1 recoja la llave y abra la puerta.",
+      "codigoInicial": "",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [],
+      "escenario": {
+        "tipo": "diagrama",
+        "largo": 6,
+        "puertaX": 5,
+        "llaveX": 1
+      },
+      "tarjetas": [
+        {
+          "id": "abrir",
+          "texto": "Abrir la puerta",
+          "accion": {
+            "tipo": "abrir"
+          }
+        },
+        {
+          "id": "caminar3",
+          "texto": "Caminar 3 pasos",
+          "accion": {
+            "tipo": "caminar",
+            "pasos": 3
+          }
+        },
+        {
+          "id": "fin",
+          "texto": "Fin",
+          "forma": "fin"
+        },
+        {
+          "id": "recoger",
+          "texto": "Recoger la llave",
+          "accion": {
+            "tipo": "recoger"
+          }
+        },
+        {
+          "id": "inicio",
+          "texto": "Inicio",
+          "forma": "inicio"
+        },
+        {
+          "id": "caminar1",
+          "texto": "Caminar 1 paso",
+          "accion": {
+            "tipo": "caminar",
+            "pasos": 1
+          }
+        }
+      ],
+      "ordenCorrecto": [
+        "inicio",
+        "caminar1",
+        "recoger",
+        "caminar3",
+        "abrir",
+        "fin"
+      ],
+      "validacion": {
+        "tipo": "orden"
+      },
+      "retroalimentacion": "Un algoritmo más largo: cada paso depende del anterior. ¡Ya piensas como programador!",
+      "pistas": [
+        "La llave está a 1 paso de Robot1.",
+        "Sin la llave, la puerta no abre."
+      ],
+      "mensajeNoLogrado": "Esa tarjeta no iba todavía: ¡Robot1 chocó! Piensa qué tiene que pasar primero y vuelve a empezar."
+    },
+    {
+      "id": "0.3",
+      "tipo": "ORDENAR",
+      "titulo": "Robot1 apagado",
+      "enunciado": "Robot1 está apagado y no puede caminar. Ordena TODO el algoritmo: despertarlo, recoger la llave y abrir la puerta.",
+      "codigoInicial": "",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [],
+      "escenario": {
+        "tipo": "diagrama",
+        "largo": 6,
+        "puertaX": 5,
+        "llaveX": 1,
+        "apagado": true
+      },
+      "tarjetas": [
+        {
+          "id": "caminar3",
+          "texto": "Caminar 3 pasos",
+          "accion": {
+            "tipo": "caminar",
+            "pasos": 3
+          }
+        },
+        {
+          "id": "fin",
+          "texto": "Fin",
+          "forma": "fin"
+        },
+        {
+          "id": "abrir",
+          "texto": "Abrir la puerta",
+          "accion": {
+            "tipo": "abrir"
+          }
+        },
+        {
+          "id": "encender",
+          "texto": "Encender a Robot1",
+          "accion": {
+            "tipo": "encender"
+          }
+        },
+        {
+          "id": "recoger",
+          "texto": "Recoger la llave",
+          "accion": {
+            "tipo": "recoger"
+          }
+        },
+        {
+          "id": "inicio",
+          "texto": "Inicio",
+          "forma": "inicio"
+        },
+        {
+          "id": "caminar1",
+          "texto": "Caminar 1 paso",
+          "accion": {
+            "tipo": "caminar",
+            "pasos": 1
+          }
+        }
+      ],
+      "ordenCorrecto": [
+        "inicio",
+        "encender",
+        "caminar1",
+        "recoger",
+        "caminar3",
+        "abrir",
+        "fin"
+      ],
+      "validacion": {
+        "tipo": "orden"
+      },
+      "retroalimentacion": "¡Listo para programar! En el Mundo 1 escribirás estos mismos pasos como instrucciones de código.",
+      "pistas": [
+        "Un robot apagado no se mueve.",
+        "Primero encender, luego caminar."
+      ],
+      "mensajeNoLogrado": "Esa tarjeta no iba todavía: ¡Robot1 chocó! Piensa qué tiene que pasar primero y vuelve a empezar."
+    }
+  ],
+  "tutorial": true,
+  "ordinal": 0
+}

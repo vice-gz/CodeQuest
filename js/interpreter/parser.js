@@ -4,7 +4,9 @@
 
 // Gramática (Avance 3; ya incluye bloques por sangría estilo Python):
 //   programa      := sentencia*
-//   sentencia     := asignacion | llamada | condicional | mientras | para
+//   sentencia     := asignacion | llamada | condicional | mientras | para | def | return
+//   def           := "def" IDENT "(" (IDENT ("," IDENT)*)? ")" bloque        (solo al margen izquierdo)
+//   return        := "return" expresion?                                      (solo dentro de un def)
 //   bloque        := ":" NUEVA_LINEA INDENTACION sentencia+ DEDENTACION
 //   condicional   := "if" expresion bloque ("elif" expresion bloque)* ("else" bloque)?
 //   mientras      := "while" expresion bloque
@@ -26,6 +28,8 @@ export class Parser {
   constructor(tokens) {
     this.tokens = tokens;
     this.pos = 0;
+    this.anidamiento = 0; // cuántos bloques abiertos hay (def solo va al margen izquierdo)
+    this.dentroDeFuncion = 0; // return solo se acepta dentro de un def
   }
 
   actual() {
@@ -71,12 +75,14 @@ export class Parser {
     this.avanzar();
 
     const sentencias = [];
+    this.anidamiento += 1;
     this.saltarNuevasLineas();
     while (this.actual().tipo !== TipoToken.DEDENTACION && this.actual().tipo !== TipoToken.EOF) {
       if (this.actual().tipo === TipoToken.INDENTACION) throw Errores.sangriaInesperada(this.actual().linea);
       sentencias.push(this.parsearSentencia());
       this.saltarNuevasLineas();
     }
+    this.anidamiento -= 1;
     if (this.actual().tipo === TipoToken.DEDENTACION) this.avanzar();
     return { tipo: "Bloque", sentencias, linea };
   }
@@ -129,6 +135,44 @@ export class Parser {
     return { tipo: "Para", variable: variable.valor, argumentos, bloque, linea: clave.linea };
   }
 
+  // def nombre(param1, param2): bloque
+  parsearDef() {
+    const clave = this.avanzar(); // DEF
+    if (this.anidamiento > 0) throw Errores.defSoloArriba(clave.linea);
+    const nombre = this.esperar(TipoToken.IDENTIFICADOR);
+    if (!nombre) throw Errores.defMalEscrito(clave.linea);
+    if (!this.esperar(TipoToken.PAREN_IZQ)) throw Errores.faltaParenApertura(clave.linea);
+    const parametros = [];
+    if (this.actual().tipo !== TipoToken.PAREN_DER) {
+      for (;;) {
+        const p = this.esperar(TipoToken.IDENTIFICADOR);
+        if (!p) throw Errores.parametrosInvalidos(clave.linea);
+        if (parametros.includes(p.valor)) throw Errores.parametroRepetido(p.valor, clave.linea);
+        parametros.push(p.valor);
+        if (this.actual().tipo === TipoToken.COMA) {
+          this.avanzar();
+          continue;
+        }
+        if (this.actual().tipo !== TipoToken.PAREN_DER) throw Errores.parametrosInvalidos(clave.linea);
+        break;
+      }
+    }
+    if (!this.esperar(TipoToken.PAREN_DER)) throw Errores.faltaParenCierre(clave.linea);
+    this.dentroDeFuncion += 1;
+    const bloque = this.parsearBloque("def", clave.linea);
+    this.dentroDeFuncion -= 1;
+    return { tipo: "DefFuncion", nombre: nombre.valor, parametros, bloque, linea: clave.linea };
+  }
+
+  // return [expresion]
+  parsearReturn() {
+    const clave = this.avanzar(); // RETURN
+    if (this.dentroDeFuncion === 0) throw Errores.returnFueraDeFuncion(clave.linea);
+    const expresion = this.finDeSentencia() ? null : this.parsearExpresion();
+    this.terminarSentencia(clave.linea);
+    return { tipo: "Retorno", expresion, linea: clave.linea };
+  }
+
   saltarNuevasLineas() {
     while (this.actual().tipo === TipoToken.NUEVA_LINEA) {
       this.avanzar();
@@ -150,6 +194,10 @@ export class Parser {
         return this.parsearMientras();
       case TipoToken.FOR:
         return this.parsearPara();
+      case TipoToken.DEF:
+        return this.parsearDef();
+      case TipoToken.RETURN:
+        return this.parsearReturn();
       case TipoToken.ELIF:
         throw Errores.sinIfPrevio("elif", token.linea);
       case TipoToken.ELSE:
@@ -363,6 +411,11 @@ export class Parser {
       return { tipo: "Texto", valor: token.valor, linea: token.linea };
     }
 
+    if (token.tipo === TipoToken.NONE) {
+      this.avanzar();
+      return { tipo: "Ninguno", linea: token.linea };
+    }
+
     if (token.tipo === TipoToken.TRUE || token.tipo === TipoToken.FALSE) {
       this.avanzar();
       return { tipo: "Booleano", valor: token.tipo === TipoToken.TRUE, linea: token.linea };
@@ -432,6 +485,11 @@ export class Parser {
 
   terminarSentencia(linea) {
     if (!this.finDeSentencia()) {
+      // «precio = 2,5»: un número, una coma y otro número seguidos → casi seguro quería un decimal
+      const [anterior, actual, siguiente] = [this.tokens[this.pos - 1], this.actual(), this.tokens[this.pos + 1]];
+      if (actual.tipo === TipoToken.COMA && anterior?.tipo === TipoToken.NUMERO && siguiente?.tipo === TipoToken.NUMERO) {
+        throw Errores.decimalConComa(linea);
+      }
       throw Errores.instruccionIncompleta(linea);
     }
   }

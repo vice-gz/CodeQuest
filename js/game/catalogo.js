@@ -6,7 +6,7 @@
 // Vite empaqueta los JSON en tiempo de build (import.meta.glob), así que no
 // hace falta copiar la carpeta levels/ al publicar.
 
-import { construirCatalogo } from "../persistence/progreso.js";
+import { construirCatalogo, ordinalDeNivel as ordinalEn, nivelPorOrdinal as nivelPorOrdinalEn, siguienteNivelId as siguienteEn } from "../persistence/progreso.js";
 
 const modulos = import.meta.glob("../../levels/mundo*/level*.json", {
   eager: true,
@@ -28,3 +28,11 @@ export function mundoDeNivel(id) {
 export function obtenerNivel(id) {
   return catalogo.niveles[id] || null;
 }
+
+/** Número de nivel dentro de su mundo, tal como lo ve el estudiante (el Nivel 0 es 0). */
+export const ordinalDeNivel = (id) => ordinalEn(catalogo, id);
+export const nivelPorOrdinal = (mundoId, ordinal) => nivelPorOrdinalEn(catalogo, mundoId, ordinal);
+/** Id del nivel siguiente (del mismo mundo o el primero del mundo que sigue); null si no hay más. */
+export const siguienteNivel = (id) => siguienteEn(catalogo, id);
+/** Niveles que hay que superar para completar cada mundo (sin los de tutorial). */
+export const REQUERIDOS_POR_MUNDO = Object.fromEntries(Object.values(catalogo.mundos).map((m) => [m.id, m.requeridos]));

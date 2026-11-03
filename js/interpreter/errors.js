@@ -19,7 +19,7 @@ export const Errores = {
   // Léxicos
   caracterNoReconocido: (caracter, linea) =>
     new CQLError("LEX_001", `Carácter no reconocido: ${caracter}`, {
-      educativo: `El carácter "${caracter}" no forma parte del lenguaje CQL.`,
+      educativo: `El carácter "${caracter}" no forma parte del lenguaje de este juego (un subconjunto de Python).`,
       sugerencia: "Revisa que no haya símbolos de más, como @, $ o ?.",
       linea,
     }),
@@ -47,6 +47,12 @@ export const Errores = {
     new CQLError("SYN_003", "Se esperaba = después de nombre", {
       educativo: "Para crear una variable necesitas asignarle un valor con =.",
       sugerencia: 'Escribe algo como: nombre = "Robot1"',
+      linea,
+    }),
+  decimalConComa: (linea) =>
+    new CQLError("SYN_019", `Los decimales se escriben con punto, no con coma (línea ${linea})`, {
+      educativo: "En Python los decimales se escriben con punto, no con coma. Con una coma, Python ve dos números separados, no un decimal.",
+      sugerencia: "Cambia la coma por un punto: por ejemplo, 2.5 en lugar de 2,5.",
       linea,
     }),
   instruccionIncompleta: (linea) =>
@@ -80,7 +86,7 @@ export const Errores = {
       educativo:
         nombre === "entrada"
           ? "CodeQuest usa Python de verdad: la función para pedir un dato se llama input(), ya no entrada()."
-          : "CQL solo reconoce las funciones de Python de su biblioteca: print, input, int, float y str.",
+          : "Aquí solo se usan estas funciones de Python: print, input, int, float y str (más las que definas tú con def).",
       sugerencia: nombre === "entrada" ? "Escribe input() en lugar de entrada()." : "Por ejemplo, usa print(...) para mostrar algo en pantalla.",
       linea,
     }),
@@ -325,7 +331,7 @@ Errores.colorDeCartaInvalido = (valor) =>
 // Migración a Python 100%: errores de tipos y conversiones (TypeError / ValueError).
 // ---------------------------------------------------------------------------
 
-const DESCRIPCION_TIPO = { texto: "un texto", numero: "un número", logico: "un valor lógico" };
+const DESCRIPCION_TIPO = { texto: "un texto", numero: "un número", logico: "un valor lógico", ninguno: "None" };
 
 // a y b: { tipo: "texto" | "numero" | "logico", repr: "\"5\"" }
 Errores.sumaMezclada = (a, b, linea) => {
@@ -337,7 +343,9 @@ Errores.sumaMezclada = (a, b, linea) => {
     sugerencia:
       texto && numero
         ? `Para sumar, convierte el texto en número: int(${texto.repr}) + ${numero.repr}. Para unir, convierte el número en texto: ${texto.repr} + str(${numero.repr}).`
-        : "Usa + solo entre dos números o entre dos textos.",
+        : a.tipo === "ninguno" || b.tipo === "ninguno"
+          ? "Una función devuelve None cuando no tiene return. Agrega return con el valor que quieres devolver."
+          : "Usa + solo entre dos números o entre dos textos.",
     linea,
   });
 };
@@ -385,5 +393,88 @@ Errores.argumentosFuncion = (nombre, esperado, linea) =>
   new CQLError("SEM_013", `TypeError: ${nombre}() recibe ${esperado}`, {
     educativo: `${nombre}() ${nombre === "input" ? "puede llevar un mensaje opcional entre comillas" : "necesita exactamente un valor para convertir"}.`,
     sugerencia: nombre === "input" ? 'Ejemplos: input()   o   input("¿Cuántos pisos?")' : `Ejemplo: ${nombre}(input())`,
+    linea,
+  });
+
+// ---------------------------------------------------------------------------
+// Funciones (def / return / parámetros) — Mundo 5, Modularidad.
+// ---------------------------------------------------------------------------
+
+Errores.defMalEscrito = (linea, detalle = "Falta el nombre de la función") =>
+  new CQLError("SYN_015", `${detalle} después de def`, {
+    educativo: "Una función se define así: la palabra def, el nombre, paréntesis con los parámetros y dos puntos.",
+    sugerencia: "Ejemplo: def saludar():   o   def sumar(a, b):",
+    linea,
+  });
+Errores.parametrosInvalidos = (linea) =>
+  new CQLError("SYN_016", "Los parámetros de la función están mal escritos", {
+    educativo: "Los parámetros son nombres de variable separados por comas, entre los paréntesis del def.",
+    sugerencia: "Ejemplo: def calcular_area(ancho, alto):",
+    linea,
+  });
+Errores.parametroRepetido = (nombre, linea) =>
+  new CQLError("SYN_016", `SyntaxError: el parámetro "${nombre}" está repetido`, {
+    educativo: "Cada parámetro necesita un nombre distinto.",
+    sugerencia: "Cambia el nombre de uno de los parámetros.",
+    linea,
+  });
+Errores.returnFueraDeFuncion = (linea) =>
+  new CQLError("SYN_017", 'SyntaxError: "return" solo se puede usar dentro de una función', {
+    educativo: "return devuelve un valor desde una función y termina esa función. Fuera de una función no tiene sentido.",
+    sugerencia: "Escribe el return dentro del def, con sangría.",
+    linea,
+  });
+Errores.defSoloArriba = (linea) =>
+  new CQLError("SYN_018", "Las funciones se definen al inicio del programa, no dentro de otros bloques", {
+    educativo: "En CodeQuest, def va al margen izquierdo: no dentro de un if, un ciclo u otra función.",
+    sugerencia: "Mueve el def al margen izquierdo, sin sangría.",
+    linea,
+  });
+Errores.argumentosDeFuncion = (nombre, esperados, recibidos, linea) =>
+  new CQLError("SEM_014", `TypeError: ${nombre}() recibe ${esperados} argumento(s) pero le diste ${recibidos}`, {
+    educativo: "Al llamar a una función hay que darle exactamente un valor por cada parámetro que tiene en su def.",
+    sugerencia: esperados === 0 ? `Llámala sin valores: ${nombre}()` : `Dale ${esperados} valor(es) entre paréntesis: ${nombre}(${Array.from({ length: esperados }, (_, i) => `valor${i + 1}`).join(", ")})`,
+    linea,
+  });
+Errores.variableLocal = (nombre, funcion, linea) =>
+  new CQLError("SEM_015", `NameError: la variable "${nombre}" solo existe dentro de la función ${funcion}()`, {
+    educativo: "Las variables que se crean dentro de una función son LOCALES: desaparecen cuando la función termina. Desde fuera no se pueden usar.",
+    sugerencia: `Haz que ${funcion}() devuelva el valor con return, y guárdalo al llamarla: resultado = ${funcion}(...)`,
+    linea,
+  });
+Errores.funcionSinParentesis = (nombre, linea) =>
+  new CQLError("SEM_016", `"${nombre}" es una función: para usarla hay que llamarla con paréntesis`, {
+    educativo: "El nombre solo, sin paréntesis, no ejecuta la función.",
+    sugerencia: `Escribe ${nombre}() (con los valores que necesite entre los paréntesis).`,
+    linea,
+  });
+Errores.funcionDefinidaDespues = (nombre, linea) =>
+  new CQLError("SEM_017", `NameError: la función ${nombre}() todavía no está definida en este punto`, {
+    educativo: "Python lee el programa de arriba hacia abajo: una función tiene que estar definida (def) ANTES de la línea donde la llamas.",
+    sugerencia: `Mueve el def ${nombre} más arriba que la llamada.`,
+    linea,
+  });
+Errores.funcionNoDefinida = (nombre, linea) =>
+  new CQLError("RUN_020", `NameError: la función ${nombre}() no está definida`, {
+    educativo: "Se llamó a una función que todavía no se había definido con def.",
+    sugerencia: `Define la función con def ${nombre}(): antes de llamarla.`,
+    linea,
+  });
+Errores.recursionExcesiva = (linea) =>
+  new CQLError("RUN_021", "RecursionError: demasiadas llamadas de función una dentro de otra", {
+    educativo: "Una función se llamó a sí misma (o a otra) una y otra vez sin parar. El límite en CodeQuest es de 100 llamadas anidadas.",
+    sugerencia: "Revisa que la función tenga una condición que la detenga.",
+    linea,
+  });
+Errores.conversionNinguno = (funcion, linea) =>
+  new CQLError("RUN_022", `TypeError: ${funcion}() no puede convertir None`, {
+    educativo: "None es lo que devuelve una función que no tiene return: no es un número ni un texto.",
+    sugerencia: "Agrega return con el valor en la función que estás llamando.",
+    linea,
+  });
+Errores.variableLocalSinValor = (nombre, funcion, linea) =>
+  new CQLError("RUN_023", `UnboundLocalError: la variable "${nombre}" es local en ${funcion}() y todavía no tiene valor`, {
+    educativo: "Si una función asigna una variable (x = ...), esa variable es LOCAL en toda la función: no se puede leer la de afuera con el mismo nombre antes de asignarle un valor.",
+    sugerencia: "Recibe el valor como parámetro y devuelve el nuevo con return: def f(n): return n + 1   y afuera:  total = f(total)",
     linea,
   });

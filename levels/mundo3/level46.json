@@ -1,0 +1,329 @@
+{
+  "id": 46,
+  "mundo": 3,
+  "nombre": "Torneo de cartas",
+  "concepto": "integración del Mundo 3",
+  "concepto_evaluado": "jefe_mundo_3",
+  "narrativa": "El torneo final de la Sala de Estrategia empieza. El crupier ya no te dirá qué regla aplicar: tendrás que escribirlas todas.",
+  "narrativaSiguienteMundo": "¡La sala de estrategia se abre! Pero al cruzar, Robot1 oye un zumbido: un edificio entero depende de un elevador que no deja de fallar. Entra al Mundo 4: Automatización.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "46.1",
+      "tipo": "RESOLVER",
+      "titulo": "Torneo de cartas",
+      "enunciado": "Eres el crupier del gran torneo. Escribe las reglas completas para una mano (usa total y cantidad, el número de cartas que hay) y muestra UNA sola palabra: Blackjack (suma 21 con exactamente 2 cartas), Bust (se pasa de 21), 21 (suma 21 con 3 o más cartas), Plantarse (de 17 a 20) o Pedir carta (menos de 17). Se prueba con 10 manos distintas.",
+      "codigoInicial": "",
+      "solucionReferencia": "if total == 21 and cantidad == 2:\n    print(\"Blackjack\")\nelif total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"21\")\nelif total >= 17:\n    print(\"Plantarse\")\nelse:\n    print(\"Pedir carta\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "elif",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mano 1 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 11,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 2
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 2 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 3
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "21"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 3 · 24",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 3
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 4 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 2
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Plantarse"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 5 · 20",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 2
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Plantarse"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 6 · 15",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 5,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              },
+              {
+                "valor": 4,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 3
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pedir carta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 7 · 11",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 6,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 2
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pedir carta"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 8 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 4,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 3
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "21"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 9 · 22",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 2,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 3
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Bust"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mano 10 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ],
+            "mostrarCartas": true,
+            "variables": {
+              "cantidad": 2
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Pedir carta"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "elif",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Jefe derrotado! Tus reglas funcionan en cualquier mano: el orden de los if hizo la diferencia.",
+      "mensajeNoLogrado": "Revisa el orden de las reglas: Blackjack va antes que el 21 normal, y Bust antes de comparar con 17.",
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Bust\")\nelif total == 21:\n    print(\"21\")\nelif total >= 17:\n    print(\"Plantarse\")\nelse:\n    print(\"Pedir carta\")"
+      ],
+      "sinPistas": true
+    }
+  ],
+  "jefe": true,
+  "max_lineas_recomendadas": 10
+}

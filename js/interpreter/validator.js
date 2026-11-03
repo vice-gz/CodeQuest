@@ -45,11 +45,57 @@ export class Validator {
     this.metodosPermitidos = new Set(fase?.metodosPermitidos || []);
     this.variables = new Set(variablesIniciales);
     this.tipos = new Map(); // variable -> {t, input}
+    // Funciones (def): se conocen todas antes de validar el cuerpo del programa.
+    this.defs = new Map(); // nombre -> { parametros, linea }
+    this.defsVistas = new Set(); // las que ya se definieron más arriba
+    this.globales = new Set(variablesIniciales); // variables del programa principal (para leerlas desde una función)
+    this.localesPorFuncion = new Map(); // nombre de función -> Set de variables locales
+    this.funcionActual = null; // { nombre, locales } mientras se valida el cuerpo de un def
   }
 
   validar(programa) {
+    this.preparar(programa);
     this.validarSentencias(programa.sentencias);
     return true;
+  }
+
+  /** Recoge las funciones y las variables locales/globales antes de validar (como hace Python al compilar). */
+  preparar(programa) {
+    const recolectar = (sentencias, destino) => {
+      for (const s of sentencias) {
+        if (s.tipo === "Asignacion") destino.add(s.variable);
+        else if (s.tipo === "Para") {
+          destino.add(s.variable);
+          recolectar(s.bloque.sentencias, destino);
+        } else if (s.tipo === "Mientras") recolectar(s.bloque.sentencias, destino);
+        else if (s.tipo === "Condicional") {
+          recolectar(s.bloqueSi.sentencias, destino);
+          if (s.bloqueSino) recolectar(s.bloqueSino.sentencias, destino);
+        }
+      }
+    };
+    for (const s of programa.sentencias) {
+      if (s.tipo === "DefFuncion") {
+        this.defs.set(s.nombre, { parametros: s.parametros, linea: s.linea });
+        const locales = new Set(s.parametros);
+        recolectar(s.bloque.sentencias, locales); // en Python, asignar dentro de la función la hace local
+        this.localesPorFuncion.set(s.nombre, locales);
+      } else {
+        recolectar([s], this.globales);
+      }
+    }
+  }
+
+  /** ¿Se puede leer este nombre desde donde estamos (programa principal o dentro de una función)? */
+  nombreVisible(nombre) {
+    if (this.funcionActual) return this.funcionActual.locales.has(nombre) || this.globales.has(nombre);
+    return this.variables.has(nombre);
+  }
+
+  /** La función cuyas variables locales incluyen este nombre (para explicar el error de ámbito). */
+  funcionDondeEsLocal(nombre) {
+    for (const [f, locales] of this.localesPorFuncion) if (locales.has(nombre) && f !== this.funcionActual?.nombre) return f;
+    return null;
   }
 
   validarSentencias(sentencias) {
@@ -165,6 +211,13 @@ export class Validator {
       case "Condicional":
         this.validarCondicional(sentencia);
         break;
+      case "DefFuncion":
+        this.validarDef(sentencia);
+        break;
+      case "Retorno":
+        this.exigir("return", "return", sentencia.linea);
+        if (sentencia.expresion) this.validarExpresion(sentencia.expresion);
+        break;
       case "Mientras":
         this.exigir("while", "while", sentencia.linea);
         this.validarExpresion(sentencia.condicion);
@@ -174,7 +227,7 @@ export class Validator {
         this.exigir("for", "for", sentencia.linea);
         if (RESERVADOS.has(sentencia.variable)) throw Errores.nombreReservado(sentencia.variable, sentencia.linea);
         sentencia.argumentos.forEach((a) => this.validarExpresion(a));
-        this.variables.add(sentencia.variable);
+        if (!this.funcionActual) this.variables.add(sentencia.variable);
         this.conRamas(
           [
             () => {
@@ -188,6 +241,20 @@ export class Validator {
       default:
         break;
     }
+  }
+
+  validarDef(nodo) {
+    this.exigir("def", "def", nodo.linea);
+    for (const nombre of [nodo.nombre, ...nodo.parametros]) {
+      if (RESERVADOS.has(nombre)) throw Errores.nombreReservado(nombre, nodo.linea);
+    }
+    const guardado = { tipos: this.tipos, funcionActual: this.funcionActual };
+    this.funcionActual = { nombre: nodo.nombre, locales: this.localesPorFuncion.get(nodo.nombre) };
+    this.tipos = new Map(); // dentro de la función los tipos de los parámetros se desconocen
+    this.validarSentencias(nodo.bloque.sentencias);
+    this.tipos = guardado.tipos;
+    this.funcionActual = guardado.funcionActual;
+    this.defsVistas.add(nodo.nombre);
   }
 
   validarCondicional(nodo) {
@@ -208,11 +275,19 @@ export class Validator {
     }
     if (RESERVADOS.has(nodo.variable)) throw Errores.nombreReservado(nodo.variable, nodo.linea);
     this.validarExpresion(nodo.expresion);
-    this.variables.add(nodo.variable);
+    if (!this.funcionActual) this.variables.add(nodo.variable);
     this.tipos.set(nodo.variable, this.tipoDe(nodo.expresion));
   }
 
   validarLlamadaFuncion(nodo, comoExpresion) {
+    // Función definida por el estudiante (def)
+    const def = this.defs.get(nodo.nombre);
+    if (def) {
+      if (!this.funcionActual && !this.defsVistas.has(nodo.nombre)) throw Errores.funcionDefinidaDespues(nodo.nombre, nodo.linea);
+      if (nodo.argumentos.length !== def.parametros.length) throw Errores.argumentosDeFuncion(nodo.nombre, def.parametros.length, nodo.argumentos.length, nodo.linea);
+      nodo.argumentos.forEach((arg) => this.validarExpresion(arg));
+      return;
+    }
     if (!FUNCIONES_CONOCIDAS.has(nodo.nombre)) {
       throw Errores.funcionNoExiste(nodo.nombre, nodo.linea);
     }
@@ -247,8 +322,9 @@ export class Validator {
 
     if (definicion.numerico && nodo.argumentos.length > 0) {
       const arg = nodo.argumentos[0];
-      if (arg.tipo === "Identificador" && !this.variables.has(arg.nombre)) {
-        throw Errores.variableNoExiste(arg.nombre, arg.linea);
+      if (arg.tipo === "Identificador" && !this.nombreVisible(arg.nombre)) {
+        const dueña = this.funcionDondeEsLocal(arg.nombre);
+        throw dueña ? Errores.variableLocal(arg.nombre, dueña, arg.linea) : Errores.variableNoExiste(arg.nombre, arg.linea);
       }
       const info = this.tipoDe(arg);
       if (info.t === "texto" && info.input) throw Errores.inputDevuelveTexto(nodo.linea, `${objeto}.${nodo.metodo}(int(${formatearExpresion(arg)}))`);
@@ -272,12 +348,17 @@ export class Validator {
   validarExpresion(nodo) {
     switch (nodo.tipo) {
       case "Identificador":
-        if (!this.variables.has(nodo.nombre)) {
+        if (!this.nombreVisible(nodo.nombre)) {
           if (nodo.nombre === "true" || nodo.nombre === "false") {
             throw Errores.booleanoMinuscula(nodo.nombre, nodo.linea);
           }
+          if (this.defs.has(nodo.nombre)) throw Errores.funcionSinParentesis(nodo.nombre, nodo.linea);
+          const dueña = this.funcionDondeEsLocal(nodo.nombre);
+          if (dueña) throw Errores.variableLocal(nodo.nombre, dueña, nodo.linea);
           throw Errores.variableNoExiste(nodo.nombre, nodo.linea);
         }
+        break;
+      case "Ninguno":
         break;
       case "OperacionBinaria":
         this.validarExpresion(nodo.izquierda);

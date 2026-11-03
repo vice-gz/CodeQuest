@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Genera docs/GUIA_NIVELES_MUNDOS_2_A_4.md leyendo los JSON de levels/.
+Genera docs/GUIA_NIVELES_MUNDOS_1_A_5.md leyendo los JSON de levels/.
 La guía se calcula desde los mismos datos que usa el juego, así nunca se
 desactualiza: si cambias un nivel, vuelve a correr este script.
 
@@ -15,12 +15,16 @@ RAIZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SIMBOLO = {"corazones": "♥", "diamantes": "♦", "treboles": "♣", "picas": "♠"}
 ROJO = {"corazones", "diamantes"}
 MUNDOS = {
+    1: ("Despertar", "Laboratorio tecnológico (cuadrícula 2D con **Robot1**; el Nivel 0 es un pasillo con una puerta)",
+        "El Nivel 0 enseña qué es un algoritmo ordenando tarjetas de un diagrama de flujo. Después: instrucciones (`avanzar`, `girar`, `hablar`, `retroceder`, `recoger`), `print()`, errores y `input()` con `int()`. El Nivel Jefe es el Laberinto ciego."),
     2: ("Memoria", "Centro de Recuperación (módulos de memoria y terminal, **sin robot**)",
         "Variables, tipos de dato, operadores, input() y conversiones de tipo (int, float, str). Se ven chips que se iluminan al guardar un valor y cables que muestran de dónde viene cada dato."),
     3: ("Lógica", "Sala de Estrategia (mesa de cartas)",
         "Decisiones con `if`, `elif`, `else`, comparadores y `and` / `or` / `not`. Al ejecutar las cartas se voltean y cada pregunta se juzga con ✓ VERDADERO o ✗ FALSO."),
     4: ("Automatización", "Complejo industrial (edificio de 5 pisos con elevador)",
         "Ciclos `while` y `for`, contadores. Un letrero muestra en qué repetición va el ciclo; el piso 1 es la planta baja."),
+    5: ("Modularidad", "Fábrica de robots (cada función se construye como una **máquina**; a veces con una pista para Robot1)",
+        "Funciones: `def`, llamar una función, parámetros, `return`, variables locales y depuración de errores de ámbito y de orden."),
 }
 TIPOS = [
     ("EXPLORAR", "Solo hay que **ejecutar** el código que ya viene y observar qué pasa. Se pasa con cualquier ejecución sin errores."),
@@ -30,6 +34,7 @@ TIPOS = [
     ("RESOLVER", "Un reto más abierto: se combinan varias ideas del nivel."),
     ("DEBUG", "El programa tiene un **error**; hay que encontrarlo y corregirlo."),
     ("LIBRE", "Zona de práctica: no se evalúa nada, solo se experimenta."),
+    ("ORDENAR", "Solo en el Nivel 0: **no hay código**; se hace clic en las tarjetas de un diagrama de flujo en el orden correcto. Si una tarjeta no toca todavía, Robot1 choca y se empieza de nuevo."),
 ]
 
 
@@ -103,6 +108,42 @@ def describir(v):
         out.append(f"El elevador debe quedar en el piso {v['valorEsperado']}" + (" (planta baja)." if v["valorEsperado"] == 1 else "."))
     elif t == "elevador_entrega":
         out.append("Todos los pasajeros deben quedar entregados en la planta baja y la cabina vacía.")
+    elif t == "funcion_definida":
+        n = v.get("parametros")
+        out.append(f"Debe definir una función llamada `{v['nombre']}`" + ("" if n is None else f" con {n} parámetro(s)") + ".")
+    elif t == "funcion_llamada":
+        out.append(f"Debe llamar a `{v['nombre']}()` al menos {v.get('minimo', 1)} vez/veces.")
+    elif t == "funcion_retorna":
+        out.append(f"La función `{v['nombre']}` debe **devolver** un valor con `return` (no solo mostrarlo).")
+    elif t == "ensamble":
+        out.append("Debe definir **exactamente** estas funciones: " + lista_es(f"`{p}()`" for p in v["partes"]) + ", y llamar a cada una al menos una vez, **en ese orden** (la primera llamada de cada una).")
+    elif t == "posicion":
+        out.append(f"Robot1 debe terminar en la casilla ({v['valorEsperado'][0]},{v['valorEsperado'][1]}).")
+    elif t == "objetivos":
+        out.append("Robot1 debe pisar **todas** las banderas del mapa.")
+    elif t in ("estado", "estado_variable"):
+        if v.get("posicionEsperada"):
+            out.append(f"Robot1 debe terminar en la casilla ({v['posicionEsperada'][0]},{v['posicionEsperada'][1]}).")
+        if v.get("direccionEsperada"):
+            out.append(f"Robot1 debe quedar mirando al **{v['direccionEsperada']}**.")
+        if v.get("energiaMinima") is not None:
+            out.append(f"Le deben quedar al menos {v['energiaMinima']}% de energía.")
+        if v.get("outputContiene"):
+            out.append(f"La salida debe contener «{v['outputContiene']}».")
+        if v.get("outputEsperado"):
+            out.append(f"El programa debe mostrar exactamente «{v['outputEsperado']}».")
+        if v.get("todosLosObjetivos"):
+            out.append("Robot1 debe pisar todas las banderas del mapa.")
+    elif t == "error_esperado":
+        out.append("Esta fase **busca un error a propósito**: el programa debe fallar" + (f" con el error `{v['codigoError']}`." if v.get("codigoError") else "."))
+    elif t in ("posicion_con_operacion", "posicion_con_variable", "posicion_sin_numero_literal"):
+        out.append(f"Robot1 debe terminar en la casilla ({v['valorEsperado'][0]},{v['valorEsperado'][1]}).")
+        if v.get("operadorRequerido"):
+            out.append(f"Y el código debe usar el operador `{v['operadorRequerido']}`.")
+        if v.get("variableRequerida"):
+            out.append(f"Y el código debe crear la variable `{v['variableRequerida']}`.")
+        if v.get("numeroProhibido") is not None:
+            out.append(f"Sin escribir el número {v['numeroProhibido']} directamente.")
     elif t == "elevador_estado":
         if "abordo" in v:
             out.append(f"Al terminar deben ir {v['abordo']} pasajeros en la cabina.")
@@ -156,6 +197,28 @@ def descripcion_escenario_fase(nivel, fase):
         txt = f"El elevador empieza en el piso {esc.get('pisoInicial', 1)}"
         txt += "; sin pasajeros." if not pas else f"; pasajeros en {lista_es([f'piso {p}' for p in pas])}."
         return txt
+    if tipo in ("laboratorio", "fabrica") and fase["tipo"] != "PREDECIR":
+        if tipo == "fabrica" and esc.get("ensamble"):
+            return "La línea de ensamble muestra una máquina por función y, abajo, un **Robot1 gigante** que se va armando (cabeza, brazos y piernas) conforme se llama a cada función."
+        if tipo == "fabrica" and not esc.get("robot"):
+            return "La **línea de ensamble** muestra una máquina por cada `def`; en cada llamada viaja una caja de materiales con los parámetros, aparecen las variables locales dentro de la máquina y sale una caja de producto terminado (verde con el valor del `return`, gris con `None` si no hubo) o una burbuja si hay `print`."
+        partes = []
+        if esc.get("ancho"):
+            partes.append(f"cuadrícula de {esc['ancho']}×{esc.get('alto', 1)}")
+        if esc.get("robotPosicion") is not None:
+            partes.append(f"Robot1 empieza en ({esc['robotPosicion'][0]},{esc['robotPosicion'][1]}) mirando al {esc.get('robotDireccion', 'este')}")
+        objs = esc.get("objetivosPosicion") or ([esc["objetivoPosicion"]] if esc.get("objetivoPosicion") else [])
+        if objs:
+            partes.append("bandera en " + lista_es([f"({o[0]},{o[1]})" for o in objs]))
+        if esc.get("obstaculos"):
+            partes.append(f"{len(esc['obstaculos'])} muros")
+        if esc.get("objetos"):
+            partes.append("objetos en " + lista_es([f"({o['posicion'][0]},{o['posicion'][1]})" for o in esc["objetos"]]))
+        return ("Mundo 2D: " + "; ".join(partes) + ".") if partes else ""
+    if tipo == "diagrama":
+        extra = ", con una llave en el pasillo" if esc.get("llaveX") is not None else ""
+        extra += " y Robot1 apagado" if esc.get("apagado") else ""
+        return f"Un pasillo de {esc.get('largo', 5)} casillas con una puerta{extra}."
     return ""
 
 
@@ -176,7 +239,11 @@ def seccion_fase(nivel, fase, n):
 
     L.append("**Cómo se pasa:**")
     L.append("")
-    if fase["tipo"] == "PREDECIR":
+    if fase["tipo"] == "ORDENAR":
+        texto = {t["id"]: t["texto"] for t in fase["tarjetas"]}
+        L.append("- Hay que hacer clic en las tarjetas en este orden: " + " → ".join(f"**{texto[i]}**" for i in fase["ordenCorrecto"]) + ".")
+        L.append("- Cada tarjeta correcta se ejecuta en el pasillo; una tarjeta equivocada hace que Robot1 choque y todo vuelve a empezar.")
+    elif fase["tipo"] == "PREDECIR":
         corr = next(o for o in fase["opciones"] if o["id"] == fase["respuestaCorrecta"])
         for o in fase["opciones"]:
             marca = "✅" if o["id"] == fase["respuestaCorrecta"] else "▫️"
@@ -240,9 +307,16 @@ def principal():
     por_mundo = {}
     for n in niveles:
         por_mundo.setdefault(n["mundo"], []).append(n)
+    # Número que ve el estudiante dentro de su mundo (igual que el catálogo del juego): el Nivel 0 declara su ordinal y el resto sigue contando.
+    ordinal = {}
+    for lista in por_mundo.values():
+        siguiente = 1
+        for n in lista:
+            ordinal[n["id"]] = n["ordinal"] if isinstance(n.get("ordinal"), int) else siguiente
+            siguiente = ordinal[n["id"]] + 1
 
     L = []
-    L.append("# CodeQuest — Guía de niveles y fases (Mundos 2 a 4)")
+    L.append("# CodeQuest — Guía de niveles y fases (Mundos 1 a 5)")
     L.append("")
     L.append("Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase y **cómo se pasa**, sin necesidad de leer código. "
              "Las soluciones de ejemplo están escondidas (spoiler) al final de cada fase de escritura.")
@@ -251,8 +325,8 @@ def principal():
     L.append("")
     L.append("## Cómo funciona todo")
     L.append("")
-    L.append("- **Mundos:** se juegan en orden. Un mundo se abre al completar **todos** los niveles del anterior.")
-    L.append("- **Niveles:** cada nivel tiene 3 o 4 fases que se hacen en orden. En el juego los niveles se numeran dentro de su mundo (Nivel 1, 2, 3…); entre paréntesis va el número interno.")
+    L.append("- **Mundos:** se juegan en orden. Un mundo se abre al completar **todos** los niveles del anterior, **incluido su Nivel Jefe** (👑, el último de cada mundo del 1 al 4: sin botón de pistas, editor en blanco y un solo enunciado). El **Nivel 0** (diagramas de flujo) es el primero del Mundo 1 y se da por hecho si ya se había jugado antes.")
+    L.append("- **Niveles:** cada nivel tiene 3 o 4 fases que se hacen en orden (el Nivel Jefe tiene una sola). En el juego los niveles se numeran dentro de su mundo (Nivel 0, 1, 2…); entre paréntesis va el número interno.")
     L.append("- **Estrellas por nivel:** ⭐ completar todas las fases · ⭐⭐ además, sin usar pistas · ⭐⭐⭐ además, acertando a la **primera** en cada fase.")
     L.append("- **Casos:** en las fases de lógica y ciclos el programa se prueba en varias mesas o edificios. Un programa que solo funciona para el caso que se ve **no pasa**.")
     L.append("- **Sangría:** dentro de `if`, `while` y `for` las líneas van movidas 4 espacios (tecla **Tab**). Cada pregunta o ciclo termina en dos puntos `:`.")
@@ -272,9 +346,10 @@ def principal():
         L.append("")
         L.append("| Nivel | Nombre | Concepto | Fases |")
         L.append("|---|---|---|---|")
-        for i, n in enumerate(por_mundo[m], 1):
+        for n in por_mundo[m]:
             fases = ", ".join(f["tipo"].capitalize() for f in n["fases"])
-            L.append(f"| {i} (id {n['id']}) | {n['nombre']} | {n['concepto']} | {len(n['fases'])}: {fases} |")
+            marca = " 👑" if n.get("jefe") else ""
+            L.append(f"| {ordinal[n['id']]}{marca} (id {n['id']}) | {n['nombre']} | {n['concepto']} | {len(n['fases'])}: {fases} |")
         L.append("")
 
     for m, (nombre, lugar, aprendes) in MUNDOS.items():
@@ -287,18 +362,22 @@ def principal():
         L.append(f"- **Qué se aprende:** {aprendes}")
         L.append(f"- **Niveles:** {len(niv)} · **Estrellas posibles:** {len(niv) * 3}")
         L.append("")
-        for i, n in enumerate(niv, 1):
-            L.append(f"### Nivel {i} del Mundo {m} (id {n['id']}) — {n['nombre']}")
+        for n in niv:
+            etiqueta = "Nivel Jefe 👑" if n.get("jefe") else f"Nivel {ordinal[n['id']]}"
+            L.append(f"### {etiqueta} del Mundo {m} (id {n['id']}) — {n['nombre']}")
             L.append("")
             L.append(f"**Concepto:** {n['concepto']}  ·  **Historia:** _{limpiar(n['narrativa'])}_")
             L.append("")
+            if n.get("jefe"):
+                L.append("> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco y se prueba en varios casos.")
+                L.append("")
             for j, f in enumerate(n["fases"], 1):
                 L.extend(seccion_fase(n, f, j))
             if n.get("narrativaSiguienteMundo"):
                 L.append(f"> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _{limpiar(n['narrativaSiguienteMundo'])}_")
                 L.append("")
 
-    destino = os.path.join(RAIZ, "docs", "GUIA_NIVELES_MUNDOS_2_A_4.md")
+    destino = os.path.join(RAIZ, "docs", "GUIA_NIVELES_MUNDOS_1_A_5.md")
     with open(destino, "w", encoding="utf8") as f:
         f.write("\n".join(L).rstrip() + "\n")
     print(f"Guía generada: {os.path.relpath(destino, RAIZ)} ({len(L)} líneas)")

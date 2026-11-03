@@ -7,7 +7,7 @@ import { MUNDOS_INFO } from "./game/mundosInfo.js";
 import { paletaDe } from "./game/paletas.js";
 
 // Mundos 1 a 4 jugables; el 5 y el 6 solo se anuncian (datos en game/mundosInfo.js).
-const MUNDOS_ACTIVOS = new Set([1, 2, 3, 4]);
+const MUNDOS_ACTIVOS = new Set([1, 2, 3, 4, 5]);
 
 document.getElementById("anio").textContent = String(new Date().getFullYear());
 document.getElementById("rejilla-mundos").innerHTML = MUNDOS_INFO.map((m) => {

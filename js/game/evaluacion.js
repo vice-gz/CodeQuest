@@ -46,7 +46,7 @@ export async function ejecutarPrograma({ ast, escenario, callbacks = {}, entrada
   await interprete.ejecutar(ast);
   // La memoria que ven las validaciones usa números planos (un float 2.5 se compara como 2.5).
   const memoria = Object.fromEntries([...interprete.variables].map(([nombre, valor]) => [nombre, aJS(valor)]));
-  return { salidas, memoria, interprete };
+  return { salidas, memoria, interprete, llamadas: interprete.registroLlamadas, funciones: [...interprete.funciones.values()].map((f) => ({ nombre: f.nombre, parametros: f.parametros })) };
 }
 
 function describirEsperado(esperado) {
@@ -99,7 +99,7 @@ function describirObtenido(esperado, resultado) {
  * @returns {Promise<{exito:boolean, requisitos:boolean, casos:Array}>}
  */
 export async function evaluarFase({ nivel, fase, codigo, ast, visual, casoVisual = 0 }) {
-  const ctxVisual = { salidas: visual.salidas, memoria: visual.memoria, codigo };
+  const ctxVisual = { salidas: visual.salidas, memoria: visual.memoria, codigo, llamadas: visual.llamadas, funciones: visual.funciones };
 
   if (!fase.casos?.length) {
     const ok = evaluarValidacion(fase.validacion, visual.escenario, ctxVisual);
@@ -116,11 +116,11 @@ export async function evaluarFase({ nivel, fase, codigo, ast, visual, casoVisual
     let ejecucion;
     try {
       if (i === casoVisual) {
-        ejecucion = { escenario: visual.escenario, salidas: visual.salidas, memoria: visual.memoria };
+        ejecucion = { escenario: visual.escenario, salidas: visual.salidas, memoria: visual.memoria, llamadas: visual.llamadas, funciones: visual.funciones };
       } else {
         const escenario = crearEscenario(configDeFase(nivel, fase, caso), { canvas: null });
         const r = await ejecutarPrograma({ ast, escenario, entradas: caso.entradas ?? [] });
-        ejecucion = { escenario, salidas: r.salidas, memoria: r.memoria };
+        ejecucion = { escenario, salidas: r.salidas, memoria: r.memoria, llamadas: r.llamadas, funciones: r.funciones };
       }
       const ok = evaluarValidacion(esperado, ejecucion.escenario, { ...ejecucion, codigo });
       resultados.push({

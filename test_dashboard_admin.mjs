@@ -114,7 +114,7 @@ await prueba("top de errores: orden por total y desempate alfabético; máximo 5
 });
 await prueba("alumnos por mundo y ejecuciones por día (con ceros y en la zona horaria de quien mira)", () => {
   const A_ = alumnosDelFiltro(usuariosApp, valorFiltroClase(CLASE_A), membresias);
-  assert.deepEqual(plano(alumnosPorMundo(A_, [1, 2, 3, 4])), [{ mundo: 1, total: 2 }, { mundo: 2, total: 1 }, { mundo: 3, total: 0 }, { mundo: 4, total: 0 }]);
+  assert.deepEqual(plano(alumnosPorMundo(A_, [1, 2, 3, 4, 5])), [{ mundo: 1, total: 2 }, { mundo: 2, total: 1 }, { mundo: 3, total: 0 }, { mundo: 4, total: 0 }, { mundo: 5, total: 0 }]);
   const hoy = diaLocal(Date.now(), zona);
   const dias = ejecucionesPorDia(A_, datosApp, hoy, 7);
   assert.equal(dias.length, 7);
@@ -306,7 +306,7 @@ await prueba("TODOS: KPIs solo con alumnos (sin el profesor) y gráficas con tod
   const g = j.graficas();
   assert.deepEqual(plano(g.errores.data.labels), ["SEM_001", "RUN_015", "SYN_001", "RUN_005", "SYN_006"]);
   assert.deepEqual(plano(g.errores.data.datasets[0].data), [3, 2, 2, 1, 1]);
-  assert.deepEqual(plano(g.mundos.data.datasets[0].data), [4, 1, 1, 1], "A1, A2, A6 y A7 en el mundo 1; A3 en el 2; A4 en el 3; A5 en el 4");
+  assert.deepEqual(plano(g.mundos.data.datasets[0].data), [4, 1, 1, 1, 0], "A1, A2, A6 y A7 en el mundo 1; A3 en el 2; A4 en el 3; A5 en el 4; nadie en el 5");
   assert.deepEqual(plano(g.dias.data.datasets[0].data), [0, 3, 2, 6, 4, 3, 2]);
   assert.equal(g.dias.data.labels.length, 7);
   assert.match(g.mundos.data.labels[0], /^Mundo 1 · /);
@@ -321,7 +321,7 @@ await prueba("GRUPO ISC-1A: al elegirlo se actualizan los KPIs y las 3 gráficas
   const g = j.graficas();
   assert.deepEqual(plano(g.errores.data.labels), ["SEM_001", "RUN_005", "SYN_006"]);
   assert.deepEqual(plano(g.errores.data.datasets[0].data), [3, 1, 1]);
-  assert.deepEqual(plano(g.mundos.data.datasets[0].data), [2, 1, 0, 0]);
+  assert.deepEqual(plano(g.mundos.data.datasets[0].data), [2, 1, 0, 0, 0]);
   assert.deepEqual(plano(g.dias.data.datasets[0].data), [0, 0, 0, 0, 4, 3, 2]);
   assert.ok(ChartFalso.instancias.every((c, i) => c.actualizaciones > antes[i]), "las tres gráficas se redibujaron");
   assert.match(j.$("filtro-detalle").textContent, /Profesor: Profe Ana · código AAA111 · 3 alumnos/);

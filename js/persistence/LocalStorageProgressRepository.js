@@ -153,7 +153,7 @@ export class LocalStorageProgressRepository extends ProgressRepository {
     return fase;
   }
 
-  completarNivel(mundoId, nivelId, { estrellas, siguienteMundo, siguienteNivel, totalNivelesMundo } = {}) {
+  completarNivel(mundoId, nivelId, { estrellas, siguienteMundo, siguienteNivel, totalNivelesMundo, nivelesRequeridos } = {}) {
     const progreso = this.cargarProgreso();
     if (!progreso.mundos[mundoId]) progreso.mundos[mundoId] = { completado: false, niveles: {} };
     if (!progreso.mundos[mundoId].niveles[nivelId]) {
@@ -163,8 +163,11 @@ export class LocalStorageProgressRepository extends ProgressRepository {
     nivel.completado = true;
     nivel.estrellas = Math.max(nivel.estrellas, estrellas || 0);
 
-    // Un mundo queda completo cuando todos sus niveles lo están.
-    if (totalNivelesMundo) {
+    // Un mundo queda completo cuando todos sus niveles requeridos lo están (el tutorial no cuenta).
+    if (nivelesRequeridos?.length) {
+      const niveles = progreso.mundos[mundoId].niveles;
+      if (nivelesRequeridos.every((id) => niveles[id]?.completado)) progreso.mundos[mundoId].completado = true;
+    } else if (totalNivelesMundo) {
       const completados = Object.values(progreso.mundos[mundoId].niveles)
         .filter((n) => n.completado).length;
       if (completados >= totalNivelesMundo) {

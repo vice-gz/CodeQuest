@@ -27,7 +27,11 @@ const ahora = Date.now();
 const iso = (diasAtras) => new Date(ahora - diasAtras * 86400000).toISOString();
 
 function datos() {
-  const completados = niveles.filter((n) => n.id <= cfg.hasta);
+  // «hasta» = niveles con id <= hasta; además se da por superado el Nivel Jefe de un mundo cuando ya están todos sus demás niveles.
+  const base = niveles.filter((n) => n.id <= cfg.hasta);
+  const hechos = new Set(base.map((n) => n.id));
+  const jefes = niveles.filter((n) => n.jefe && niveles.filter((o) => o.mundo === n.mundo && !o.jefe && !o.tutorial).every((o) => hechos.has(o.id)));
+  const completados = [...base, ...jefes.filter((j) => !hechos.has(j.id))];
   const fases = completados.flatMap((n) =>
     n.fases.map((f) => ({ id: `${n.id}-${f.id}`, user_id: "u1", mundo_id: n.mundo, nivel_id: n.id, fase_id: f.id, completada: true, intentos: 1, pistas_usadas: 0 }))
   );

@@ -19,10 +19,15 @@ if (hay.status !== 0) {
 }
 console.log(`Comparando con ${String(hay.stdout || hay.stderr).trim()}`);
 
-const PERMISOS = ["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"];
+const PERMISOS = ["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos", "def", "return"];
 
 // Código de error de CQL -> clase de excepción de Python que le corresponde
-const EXCEPCION = { SEM_006: "ZeroDivisionError", RUN_015: "TypeError", RUN_016: "TypeError", RUN_007: "TypeError", SEM_011: "TypeError", RUN_017: "ValueError", SEM_001: "NameError" };
+const EXCEPCION = {
+  SEM_006: "ZeroDivisionError", RUN_015: "TypeError", RUN_016: "TypeError", RUN_007: "TypeError", SEM_011: "TypeError", RUN_017: "ValueError", SEM_001: "NameError",
+  // funciones
+  SEM_003: "NameError", SEM_014: "TypeError", SEM_015: "NameError", SEM_017: "NameError", RUN_020: "NameError", RUN_021: "RecursionError", RUN_023: "UnboundLocalError", RUN_022: "TypeError",
+  SYN_015: "SyntaxError", SYN_016: "SyntaxError", SYN_017: "SyntaxError",
+};
 
 function python(codigo, stdin = "") {
   const r = spawnSync("python3", ["-c", codigo], { input: stdin, encoding: "utf8" });
@@ -49,6 +54,8 @@ async function cql(codigo, entradas = []) {
 //   if 5: / while "x": (Python acepta cualquier valor)  -> en CQL la condición debe ser True/False
 //   (-8) ** 0.5 (Python da un número complejo)          -> en CQL es un error
 //   enteros mayores que 2^53 (Python no tiene límite)   -> en CQL es un error de desbordamiento
+//   def dentro de un if/while/otro def (Python lo permite) -> en CQL es un error: def va al margen izquierdo
+//   valores por omisión, *args, lambda, global, nonlocal   -> no existen en CQL
 
 // [programa, stdin opcional]
 const PROGRAMAS = [
@@ -95,6 +102,46 @@ const PROGRAMAS = [
   ["x = input()\nprint(x + 5)", "3\n"],
   ["n = input()\nprint(n * 2 - 1)", "3\n"],
   ['print("a" < 3)'],
+  // --- funciones: def, parámetros, return, ámbito local
+  ['def saludar():\n    print("Hola")\nsaludar()\nsaludar()'],
+  ["def doble(x):\n    return x * 2\nprint(doble(21))"],
+  ["def sumar(a, b):\n    return a + b\nprint(sumar(2, 3) * 2)"],
+  ["def area(ancho, alto):\n    return ancho * alto\nr = area(4, 5)\nprint(r)"],
+  ["def sin_return():\n    x = 5\nprint(sin_return())"],
+  ["def f():\n    return\nprint(f())"],
+  ['def f(x):\n    if x > 0:\n        return "positivo"\n    return "no positivo"\nprint(f(3))\nprint(f(-1))'],
+  ["def cuenta(n):\n    for i in range(n):\n        print(i)\ncuenta(3)"],
+  ["def fact(n):\n    if n <= 1:\n        return 1\n    return n * fact(n - 1)\nprint(fact(10))"],
+  ["def fib(n):\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\nprint(fib(12))"],
+  ["x = 10\ndef cambia():\n    x = 99\n    return x\nprint(cambia())\nprint(x)"],
+  ["g = 5\ndef lee():\n    return g * 2\nprint(lee())"],
+  ["def a():\n    return b() + 1\ndef b():\n    return 41\nprint(a())"],
+  ['def mensaje(nombre):\n    return "Hola " + nombre\nprint(mensaje("Ana"))'],
+  ["def dobla(x):\n    return x * 2\nprint(dobla(dobla(3)))"],
+  ["def par(n):\n    return n % 2 == 0\nprint(par(4))\nprint(par(7))"],
+  ["def media(a, b):\n    return (a + b) / 2\nprint(media(3, 4))\nprint(media(2, 4))"],
+  ["def suma_hasta(n):\n    total = 0\n    i = 1\n    while i <= n:\n        total = total + i\n        i = i + 1\n    return total\nprint(suma_hasta(10))"],
+  ["def f(x):\n    return x\nprint(f(1) + f(2))\nprint(f(2.5))"],
+  ["print(None)\nx = None\nprint(x == None)\nprint(x != None)"],
+  ["def f(n):\n    for i in range(n):\n        if i == 2:\n            return i\n    return 99\nprint(f(5))\nprint(f(1))"],
+  ["def ordena(a, b):\n    if a > b:\n        return a\n    elif a == b:\n        return 0\n    else:\n        return b\nprint(ordena(3, 9))\nprint(ordena(4, 4))"],
+  ["def f(x):\n    y = x * 2\n    return y\nprint(f(f(f(1))))\nprint(str(f(4)) + \"!\")"],
+  ["def inc(n):\n    n = n + 1\n    return n\nv = 5\nr = inc(v)\nprint(v)\nprint(r)"],
+  ['def f():\n    return "a"\ndef g():\n    return f() + "b"\nprint(g())'],
+  ["def f(a):\n    return a\nprint(f())"],
+  ["def f(a):\n    return a\nprint(f(1, 2))"],
+  ["def f():\n    y = 1\nf()\nprint(y)"],
+  ["saludar()\ndef saludar():\n    print(1)"],
+  ["def f():\n    f()\nf()"],
+  ["return 5"],
+  ["def f(a, a):\n    return a"],
+  ["print(g(1))"],
+  ["def f():\n    x = 1\nprint(f() + 1)"],
+  ['def f(x):\n    return x + 1\nprint(f("a"))'],
+  ["def f():\n    return int(None)\nprint(f())"],
+  ["total = 0\ndef sumar_uno():\n    total = total + 1\nsumar_uno()\nprint(total)"],
+  ["x = 5\ndef f():\n    print(x)\n    x = 1\nf()"],
+  ["x = 5\ndef f():\n    y = x + 1\n    return y\nprint(f())"],
 ];
 
 let n = 0;

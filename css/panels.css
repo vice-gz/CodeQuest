@@ -521,6 +521,16 @@ body.sin-scroll {
   font-weight: 600;
 }
 
+.transicion-consejo {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border-left: 3px solid #f59e0b;
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.12);
+  font-size: 0.9rem;
+  text-align: left;
+}
+
 .transicion-relato {
   margin: 8px 0 12px;
   font-size: clamp(1.05rem, 2.6vw, 1.3rem);

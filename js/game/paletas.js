@@ -8,7 +8,7 @@ export const PALETAS = {
   2: { nombre: "Memoria", acento: "#a78bfa", acento2: "#c4b5fd", fondo: "#0b0a16", glow: "rgba(167, 139, 250, 0.35)" },
   3: { nombre: "Lógica", acento: "#f87171", acento2: "#fbbf24", fondo: "#0d0a0a", glow: "rgba(248, 113, 113, 0.35)" },
   4: { nombre: "Automatización", acento: "#fb923c", acento2: "#fdba74", fondo: "#0d0a07", glow: "rgba(251, 146, 60, 0.35)" },
-  5: { nombre: "Programador", acento: "#38bdf8", acento2: "#7dd3fc", fondo: "#080c12", glow: "rgba(56, 189, 248, 0.35)" },
+  5: { nombre: "Modularidad", acento: "#38bdf8", acento2: "#7dd3fc", fondo: "#080c12", glow: "rgba(56, 189, 248, 0.35)" },
   6: { nombre: "Proyecto", acento: "#f472b6", acento2: "#f9a8d4", fondo: "#0d080c", glow: "rgba(244, 114, 182, 0.35)" },
 };
 

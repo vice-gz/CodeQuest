@@ -5,7 +5,6 @@
   "concepto": "contadores con ciclos",
   "concepto_evaluado": "integracion_mundo_4",
   "narrativa": "El complejo entero debe evacuarse y el jefe de seguridad quiere un reporte: cuántas personas salvó el elevador.",
-  "narrativaSiguienteMundo": "¡Evacuación completada! Robot1 descubre una puerta con luces parpadeantes: el sistema de diagnóstico del complejo está lleno de errores. Allí lo espera el Mundo 5: Programador. (Próximamente.)",
   "escenario": {
     "tipo": "elevador",
     "pisos": 5,

@@ -33,6 +33,39 @@
       ]
     },
     {
+      "id": "6.4",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué hace input()?",
+      "enunciado": "Acabas de ejecutar input(). ¿Qué hace esta instrucción?",
+      "codigoInicial": "input()",
+      "instruccionesPermitidas": [
+        "input"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Pausa el programa y espera a que escribas un valor"
+        },
+        {
+          "id": "b",
+          "texto": "Muestra la palabra input en el panel de Salida"
+        },
+        {
+          "id": "c",
+          "texto": "Hace avanzar a Robot1"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: input() detiene el programa hasta que la persona escribe algo y, además, DEVUELVE lo que escribió.",
+      "pistas": [
+        "¿Quién escribió el 7 que se pidió?"
+      ]
+    },
+    {
       "id": "6.2",
       "tipo": "ESCRIBIR",
       "titulo": "Usa lo que escribes",

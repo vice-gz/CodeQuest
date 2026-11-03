@@ -81,6 +81,39 @@
       ]
     },
     {
+      "id": "3.5",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué cambió al girar?",
+      "enunciado": "Acabas de ejecutar robot1.girar(\"sur\"). ¿Qué cambió en Robot1?",
+      "codigoInicial": "robot1.girar(\"sur\")",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "girar"
+      ],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ahora mira hacia el sur (cambió su Dirección)"
+        },
+        {
+          "id": "b",
+          "texto": "Se movió una casilla hacia el sur"
+        },
+        {
+          "id": "c",
+          "texto": "Dijo la palabra «sur»"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: girar() solo cambia hacia dónde mira Robot1; su posición sigue igual. Para moverse hay que usar avanzar().",
+      "pistas": [
+        "Mira la Dirección y la Posición en el panel de Estado."
+      ]
+    },
+    {
       "id": "3.4",
       "tipo": "RESOLVER",
       "titulo": "Baja una fila",

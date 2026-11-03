@@ -25,6 +25,39 @@
       ]
     },
     {
+      "id": "1.4",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué instrucción lo hizo?",
+      "enunciado": "Acabas de ver que apareció un mensaje en el panel de Salida. ¿Qué instrucción del programa lo mostró?",
+      "codigoInicial": "print(\"Robot1 despierta\")",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "print()"
+        },
+        {
+          "id": "b",
+          "texto": "robot1.avanzar()"
+        },
+        {
+          "id": "c",
+          "texto": "robot1.girar()"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: print() muestra un mensaje en el panel de Salida. No mueve a Robot1: para eso están avanzar() y girar().",
+      "pistas": [
+        "Piensa en dónde apareció el texto: en el panel de Salida."
+      ]
+    },
+    {
       "id": "1.2",
       "tipo": "MODIFICAR",
       "titulo": "Cambia el mensaje",

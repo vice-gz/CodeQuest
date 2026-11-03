@@ -58,6 +58,18 @@ const VISUALES = {
     <text x="170" y="42" text-anchor="middle" font-size="12" font-family="monospace" fill="currentColor">while piso &lt; 5:</text>
     <text x="170" y="62" text-anchor="middle" font-size="12" font-family="monospace" fill="currentColor">for i in range(3):</text>
     <text x="170" y="86" text-anchor="middle" font-size="11" opacity=".7" fill="currentColor">mientras… / N veces</text></svg>`,
+  funcion: `<svg ${SVG_BASE} aria-label="Una función es una máquina: entra un material, sale un producto">
+    <rect x="12" y="46" width="44" height="28" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <text x="34" y="64" text-anchor="middle" font-size="12" font-family="monospace" fill="currentColor">[5, 3]</text>
+    <path d="M60 60 H86" stroke="currentColor" stroke-width="2.5"/><path d="M80 54 l8 6 l-8 6" fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <rect x="92" y="28" width="56" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="3"/>
+    <circle cx="120" cy="52" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="4 3"/>
+    <text x="120" y="80" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor">sumar</text>
+    <path d="M152 60 H178" stroke="currentColor" stroke-width="2.5"/><path d="M172 54 l8 6 l-8 6" fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <rect x="184" y="46" width="44" height="28" rx="6" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="2.5"/>
+    <text x="206" y="64" text-anchor="middle" font-size="13" font-family="monospace" fill="currentColor">8</text>
+    <text x="34" y="96" text-anchor="middle" font-size="10" opacity=".7" fill="currentColor">parámetros</text>
+    <text x="206" y="96" text-anchor="middle" font-size="10" opacity=".7" fill="currentColor">return</text></svg>`,
 };
 
 // ---------------------------------------------------------------- Glosario
@@ -94,6 +106,13 @@ export const BIENVENIDAS = {
     puntos: ["Cada vuelta del ciclo es una repetición.", "Dentro del ciclo hay que cambiar algo, o no terminará nunca.", "Si el programa repite más de 1000 veces, se detiene para protegerte."],
     ejemplo: "for i in range(4):\n    elevador.subir(1)",
     visual: "ciclo",
+  },
+  5: {
+    titulo: "¡Bienvenido al Mundo 5: Modularidad!",
+    texto: "En la fábrica de robots no se repite el trabajo a mano: se construyen máquinas. Aquí aprenderás a crear funciones con def, a darles parámetros y a pedirles resultados con return.",
+    puntos: ["def construye la máquina; llamarla con su nombre la enciende.", "Los parámetros son las ranuras de entrada; return es la bandeja de salida.", "Las variables de dentro de una función son locales: no se ven desde fuera."],
+    ejemplo: "def calcular_doble(x):\n    return x * 2\nprint(calcular_doble(21))",
+    visual: "funcion",
   },
 };
 
@@ -228,7 +247,7 @@ export function mostrarBienvenidaMundo(mundo, { usuarioId = null, forzar = false
     caja.innerHTML = `
       <p class="teoria-etiqueta">Mundo ${mundo}</p>
       <h2>${esc(b.titulo)}</h2>
-      <div class="teoria-visual">${VISUALES[b.visual]}</div>
+      ${VISUALES[b.visual] ? `<div class="teoria-visual">${VISUALES[b.visual]}</div>` : ""}
       <p>${esc(b.texto)}</p>
       <ul>${b.puntos.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
       ${bloqueCodigo(b.ejemplo)}

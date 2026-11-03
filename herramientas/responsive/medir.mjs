@@ -47,6 +47,7 @@ const ESCENARIOS = [
   { id: "juego-m2", url: "/juego.html?mundo=2", rol: "estudiante", hasta: 8, juego: true },
   { id: "juego-m3", url: "/juego.html?mundo=3", rol: "estudiante", hasta: 19, juego: true },
   { id: "juego-m4", url: "/juego.html?mundo=4", rol: "estudiante", hasta: 31, juego: true },
+  { id: "juego-m5", url: "/juego.html?mundo=5", rol: "estudiante", hasta: 43, juego: true },
   { id: "juego-tour", url: "/juego.html?mundo=1", rol: "estudiante", hasta: 0, juego: true, tour: true },
   { id: "juego-sandbox", url: "/juego.html?modo=sandbox", rol: "estudiante", hasta: 8, juego: true },
   { id: "perfil", url: "/perfil.html", rol: "estudiante", hasta: 25 },
@@ -215,7 +216,10 @@ for (const esc of ESCENARIOS) {
       await page.evaluateOnNewDocument((t, bienvenidas, esc) => {
         localStorage.setItem("sb-127-auth-token", t);
         bienvenidas.forEach((m) => localStorage.setItem(`codequest:teoria:u1:${m}`, "1"));
-        if (!esc.tour) localStorage.setItem("codequest:tour-visto", "1");
+        if (!esc.tour) {
+          localStorage.setItem("codequest:tour-visto", "1");
+          [2, 3, 4, 5].forEach((m) => localStorage.setItem(`codequest:tour-mundo:u1:${m}`, "1")); // tours de mundo ya vistos
+        }
       }, token, [1, 2, 3, 4], esc);
     }
     await page.goto(`${BASE}${esc.url}`, { waitUntil: "networkidle0", timeout: 30000 }).catch(() => {});

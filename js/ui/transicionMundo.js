@@ -13,6 +13,7 @@
  * @param {string} o.narrativa
  * @param {string|null} o.nombreSiguiente  null si no hay mundo siguiente todavía
  * @param {string|null} [o.enlacePerfil]   URL para el botón secundario (opcional)
+ * @param {string|null} [o.consejo]        mensaje de eficiencia (Niveles Jefe); añade el botón «Mejorar mi código»
  * @returns {Promise<"continuar"|"cerrar">}
  */
 export function mostrarTransicionMundo({
@@ -23,6 +24,7 @@ export function mostrarTransicionMundo({
   narrativa,
   nombreSiguiente,
   enlacePerfil = null,
+  consejo = null,
 }) {
   return new Promise((resolve) => {
     document.querySelector(".transicion-mundo")?.remove();
@@ -52,6 +54,10 @@ export function mostrarTransicionMundo({
     relato.className = "transicion-relato";
     relato.textContent = narrativa;
 
+    const aviso = document.createElement("p");
+    aviso.className = "transicion-consejo";
+    aviso.textContent = consejo ? `💡 ${consejo}` : "";
+
     const acciones = document.createElement("div");
     acciones.className = "transicion-acciones";
 
@@ -69,7 +75,16 @@ export function mostrarTransicionMundo({
       acciones.appendChild(perfil);
     }
 
-    caja.append(etiqueta, titulo, resumen, relato, acciones);
+    let mejorar = null;
+    if (consejo) {
+      mejorar = document.createElement("button");
+      mejorar.type = "button";
+      mejorar.className = "boton boton-secundario transicion-boton";
+      mejorar.textContent = "Mejorar mi código";
+      acciones.appendChild(mejorar);
+    }
+
+    caja.append(etiqueta, titulo, resumen, relato, ...(consejo ? [aviso] : []), acciones);
     capa.appendChild(caja);
     document.body.appendChild(capa);
     document.body.classList.add("sin-scroll");
@@ -78,6 +93,11 @@ export function mostrarTransicionMundo({
       capa.remove();
       document.body.classList.remove("sin-scroll");
       resolve(nombreSiguiente ? "continuar" : "cerrar");
+    });
+    mejorar?.addEventListener("click", () => {
+      capa.remove();
+      document.body.classList.remove("sin-scroll");
+      resolve("cerrar"); // se queda en el nivel: el panel de retroalimentación tiene «Repetir nivel»
     });
     principal.focus();
   });

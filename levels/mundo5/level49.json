@@ -1,0 +1,196 @@
+{
+  "id": 49,
+  "mundo": 5,
+  "nombre": "Activando la producción",
+  "concepto": "llamar funciones ya definidas",
+  "concepto_evaluado": "funciones_llamadas",
+  "narrativa": "Las máquinas ya están construidas. Ahora hay que encenderlas, y el orden de las llamadas decide el orden de la producción.",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "49.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Cada llamada enciende una máquina",
+      "enunciado": "Estas dos máquinas ya están definidas. Cada línea saludar() o despedir() enciende UNA máquina; una misma máquina se puede encender las veces que quieras. Ejecuta y cuenta las veces que trabaja cada una.",
+      "codigoInicial": "def saludar():\n    print(\"Hola\")\ndef despedir():\n    print(\"Adiós\")\nsaludar()\nsaludar()\ndespedir()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "saludar() trabajó dos veces y despedir() una: cada llamada es un encendido.",
+      "pistas": [
+        "Cuenta las cajas de materiales que entran a cada máquina."
+      ]
+    },
+    {
+      "id": "49.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿En qué orden?",
+      "enunciado": "En Python, ¿qué muestra este programa?",
+      "codigoInicial": "def a():\n    print(\"A\")\ndef b():\n    print(\"B\")\nb()\na()\nb()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "A, B, A"
+        },
+        {
+          "id": "b",
+          "texto": "B, A, B"
+        },
+        {
+          "id": "c",
+          "texto": "A, B"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Las máquinas trabajan en el orden de las LLAMADAS, no en el orden en que se definieron.",
+      "pistas": [
+        "Mira solo las líneas que llaman: b(), a(), b()."
+      ]
+    },
+    {
+      "id": "49.3",
+      "tipo": "RESOLVER",
+      "titulo": "Activa la línea de producción",
+      "enunciado": "Las máquinas cortar(), soldar() y pintar() ya están definidas. Escribe las llamadas para que la producción sea: primero cortar, luego soldar y por último pintar.",
+      "codigoInicial": "def cortar():\n    print(\"Cortando\")\ndef soldar():\n    print(\"Soldando\")\ndef pintar():\n    print(\"Pintando\")",
+      "solucionReferencia": "def cortar():\n    print(\"Cortando\")\ndef soldar():\n    print(\"Soldando\")\ndef pintar():\n    print(\"Pintando\")\ncortar()\nsoldar()\npintar()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "Cortando",
+              "Soldando",
+              "Pintando"
+            ]
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "cortar",
+            "minimo": 1
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "soldar",
+            "minimo": 1
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "pintar",
+            "minimo": 1
+          }
+        ]
+      },
+      "retroalimentacion": "Llamaste a cada máquina en el orden correcto.",
+      "pistas": [
+        "Debajo de los tres def, una llamada por línea."
+      ],
+      "mensajeNoLogrado": "Debe mostrar Cortando, Soldando y Pintando, en ese orden (llama a las tres máquinas).",
+      "solucionesIncorrectas": [
+        "def cortar():\n    print(\"Cortando\")\ndef soldar():\n    print(\"Soldando\")\ndef pintar():\n    print(\"Pintando\")",
+        "def cortar():\n    print(\"Cortando\")\ndef soldar():\n    print(\"Soldando\")\ndef pintar():\n    print(\"Pintando\")\npintar()\nsoldar()\ncortar()"
+      ]
+    },
+    {
+      "id": "49.4",
+      "tipo": "RESOLVER",
+      "titulo": "Una máquina con el robot",
+      "enunciado": "La máquina paso() ya está definida: avanza 1 casilla. Úsala dentro de un ciclo for para que Robot1 llegue a la bandera, en la casilla (5,0).",
+      "codigoInicial": "def paso():\n    robot1.avanzar(1)",
+      "solucionReferencia": "def paso():\n    robot1.avanzar(1)\nfor i in range(5):\n    paso()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "escenario": {
+        "tipo": "fabrica",
+        "ancho": 8,
+        "alto": 1,
+        "robotPosicion": [
+          0,
+          0
+        ],
+        "robotDireccion": "este",
+        "mostrarEnergia": false,
+        "robot": true,
+        "objetivoPosicion": [
+          5,
+          0
+        ]
+      },
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "posicion",
+            "valorEsperado": [
+              5,
+              0
+            ]
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "paso",
+            "minimo": 5
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "for"
+          ]
+        }
+      },
+      "retroalimentacion": "Máquina pequeña + ciclo = un trayecto largo.",
+      "pistas": [
+        "for i in range(5): y dentro paso()"
+      ],
+      "mensajeNoLogrado": "Robot1 debe llegar a (5,0) llamando a paso() cinco veces dentro de un for.",
+      "solucionesIncorrectas": [
+        "def paso():\n    robot1.avanzar(1)\nrobot1.avanzar(5)"
+      ]
+    }
+  ]
+}

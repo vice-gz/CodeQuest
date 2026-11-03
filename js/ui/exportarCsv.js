@@ -81,13 +81,13 @@ export function construirCsv({ usuarios, resumenes, errores, catalogo, etiquetaR
     const t = resumenes.get(u.id)?.totales;
     const e = errores.get(u.id) || { totalEjecuciones: 0, totalErrores: 0, errorMasFrecuente: null };
     const mundo = catalogo.mundos[u.mundo];
-    const ordinal = mundo ? mundo.niveles.indexOf(u.nivel) + 1 : 0;
+    const ordinal = mundo ? (catalogo.ordinales?.[u.nivel] ?? mundo.niveles.indexOf(u.nivel) + 1) : 0;
     return [
       u.nombre,
       u.email,
       etiquetaRol(u.rol),
       u.mundo,
-      ordinal > 0 ? ordinal : u.nivel,
+      ordinal > 0 || catalogo.ordinales?.[u.nivel] === 0 ? ordinal : u.nivel,
       u.nivel,
       t?.estrellas ?? 0,
       t?.nivelesCompletados ?? 0,

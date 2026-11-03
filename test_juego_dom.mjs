@@ -32,7 +32,12 @@ const STUBS = {
   nav: `export async function renderizarNav() {}`,
   catalogo: `import { construirCatalogo } from ${JSON.stringify(ruta("js/persistence/progreso.js"))};
     const lista = globalThis.__niveles;
+    import { ordinalDeNivel as ordEn, nivelPorOrdinal as porOrdEn, siguienteNivelId as sigEn } from ${JSON.stringify(ruta("js/persistence/progreso.js"))};
     export const catalogo = construirCatalogo(lista);
+    export const ordinalDeNivel = (id) => ordEn(catalogo, id);
+    export const nivelPorOrdinal = (m, o) => porOrdEn(catalogo, m, o);
+    export const siguienteNivel = (id) => sigEn(catalogo, id);
+    export const REQUERIDOS_POR_MUNDO = Object.fromEntries(Object.values(catalogo.mundos).map((m) => [m.id, m.requeridos]));
     export const NIVELES_POR_MUNDO = Object.fromEntries(Object.values(catalogo.mundos).map((m) => [m.id, m.niveles.length]));
     export const TOTAL_NIVELES = catalogo.totalNiveles;
     export const MAX_ESTRELLAS = catalogo.maxEstrellas;
@@ -72,7 +77,9 @@ const HTML_JUEGO = readFileSync(ruta("juego.html"), "utf8").replace(/<script[\s\
 
 // ---------------------------------------------------------------- Supabase simulado
 class BDFalsa {
-  constructor({ jugador = null, fases = [] } = {}) {
+  // Por defecto el Nivel 0 (tutorial) ya está hecho; `conNivel0: false` simula a quien llega por primera vez.
+  constructor({ jugador = null, fases = [], conNivel0 = true } = {}) {
+    fases = [...(conNivel0 ? fasesCompletas([0]) : []), ...fases];
     this.tablas = {
       progreso_jugador: jugador ? [{ user_id: "u1", ...jugador }] : [{ user_id: "u1", mundo_actual: 1, nivel_actual: 1, experiencia: 0 }],
       progreso_fases: fases.map((f) => ({ user_id: "u1", ...f })),
@@ -225,7 +232,7 @@ await prueba("sin ?mundo vuelve al mapa; un mundo bloqueado también", async () 
 });
 
 await prueba("Mundo 1: tema cian, escenario de laboratorio, bienvenida la primera vez", async () => {
-  const j = await abrir({ url: "juego.html?mundo=1", bienvenidaVista: false });
+  const j = await abrir({ url: "juego.html?mundo=1", bienvenidaVista: false, bd: new BDFalsa({ fases: fasesCompletas([0]) }) }); // con el Nivel 0 ya hecho
   await j.arrancado();
   assert.equal(j.w.document.body.dataset.mundo, "1");
   assert.match(j.$("titulo-nivel").textContent, /Nivel 1/);
@@ -237,6 +244,35 @@ await prueba("Mundo 1: tema cian, escenario de laboratorio, bienvenida la primer
   j.w.document.querySelector("[data-empezar]").click();
   assert.equal(j.w.localStorage.getItem("codequest:teoria:u1:1"), "1", "la bienvenida no debe repetirse");
   sinErrores(j);
+  j.cerrar();
+});
+
+await prueba("NIVEL 0: quien llega por primera vez empieza en el Nivel 0 (sin editor), las tarjetas se ordenan y completar el Nivel 0 abre el Nivel 1", async () => {
+  const bd = new BDFalsa({ conNivel0: false });
+  const j = await abrir({ url: "juego.html?mundo=1", bd, bienvenidaVista: false });
+  await j.arrancado();
+  const doc = j.w.document;
+  assert.match(j.$("titulo-nivel").textContent, /Nivel 0 — Antes de empezar/);
+  assert.ok(doc.body.classList.contains("modo-ordenar"), "sin consola ni memoria");
+  assert.ok(!j.$("tarjetas-envoltura").classList.contains("oculto"));
+  assert.ok(doc.querySelector(".editor-envoltura").classList.contains("oculto"), "no hay editor de código");
+  assert.equal(j.$("titulo-codigo").textContent, "Tu algoritmo");
+  const botones = () => [...doc.querySelectorAll("#tarjetas-banco .tarjeta-flujo")];
+  assert.equal(botones().length, 4);
+  const elegir = async (texto) => {
+    botones().find((b) => b.textContent === texto).click();
+    await esperarHasta(() => !doc.getElementById("tarjetas-envoltura").classList.contains("bloqueado"));
+    await new Promise((r) => setTimeout(r, 30));
+  };
+  // Un error: «Abrir la puerta» no toca primero → el robot choca, se cuenta un intento y se empieza de nuevo
+  await elegir("Abrir la puerta");
+  assert.equal(botones().length, 4, "todas las tarjetas vuelven al banco");
+  assert.equal(doc.querySelectorAll("#tarjetas-diagrama .paso-diagrama").length, 0);
+  assert.ok(bd.tablas.ejecuciones.some((e) => e.resultado === "objetivo_no_alcanzado" && /^orden:abrir/.test(e.codigo)), "el intento fallido queda registrado");
+  // El orden correcto
+  for (const t of ["Inicio", "Caminar 3 pasos", "Abrir la puerta", "Fin"]) await elegir(t);
+  assert.ok(await esperarHasta(() => bd.tablas.progreso_fases.some((r) => r.fase_id === "0.1" && r.completada)), "al ordenar todo bien se completa la fase 0.1");
+  assert.equal(doc.querySelectorAll("#tarjetas-diagrama .paso-diagrama").length, 4);
   j.cerrar();
 });
 
@@ -564,9 +600,9 @@ await prueba("?nivel=N abre ese nivel del mundo solo si ya está desbloqueado", 
 });
 
 console.log("Transición entre mundos");
-await prueba("al terminar el Nivel 8 sale la pantalla narrativa (no el nivel 9) y el botón abre el Mundo 2", async () => {
-  const ultima = nivelPorId[8].fases.at(-1);
-  const bd = new BDFalsa({ jugador: { mundo_actual: 1, nivel_actual: 8, experiencia: 0 }, fases: fasesCompletas(nivelesDeMundo(1), { excepto: [ultima.id] }) });
+await prueba("al terminar el Nivel Jefe del Mundo 1 (el último del mundo) sale la pantalla narrativa y el botón abre el Mundo 2", async () => {
+  const ultima = nivelPorId[44].fases.at(-1);
+  const bd = new BDFalsa({ jugador: { mundo_actual: 1, nivel_actual: 44, experiencia: 0 }, fases: fasesCompletas(nivelesDeMundo(1), { excepto: [ultima.id] }) });
   const j = await abrir({ url: "juego.html?mundo=1", bd });
   await j.arrancado();
   const solucion = ultima.solucionReferencia ?? ultima.codigoInicial;
@@ -586,6 +622,223 @@ await prueba("al terminar el Nivel 8 sale la pantalla narrativa (no el nivel 9) 
   await esperarHasta(() => j.redirecciones.length > 0);
   assert.deepEqual([...j.redirecciones], ["juego.html?mundo=2"]);
   sinErrores(j);
+  j.cerrar();
+});
+
+console.log("Tours de inmersión por mundo");
+await prueba("TOUR DE MUNDO: la primera vez en el Mundo 2, 3, 4 o 5 presenta el escenario con su mensaje, y no vuelve a salir", async () => {
+  const casos = [
+    [2, [1], /Ya no hay robot\. Ahora controlas el sistema\. Usa variables para guardar datos/, 2],
+    [3, [1, 2], /Bienvenido al casino\. Tu código tomará decisiones\. Usa if y else para ganar/, 1],
+    [4, [1, 2, 3], /El elevador necesita automatización\. Usa ciclos while para subir y bajar sin detenerte/, 1],
+    [5, [1, 2, 3, 4], /Bienvenido a la fábrica/, 2],
+  ];
+  for (const [mundo, previos, texto, pasos] of casos) {
+    const bd = () => new BDFalsa({ fases: fasesCompletas(previos.flatMap(nivelesDeMundo)) });
+    const j = await abrir({ url: `juego.html?mundo=${mundo}`, bd: bd() });
+    j.w.localStorage.setItem("codequest:tour-visto", "1"); // el tour general ya se vio en el Mundo 1
+    await j.arrancado();
+    assert.ok(await esperarHasta(() => j.w.document.querySelector(".tour-overlay")), `Mundo ${mundo}: debe salir el tour del mundo nuevo`);
+    const overlay = j.w.document.querySelector(".tour-overlay");
+    assert.match(overlay.querySelector(".tour-texto").textContent, texto);
+    assert.match(overlay.querySelector(".tour-progreso").textContent, new RegExp(`1 de ${pasos}`));
+    assert.ok(overlay.querySelector(".tour-cerrar") && overlay.querySelector(".tour-controles"), "mismos controles fijos y ✕ que el tour general");
+    overlay.querySelector(".tour-cerrar").click();
+    await new Promise((r) => setTimeout(r, 60));
+    assert.equal(j.w.document.querySelector(".tour-overlay"), null);
+    assert.equal(j.w.localStorage.getItem(`codequest:tour-mundo:u1:${mundo}`), "1", "queda marcado como visto");
+    j.cerrar();
+    // segunda visita: ya no sale (se conserva el almacenamiento)
+    const k = await abrir({ url: `juego.html?mundo=${mundo}`, bd: bd() });
+    k.w.localStorage.setItem("codequest:tour-visto", "1");
+    k.w.localStorage.setItem(`codequest:tour-mundo:u1:${mundo}`, "1");
+    await k.arrancado();
+    await new Promise((r) => setTimeout(r, 900));
+    assert.equal(k.w.document.querySelector(".tour-overlay"), null, `Mundo ${mundo}: no debe repetirse`);
+    k.cerrar();
+  }
+});
+
+await prueba("TOUR DE MUNDO: el del Mundo 2 empieza por la terminal (cambia a Consola solo) y luego muestra los chips de memoria", async () => {
+  const j = await abrir({ url: "juego.html?mundo=2", bd: new BDFalsa({ fases: fasesCompletas(nivelesDeMundo(1)) }) });
+  j.w.localStorage.setItem("codequest:tour-visto", "1");
+  await j.arrancado();
+  assert.ok(await esperarHasta(() => j.w.document.querySelector(".tour-overlay")));
+  const overlay = j.w.document.querySelector(".tour-overlay");
+  assert.match(overlay.querySelector(".tour-titulo").textContent, /La terminal/);
+  assert.equal(j.w.document.getElementById("contenedor-nivel").dataset.pestana, "consola", "la terminal vive en la pestaña Consola");
+  overlay.querySelector(".tour-siguiente").click();
+  await esperarHasta(() => /2 de 2/.test(overlay.querySelector(".tour-progreso").textContent));
+  assert.match(overlay.querySelector(".tour-titulo").textContent, /Centro de Recuperación/);
+  assert.equal(j.w.document.getElementById("contenedor-nivel").dataset.pestana, "jugar");
+  assert.match(overlay.querySelector(".tour-siguiente").textContent, /Empezar a jugar/);
+  overlay.querySelector(".tour-siguiente").click();
+  await new Promise((r) => setTimeout(r, 80));
+  assert.equal(j.w.document.querySelector(".tour-overlay"), null);
+  assert.equal(j.w.localStorage.getItem("codequest:tour-mundo:u1:2"), "1");
+  j.cerrar();
+});
+
+console.log("Mundo 5 (fábrica) y Niveles Jefe");
+await prueba("NIVEL JEFE: sin botón de pistas, editor en blanco, insignia 👑 y se completa con la solución", async () => {
+  const bd = new BDFalsa({ fases: fasesCompletas(nivelesDeMundo(1).filter((id) => id !== 44)) });
+  const j = await abrir({ url: "juego.html?mundo=1&nivel=9", bd });
+  await j.arrancado();
+  assert.match(j.$("titulo-nivel").textContent, /^👑 Nivel Jefe — Laberinto ciego/);
+  assert.ok(j.$("btn-pista").classList.contains("oculto"), "el Nivel Jefe no tiene botón de pistas");
+  assert.equal(j.$("editor-codigo").value, "", "editor en blanco");
+  j.$("btn-pista").click(); // aunque se fuerce el clic no hay ayudas
+  assert.doesNotMatch(j.feedback(), /Pista/);
+  j.escribir(nivelPorId[44].fases[0].solucionReferencia);
+  await j.ejecutar();
+  assert.ok(await esperarHasta(() => bd.tablas.progreso_fases.some((r) => r.fase_id === "44.1" && r.completada)), "la solución del laberinto completa el jefe");
+  // una fase normal SÍ muestra el botón de pistas
+  const k = await abrir({ url: "juego.html?mundo=1&nivel=1", bd: new BDFalsa() });
+  await k.arrancado();
+  assert.ok(!k.$("btn-pista").classList.contains("oculto"));
+  j.cerrar();
+  k.cerrar();
+});
+
+await prueba("MUNDO 5: la fábrica construye una máquina por cada def (sin encenderla), y cada llamada se cuenta y se muestra", async () => {
+  const admin = { user_id: "u1", nombre: "Admin", rol: "admin", email: "a@x.mx" };
+  const j = await abrir({ url: "juego.html?mundo=5&demo=true", perfil: admin, bd: new BDFalsa() });
+  await j.arrancado();
+  assert.equal(j.w.document.body.dataset.mundo, "5");
+  assert.match(j.$("titulo-nivel").textContent, /Nivel 1 — Construyendo máquinas/);
+  assert.match(j.$("titulo-mundo").textContent, /Fábrica de robots/);
+  await j.ejecutar(); // la fase 1 (EXPLORAR) define saludar() pero NO la llama
+  let estado = j.$("estado-contenido").textContent.replace(/\s+/g, " ");
+  assert.match(estado, /Máquinas\s*saludar\(\)/);
+  assert.match(estado, /Llamadas\s*0/, "definir no enciende la máquina");
+  assert.match(j.$("salida-contenido").textContent, /^\s*$/, "no se mostró nada: solo se construyó la máquina");
+  j.escribir('def saludar():\n    print("hola")\nsaludar()\nsaludar()');
+  await j.ejecutar();
+  estado = j.$("estado-contenido").textContent.replace(/\s+/g, " ");
+  assert.match(estado, /Llamadas\s*2/);
+  assert.match(estado, /Última llamada\s*saludar\(\) → None/);
+  assert.match(j.$("memoria-contenido").textContent, /Todavía no hay variables/, "una función no crea variables globales: Memoria sigue vacía");
+  sinErrores(j);
+  j.cerrar();
+});
+
+await prueba("MUNDO 5: el Nivel 8 es el Jefe (👑, sin pistas, editor en blanco) y su mensaje de error es el pedido", async () => {
+  const admin = { user_id: "u1", nombre: "Admin", rol: "admin", email: "a@x.mx" };
+  const j = await abrir({ url: "juego.html?mundo=5&nivel=8&demo=true", perfil: admin, bd: new BDFalsa() });
+  await j.arrancado();
+  assert.match(j.$("titulo-nivel").textContent, /^👑 Nivel Jefe — El Gran Ensamblaje/);
+  assert.ok(j.$("btn-pista").classList.contains("oculto"));
+  assert.equal(j.$("editor-codigo").value, "");
+  assert.match(j.$("titulo-mundo").textContent, /El Gran Ensamblaje/);
+  j.escribir('def cabeza():\n    print("c")\ndef brazos():\n    print("b")\ncabeza()\nbrazos()');
+  await j.ejecutar();
+  assert.match(j.feedback(), /El robot está incompleto\. Asegúrate de definir las 3 funciones y llamarlas en el orden correcto \(cabeza, brazos, piernas\)\./);
+  assert.match(j.$("estado-contenido").textContent.replace(/\s+/g, " "), /Robot gigante\s*cabeza ✓ · brazos ✓ · piernas —/, "el robot gigante muestra lo que ya se ensambló");
+  j.escribir(nivelPorId[55].fases[0].solucionReferencia);
+  await j.ejecutar();
+  assert.match(j.$("estado-contenido").textContent.replace(/\s+/g, " "), /cabeza ✓ · brazos ✓ · piernas ✓/);
+  sinErrores(j);
+  j.cerrar();
+});
+
+console.log("Ajustes pedagógicos");
+await prueba("NIVEL 1: tras el EXPLORAR viene una pregunta PREDECIR («¿qué instrucción lo hizo?») y se guarda su avance", async () => {
+  const bd = new BDFalsa();
+  const j = await abrir({ url: "juego.html?mundo=1&nivel=1", bd });
+  await j.arrancado();
+  const puntos = () => [...j.w.document.querySelectorAll("#barra-fases .fase-punto")];
+  assert.equal(puntos().length, 4, "el Nivel 1 ahora tiene 4 fases: EXPLORAR, PREDECIR, MODIFICAR, ESCRIBIR");
+  await j.ejecutar(); // fase 1 (EXPLORAR): solo ejecutar
+  assert.ok(await esperarHasta(() => bd.tablas.progreso_fases.some((r) => r.fase_id === "1.1" && r.completada)));
+  assert.ok(await esperarHasta(() => [...j.$("feedback-contenido").querySelectorAll("button")].some((b) => /Siguiente fase/.test(b.textContent))));
+  [...j.$("feedback-contenido").querySelectorAll("button")].find((b) => /Siguiente fase/.test(b.textContent)).click();
+  assert.ok(await esperarHasta(() => j.$("prediccion-opciones").children.length === 3), "la fase 2 es una predicción con 3 opciones");
+  assert.match(j.w.document.body.textContent, /¿Qué instrucción lo hizo\?/);
+  j.$("prediccion-opciones").children[1].click(); // «robot1.avanzar()»: respuesta equivocada, no se guarda
+  await new Promise((r) => setTimeout(r, 80));
+  assert.ok(!bd.tablas.progreso_fases.some((r) => r.fase_id === "1.4" && r.completada), "una respuesta equivocada no completa la fase");
+  j.$("prediccion-opciones").children[0].click(); // «print()»
+  assert.ok(await esperarHasta(() => bd.tablas.progreso_fases.some((r) => r.fase_id === "1.4" && r.completada)), "la respuesta correcta completa la fase");
+  sinErrores(j);
+  j.cerrar();
+});
+
+await prueba("DEPURAR el decimal con coma (Nivel 11): el error explica que en Python los decimales llevan punto", async () => {
+  const bd = new BDFalsa({ fases: fasesCompletas(nivelesDeMundo(1)) });
+  const j = await abrir({ url: "juego.html?mundo=2&nivel=3", bd });
+  await j.arrancado();
+  // la fase del decimal es la última del Nivel 3 del Mundo 2 (id 11): se abre por ?nivel con las demás ya hechas
+  const bd2 = new BDFalsa({ fases: fasesCompletas([...nivelesDeMundo(1), 9, 10]).concat(fasesCompletas([11]).filter((f) => f.fase_id !== "11.4")) });
+  j.cerrar();
+  const k = await abrir({ url: "juego.html?mundo=2&nivel=3", bd: bd2 });
+  await k.arrancado();
+  assert.match(k.$("titulo-nivel").textContent, /Nivel 3/);
+  const ultimo = [...k.w.document.querySelectorAll("#barra-fases .fase-punto")].at(-1);
+  ultimo.click();
+  await new Promise((r) => setTimeout(r, 100));
+  assert.equal(k.$("editor-codigo").value, "precio = 2,5\nprint(precio)", "el error sigue siendo el punto de partida");
+  await k.ejecutar();
+  assert.match(k.feedback(), /En Python los decimales se escriben con punto, no con coma\./);
+  assert.doesNotMatch(k.feedback(), /CQL/);
+  k.escribir("precio = 2.5\nprint(precio)");
+  await k.ejecutar();
+  assert.ok(await esperarHasta(() => bd2.tablas.progreso_fases.some((r) => r.fase_id === "11.4" && r.completada)));
+  k.cerrar();
+});
+
+// El jefe del Mundo 2 pide 4 valores con input(): la ejecución se pausa en cada uno hasta que se teclea y se pulsa Aceptar.
+async function ejecutarConEntradas(j, valores) {
+  j.$("btn-ejecutar").click();
+  for (const v of valores) {
+    assert.ok(await esperarHasta(() => j.w.document.querySelector(".entrada-campo")), "input() debe pedir un valor");
+    j.w.document.querySelector(".entrada-campo").value = v;
+    j.w.document.querySelector(".entrada-aceptar").click();
+    await new Promise((r) => setTimeout(r, 40));
+  }
+  await new Promise((r) => setTimeout(r, 200));
+}
+
+await prueba("RETO DE EFICIENCIA (Nivel Jefe): un código más largo que max_lineas_recomendadas pasa igual (con sus estrellas) y recibe el mensaje; uno corto no", async () => {
+  const jefe = nivelPorId[45];
+  assert.equal(jefe.max_lineas_recomendadas, 6);
+  assert.equal(jefe.fases[0].casos[0].entradas.length, 4);
+  const previos = [...nivelesDeMundo(1), ...nivelesDeMundo(2).filter((id) => id !== 45)];
+  const bd = new BDFalsa({ fases: fasesCompletas(previos) });
+  const j = await abrir({ url: "juego.html?mundo=2&nivel=12", bd });
+  await j.arrancado();
+  assert.match(j.$("titulo-nivel").textContent, /^👑 Nivel Jefe/);
+  const largo = nivelPorId[45].fases[0].solucionReferencia + "\nextra = 1\nextra = 2";
+  j.escribir(largo);
+  await ejecutarConEntradas(j, nivelPorId[45].fases[0].casos[0].entradas); // los valores de la «Caja 1»
+  assert.ok(await esperarHasta(() => bd.tablas.progreso_fases.some((r) => r.fase_id === "45.1" && r.completada)), "el jefe se completa y se guarda aunque el código sea largo");
+  const mensaje = "¡Excelente! Completaste el nivel. Pero usaste 8 líneas. Un programador eficiente podría hacerlo en 6. ¿Te animas a intentarlo de nuevo?";
+  const capa = await esperarHasta(() => j.w.document.querySelector(".transicion-mundo"));
+  assert.ok(capa, "el jefe cierra su mundo: sale la pantalla de transición");
+  assert.ok(j.w.document.querySelector(".transicion-consejo").textContent.includes(mensaje), "el mensaje también está en la pantalla de transición, que tapa el panel");
+  j.w.document.querySelector(".transicion-acciones .boton-secundario").click(); // «Mejorar mi código»
+  await new Promise((r) => setTimeout(r, 60));
+  assert.equal(j.w.document.querySelector(".transicion-mundo"), null);
+  assert.deepEqual([...j.redirecciones], [], "se queda en el nivel");
+  assert.ok(j.w.document.querySelector(".feedback-consejo").textContent.includes(mensaje), "y el panel de retroalimentación muestra el mensaje");
+  assert.ok(j.$("feedback-contenido").querySelector(".estrella-activa"), "las estrellas no se tocan");
+  assert.ok(j.$("feedback-contenido").querySelector(".feedback-botones button"), "no se bloquea nada: sigue el botón de repetir el nivel");
+  // con el código recomendado ya no hay mensaje
+  j.escribir(nivelPorId[45].fases[0].solucionReferencia);
+  await ejecutarConEntradas(j, nivelPorId[45].fases[0].casos[0].entradas); // los valores de la «Caja 1»
+  await esperarHasta(() => j.w.document.querySelector(".transicion-mundo"), 6000);
+  assert.equal(j.w.document.querySelector(".transicion-consejo"), null, "sin mensaje si ya es tan corto como se recomienda");
+  assert.equal(j.w.document.querySelector(".feedback-consejo"), null);
+  sinErrores(j);
+  j.cerrar();
+});
+
+await prueba("el reto de eficiencia NO aparece en niveles normales ni en el Jefe del Mundo 5 (no tienen max_lineas_recomendadas)", async () => {
+  const j = await abrir({ url: "juego.html?mundo=1&nivel=1", bd: new BDFalsa() });
+  await j.arrancado();
+  j.escribir('print("Robot1 despierta")\nprint("a")\nprint("b")\nprint("c")\nprint("d")\nprint("e")');
+  await j.ejecutar();
+  await esperarHasta(() => j.w.document.querySelector(".feedback-exito"));
+  assert.equal(j.w.document.querySelector(".feedback-consejo"), null);
   j.cerrar();
 });
 
@@ -611,7 +864,9 @@ await prueba("modo demo (admin): todo abierto, sin leer ni escribir progreso en 
   await j.arrancado();
   assert.ok(j.w.document.querySelector(".insignia-demo"));
   const botones = [...j.$("selector-niveles").querySelectorAll(".nivel-punto")];
-  assert.equal(botones.length, 12);
+  assert.equal(botones.length, 13, "12 niveles + el Nivel Jefe");
+  assert.equal(botones.filter((b) => b.classList.contains("nivel-jefe")).length, 1);
+  assert.equal(botones.at(-1).textContent, "👑");
   assert.ok(botones.every((b) => !b.disabled), "en demo todos los niveles están abiertos");
   j.escribir(faseDe("32.1").codigoInicial);
   await j.ejecutar();

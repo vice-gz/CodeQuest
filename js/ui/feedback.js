@@ -93,7 +93,7 @@ export class Feedback {
   /**
    * @param {{mensaje:string, botones:{texto:string, tipo?:string, onClick:Function}[]}} opciones
    */
-  mostrarResultadoFase({ mensaje, botones = [] }) {
+  mostrarResultadoFase({ mensaje, botones = [], consejo = null }) {
     this.limpiar();
     this.container.classList.add("feedback-exito");
     this.container.innerHTML = `
@@ -102,6 +102,7 @@ export class Feedback {
         <strong>Fase completada</strong>
       </div>
       <p class="feedback-texto">${escapeHtml(mensaje)}</p>
+      ${consejo ? `<p class="feedback-consejo">💡 ${escapeHtml(consejo)}</p>` : ""}
     `;
     this.renderBotones(botones, "feedback-botones");
   }
@@ -109,7 +110,7 @@ export class Feedback {
   /**
    * @param {{estrellas:number, mensaje:string, botones:{texto:string, tipo?:string, onClick:Function}[]}} opciones
    */
-  mostrarResultadoNivel({ estrellas, mensaje, botones = [] }) {
+  mostrarResultadoNivel({ estrellas, mensaje, botones = [], consejo = null }) {
     this.limpiar();
     this.container.classList.add("feedback-exito", "feedback-nivel-completo");
     const estrellasHtml = Array.from({ length: 3 })
@@ -122,6 +123,7 @@ export class Feedback {
       </div>
       <div class="estrellas-grandes">${estrellasHtml}</div>
       <p class="feedback-texto">${escapeHtml(mensaje)}</p>
+      ${consejo ? `<p class="feedback-consejo">💡 ${escapeHtml(consejo)}</p>` : ""}
     `;
     this.renderBotones(botones, "feedback-botones feedback-botones-grandes");
   }

@@ -38,6 +38,7 @@ export function reprFlotante(x) {
 
 /** Lo que muestra print() y lo que devuelve str(): textos tal cual, True/False, floats al estilo Python. */
 export function formatear(v) {
+  if (v === null || v === undefined) return "None"; // lo que devuelve una función sin return
   if (esFlotante(v)) return reprFlotante(v.v);
   if (esLogico(v)) return v ? "True" : "False";
   return String(v);
@@ -49,6 +50,7 @@ export function reprPython(v) {
 }
 
 export function nombreDeTipo(v) {
+  if (v === null || v === undefined) return "None (una función que no devolvió nada)";
   if (esEntero(v)) return "un número entero";
   if (esFlotante(v)) return "un número decimal";
   if (esTexto(v)) return "un texto";
@@ -58,6 +60,7 @@ export function nombreDeTipo(v) {
 
 /** Tipo "corto" para las etiquetas del panel de Memoria. */
 export function etiquetaDeTipo(v) {
+  if (v === null || v === undefined) return "NONE";
   if (esEntero(v)) return "ENTERO";
   if (esFlotante(v)) return "DECIMAL";
   if (esTexto(v)) return "TEXTO";

@@ -1,0 +1,113 @@
+{
+  "id": 55,
+  "mundo": 5,
+  "nombre": "El Gran Ensamblaje",
+  "concepto": "integración del Mundo 5",
+  "concepto_evaluado": "jefe_mundo_5",
+  "narrativa": "Llegó el pedido más grande de la historia de la fábrica: un Robot1 gigante. Nadie te dirá cómo hacerlo: tendrás que dividirlo en máquinas.",
+  "narrativaSiguienteMundo": "¡El Robot1 gigante está completo y la fábrica es un éxito! Robot1 ya sabe dividir un problema en máquinas. Pronto llegará el último desafío: el Mundo 6, donde diseñará un proyecto completo. (Próximamente.)",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false,
+    "ensamble": true
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "55.1",
+      "tipo": "RESOLVER",
+      "titulo": "El Gran Ensamblaje",
+      "enunciado": "¡El pedido final! La fábrica debe construir un Robot1 gigante. Define EXACTAMENTE tres funciones: cabeza(), brazos() y piernas() (cada una muestra con print un mensaje de lo que ensambla) y llámalas, una vez cada una, en ese orden. El robot gigante se irá armando mientras tu código se ejecuta.",
+      "codigoInicial": "",
+      "solucionReferencia": "def cabeza():\n    print(\"Cabeza lista\")\ndef brazos():\n    print(\"Brazos listos\")\ndef piernas():\n    print(\"Piernas listas\")\ncabeza()\nbrazos()\npiernas()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "return",
+        "if",
+        "elif",
+        "else",
+        "for",
+        "while",
+        "and",
+        "or",
+        "not",
+        "booleanos",
+        "str",
+        "int",
+        "float"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "tipo": "fabrica",
+        "ancho": 8,
+        "alto": 1,
+        "robotPosicion": [
+          0,
+          0
+        ],
+        "robotDireccion": "este",
+        "mostrarEnergia": false,
+        "robot": false,
+        "ensamble": true
+      },
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "ensamble",
+            "partes": [
+              "cabeza",
+              "brazos",
+              "piernas"
+            ]
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "cabeza",
+            "parametros": 0
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "brazos",
+            "parametros": 0
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "piernas",
+            "parametros": 0
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "def"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Jefe derrotado! Dividiste el trabajo en tres máquinas y las pusiste a trabajar en orden: eso es modularidad.",
+      "mensajeNoLogrado": "El robot está incompleto. Asegúrate de definir las 3 funciones y llamarlas en el orden correcto (cabeza, brazos, piernas).",
+      "solucionesIncorrectas": [
+        "def cabeza():\n    print(\"Cabeza lista\")\ndef brazos():\n    print(\"Brazos listos\")\ncabeza()\nbrazos()",
+        "def cabeza():\n    print(\"Cabeza lista\")\ndef brazos():\n    print(\"Brazos listos\")\ndef piernas():\n    print(\"Piernas listas\")\npiernas()\nbrazos()\ncabeza()",
+        "def cabeza():\n    print(\"Cabeza lista\")\ndef brazos():\n    print(\"Brazos listos\")\ndef piernas():\n    print(\"Piernas listas\")",
+        "def cabeza():\n    print(\"Cabeza lista\")\ndef brazos():\n    print(\"Brazos listos\")\ndef piernas():\n    print(\"Piernas listas\")\ndef pies():\n    print(\"Pies listos\")\ncabeza()\nbrazos()\npiernas()",
+        "print(\"Cabeza lista\")\nprint(\"Brazos listos\")\nprint(\"Piernas listas\")"
+      ],
+      "sinPistas": true
+    }
+  ],
+  "jefe": true
+}

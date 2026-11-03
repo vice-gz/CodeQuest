@@ -11,7 +11,7 @@ import { crearMotor, snapshotEstado } from "../ejecutor.js";
 import { BIBLIOTECA_ROBOT } from "../../interpreter/bibliotecas.js";
 
 // Sin canvas (pruebas, casos silenciosos): no dibuja y resuelve las animaciones al instante.
-class EscenaNula {
+export class EscenaNula {
   constructor(world, robot1) {
     this.world = world;
     this.robot1 = robot1;
@@ -40,10 +40,15 @@ export class EscenarioLaboratorio extends EscenarioBase {
       energiaMaxima: config.energiaMaxima ?? null,
       costoEnergiaPorCasilla: config.costoEnergiaPorCasilla ?? 1,
     });
-    this.scene = this.canvas ? new Scene(this.canvas, this.world, this.robot1) : new EscenaNula(this.world, this.robot1);
+    this.scene = this.crearEscena();
     this.mostrarRobot = config.mostrarRobot !== false;
     this.mostrarEnergia = config.mostrarEnergia !== false;
     this.scene.reiniciar(this.world, this.robot1, { mostrarRobot: this.mostrarRobot });
+  }
+
+  /** La vista del mundo. Los escenarios que heredan (p. ej. la fábrica) la sustituyen por la suya. */
+  crearEscena() {
+    return this.canvas ? new Scene(this.canvas, this.world, this.robot1) : new EscenaNula(this.world, this.robot1);
   }
 
   get tipo() {

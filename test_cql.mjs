@@ -11,8 +11,9 @@ import { crearEscenario } from "./js/game/escenarios/index.js";
 import { ejecutarPrograma } from "./js/game/evaluacion.js";
 import { variablesDeMano } from "./js/game/escenarios/cartas.js";
 import { evaluarValidacion } from "./js/game/validaciones.js";
+import { contarLineasDeCodigo, mensajeEficiencia } from "./js/game/eficiencia.js";
 
-const TODO = ["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos"];
+const TODO = ["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos", "def", "return"];
 const fase = (extra = {}) => ({ instruccionesPermitidas: TODO, metodosPermitidos: [], ...extra });
 
 function parsear(codigo) {
@@ -28,7 +29,7 @@ async function correr(codigo, { tipo = "datos", config = {}, fasePermisos = fase
     variablesIniciales: Object.keys(escenario.variablesIniciales),
   }).validar(ast);
   const r = await ejecutarPrograma({ ast, escenario, entradas });
-  return { lineas: r.salidas.filter((s) => s.tipo === "PRINT").map((s) => String(s.valor)), memoria: r.memoria, escenario };
+  return { lineas: r.salidas.filter((s) => s.tipo === "PRINT").map((s) => String(s.valor)), memoria: r.memoria, escenario, llamadas: r.llamadas, funciones: r.funciones };
 }
 
 async function lanza(codigo, codigoError, opciones) {
@@ -42,6 +43,7 @@ async function lanza(codigo, codigoError, opciones) {
   return null;
 }
 
+const plano = (x) => JSON.parse(JSON.stringify(x));
 let n = 0;
 const prueba = async (nombre, fn) => {
   await fn();
@@ -363,6 +365,77 @@ await prueba("range() solo acepta enteros: un float (aunque sea 3.0) da error, c
   assert.deepEqual((await correr("for i in range(int(3.0)):\n    print(i)")).lineas, ["0", "1", "2"]);
 });
 
+console.log("Funciones: def, return, parámetros y ámbito");
+await prueba("def guarda la función y cada llamada la ejecuta; los parámetros reciben los argumentos", async () => {
+  const r = await correr('def saludar(nombre):\n    print("Hola " + nombre)\nsaludar("Ana")\nsaludar("Beto")');
+  assert.deepEqual(r.lineas, ["Hola Ana", "Hola Beto"]);
+  assert.deepEqual(plano(r.funciones), [{ nombre: "saludar", parametros: ["nombre"] }]);
+  assert.deepEqual(plano(r.llamadas), [{ nombre: "saludar", args: ["Ana"], retorno: null }, { nombre: "saludar", args: ["Beto"], retorno: null }]);
+});
+await prueba("return devuelve el valor y termina la función; sin return devuelve None", async () => {
+  assert.deepEqual((await correr("def f(x):\n    return x * 2\n    print(1)\nprint(f(4))")).lineas, ["8"]);
+  assert.deepEqual((await correr("def f():\n    x = 1\nr = f()\nprint(r)\nprint(f() == None)")).lineas, ["None", "True"]);
+  const r = await correr("def doble(x):\n    return x * 2\nprint(doble(3) + doble(4))");
+  assert.deepEqual(plano(r.llamadas).map((l) => [l.args, l.retorno]), [[[3], 6], [[4], 8]]);
+});
+await prueba("las variables de una función son LOCALES: no ensucian la memoria global", async () => {
+  const r = await correr("x = 1\ndef f():\n    x = 50\n    y = 7\n    return x + y\nprint(f())\nprint(x)");
+  assert.deepEqual(r.lineas, ["57", "1"]);
+  assert.deepEqual(plano(r.memoria), { x: 1 });
+  assert.equal(r.escenario.slots.has("y"), false, "los chips del mundo solo muestran variables globales");
+});
+await prueba("ÁMBITO: usar una variable local fuera de la función da un error que explica por qué (SEM_015)", async () => {
+  const e = await lanza("def calcular():\n    resultado = 5\ncalcular()\nprint(resultado)", "SEM_015");
+  assert.match(e.mensaje, /"resultado" solo existe dentro de la función calcular\(\)/);
+  assert.match(e.sugerencia, /return/);
+  await lanza("def a():\n    zeta = 1\ndef b():\n    return zeta\nprint(b())", "SEM_015");
+  await lanza("print(inexistente)", "SEM_001");
+});
+await prueba("argumentos de más o de menos: TypeError con el número esperado (SEM_014)", async () => {
+  const e = await lanza("def sumar(a, b):\n    return a + b\nprint(sumar(1))", "SEM_014");
+  assert.match(e.mensaje, /sumar\(\) recibe 2 argumento\(s\) pero le diste 1/);
+  await lanza("def f():\n    return 1\nprint(f(5))", "SEM_014");
+});
+await prueba("la función se define ANTES de llamarla (SEM_017), pero dentro de otra función sí puede llamar a una posterior", async () => {
+  await lanza("saludar()\ndef saludar():\n    print(1)", "SEM_017");
+  assert.deepEqual((await correr("def a():\n    return b() + 1\ndef b():\n    return 41\nprint(a())")).lineas, ["42"]);
+});
+await prueba("RECURSIÓN: funciona (factorial) y una recursión sin fin se detiene con RUN_021", async () => {
+  assert.deepEqual((await correr("def fact(n):\n    if n <= 1:\n        return 1\n    return n * fact(n - 1)\nprint(fact(6))")).lineas, ["720"]);
+  await lanza("def f():\n    f()\nf()", "RUN_021");
+});
+await prueba("errores de sintaxis de funciones: return fuera, def anidado, parámetros repetidos o mal escritos", async () => {
+  await lanza("return 5", "SYN_017");
+  await lanza("if True:\n    def f():\n        return 1", "SYN_018");
+  await lanza("def f():\n    def g():\n        return 1\n    return 2", "SYN_018");
+  await lanza("def f(a, a):\n    return a", "SYN_016");
+  await lanza("def f(a b):\n    return a", "SYN_016");
+  await lanza("def (x):\n    return x", "SYN_015");
+  await lanza("def f(x)\n    return x", "SYN_006");
+  await lanza("def f(x):\nreturn x", "SYN_007");
+});
+await prueba("nombres reservados y confusiones: def print, parámetro int, función sin paréntesis", async () => {
+  await lanza("def print(x):\n    return x", "SEM_012");
+  await lanza("def f(int):\n    return int", "SEM_012");
+  const e = await lanza("def f():\n    return 1\nx = f\nprint(x)", "SEM_016");
+  assert.match(e.mensaje, /es una función/);
+});
+await prueba("los permisos de la fase controlan def y return (SEM_007)", async () => {
+  await lanza("def f():\n    return 1", "SEM_007", { fasePermisos: fase({ instruccionesPermitidas: ["print", "asignacion"] }) });
+  await lanza("def f():\n    return 1", "SEM_007", { fasePermisos: fase({ instruccionesPermitidas: ["print", "asignacion", "def"] }) });
+});
+await prueba("None: se imprime, se compara y operar con él da un error que explica el return que falta", async () => {
+  assert.deepEqual((await correr("print(None)\nx = None\nprint(x == None)")).lineas, ["None", "True"]);
+  const e = await lanza("def f():\n    x = 1\nprint(f() + 1)", "RUN_015");
+  assert.match(e.mensaje, /None/);
+  assert.match(e.sugerencia, /return/);
+  await lanza("def f():\n    x = 1\nprint(int(f()))", "RUN_022");
+});
+await prueba("las funciones se pueden usar con los objetos del mundo (Robot1 dentro de una función)", async () => {
+  const r = await correr('def avanzar_n(n):\n    robot1.avanzar(n)\navanzar_n(2)\navanzar_n(3)\nprint(robot1.posicion())', { tipo: "laboratorio", config: { ancho: 10, alto: 3 }, fasePermisos: fase({ metodosPermitidos: ["avanzar", "posicion"] }) });
+  assert.deepEqual(r.lineas, ["(5,0)"]);
+});
+
 console.log("Mesa de cartas: comandos");
 const MESA = { metodosPermitidos: ["poner_carta", "voltear"] };
 await prueba("mesa.poner_carta y mesa.voltear cambian la mesa pero no las variables", async () => {
@@ -381,6 +454,37 @@ await prueba("mesa: errores (color inválido, mesa llena, método no permitido)"
   await lanza('for i in range(7):\n    mesa.poner_carta(5, "roja")', "RUN_013", { tipo: "cartas", fasePermisos: fase(MESA) });
   await lanza('mesa.poner_carta(5, "roja")', "SEM_007", { tipo: "cartas", fasePermisos: fase() });
   await lanza("robot1.avanzar(1)", "SEM_010", { tipo: "cartas" });
+});
+
+console.log("Decimal con coma y reto de eficiencia");
+await prueba("2,5 (un decimal escrito con coma) da un error que explica la regla; otras comas no cambian", async () => {
+  for (const codigo of ["precio = 2,5", "precio = 2,5\nprint(precio)", "x = 10,25"]) {
+    let error = null;
+    try {
+      parsear(codigo);
+    } catch (e) {
+      error = e;
+    }
+    assert.equal(error?.codigo, "SYN_019", codigo);
+    assert.match(error.educativo, /En Python los decimales se escriben con punto, no con coma\./);
+    assert.match(error.sugerencia, /punto/);
+  }
+  assert.doesNotThrow(() => parsear("print(1, 2)"), "una coma entre argumentos sigue siendo válida");
+  await lanza("x = 3,", "SYN_004"); // coma sin número detrás: sigue siendo «instrucción incompleta»
+  await lanza("x = a,5", "SYN_004");
+  assert.doesNotThrow(() => parsear("precio = 2.5"));
+});
+await prueba("mensajeEficiencia: cuenta líneas NO vacías y solo avisa si se pasa del máximo (sin quitar nada)", async () => {
+  assert.equal(contarLineasDeCodigo("a = 1\n\n   \nprint(a)\n"), 2);
+  assert.equal(contarLineasDeCodigo(""), 0);
+  assert.equal(contarLineasDeCodigo(undefined), 0);
+  const codigo = "a = 1\nb = 2\nc = 3\nd = 4\nprint(a)";
+  assert.equal(mensajeEficiencia(codigo, 3), "¡Excelente! Completaste el nivel. Pero usaste 5 líneas. Un programador eficiente podría hacerlo en 3. ¿Te animas a intentarlo de nuevo?");
+  assert.equal(mensajeEficiencia(codigo, 5), null, "justo en el máximo: sin mensaje");
+  assert.equal(mensajeEficiencia(codigo, 9), null);
+  assert.equal(mensajeEficiencia(codigo, undefined), null, "los niveles sin max_lineas_recomendadas no avisan nada");
+  assert.equal(mensajeEficiencia(codigo, "3"), null);
+  assert.equal(mensajeEficiencia(codigo, 0), null);
 });
 
 console.log(`\n${n} pruebas correctas.`);

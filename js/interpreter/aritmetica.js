@@ -15,6 +15,7 @@ import { Flotante, esEntero, esFlotante, esNumero, esTexto, esLogico, aNumero, n
 const MAX_ENTERO = Number.MAX_SAFE_INTEGER;
 
 function tipoParaMensaje(v) {
+  if (v === null || v === undefined) return { tipo: "ninguno", repr: "None" };
   if (esTexto(v)) return { tipo: "texto", repr: reprPython(v) };
   if (esLogico(v)) return { tipo: "logico", repr: reprPython(v) };
   return { tipo: "numero", repr: reprPython(v) };
@@ -130,6 +131,7 @@ const PATRON_ENTERO = /^[+-]?\d+$/;
 const PATRON_DECIMAL = /^[+-]?(\d+(\.\d*)?|\.\d+)$/;
 
 export function convertirAEntero(v, linea) {
+  if (v === null || v === undefined) throw Errores.conversionNinguno("int", linea);
   if (esEntero(v)) return v;
   if (esFlotante(v)) return entero(Math.trunc(v.v), linea); // int(3.9) -> 3 ; int(-3.9) -> -3
   if (esLogico(v)) return v ? 1 : 0;
@@ -139,6 +141,7 @@ export function convertirAEntero(v, linea) {
 }
 
 export function convertirADecimal(v, linea) {
+  if (v === null || v === undefined) throw Errores.conversionNinguno("float", linea);
   if (esFlotante(v)) return v;
   if (esEntero(v)) return flotante(v, linea);
   if (esLogico(v)) return new Flotante(v ? 1 : 0);

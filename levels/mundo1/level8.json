@@ -5,7 +5,6 @@
   "concepto": "integración total",
   "concepto_evaluado": "integracion_mundo_1",
   "narrativa": "Robot1 encontró la puerta, pero el pasillo se volvió un laberinto.",
-  "narrativaSiguienteMundo": "¡Has escapado de la instalación! Pero al cruzar la puerta, Robot1 se da cuenta de que no recuerda nada. Su memoria se ha borrado. Entra al Mundo 2: Memoria.",
   "ensena": [
     "robot1.recoger()"
   ],
@@ -87,7 +86,7 @@
     },
     {
       "id": "8.3",
-      "tipo": "LIBRE",
+      "tipo": "RESOLVER",
       "titulo": "Escapa del laberinto",
       "enunciado": "La salida está en (5,3). Encuentra una ruta entre los muros y anuncia tu escape con print(\"Libre\").",
       "codigoInicial": "",
@@ -151,7 +150,10 @@
             2
           ]
         ]
-      }
+      },
+      "solucionesIncorrectas": [
+        "robot1.girar(\"sur\")\nrobot1.avanzar(3)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)"
+      ]
     }
   ],
   "escenario": {

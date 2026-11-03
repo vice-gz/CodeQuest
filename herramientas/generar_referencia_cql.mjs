@@ -14,7 +14,7 @@ import { Errores } from "../js/interpreter/errors.js";
 import { CATALOGO } from "../js/ui/dictionary.js";
 import { construirCatalogo } from "../js/persistence/progreso.js";
 import { BIBLIOTECA_ROBOT, BIBLIOTECA_ELEVADOR, BIBLIOTECA_MESA } from "../js/interpreter/bibliotecas.js";
-import { MAX_INSTRUCCIONES } from "../js/interpreter/interpreter.js";
+import { MAX_INSTRUCCIONES, MAX_PROFUNDIDAD } from "../js/interpreter/interpreter.js";
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const niveles = [];
@@ -44,6 +44,9 @@ const DESCRIPCION_TOKEN = {
   MODULO: ["%", "Residuo de la división"],
   NUEVA_LINEA: ["salto de línea", "Termina una instrucción (una instrucción por línea)"],
   EOF: ["(fin del código)", "Marca el final del programa"],
+  DEF: ["def", "Define una función: def nombre(parametros):"],
+  RETURN: ["return", "Devuelve un valor desde una función y la termina"],
+  NONE: ["None", "El valor «nada»: lo que devuelve una función sin return"],
   IF: ["if", "Pregunta: ejecuta su bloque si la condición es True"],
   ELIF: ["elif", "Otra pregunta, si las anteriores fueron False"],
   ELSE: ["else", "Camino alternativo cuando ninguna pregunta fue True"],
@@ -66,7 +69,7 @@ const DESCRIPCION_TOKEN = {
   DEDENTACION: ["(baja la sangría)", "Aparece al terminar un bloque: una por cada nivel que se cierra"],
 };
 const GRUPOS = [
-  ["Palabras clave", ["IF", "ELIF", "ELSE", "WHILE", "FOR", "IN", "AND", "OR", "NOT", "TRUE", "FALSE"]],
+  ["Palabras clave", ["IF", "ELIF", "ELSE", "WHILE", "FOR", "IN", "AND", "OR", "NOT", "TRUE", "FALSE", "DEF", "RETURN", "NONE"]],
   ["Valores y nombres", ["IDENTIFICADOR", "NUMERO", "TEXTO"]],
   ["Operadores aritméticos", ["SUMA", "RESTA", "MULT", "DIV", "DIV_ENTERA", "MODULO", "POTENCIA"]],
   ["Operadores de comparación", ["IGUAL", "DISTINTO", "MENOR", "MAYOR", "MENOR_IGUAL", "MAYOR_IGUAL"]],
@@ -125,7 +128,7 @@ const tablasErrores = FAMILIAS.map(([pref, titulo]) => {
 const lugar = (faseId) => {
   const nivelId = Number(String(faseId).split(".")[0]);
   const n = catalogo.niveles[nivelId];
-  const ord = catalogo.mundos[n.mundo].niveles.indexOf(nivelId) + 1;
+  const ord = catalogo.ordinales[nivelId]; // el Nivel 0 es 0; los ids no son consecutivos
   return `Mundo ${n.mundo} · Nivel ${ord} (${n.nombre}), fase ${faseId}`;
 };
 const tablaDesbloqueos = tabla(
@@ -244,7 +247,9 @@ Notación: \`*\` = cero o más veces, \`+\` = una o más, \`?\` = opcional, \`|\
 
 \`\`\`text
 programa      := sentencia*
-sentencia     := asignacion | llamada | condicional | mientras | para
+sentencia     := asignacion | llamada | condicional | mientras | para | def | return
+def           := "def" IDENTIFICADOR "(" (IDENTIFICADOR ("," IDENTIFICADOR)*)? ")" bloque     ← solo al margen izquierdo
+return        := "return" expresion?                                                            ← solo dentro de un def
 
 asignacion    := IDENTIFICADOR "=" expresion NUEVA_LINEA
 llamada       := IDENTIFICADOR "(" argumentos? ")"                 (print, input, int, float, str)
@@ -290,6 +295,7 @@ CQL es de **tipado dinámico**: no se declara el tipo; lo decide el valor, y una
 | **Decimal** (\`float\`) | dígitos, punto, dígitos | \`1.75\`, \`2.5\`, \`5.0\` | \`DECIMAL\` |
 | **Texto** (\`str\`) | entre comillas | \`"Ana"\`, \`'hola'\` | \`TEXTO\` |
 | **Lógico** (\`bool\`) | \`True\` / \`False\` | \`True\`, \`3 > 2\` | \`LÓGICO\` |
+| **None** | \`None\` | lo que devuelve una función sin \`return\` | \`NONE\` |
 
 Reglas importantes:
 
@@ -412,7 +418,25 @@ Los argumentos pueden ser expresiones, pero deben dar **enteros** y el paso no p
 - **Métodos de un objeto**: \`robot1.avanzar(3)\`, \`elevador.subir(1)\`, \`mesa.voltear()\`.
 - Los métodos que **devuelven valor** también se pueden usar dentro de expresiones: \`if elevador.hayPasajero():\`, \`print(robot1.energia())\`. Usar en una expresión un método que no devuelve valor es el error \`SEM_009\`.
 
-### 6.6 Comentarios y líneas vacías
+### 6.6 Funciones: \`def\`, parámetros y \`return\` (Mundo 5)
+
+\`\`\`python
+def calcular_area(ancho, alto):     # define la función (aún no se ejecuta nada)
+    return ancho * alto             # devuelve el resultado y termina la función
+
+a = calcular_area(2, 3)            # llama a la función: a vale 6
+print(calcular_area(4, 5))         # 20
+\`\`\`
+
+- **Definir y llamar.** \`def\` solo *guarda* la función; cada llamada \`nombre(valores)\` la ejecuta. La función debe estar definida **antes** de la línea que la llama (\`SEM_017\`), pero dentro de una función sí se puede llamar a otra que se defina después.
+- **Parámetros.** Son los nombres entre paréntesis del \`def\`; cada llamada debe dar **exactamente un valor por parámetro** (\`SEM_014\`, TypeError).
+- **\`return\`.** Devuelve un valor y termina la función ahí mismo (lo que haya después no se ejecuta). Sin \`return\` —o con \`return\` a secas— la función devuelve \`None\`, y operar con \`None\` da un error de tipos.
+- **Variables locales.** Lo que se asigna dentro de una función es **local**: no existe fuera (\`SEM_015\`) y, si la función asigna una variable, esa variable es local en TODA la función, aunque haya una global con el mismo nombre (\`RUN_023\`, UnboundLocalError). Las variables globales sí se pueden **leer** desde la función. No existen \`global\` ni \`nonlocal\`.
+- **Recursión.** Una función puede llamarse a sí misma; el límite es de ${MAX_PROFUNDIDAD} llamadas anidadas (\`RUN_021\`, RecursionError).
+- **Nombre sin paréntesis** (\`x = doble\`) no ejecuta nada: error \`SEM_016\`. \`def\` solo va al margen izquierdo (\`SYN_018\`); \`return\` fuera de una función es \`SYN_017\`. Los nombres \`print\`, \`input\`, \`int\`, \`float\` y \`str\` no se pueden usar como nombre de función ni de parámetro.
+- **Mundo 5:** cada \`def\` se dibuja como una **máquina** en la fábrica; cada llamada la enciende (entra el argumento, sale el \`return\`).
+
+### 6.7 Comentarios y líneas vacías
 
 \`\`\`python
 # Un comentario en su propia línea
@@ -448,6 +472,8 @@ Cada mundo tiene **su propio objeto** (o ninguno). Usar un objeto que no es del 
 | 2 · Memoria | *(ninguno)* | solo variables, \`print\`, \`input\` y las conversiones \`int\`, \`float\`, \`str\` |
 | 3 · Lógica | \`mesa\` | ${metodos(BIBLIOTECA_MESA)} |
 | 4 · Automatización | \`elevador\` | ${metodos(BIBLIOTECA_ELEVADOR)} |
+| 5 · Modularidad | \`robot1\` (a veces) | los del robot; la fábrica dibuja cada función como una máquina |
+| Nivel 0 (antes del Mundo 1) | *(sin código)* | se ordenan tarjetas de un diagrama de flujo: Inicio, pasos y Fin |
 
 ### 8.1 \`robot1\` (cuadrícula del laboratorio)
 
@@ -505,6 +531,29 @@ El **piso 1 es la planta baja**; el edificio llega hasta el piso 5. Los pasajero
 
 ---
 
+### 8.5 Mundo 5 · Modularidad (la fábrica de robots)
+
+No hay un objeto nuevo: lo que se dibuja son **tus funciones**, como una **línea de ensamble con visualización paso a paso**:
+
+| Qué ocurre en el código | Qué se ve en la fábrica |
+|---|---|
+| \`def nombre(...)\` | Se **construye una máquina** sobre la línea (no trabaja todavía) |
+| Una **llamada** \`nombre(5, 3)\` | Una **caja de materiales** \`[5, 3]\` viaja por la cinta hasta la máquina |
+| La función se ejecuta | La máquina se **ilumina** y aparecen **chips** flotantes con las variables locales: \`a = 5\`, \`b = 3\`, \`resultado = 8\` |
+| \`print(...)\` | Sale una **burbuja de texto** |
+| \`return valor\` | Sale una **caja de producto terminado** (verde, brillante) con el valor |
+| Sin \`return\` | Sale una **caja gris** con \`None\` |
+
+El panel de estado lista las máquinas, cuántas llamadas van y la última (\`doble(4) → 8\`). Las variables locales no aparecen en Memoria. Algunos niveles añaden una pista con **Robot1** (\`robot1.avanzar(n)\` dentro de una función) para llegar a una bandera.
+
+Validaciones propias de la fábrica (las usan los niveles): la función *se definió* con tal nombre y número de parámetros, *se llamó* al menos N veces, y *devolvió* un valor (no solo lo mostró).
+
+### 8.6 Nivel 0 y Niveles Jefe
+
+- **Nivel 0 (antes del Mundo 1):** no se escribe código. Se hace clic en las tarjetas de un **diagrama de flujo** (\`Inicio\`, pasos como \`Caminar 3 pasos\` o \`Abrir la puerta\`, y \`Fin\`) en el orden correcto; cada tarjeta correcta se ejecuta en un pasillo y, si no tocaba todavía, Robot1 choca y se empieza de nuevo. Es el equivalente visual de «un programa es una lista de instrucciones en orden».
+- **Nivel 8 del Mundo 5 · El Gran Ensamblaje (Jefe):** hay que definir exactamente tres funciones, \`cabeza()\`, \`brazos()\` y \`piernas()\`, y llamarlas en ese orden; un **Robot1 gigante** se arma en pantalla conforme se ejecutan las llamadas. Sin pistas y con el editor en blanco.
+- **Niveles Jefe** (último nivel de los Mundos 1 a 4): usan el CQL de su mundo, pero **sin botón de pistas**, con el editor en blanco y un solo enunciado; los de los Mundos 2 a 4 se prueban en varios casos.
+
 ## 9. Qué se desbloquea y cuándo
 
 El lenguaje se **va abriendo nivel por nivel**: cada fase declara qué instrucciones permite, y usar una que todavía no se ha aprendido da un error educativo (\`SEM_007\`: «no está permitido todavía en este nivel»), no un fallo misterioso. Los **permisos** que puede abrir una fase son: \`print\`, \`input\`, \`int\`, \`float\`, \`str\`, \`asignacion\`, \`if\`, \`elif\`, \`else\`, \`while\`, \`for\`, \`and\`, \`or\`, \`not\` y \`booleanos\` (los comparadores y \`True\`/\`False\` se permiten cuando está abierto \`if\`, \`while\` o \`booleanos\`), más la lista de métodos del objeto del mundo.
@@ -531,7 +580,7 @@ CQL es deliberadamente pequeño. Todo esto **no existe** (y la mayoría produce 
 
 | No existe | Qué pasa si se intenta |
 |---|---|
-| Funciones propias (\`def\`), \`return\` | \`def f():\` → error de sintaxis |
+| \`def\` dentro de un \`if\`, un ciclo u otro \`def\`; valores por omisión (\`def f(a=1)\`), \`*args\`, \`lambda\`, \`global\`, \`nonlocal\` | \`SYN_018\` o error de sintaxis |
 | Listas, diccionarios, tuplas (\`[ ]\`, \`{ }\`) | \`LEX_001\`: carácter no reconocido |
 | Recorrer con \`for x in lista\` | \`SYN_012\`: el for solo acepta \`range(...)\` |
 | \`break\`, \`continue\`, \`pass\` | Se leen como nombres de variable sin sentido |
@@ -607,6 +656,51 @@ elevador.soltar()
 print(elevador.llevando())   # 0
 \`\`\`
 
+### Mundo 5 — funciones
+
+\`\`\`python
+def calcular_area(ancho, alto):
+    return ancho * alto
+
+a1 = calcular_area(2, 3)
+a2 = calcular_area(4, 5)
+print(a1)             # 6
+print(a2)             # 20
+print(a1 + a2)        # 26
+
+def saludar(nombre):
+    print("Hola " + nombre)   # sin return: devuelve None
+
+saludar("Robot1")
+\`\`\`
+
+Un error típico del Mundo 5 (la variable local no existe afuera):
+
+\`\`\`python
+def calcular():
+    resultado = 5 * 4
+calcular()
+print(resultado)
+\`\`\`
+
+\`\`\`text
+SEM_015 · NameError: la variable "resultado" solo existe dentro de la función calcular()
+Haz que calcular() devuelva el valor con return, y guárdalo al llamarla: resultado = calcular(...)
+\`\`\`
+
+### Mundo 4, Nivel Jefe — la energía se planea
+
+\`\`\`python
+# 5 pisos, cabina de 4 y batería de 10: un solo viaje de subida y uno de bajada gasta 8
+for i in range(4):
+    elevador.subir(1)
+    if elevador.hayPasajero():
+        elevador.recoger()
+for i in range(4):
+    elevador.bajar(1)
+elevador.soltar()
+\`\`\`
+
 ### Un error de tipos, como en Python
 
 \`\`\`python
@@ -637,7 +731,7 @@ Ejemplo: if x > 10:
 
 ## 13. Compatibilidad con Python 3
 
-CQL es un **subconjunto de Python 3**: todo programa de CQL que funciona se comporta igual en Python real. La prueba \`test_python_compat.mjs\` ejecuta más de cien programas en el Python del sistema y en CQL y compara la salida (o el tipo de error: \`ZeroDivisionError\`, \`TypeError\`, \`ValueError\`, \`NameError\`).
+CQL es un **subconjunto de Python 3**: todo programa de CQL que funciona se comporta igual en Python real. La prueba \`test_python_compat.mjs\` ejecuta más de 150 programas (36 con funciones) en el Python del sistema y en CQL y compara la salida (o el tipo de error: \`ZeroDivisionError\`, \`TypeError\`, \`ValueError\`, \`NameError\`, \`UnboundLocalError\`, \`RecursionError\`).
 
 **Diferencias deliberadas** (CQL es *más estricto* que Python para enseñar mejor; nunca acepta algo que Python rechace):
 
@@ -649,7 +743,8 @@ CQL es un **subconjunto de Python 3**: todo programa de CQL que funciona se comp
 | \`(-8) ** 0.5\` da un número complejo | Error (\`RUN_019\`) | CQL no tiene números complejos |
 | Los enteros no tienen límite | Enteros de hasta 2⁵³ (\`RUN_018\`) | Representación interna |
 | \`print(a, b)\` imprime los dos | Solo muestra el primero | Una sola salida por \`print\` |
-| Todo el vocabulario de Python (listas, \`def\`, \`import\`…) | No existe | CQL es un subconjunto |
+| \`def\` dentro de un bloque (Python lo permite); parámetros opcionales, \`*args\`, \`lambda\`, \`global\` | Error (\`SYN_018\` / sintaxis) | Las funciones se enseñan en su forma más simple |
+| Todo el vocabulario de Python (listas, \`import\`, clases…) | No existe | CQL es un subconjunto |
 | \`print\`, \`input\`, \`int\`… son funciones que se pueden reasignar | Son nombres reservados (\`SEM_012\`) | Evita romper las funciones por accidente |
 
 Además, CQL muestra algunos errores **antes de ejecutar** (el validador sabe, por ejemplo, que \`input()\` es texto) y con mensajes educativos; Python los daría al llegar a esa línea.

@@ -35,6 +35,40 @@
       ]
     },
     {
+      "id": "16.5",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué se muestra y en qué orden?",
+      "enunciado": "Acabas de ver este programa. ¿Qué muestra, en orden?",
+      "codigoInicial": "ancho = 8\nalto = 5\narea = ancho * alto\netiqueta = \"Area\"\nprint(etiqueta)\nprint(area)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Area y luego 40"
+        },
+        {
+          "id": "b",
+          "texto": "40 y luego Area"
+        },
+        {
+          "id": "c",
+          "texto": "etiqueta y luego area"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Cada variable se reemplaza por su valor: print(etiqueta) muestra Area y print(area) muestra 8 * 5 = 40.",
+      "pistas": [
+        "Calcula primero cuánto vale area."
+      ]
+    },
+    {
       "id": "16.2",
       "tipo": "ESCRIBIR",
       "titulo": "El triángulo",

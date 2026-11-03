@@ -89,20 +89,23 @@ const prueba = async (nombre, fn) => {
 };
 
 console.log("Catálogo y funciones puras");
-await prueba("43 niveles, 4 mundos (8, 11, 12 y 12), 129 estrellas máximas", () => {
-  assert.equal(catalogo.totalNiveles, 43);
-  assert.deepEqual(Object.keys(catalogo.mundos), ["1", "2", "3", "4"]);
-  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.niveles.length), [8, 11, 12, 12]);
-  assert.equal(catalogo.maxEstrellas, 129);
+await prueba("56 niveles, 5 mundos (Nivel 0 + 8 + jefe, 11 + jefe, 12 + jefe, 12 + jefe y 8), 168 estrellas máximas", () => {
+  assert.equal(catalogo.totalNiveles, 56);
+  assert.deepEqual(Object.keys(catalogo.mundos), ["1", "2", "3", "4", "5"]);
+  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.niveles.length), [10, 12, 13, 13, 8]);
+  assert.equal(catalogo.maxEstrellas, 168);
 });
 
+// Las fases del Nivel 1 salen del catálogo (el Nivel 1 tiene 4 fases desde que se añadió una pregunta de comprensión tras el EXPLORAR).
+const FASES_N1 = catalogo.niveles[1].fases.map((f) => f.id);
+
 await prueba("nivel con todas sus fases a la primera = 3 estrellas", () => {
-  const filas = ["1.1", "1.2", "1.3"].map((f) => ({ nivel_id: 1, fase_id: f, completada: true, intentos: 1, pistas_usadas: 0 }));
+  const filas = FASES_N1.map((f) => ({ nivel_id: 1, fase_id: f, completada: true, intentos: 1, pistas_usadas: 0 }));
   const r = calcularResumen(filas, catalogo);
   assert.equal(r.niveles[1].estrellas, 3);
   assert.equal(r.mundos[1].estrellas, 3);
   assert.equal(r.totales.nivelesCompletados, 1);
-  assert.equal(r.totales.fasesCompletadas, 3);
+  assert.equal(r.totales.fasesCompletadas, FASES_N1.length);
 });
 
 await prueba("nivel incompleto = 0 estrellas aunque haya fases hechas", () => {
@@ -114,7 +117,7 @@ await prueba("nivel incompleto = 0 estrellas aunque haya fases hechas", () => {
 });
 
 await prueba("pistas bajan a 1 estrella; reintentos a 2", () => {
-  const base = ["1.1", "1.2", "1.3"].map((f) => ({ nivel_id: 1, fase_id: f, completada: true, intentos: 1, pistas_usadas: 0 }));
+  const base = FASES_N1.map((f) => ({ nivel_id: 1, fase_id: f, completada: true, intentos: 1, pistas_usadas: 0 }));
   assert.equal(calcularResumen(base.map((f, i) => (i === 0 ? { ...f, pistas_usadas: 1 } : f)), catalogo).niveles[1].estrellas, 1);
   assert.equal(calcularResumen(base.map((f, i) => (i === 1 ? { ...f, intentos: 3 } : f)), catalogo).niveles[1].estrellas, 2);
 });
@@ -136,7 +139,7 @@ await prueba("resultadoDeError según prefijo del código CQL", () => {
 await prueba("progreso del juego tiene la forma que espera juego.js", () => {
   const p = construirProgresoJuego({
     jugador: { mundo_actual: 1, nivel_actual: 2, experiencia: 150 },
-    filas: ["1.1", "1.2", "1.3"].map((f) => ({ mundo_id: 1, nivel_id: 1, fase_id: f, completada: true, intentos: 1, pistas_usadas: 0 })),
+    filas: FASES_N1.map((f) => ({ mundo_id: 1, nivel_id: 1, fase_id: f, completada: true, intentos: 1, pistas_usadas: 0 })),
     catalogo,
     nombre: "Ana",
   });
@@ -155,7 +158,7 @@ async function nuevoRepo(bd = new BDFalsa(), almacen = almacenFalso()) {
 }
 
 async function jugarNivel1(repo, { falloEn = null } = {}) {
-  for (const faseId of ["1.1", "1.2", "1.3"]) {
+  for (const faseId of FASES_N1) {
     if (faseId === falloEn) {
       await repo.registrarIntentoFase(1, 1, faseId, { codigo: "mal" });
       await repo.guardarEjecucion({ mundoId: 1, nivelId: 1, faseId, codigo: "mal", resultado: "error_semantico", codigoError: "SEM_001", tiempoMs: 12 });
@@ -182,9 +185,9 @@ await prueba("completar un nivel escribe fases, jugador y ejecuciones en Supabas
   const { repo, bd } = await nuevoRepo();
   const estado = await jugarNivel1(repo);
   assert.equal(estado.estrellas, 3);
-  assert.equal(bd.tablas.progreso_fases.length, 3);
+  assert.equal(bd.tablas.progreso_fases.length, FASES_N1.length);
   assert.ok(bd.tablas.progreso_fases.every((f) => f.completada === true && f.intentos === 1 && f.pistas_usadas === 0));
-  assert.equal(bd.tablas.ejecuciones.length, 3);
+  assert.equal(bd.tablas.ejecuciones.length, FASES_N1.length);
   assert.equal(bd.tablas.ejecuciones[0].user_id, "u1");
   assert.equal(bd.tablas.ejecuciones[0].intento_numero, 1);
   const j = bd.tablas.progreso_jugador[0];
@@ -253,8 +256,8 @@ await prueba("sin conexión: el progreso queda en cola y se envía al volver la 
   bd.sinRed = false;
   await repo.sincronizarPendientes();
   assert.equal(repo.hayPendientes(), false);
-  assert.equal(bd.tablas.progreso_fases.length, 3);
-  assert.equal(bd.tablas.ejecuciones.length, 3);
+  assert.equal(bd.tablas.progreso_fases.length, FASES_N1.length);
+  assert.equal(bd.tablas.ejecuciones.length, FASES_N1.length);
   assert.equal(estados.at(-1).conectado, true);
 });
 
@@ -269,7 +272,7 @@ await prueba("pendientes de una sesión anterior se mezclan y se envían en la s
   const b = await nuevoRepo(bd, almacen);
   await b.repo.sincronizarPendientes();
   assert.equal(b.repo.hayPendientes(), false);
-  assert.equal(bd.tablas.progreso_fases.length, 3);
+  assert.equal(bd.tablas.progreso_fases.length, FASES_N1.length);
   assert.equal((await b.repo.obtenerProgreso()).jugador.nivelActual, 2);
 });
 

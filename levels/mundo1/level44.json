@@ -1,0 +1,155 @@
+{
+  "id": 44,
+  "mundo": 1,
+  "nombre": "Laberinto ciego",
+  "concepto": "integración del Mundo 1",
+  "concepto_evaluado": "jefe_mundo_1",
+  "narrativa": "La salida está cerca, pero el último pasillo es un laberinto a oscuras. Aquí nadie te dará pasos: tendrás que calcularlos tú.",
+  "narrativaSiguienteMundo": "¡Has escapado de la instalación! Pero al cruzar la puerta, Robot1 se da cuenta de que no recuerda nada. Su memoria se ha borrado. Entra al Mundo 2: Memoria.",
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 8,
+    "alto": 6,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      7,
+      5
+    ],
+    "obstaculos": [
+      [
+        6,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        6,
+        1
+      ],
+      [
+        6,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        6,
+        5
+      ]
+    ],
+    "mostrarEnergia": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "44.1",
+      "tipo": "RESOLVER",
+      "titulo": "Laberinto ciego",
+      "enunciado": "El laberinto está a oscuras y esta vez nadie te dirá cuántos pasos dar. Mira el mapa, cuenta las casillas libres y programa a Robot1 para llegar a la meta, en la casilla (7,5), sin chocar con ningún muro.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(5)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"oeste\")\nrobot1.avanzar(5)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(7)\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "retroceder",
+        "girar",
+        "hablar",
+        "recoger",
+        "soltar",
+        "mirar",
+        "posicion",
+        "energia"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          7,
+          5
+        ]
+      },
+      "retroalimentacion": "¡Jefe derrotado! Calculaste cada tramo del laberinto sin ayuda.",
+      "mensajeNoLogrado": "Robot1 debe llegar a la meta (7,5) sin chocar con los muros.",
+      "solucionesIncorrectas": [
+        "robot1.avanzar(7)\nrobot1.girar(\"sur\")\nrobot1.avanzar(5)",
+        "robot1.avanzar(5)\nrobot1.girar(\"sur\")\nrobot1.avanzar(5)"
+      ],
+      "sinPistas": true
+    }
+  ],
+  "jefe": true,
+  "max_lineas_recomendadas": 11
+}

@@ -20,11 +20,19 @@
 //   motor.iteracion?(n, {tipo, variable})               -> la UI muestra "Repetición n"
 
 import { Errores } from "./errors.js";
-import { formatearExpresion, variablesUsadas } from "./ast.js";
+import { formatearExpresion, variablesUsadas, variablesAsignadas } from "./ast.js";
 import { Flotante, esEntero, esFlotante, esLogico, formatear, aJS, nombreDeTipo } from "./valores.js";
 import { OPERACIONES, negar, iguales, ordenar, convertirAEntero, convertirADecimal } from "./aritmetica.js";
 
 export const MAX_INSTRUCCIONES = 1000;
+export const MAX_PROFUNDIDAD = 100; // llamadas de función anidadas (RecursionError)
+
+/** return lanza esta señal; llamarFuncionUsuario() la recoge y devuelve el valor. No es un error. */
+class RetornoSenal {
+  constructor(valor) {
+    this.valor = valor;
+  }
+}
 
 export class Interpreter {
   /**
@@ -38,6 +46,25 @@ export class Interpreter {
     this.variables = new Map(Object.entries(variablesIniciales));
     this.maxInstrucciones = maxInstrucciones;
     this.iteraciones = 0;
+    // Funciones del estudiante (def): se guardan al ejecutar el def; cada llamada crea un marco con sus variables locales.
+    this.funciones = new Map(); // nombre -> nodo DefFuncion
+    this.pila = []; // marcos de llamada: { nombre, locales: Map }
+    this.registroLlamadas = []; // { nombre, args, retorno } de cada llamada (para las validaciones)
+  }
+
+  /** Donde se guardan las variables ahora mismo: las locales de la función en curso o las globales. */
+  get ambito() {
+    return this.pila.length ? this.pila[this.pila.length - 1].locales : this.variables;
+  }
+
+  /** Lee una variable: primero las locales de la función en curso, luego las globales. */
+  leerVariable(nombre, linea) {
+    const marco = this.pila[this.pila.length - 1];
+    if (marco?.locales.has(nombre)) return marco.locales.get(nombre);
+    if (marco?.declaradas.has(nombre)) throw Errores.variableLocalSinValor(nombre, marco.nombre, linea);
+    if (this.variables.has(nombre)) return this.variables.get(nombre);
+    if (this.funciones.has(nombre)) throw Errores.funcionSinParentesis(nombre, linea);
+    throw Errores.variableNoExiste(nombre, linea);
   }
 
   async ejecutar(programa) {
@@ -60,10 +87,18 @@ export class Interpreter {
     switch (nodo.tipo) {
       case "Asignacion": {
         const valor = await this.evaluar(nodo.expresion);
-        this.variables.set(nodo.variable, valor);
-        await this.motor.asignacion(nodo.variable, valor, { fuentes: [...variablesUsadas(nodo.expresion)] });
+        this.ambito.set(nodo.variable, valor);
+        const fuentes = [...variablesUsadas(nodo.expresion)];
+        if (this.pila.length) await this.motor.asignacionLocal?.(nodo.variable, valor, { fuentes, funcion: this.pila[this.pila.length - 1].nombre });
+        else await this.motor.asignacion(nodo.variable, valor, { fuentes });
         break;
       }
+      case "DefFuncion":
+        this.funciones.set(nodo.nombre, nodo);
+        await this.motor.funcionDefinida?.(nodo.nombre, nodo.parametros);
+        break;
+      case "Retorno":
+        throw new RetornoSenal(nodo.expresion ? await this.evaluar(nodo.expresion) : null);
       case "LlamadaFuncion":
         await this.ejecutarLlamadaFuncion(nodo);
         break;
@@ -115,9 +150,11 @@ export class Interpreter {
     for (let i = inicio; paso > 0 ? i < fin : i > fin; i += paso) {
       this.contarIteracion(nodo.linea);
       vuelta += 1;
-      this.variables.set(nodo.variable, i);
+      this.ambito.set(nodo.variable, i);
       // eslint-disable-next-line no-await-in-loop
-      await this.motor.asignacion(nodo.variable, i, { fuentes: [], esContador: true });
+      if (this.pila.length) await this.motor.asignacionLocal?.(nodo.variable, i, { fuentes: [], esContador: true, funcion: this.pila[this.pila.length - 1].nombre });
+      // eslint-disable-next-line no-await-in-loop
+      else await this.motor.asignacion(nodo.variable, i, { fuentes: [], esContador: true });
       // eslint-disable-next-line no-await-in-loop
       await this.motor.iteracion?.(vuelta, { tipo: "for", variable: nodo.variable });
       // eslint-disable-next-line no-await-in-loop
@@ -133,12 +170,46 @@ export class Interpreter {
     return valor;
   }
 
+  /** Llama a una función definida con def: argumentos, marco local, return y avisos al escenario. */
+  async llamarFuncionUsuario(nodo) {
+    const def = this.funciones.get(nodo.nombre);
+    const args = [];
+    for (const a of nodo.argumentos) {
+      // eslint-disable-next-line no-await-in-loop
+      args.push(await this.evaluar(a));
+    }
+    if (args.length !== def.parametros.length) throw Errores.argumentosDeFuncion(nodo.nombre, def.parametros.length, args.length, nodo.linea);
+    if (this.pila.length >= MAX_PROFUNDIDAD) throw Errores.recursionExcesiva(nodo.linea);
+
+    if (!def.declaradas) def.declaradas = variablesAsignadas(def.bloque.sentencias);
+    this.pila.push({ nombre: nodo.nombre, locales: new Map(def.parametros.map((p, i) => [p, args[i]])), declaradas: def.declaradas });
+    const registro = { nombre: nodo.nombre, args: args.map(aJS), retorno: null };
+    this.registroLlamadas.push(registro);
+    await this.motor.llamadaIniciada?.(nodo.nombre, args, { profundidad: this.pila.length, parametros: def.parametros });
+    let retorno = null;
+    try {
+      await this.ejecutarSentencias(def.bloque.sentencias);
+    } catch (e) {
+      if (!(e instanceof RetornoSenal)) throw e;
+      retorno = e.valor;
+    } finally {
+      this.pila.pop();
+    }
+    registro.retorno = aJS(retorno);
+    await this.motor.llamadaTerminada?.(nodo.nombre, retorno, { profundidad: this.pila.length });
+    return retorno;
+  }
+
   async ejecutarLlamadaFuncion(nodo) {
+    if (this.funciones.has(nodo.nombre)) {
+      await this.llamarFuncionUsuario(nodo); // como instrucción, el valor que devuelva se descarta
+      return;
+    }
     if (nodo.nombre === "print") {
       const valor = await this.evaluar(nodo.argumentos[0]);
       const fuentes = [...variablesUsadas(nodo.argumentos[0])];
       // Se muestra como lo haría Python: True/False, 4.25, 5.0 ...
-      await this.motor.print(esFlotante(valor) || esLogico(valor) ? formatear(valor) : valor, { fuentes });
+      await this.motor.print(esFlotante(valor) || esLogico(valor) || valor === null ? formatear(valor) : valor, { fuentes });
     } else {
       // input(), int(), float(), str() como instrucción suelta: se ejecutan y el resultado se descarta.
       await this.evaluarFuncion(nodo);
@@ -147,6 +218,7 @@ export class Interpreter {
 
   /** Funciones integradas que devuelven un valor: input, int, float, str. */
   async evaluarFuncion(nodo) {
+    if (this.funciones.has(nodo.nombre)) return this.llamarFuncionUsuario(nodo);
     const args = [];
     for (const a of nodo.argumentos) {
       // eslint-disable-next-line no-await-in-loop
@@ -163,7 +235,7 @@ export class Interpreter {
       case "str":
         return formatear(args[0]);
       default:
-        return undefined;
+        throw Errores.funcionNoDefinida(nodo.nombre, nodo.linea);
     }
   }
 
@@ -184,8 +256,9 @@ export class Interpreter {
       case "Booleano":
         return nodo.valor;
       case "Identificador":
-        if (!this.variables.has(nodo.nombre)) throw Errores.variableNoExiste(nodo.nombre, nodo.linea);
-        return this.variables.get(nodo.nombre);
+        return this.leerVariable(nodo.nombre, nodo.linea);
+      case "Ninguno":
+        return null;
       case "OperacionBinaria":
         return this.evaluarOperacion(nodo);
       case "Comparacion":

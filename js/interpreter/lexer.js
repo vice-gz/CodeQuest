@@ -41,6 +41,9 @@ export const TipoToken = {
   NOT: "NOT",
   TRUE: "TRUE",
   FALSE: "FALSE",
+  DEF: "DEF",
+  RETURN: "RETURN",
+  NONE: "NONE",
   IGUAL: "IGUAL", // ==
   DISTINTO: "DISTINTO", // !=
   MENOR: "MENOR",
@@ -64,6 +67,9 @@ export const PALABRAS_CLAVE = {
   not: TipoToken.NOT,
   True: TipoToken.TRUE,
   False: TipoToken.FALSE,
+  def: TipoToken.DEF,
+  return: TipoToken.RETURN,
+  None: TipoToken.NONE,
 };
 
 function esDigito(c) {

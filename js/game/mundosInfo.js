@@ -1,7 +1,7 @@
 // mundosInfo.js
 // Datos de presentación de los 6 mundos de CodeQuest (mapa y landing).
 // El contenido jugable (niveles) sale de levels/; aquí solo hay texto.
-// Los mundos 5 y 6 aún no tienen niveles: se muestran como "Próximamente".
+// El mundo 6 aún no tiene niveles: se muestra como "Próximamente".
 
 export const MUNDOS_INFO = [
   {
@@ -34,10 +34,10 @@ export const MUNDOS_INFO = [
   },
   {
     id: 5,
-    nombre: "Programador",
-    lugar: "Taller de diagnóstico",
-    resumen: "Sistemas averiados, terminales y errores visuales: aprende a depurar como un programador.",
-    aprenderas: ["Depuración", "Leer errores", "Probar programas"],
+    nombre: "Modularidad",
+    lugar: "Fábrica de robots",
+    resumen: "En la fábrica se construyen máquinas que hacen tareas repetitivas: aprende a crear tus propias funciones.",
+    aprenderas: ["Definir y llamar funciones con def", "Parámetros y return", "Variables locales, encadenar y depurar", "Jefe: El Gran Ensamblaje"],
   },
   {
     id: 6,

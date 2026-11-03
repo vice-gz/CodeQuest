@@ -39,7 +39,7 @@ function tarjeta(info, resumen, estado, { demo, esActual }) {
   let requisito = "";
   if (estado === "bloqueado") {
     const previo = resumen.mundos[info.id - 1];
-    requisito = `<p class="mundo-requisito">Completa los ${previo.nivelesTotal} niveles del Mundo ${info.id - 1} (${previo.nivelesCompletados}/${previo.nivelesTotal}) para desbloquearlo.</p>`;
+    requisito = `<p class="mundo-requisito">Completa los ${previo.requeridosTotal} niveles del Mundo ${info.id - 1} (${previo.requeridosCompletados}/${previo.requeridosTotal}), incluido su Nivel Jefe, para desbloquearlo.</p>`;
   } else if (estado === "proximamente") {
     requisito = '<p class="mundo-requisito">Este mundo llegará en un próximo avance.</p>';
   }

@@ -313,7 +313,7 @@
       "id": "24.3",
       "tipo": "DEBUG",
       "titulo": "El símbolo equivocado",
-      "enunciado": "Este programa da un error porque usa un símbolo de otro lenguaje para decir «y». En CQL se escribe con la palabra and. Corrígelo.",
+      "enunciado": "Este programa da un error porque usa un símbolo de otro lenguaje para decir «y». En Python se escribe con la palabra and. Corrígelo.",
       "codigoInicial": "if color1 == \"roja\" && total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")",
       "solucionReferencia": "if color1 == \"roja\" and total < 21:\n    print(\"Apuesta\")\nelse:\n    print(\"Pasa\")",
       "instruccionesPermitidas": [
@@ -429,7 +429,7 @@
           ]
         }
       },
-      "retroalimentacion": "En CQL las condiciones se unen con las palabras and, or y not.",
+      "retroalimentacion": "En Python las condiciones se unen con las palabras and, or y not.",
       "pistas": [
         "Cambia && por una palabra."
       ],

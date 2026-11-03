@@ -57,14 +57,16 @@ export const ILUSTRACIONES = {
     <circle cx="160" cy="105" r="5" fill="currentColor"/><path d="M160 112 v12" ${L} stroke-width="3"/>
     <path d="M214 90 v36 M205 118 l9 9 l9 -9" ${L}/>
   </svg>`,
-  // Mundo 5 · taller de diagnóstico: terminal con un bicho y llave
-  5: `<svg ${MARCO} aria-label="Terminal con un error y una herramienta">
-    <rect x="22" y="14" width="150" height="104" rx="9" ${L}/><path d="M22 36 H172" ${L}/>
-    <circle cx="36" cy="25" r="3" fill="currentColor"/><circle cx="48" cy="25" r="3" fill="currentColor"/>
-    <path d="M38 56 l12 8 l-12 8 M58 74 h26" ${L}/>
-    <path d="M38 94 h40" ${L} opacity=".45"/>
-    <g transform="translate(128,88)"><ellipse rx="12" ry="9" ${L}/><path d="M-12 -2 l-8 -6 M12 -2 l8 -6 M-12 5 l-8 5 M12 5 l8 5 M-5 -9 l-4 -7 M5 -9 l4 -7" ${L} stroke-width="2.5"/></g>
-    <g transform="translate(198,86) rotate(-35)"><path d="M0 -42 v70" ${L} stroke-width="5"/><circle cy="-46" r="11" ${L}/></g>
+  // Mundo 5 · fábrica de robots: línea de ensamble con una máquina (engrane) y cajas de entrada y salida
+  5: `<svg ${MARCO} aria-label="Una máquina de la fábrica con su caja de entrada y su producto terminado">
+    <path d="M10 104 H230" ${L} stroke-width="5"/><path d="M10 116 H230" ${L} opacity=".5"/>
+    <rect x="16" y="76" width="34" height="24" rx="5" ${L}/><path d="M24 88 h18" ${L} opacity=".6"/>
+    <rect x="84" y="22" width="76" height="82" rx="12" ${L}/>
+    <circle cx="122" cy="58" r="15" ${L} stroke-dasharray="5 4"/><circle cx="122" cy="58" r="5" fill="currentColor"/>
+    <path d="M94 86 h56 M94 94 h36" ${L} opacity=".5"/>
+    <rect x="190" y="76" width="34" height="24" rx="5" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="3"/>
+    <path d="M56 88 h20 M70 82 l8 6 l-8 6 M168 88 h14 M176 82 l8 6 l-8 6" ${L}/>
+    <path d="M122 22 v-10 M108 12 h28" ${L} stroke-width="2.5"/>
   </svg>`,
   // Mundo 6 · laboratorio de creación: plano con regla y compás
   6: `<svg ${MARCO} aria-label="Plano holográfico con herramientas">

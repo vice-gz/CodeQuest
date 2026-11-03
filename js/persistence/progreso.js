@@ -9,7 +9,7 @@
 
 import { calcularEstrellasNivel } from "../ui/stars.js";
 
-const NOMBRES_MUNDO = { 1: "Despertar", 2: "Memoria", 3: "Lógica", 4: "Automatización", 5: "Programador", 6: "Proyecto" };
+const NOMBRES_MUNDO = { 1: "Despertar", 2: "Memoria", 3: "Lógica", 4: "Automatización", 5: "Modularidad", 6: "Proyecto" };
 
 /** Construye el catálogo a partir de la lista de JSON de niveles. */
 export function construirCatalogo(listaNiveles) {
@@ -23,8 +23,46 @@ export function construirCatalogo(listaNiveles) {
     mundos[n.mundo].niveles.push(n.id);
   });
   Object.values(mundos).forEach((m) => m.niveles.sort((a, b) => a - b));
+
+  // Número que ve el estudiante dentro de su mundo. Los ids NO son consecutivos (el Nivel 0, los jefes
+  // y el Mundo 5 se añadieron después), así que cada nivel puede declarar su `ordinal` (el Nivel 0 es 0);
+  // los demás siguen contando desde el anterior: M1 = 0, 1…8, 9 (jefe).
+  const ordinales = {};
+  Object.values(mundos).forEach((m) => {
+    let siguiente = 1;
+    m.niveles.forEach((id) => {
+      const declarado = niveles[id].ordinal;
+      ordinales[id] = Number.isInteger(declarado) ? declarado : siguiente;
+      siguiente = ordinales[id] + 1;
+    });
+    // Para abrir el mundo siguiente no cuentan los niveles de tutorial (el Nivel 0 es opcional si ya jugaste).
+    m.requeridos = m.niveles.filter((id) => !niveles[id].tutorial);
+  });
+
   const totalNiveles = Object.keys(niveles).length;
-  return { niveles, mundos, totalNiveles, maxEstrellas: totalNiveles * 3 };
+  return { niveles, mundos, ordinales, totalNiveles, maxEstrellas: totalNiveles * 3 };
+}
+
+/** El número de nivel que ve el estudiante dentro de su mundo (Nivel 0, 1…). */
+export function ordinalDeNivel(catalogo, id) {
+  if (catalogo.ordinales && id in catalogo.ordinales) return catalogo.ordinales[id];
+  const mundo = catalogo.mundos[catalogo.niveles[id]?.mundo];
+  return mundo ? mundo.niveles.indexOf(id) + 1 : 0;
+}
+
+/** Id del nivel que tiene ese número dentro del mundo (o null). */
+export function nivelPorOrdinal(catalogo, mundoId, ordinal) {
+  return catalogo.mundos[mundoId]?.niveles.find((id) => ordinalDeNivel(catalogo, id) === ordinal) ?? null;
+}
+
+/** El nivel que sigue: el siguiente del mundo o, si era el último, el primero del mundo siguiente. */
+export function siguienteNivelId(catalogo, id) {
+  const n = catalogo.niveles[id];
+  if (!n) return null;
+  const lista = catalogo.mundos[n.mundo].niveles;
+  const i = lista.indexOf(id);
+  if (i < lista.length - 1) return lista[i + 1];
+  return catalogo.mundos[n.mundo + 1]?.niveles[0] ?? null;
 }
 
 export const claveFase = (mundoId, nivelId, faseId) => `${Number(mundoId)}|${Number(nivelId)}|${faseId}`;
@@ -83,7 +121,7 @@ export function construirProgresoJuego({ jugador, filas, catalogo, nombre = "Est
 
   Object.keys(mundos).forEach((mundoKey) => {
     const mundoCat = catalogo.mundos[mundoKey];
-    mundos[mundoKey].completado = mundoCat.niveles.every(
+    mundos[mundoKey].completado = (mundoCat.requeridos || mundoCat.niveles).every(
       (id) => mundos[mundoKey].niveles[id]?.completado === true
     );
   });
@@ -139,6 +177,8 @@ export function calcularResumen(filas, catalogo) {
       fasesTotal: 0,
       nivelesCompletados: 0,
       nivelesTotal: m.niveles.length,
+      requeridosTotal: (m.requeridos || m.niveles).length,
+      requeridosCompletados: 0,
       completado: false,
       porcentaje: 0,
     };
@@ -167,11 +207,14 @@ export function calcularResumen(filas, catalogo) {
     m.estrellas += estado.estrellas;
     m.fasesCompletadas += fasesCompletadas;
     m.fasesTotal += n.fases.length;
-    if (estado.completado) m.nivelesCompletados += 1;
+    if (estado.completado) {
+      m.nivelesCompletados += 1;
+      if (!n.tutorial) m.requeridosCompletados += 1;
+    }
   });
 
   Object.values(mundos).forEach((m) => {
-    m.completado = m.nivelesCompletados === m.nivelesTotal;
+    m.completado = m.requeridosCompletados === m.requeridosTotal;
     m.porcentaje = m.fasesTotal ? Math.round((m.fasesCompletadas / m.fasesTotal) * 100) : 0;
   });
 

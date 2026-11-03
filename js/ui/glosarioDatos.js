@@ -20,6 +20,12 @@ export const CONCEPTOS = [
     ejemplo: "robot1.avanzar(2)\nrobot1.recoger()\nrobot1.retroceder(2)",
   },
   {
+    id: "diagrama_flujo", mundo: 1, titulo: "Diagrama de flujo",
+    definicion: "Un diagrama de flujo dibuja un algoritmo con cajas unidas por flechas: un óvalo para Inicio y Fin, y un rectángulo para cada paso. Se lee de arriba hacia abajo.",
+    analogia: "Es el mapa de una receta: cada caja es un paso y las flechas dicen cuál sigue. Si las cajas están en otro orden, el robot choca.",
+    ejemplo: 'robot1.avanzar(3)\nrobot1.hablar("Listo")',
+  },
+  {
     id: "metodo", mundo: 1, titulo: "Método y parámetro",
     definicion: "Un método es una acción que sabe hacer un objeto, como robot1.avanzar(). Lo que va entre paréntesis (el parámetro) dice cuánto o cómo hacerla.",
     analogia: "Es un control remoto: el botón es el método y el número que escribes dice cuántas veces lo aprietas.",
@@ -186,6 +192,37 @@ export const CONCEPTOS = [
     definicion: "Antes de hacer algo, el programa puede preguntarle al mundo cómo está (elevador.piso(), elevador.hayPasajero(), elevador.llevando()) y decidir con un if.",
     analogia: "Es mirar a ambos lados antes de cruzar la calle: primero observas, luego decides.",
     ejemplo: "if elevador.hayPasajero() and elevador.llevando() < 2:\n    elevador.recoger()",
+  },
+  // ------------------------------------------------------------ Mundo 5 · Modularidad
+  {
+    id: "funcion", mundo: 5, titulo: "Función (def)",
+    definicion: "Una función es un bloque de código con nombre. Se define una vez con def y se usa (se llama) las veces que haga falta. Dividir un programa en funciones se llama modularidad.",
+    analogia: "Es una máquina de la fábrica: la construyes una sola vez y luego solo aprietas el botón cada vez que la necesitas.",
+    ejemplo: 'def saludar():\n    print("Hola desde la fábrica")\nsaludar()\nsaludar()',
+  },
+  {
+    id: "parametro", mundo: 5, titulo: "Parámetro y argumento",
+    definicion: "Un parámetro es un hueco con nombre en el def: recibe un valor distinto en cada llamada. El valor que pones al llamar la función se llama argumento.",
+    analogia: "Es la ranura de entrada de la máquina: por la misma ranura puedes meter piezas distintas, y la máquina trabaja con la que le des.",
+    ejemplo: "def avanzar_n(n):\n    robot1.avanzar(n)\navanzar_n(2)\navanzar_n(4)",
+  },
+  {
+    id: "retorno", mundo: 5, titulo: "return y valor de retorno",
+    definicion: "return devuelve un resultado a quien llamó la función y la termina. Ese valor se puede guardar en una variable o usar en una cuenta. Sin return, la función devuelve None (nada).",
+    analogia: "Es la bandeja de salida de la máquina: lo que cae ahí es lo que recibes. Si la máquina no tiene bandeja, solo trabaja y no te entrega nada.",
+    ejemplo: "def calcular_doble(x):\n    return x * 2\nresultado = calcular_doble(21)\nprint(resultado)",
+  },
+  {
+    id: "ambito", mundo: 5, titulo: "Variable local (ámbito)",
+    definicion: "Las variables que creas dentro de una función son locales: existen solo mientras la función trabaja. Desde fuera no se pueden usar; para sacar un valor, se devuelve con return.",
+    analogia: "Es el cuarto interno de la máquina: lo que ocurre ahí dentro no se ve desde afuera, solo sale lo que entregas por la bandeja.",
+    ejemplo: "def calcular():\n    interno = 5 * 4\n    return interno\nresultado = calcular()\nprint(resultado)",
+  },
+  {
+    id: "encadenar", mundo: 5, titulo: "Encadenar funciones",
+    definicion: "El valor que devuelve una función se puede usar como parámetro de otra: doble(sumar(2, 3)). Python ejecuta primero la llamada de más adentro y su resultado entra a la de afuera.",
+    analogia: "Es una línea de producción: el producto terminado de una máquina es el material de la siguiente.",
+    ejemplo: "def sumar(a, b):\n    return a + b\ndef doble(x):\n    return x * 2\nprint(doble(sumar(2, 3)))",
   },
 ];
 

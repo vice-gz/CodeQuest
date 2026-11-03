@@ -1,0 +1,124 @@
+{
+  "id": 45,
+  "mundo": 2,
+  "nombre": "La caja fuerte",
+  "concepto": "integración del Mundo 2",
+  "concepto_evaluado": "jefe_mundo_2",
+  "narrativa": "La puerta al siguiente piso está cerrada con una caja fuerte. Su código depende de cuatro datos que llegan por la terminal.",
+  "narrativaSiguienteMundo": "¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. Entra al Mundo 3: Lógica.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "45.1",
+      "tipo": "RESOLVER",
+      "titulo": "La caja fuerte",
+      "enunciado": "La caja fuerte del puente se abre con un código que tú calculas. La terminal te enviará, uno por uno y como texto, cuatro números: a, b, c y d. El código es: la suma de a y b, multiplicada por c, menos el residuo de dividir d entre 7. Muéstralo con print(). Se prueba con 4 combinaciones distintas.",
+      "codigoInicial": "",
+      "solucionReferencia": "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\ncodigo = (a + b) * c - d % 7\nprint(codigo)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Caja 1",
+          "entradas": [
+            "12",
+            "5",
+            "3",
+            "40"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "46"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Caja 2",
+          "entradas": [
+            "7",
+            "8",
+            "2",
+            "50"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "29"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Caja 3",
+          "entradas": [
+            "20",
+            "1",
+            "4",
+            "23"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "82"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Caja 4",
+          "entradas": [
+            "0",
+            "0",
+            "9",
+            "6"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "-6"
+            ]
+          }
+        }
+      ],
+      "etiquetaEntrada": "La caja fuerte pide un número (a, b, c y d, en ese orden)",
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "int",
+            "input"
+          ],
+          "operadores": [
+            "+",
+            "*",
+            "-",
+            "%"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Jefe derrotado! Convertiste los datos, usaste cuatro operaciones y la caja se abrió.",
+      "mensajeNoLogrado": "El código debe ser (a + b) * c - d % 7 para las 4 cajas. Recuerda convertir lo que llega de input().",
+      "solucionesIncorrectas": [
+        "print(46)",
+        "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\nprint((a + b) * c - d // 7)"
+      ],
+      "sinPistas": true
+    }
+  ],
+  "jefe": true,
+  "max_lineas_recomendadas": 6
+}

@@ -1,0 +1,172 @@
+{
+  "id": 52,
+  "mundo": 5,
+  "nombre": "Información confidencial",
+  "concepto": "variables locales y ámbito",
+  "concepto_evaluado": "funciones_ambito",
+  "narrativa": "Lo que ocurre dentro de una máquina es confidencial: sus variables locales no se ven desde fuera. Solo sale lo que la máquina entrega con return.",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "52.1",
+      "tipo": "EXPLORAR",
+      "titulo": "El cuarto interno de la máquina",
+      "enunciado": "Concepto nuevo: las variables que se crean dentro de una función son LOCALES. Mira cómo aparece el chip interno = 20 dentro de la máquina… y desaparece cuando la máquina termina. Solo sale lo que se devuelve.",
+      "codigoInicial": "def calcular():\n    interno = 5 * 4\n    return interno\nresultado = calcular()\nprint(resultado)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "interno vivió solo mientras la máquina trabajaba. Lo único que salió fue el valor devuelto.",
+      "pistas": [
+        "El chip dentro de la máquina es la variable local."
+      ]
+    },
+    {
+      "id": "52.2",
+      "tipo": "PREDECIR",
+      "titulo": "Lo que pasa dentro, se queda dentro",
+      "enunciado": "En Python, ¿qué pasa al ejecutar este programa?",
+      "codigoInicial": "def calcular():\n    resultado = 5 * 4\ncalcular()\nprint(resultado)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Muestra 20"
+        },
+        {
+          "id": "b",
+          "texto": "Error: resultado solo existe dentro de la función"
+        },
+        {
+          "id": "c",
+          "texto": "Muestra None"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "resultado es una variable LOCAL: nace y muere dentro de calcular(). Desde fuera no existe (NameError).",
+      "pistas": [
+        "¿Dónde se creó resultado?"
+      ]
+    },
+    {
+      "id": "52.3",
+      "tipo": "PREDECIR",
+      "titulo": "¿La de afuera cambia?",
+      "enunciado": "En Python, ¿qué muestra este programa?",
+      "codigoInicial": "x = 10\ndef cambiar():\n    x = 99\ncambiar()\nprint(x)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "99"
+        },
+        {
+          "id": "b",
+          "texto": "10"
+        },
+        {
+          "id": "c",
+          "texto": "Un error"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Dentro de cambiar(), x = 99 crea OTRA variable local con el mismo nombre. La x de afuera sigue valiendo 10.",
+      "pistas": [
+        "¿Cuántas variables llamadas x hay?"
+      ]
+    },
+    {
+      "id": "52.4",
+      "tipo": "DEBUG",
+      "titulo": "Saca el valor de la máquina",
+      "enunciado": "Este programa da error porque resultado es local. Corrígelo para que muestre 20: haz que la función devuelva el valor con return y guárdalo en resultado.",
+      "codigoInicial": "def calcular():\n    resultado = 5 * 4\ncalcular()\nprint(resultado)",
+      "solucionReferencia": "def calcular():\n    return 5 * 4\nresultado = calcular()\nprint(resultado)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_con_variable",
+            "valorEsperado": "20",
+            "variableRequerida": "resultado"
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "calcular"
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "Para sacar un valor de una función se usa return.",
+      "pistas": [
+        "Cambia la asignación de dentro por return 5 * 4.",
+        "Afuera: resultado = calcular()"
+      ],
+      "mensajeNoLogrado": "Debe mostrar 20 devolviendo el valor con return.",
+      "solucionesIncorrectas": [
+        "def calcular():\n    resultado = 5 * 4\ncalcular()\nprint(resultado)",
+        "print(20)"
+      ]
+    }
+  ]
+}

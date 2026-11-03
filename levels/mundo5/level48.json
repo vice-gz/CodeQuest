@@ -1,0 +1,182 @@
+{
+  "id": 48,
+  "mundo": 5,
+  "nombre": "Construyendo máquinas",
+  "concepto": "definir una función con def",
+  "concepto_evaluado": "funciones_definicion",
+  "narrativa": "Al otro lado de la puerta hay una fábrica de robots gigante. Aquí nadie repite el trabajo a mano: se construyen máquinas que reciben materiales, los procesan y entregan un producto terminado. Robot1 aprenderá a construir las suyas.",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "48.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Se construye una máquina",
+      "enunciado": "Concepto nuevo: una función es una MÁQUINA con nombre. def la construye una sola vez, pero construirla no la enciende. Ejecuta el programa: verás aparecer la máquina en la línea de ensamble, pero no pasa nada más… ¿por qué?",
+      "codigoInicial": "def saludar():\n    print(\"¡Hola desde la fábrica!\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "def solo CONSTRUYE la máquina: queda guardada, esperando. Para que trabaje hay que llamarla (el siguiente nivel).",
+      "pistas": [
+        "Fíjate: la máquina aparece, pero no entra ninguna caja de materiales.",
+        "Las líneas de dentro del def llevan sangría."
+      ]
+    },
+    {
+      "id": "48.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué muestra?",
+      "enunciado": "En Python, ¿qué muestra este programa?",
+      "codigoInicial": "def pitar():\n    print(\"¡Piii!\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No muestra nada"
+        },
+        {
+          "id": "b",
+          "texto": "¡Piii!"
+        },
+        {
+          "id": "c",
+          "texto": "Un error"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: definir no ejecuta. La máquina pitar() existe, pero nadie la ha encendido.",
+      "pistas": [
+        "¿Hay alguna línea que llame a pitar()?"
+      ]
+    },
+    {
+      "id": "48.3",
+      "tipo": "MODIFICAR",
+      "titulo": "Abre la fábrica",
+      "enunciado": "Esta máquina está construida pero el programa no muestra nada. Modifícalo (sin cambiar la máquina) para que se vea Fábrica abierta.",
+      "codigoInicial": "def abrir_fabrica():\n    print(\"Fábrica abierta\")",
+      "solucionReferencia": "def abrir_fabrica():\n    print(\"Fábrica abierta\")\nabrir_fabrica()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "Fábrica abierta"
+            ]
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "abrir_fabrica",
+            "parametros": 0
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "abrir_fabrica",
+            "minimo": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "def"
+          ]
+        }
+      },
+      "retroalimentacion": "Para encender una máquina se escribe su nombre con paréntesis.",
+      "pistas": [
+        "Falta una línea, sin sangría, debajo del def."
+      ],
+      "mensajeNoLogrado": "Debe verse Fábrica abierta: la máquina hay que encenderla escribiendo abrir_fabrica().",
+      "solucionesIncorrectas": [
+        "def abrir_fabrica():\n    print(\"Fábrica abierta\")",
+        "print(\"Fábrica abierta\")"
+      ]
+    },
+    {
+      "id": "48.4",
+      "tipo": "ESCRIBIR",
+      "titulo": "Construye tu primera máquina",
+      "enunciado": "Construye una función llamada saludar que muestre Hola fábrica, y enciéndela una vez.",
+      "codigoInicial": "",
+      "solucionReferencia": "def saludar():\n    print(\"Hola fábrica\")\nsaludar()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "Hola fábrica"
+            ]
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "saludar",
+            "parametros": 0
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "saludar",
+            "minimo": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "def"
+          ]
+        }
+      },
+      "retroalimentacion": "Definiste una máquina y la encendiste: ¡ya hay producción!",
+      "pistas": [
+        "def saludar():  y dentro, con sangría, el print.",
+        "Después, en otra línea sin sangría: saludar()"
+      ],
+      "mensajeNoLogrado": "Debe haber una función saludar y llamarse una vez (se verá Hola fábrica).",
+      "solucionesIncorrectas": [
+        "print(\"Hola fábrica\")",
+        "def saludar():\n    print(\"Hola fábrica\")"
+      ]
+    }
+  ]
+}

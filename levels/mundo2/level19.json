@@ -5,7 +5,6 @@
   "concepto": "integración total del Mundo 2",
   "concepto_evaluado": "integracion_mundo_2",
   "narrativa": "La puerta al Mundo 3 pide un código de acceso hecho con todo lo que Robot1 recuperó.",
-  "narrativaSiguienteMundo": "¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. (Próximamente en el Avance 3).",
   "escenario": {
     "tipo": "datos",
     "capacidad": 8

@@ -215,7 +215,7 @@ def mundo2():
              retro="El tipo depende de cómo escribes el valor: sin comillas es número, con comillas es texto.",
              pistas=["Compara las etiquetas ENTERO, DECIMAL y TEXTO en la parte baja de los chips."]),
         fase("11.2", "PREDECIR", "Unir textos",
-             'Concepto nuevo: en CQL, sumar dos textos los une en uno solo (se llama concatenar). Aquí a y b son textos porque están entre comillas. ¿Qué muestra este programa?', P1,
+             'Concepto nuevo: en Python, sumar dos textos los une en uno solo (se llama concatenar). Aquí a y b son textos porque están entre comillas. ¿Qué muestra este programa?', P1,
              codigo=L('a = "5"', 'b = "3"', "print(a + b)"),
              opciones=[("a", "8"), ("b", "53"), ("c", "Un error")], correcta="b",
              retro='Correcto: con textos, + los une uno detrás de otro (53), no los suma. ¡Cuidado! Esto solo funciona con textos: si intentas sumar un texto y un número (por ejemplo "5" + 3), el programa dará un error.',
@@ -227,11 +227,12 @@ def mundo2():
              retro="Sin comillas, 15 es un número y se puede sumar. Con comillas es un texto, y sumarlo con un número da error.", pistas=["¿Las comillas son necesarias aquí?"],
              no_logrado="La salida debe ser exactamente 16.", trampas=["edad = 15\nprint(16)\nedad = \"15\"\nprint(edad + 1)"]),
         fase("11.4", "DEBUG", "El decimal con coma",
-             "En CQL los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 2.5 y se muestre.", P1,
+             "En Python los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 2.5 y se muestre.", P1,
              codigo=L("precio = 2,5", "print(precio)"), solucion=L("precio = 2.5", "print(precio)"),
              validacion={"tipo": "todos", "condiciones": [{"tipo": "variables", "variables": {"precio": 2.5}},
                                                          {"tipo": "output_lineas", "valores": ["2.5"]}]},
-             retro="Los decimales usan punto: 2.5.", pistas=["Cambia la coma por un punto."]),
+             retro="Los decimales usan punto: 2.5. En Python los decimales se escriben con punto, no con coma.", pistas=["Cambia la coma por un punto."],
+             no_logrado="En Python los decimales se escriben con punto, no con coma. precio debe valer 2.5 y mostrarse."),
     ]))
     n.append(nivel(12, 2, "Cálculo de energía", "operadores, expresiones", "operadores",
         "Los módulos pueden calcular. Los valores viajan por cables luminosos de un chip a otro.", D, [
@@ -332,6 +333,10 @@ def mundo2():
              "Observa cómo un cálculo usa dos variables y cómo otra variable guarda un texto.", P1,
              codigo=L("ancho = 8", "alto = 5", "area = ancho * alto", 'etiqueta = "Area"', "print(etiqueta)", "print(area)"),
              retro="Variables de distintos tipos conviven en la memoria.", pistas=["Mira los tipos: dos ENTERO y un TEXTO."]),
+        fase("16.5", "PREDECIR", "¿Qué se muestra y en qué orden?", "Acabas de ver este programa. ¿Qué muestra, en orden?", P1,
+             codigo=L("ancho = 8", "alto = 5", "area = ancho * alto", 'etiqueta = "Area"', "print(etiqueta)", "print(area)"),
+             opciones=[("a", "Area y luego 40"), ("b", "40 y luego Area"), ("c", "etiqueta y luego area")], correcta="a",
+             retro="Cada variable se reemplaza por su valor: print(etiqueta) muestra Area y print(area) muestra 8 * 5 = 40.", pistas=["Calcula primero cuánto vale area."]),
         fase("16.2", "ESCRIBIR", "El triángulo",
              "Guarda 12 en base y 5 en altura. Calcula area = base * altura / 2 y muéstrala (recuerda que / siempre da un decimal: verás 30.0).", P1,
              solucion=L("base = 12", "altura = 5", "area = base * altura / 2", "print(area)"),
@@ -406,7 +411,7 @@ def mundo2():
              "Construye el programa que quieras con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 2.", P3,
              codigo=L("# Combina variables, tipos, operadores, input() y conversiones", 'nombre = "Robot1"', "print(nombre)"),
              retro="¡Mundo 2 completado!", pistas=["Prueba pedir datos con int(input()) y calcular con ellos."]),
-    ], siguiente="¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. (Próximamente en el Avance 3)."))
+    ]))
     for x in n:
         guardar(x)
 
@@ -542,12 +547,12 @@ def mundo3():
              no_logrado="Los extremos (15 y 20) sí están dentro de la zona; 14 y 21 no.",
              trampas=[L("if total >= 15 or total <= 20:", '    print("Zona segura")', "else:", '    print("Fuera")')]),
         fase("24.3", "DEBUG", "El símbolo equivocado",
-             "Este programa da un error porque usa un símbolo de otro lenguaje para decir «y». En CQL se escribe con la palabra and. Corrígelo.", P_AND,
+             "Este programa da un error porque usa un símbolo de otro lenguaje para decir «y». En Python se escribe con la palabra and. Corrígelo.", P_AND,
              codigo=L('if color1 == "roja" && total < 21:', '    print("Apuesta")', "else:", '    print("Pasa")'),
              solucion=L('if color1 == "roja" and total < 21:', '    print("Apuesta")', "else:", '    print("Pasa")'),
              escenario={"mostrarColor": True},
              casos=casos_mesas(manos_and, c_and, mostrarColor=True), validacion=casos_val({"construcciones": ["and"]}),
-             retro="En CQL las condiciones se unen con las palabras and, or y not.", pistas=["Cambia && por una palabra."]),
+             retro="En Python las condiciones se unen con las palabras and, or y not.", pistas=["Cambia && por una palabra."]),
     ]))
 
     n.append(nivel(25, 3, "O, y no", "operadores lógicos or y not", "operadores_or_not",
@@ -760,7 +765,7 @@ def mundo3():
              codigo=L("# Escribe tus propias reglas", "if total > 21:", '    print("Bust")'),
              escenario={"mostrarCartas": True, "mostrarColor": True, "cartas": mano((10, "C"), (7, "P"))},
              casos=libres([[(10, "C"), (7, "P")], [(5, "D"), (6, "T"), (9, "C")]], mostrarColor=True), retro="¡Mundo 3 completado!", pistas=["Prueba cambiar de mesa."]),
-    ], siguiente="¡La sala de estrategia se abre! Pero al cruzar, Robot1 oye un zumbido: un edificio entero depende de un elevador que no deja de fallar. Entra al Mundo 4: Automatización."))
+    ]))
     for x in n:
         guardar(x)
 
@@ -1056,13 +1061,428 @@ def mundo4():
              no_logrado="Deben quedar entregadas las 4 personas y mostrarse 2 viajes."),
         fase("43.3", "LIBRE", "Torre libre", "Experimenta con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 4.", FOR, TODOS_M,
              codigo=L("# Prueba tus propios ciclos", "for i in range(4):", "    elevador.subir(1)"), escenario={"pasajeros": [2, 3, 5]}, retro="¡Mundo 4 completado!", pistas=["Prueba combinar while, for e if."]),
-    ], siguiente="¡Evacuación completada! Robot1 descubre una puerta con luces parpadeantes: el sistema de diagnóstico del complejo está lleno de errores. Allí lo espera el Mundo 5: Programador. (Próximamente.)"))
+    ]))
     for x in n:
         guardar(x)
+
+
+# =============================================================== MUNDO 5 · MODULARIDAD (8 niveles, el 8 es el Jefe)
+# 1 Definir · 2 Llamar · 3 Parametrizar · 4 Retornar · 5 Variables locales · 6 Encadenar · 7 Depurar · 8 👑 Ensamblar
+FAB = {"tipo": "fabrica", "ancho": 8, "alto": 1, "robotPosicion": [0, 0], "robotDireccion": "este", "mostrarEnergia": False, "robot": False}
+FABR = {**FAB, "robot": True}
+PF1 = ["print", "asignacion", "def"]
+PF2 = ["print", "asignacion", "def", "for"]
+PFR = ["print", "asignacion", "def", "for", "return", "booleanos"]
+PFS = PFR + ["str", "int", "float"]
+PFA = ["print", "asignacion", "def", "return", "if", "elif", "else", "for", "while", "and", "or", "not", "booleanos", "str", "int", "float"]
+RB = ["avanzar"]  # métodos del robot que usan los niveles de la fábrica
+INTRO_M5 = "Al otro lado de la puerta hay una fábrica de robots gigante. Aquí nadie repite el trabajo a mano: se construyen máquinas que reciben materiales, los procesan y entregan un producto terminado. Robot1 aprenderá a construir las suyas."
+
+
+def def_(nombre, parametros=None):
+    return {"tipo": "funcion_definida", "nombre": nombre, **({} if parametros is None else {"parametros": parametros})}
+
+
+def llamada(nombre, minimo=1):
+    return {"tipo": "funcion_llamada", "nombre": nombre, "minimo": minimo}
+
+
+def retorna(nombre):
+    return {"tipo": "funcion_retorna", "nombre": nombre}
+
+
+def todos(*condiciones, requiere=None):
+    v = {"tipo": "todos", "condiciones": list(condiciones)}
+    if requiere:
+        v["requiere"] = requiere
+    return v
+
+
+def lineas(*valores):
+    return {"tipo": "output_lineas", "valores": list(valores)}
+
+
+def mundo5():
+    limpiar_mundo(5)
+    n = []
+
+    # ---------------------------------------------------- Nivel 1 · Construyendo máquinas (DEFINICIÓN)
+    n.append(nivel(48, 5, "Construyendo máquinas", "definir una función con def", "funciones_definicion", INTRO_M5, FAB, [
+        fase("48.1", "EXPLORAR", "Se construye una máquina",
+             "Concepto nuevo: una función es una MÁQUINA con nombre. def la construye una sola vez, pero construirla no la enciende. Ejecuta el programa: verás aparecer la máquina en la línea de ensamble, pero no pasa nada más… ¿por qué?",
+             PF1, codigo=L("def saludar():", '    print("¡Hola desde la fábrica!")'),
+             retro="def solo CONSTRUYE la máquina: queda guardada, esperando. Para que trabaje hay que llamarla (el siguiente nivel).",
+             pistas=["Fíjate: la máquina aparece, pero no entra ninguna caja de materiales.", "Las líneas de dentro del def llevan sangría."]),
+        fase("48.2", "PREDECIR", "¿Qué muestra?", "En Python, ¿qué muestra este programa?", PF1,
+             codigo=L("def pitar():", '    print("¡Piii!")'),
+             opciones=[("a", "No muestra nada"), ("b", "¡Piii!"), ("c", "Un error")], correcta="a",
+             retro="Correcto: definir no ejecuta. La máquina pitar() existe, pero nadie la ha encendido.", pistas=["¿Hay alguna línea que llame a pitar()?"]),
+        fase("48.3", "MODIFICAR", "Abre la fábrica",
+             "Esta máquina está construida pero el programa no muestra nada. Modifícalo (sin cambiar la máquina) para que se vea Fábrica abierta.", PF1,
+             codigo=L("def abrir_fabrica():", '    print("Fábrica abierta")'),
+             solucion=L("def abrir_fabrica():", '    print("Fábrica abierta")', "abrir_fabrica()"),
+             validacion=todos(lineas("Fábrica abierta"), def_("abrir_fabrica", 0), llamada("abrir_fabrica", 1), requiere={"construcciones": ["def"]}),
+             retro="Para encender una máquina se escribe su nombre con paréntesis.", pistas=["Falta una línea, sin sangría, debajo del def."],
+             no_logrado="Debe verse Fábrica abierta: la máquina hay que encenderla escribiendo abrir_fabrica().",
+             trampas=['print("Fábrica abierta")']),
+        fase("48.4", "ESCRIBIR", "Construye tu primera máquina",
+             "Construye una función llamada saludar que muestre Hola fábrica, y enciéndela una vez.", PF1,
+             solucion=L("def saludar():", '    print("Hola fábrica")', "saludar()"),
+             validacion=todos(lineas("Hola fábrica"), def_("saludar", 0), llamada("saludar", 1), requiere={"construcciones": ["def"]}),
+             retro="Definiste una máquina y la encendiste: ¡ya hay producción!",
+             pistas=["def saludar():  y dentro, con sangría, el print.", "Después, en otra línea sin sangría: saludar()"],
+             no_logrado="Debe haber una función saludar y llamarse una vez (se verá Hola fábrica).",
+             trampas=[L('print("Hola fábrica")'), L("def saludar():", '    print("Hola fábrica")')]),
+    ]))
+
+    # ---------------------------------------------------- Nivel 2 · Activando la producción (LLAMADAS)
+    maquinas_def = L("def cortar():", '    print("Cortando")', "def soldar():", '    print("Soldando")', "def pintar():", '    print("Pintando")')
+    n.append(nivel(49, 5, "Activando la producción", "llamar funciones ya definidas", "funciones_llamadas",
+                   "Las máquinas ya están construidas. Ahora hay que encenderlas, y el orden de las llamadas decide el orden de la producción.", FAB, [
+        fase("49.1", "EXPLORAR", "Cada llamada enciende una máquina",
+             "Estas dos máquinas ya están definidas. Cada línea saludar() o despedir() enciende UNA máquina; una misma máquina se puede encender las veces que quieras. Ejecuta y cuenta las veces que trabaja cada una.",
+             PF1, codigo=L("def saludar():", '    print("Hola")', "def despedir():", '    print("Adiós")', "saludar()", "saludar()", "despedir()"),
+             retro="saludar() trabajó dos veces y despedir() una: cada llamada es un encendido.", pistas=["Cuenta las cajas de materiales que entran a cada máquina."]),
+        fase("49.2", "PREDECIR", "¿En qué orden?", "En Python, ¿qué muestra este programa?", PF1,
+             codigo=L("def a():", '    print("A")', "def b():", '    print("B")', "b()", "a()", "b()"),
+             opciones=[("a", "A, B, A"), ("b", "B, A, B"), ("c", "A, B")], correcta="b",
+             retro="Las máquinas trabajan en el orden de las LLAMADAS, no en el orden en que se definieron.", pistas=["Mira solo las líneas que llaman: b(), a(), b()."]),
+        fase("49.3", "RESOLVER", "Activa la línea de producción",
+             "Las máquinas cortar(), soldar() y pintar() ya están definidas. Escribe las llamadas para que la producción sea: primero cortar, luego soldar y por último pintar.", PF1,
+             codigo=maquinas_def,
+             solucion=L(maquinas_def, "cortar()", "soldar()", "pintar()"),
+             validacion=todos(lineas("Cortando", "Soldando", "Pintando"), llamada("cortar", 1), llamada("soldar", 1), llamada("pintar", 1)),
+             retro="Llamaste a cada máquina en el orden correcto.", pistas=["Debajo de los tres def, una llamada por línea."],
+             no_logrado="Debe mostrar Cortando, Soldando y Pintando, en ese orden (llama a las tres máquinas).",
+             trampas=[maquinas_def, L(maquinas_def, "pintar()", "soldar()", "cortar()")]),
+        fase("49.4", "RESOLVER", "Una máquina con el robot",
+             "La máquina paso() ya está definida: avanza 1 casilla. Úsala dentro de un ciclo for para que Robot1 llegue a la bandera, en la casilla (5,0).", PF2, RB,
+             codigo=L("def paso():", "    robot1.avanzar(1)"),
+             solucion=L("def paso():", "    robot1.avanzar(1)", "for i in range(5):", "    paso()"),
+             escenario={**FABR, "objetivoPosicion": [5, 0]},
+             validacion=todos({"tipo": "posicion", "valorEsperado": [5, 0]}, llamada("paso", 5), requiere={"construcciones": ["for"]}),
+             retro="Máquina pequeña + ciclo = un trayecto largo.", pistas=["for i in range(5): y dentro paso()"],
+             no_logrado="Robot1 debe llegar a (5,0) llamando a paso() cinco veces dentro de un for.",
+             trampas=[L("def paso():", "    robot1.avanzar(1)", "robot1.avanzar(5)")]),
+    ]))
+
+    # ---------------------------------------------------- Nivel 3 · Personalizando productos (PARÁMETROS)
+    n.append(nivel(50, 5, "Personalizando productos", "parámetros de una función", "funciones_parametros",
+                   "Una máquina que siempre hace lo mismo sirve poco. Con parámetros, la misma máquina fabrica productos distintos según los materiales que reciba.", FAB, [
+        fase("50.1", "EXPLORAR", "La caja de materiales",
+             "Concepto nuevo: un PARÁMETRO es una ranura de entrada de la máquina. Cada llamada lleva una caja de materiales con los valores (los argumentos). Mira cómo n recibe 2 y luego 4.",
+             PF1, RB, codigo=L("def avanzar_n(n):", "    robot1.avanzar(n)", "avanzar_n(2)", "avanzar_n(4)"),
+             escenario={**FABR, "objetivoPosicion": [6, 0]},
+             retro="La misma máquina avanzó 2 y luego 4: lo que cambia es el valor que entra por el parámetro.", pistas=["Mira la caja azul que entra a la máquina y el chip n = ... que aparece dentro."]),
+        fase("50.2", "PREDECIR", "¿Qué entra y qué sale?", "En Python, ¿qué muestra este programa?", PF2,
+             codigo=L("def repetir(texto, veces):", "    for i in range(veces):", "        print(texto)", 'repetir("ok", 2)'),
+             opciones=[("a", "ok una sola vez"), ("b", "ok dos veces"), ("c", "texto veces")], correcta="b",
+             retro="texto vale \"ok\" y veces vale 2: el for muestra ok dos veces. Una función puede tener varios parámetros.",
+             pistas=["Primero reemplaza los parámetros por los valores de la llamada."]),
+        fase("50.3", "ESCRIBIR", "Una máquina que repite lo que le dan",
+             "Construye la función decir(mensaje) que muestre el mensaje que reciba. Llámala con \"A\" y después con \"B\".", PF1,
+             solucion=L("def decir(mensaje):", "    print(mensaje)", 'decir("A")', 'decir("B")'),
+             validacion=todos(lineas("A", "B"), def_("decir", 1), llamada("decir", 2), requiere={"construcciones": ["def"]}),
+             retro="Un parámetro hace que una sola máquina sirva para muchas piezas.", pistas=["def decir(mensaje): y dentro print(mensaje)."],
+             no_logrado="Debe verse A y luego B, usando la función decir con un parámetro.",
+             trampas=[L('print("A")', 'print("B")')]),
+        fase("50.4", "ESCRIBIR", "Fabrica productos distintos",
+             "Construye la función fabricar(producto, cantidad) que muestre una línea con el producto, una x y la cantidad (por ejemplo: tornillos x 5). Úsala para fabricar tornillos (5) y luego tuercas (3).", PFS,
+             solucion=L("def fabricar(producto, cantidad):", '    print(producto + " x " + str(cantidad))', 'fabricar("tornillos", 5)', 'fabricar("tuercas", 3)'),
+             validacion=todos(lineas("tornillos x 5", "tuercas x 3"), def_("fabricar", 2), llamada("fabricar", 2), requiere={"construcciones": ["def"]}),
+             retro="Dos parámetros: una sola máquina, dos productos distintos.", pistas=["Recuerda que para unir un texto con un número hay que usar str()."],
+             no_logrado="Debe mostrar tornillos x 5 y tuercas x 3 con una función fabricar de dos parámetros.",
+             trampas=[L('print("tornillos x 5")', 'print("tuercas x 3")')]),
+    ]))
+
+    # ---------------------------------------------------- Nivel 4 · El producto terminado (RETURN)
+    n.append(nivel(51, 5, "El producto terminado", "return y valor de retorno", "funciones_retorno",
+                   "Hasta ahora las máquinas mostraban cosas. Una buena máquina ENTREGA un producto terminado: un valor que el programa puede guardar y usar.", FAB, [
+        fase("51.1", "EXPLORAR", "La bandeja de salida",
+             "Concepto nuevo: return devuelve un valor a quien llamó la función: sale de la máquina en una caja de producto terminado. Ese valor se puede guardar en una variable. Ejecuta y mira la caja que sale.",
+             PFR, codigo=L("def calcular_doble(x):", "    return x * 2", "resultado = calcular_doble(21)", "print(resultado)"),
+             retro="return entrega 42 al programa; la variable resultado lo recibe y print lo muestra.", pistas=["La caja verde que sale de la máquina lleva el valor 42."]),
+        fase("51.2", "PREDECIR", "¿Qué devuelve?", "En Python, ¿qué muestra este programa?", PFR,
+             codigo=L("def suma(a, b):", "    return a + b", "print(suma(2, 3) * 2)"),
+             opciones=[("a", "5"), ("b", "10"), ("c", "7")], correcta="b",
+             retro="suma(2, 3) devuelve 5 y después 5 * 2 es 10: la llamada se reemplaza por lo que devuelve.", pistas=["Primero calcula suma(2, 3)."]),
+        fase("51.3", "DEBUG", "Muestra, pero no entrega",
+             "Esta máquina MUESTRA el doble con print, pero no lo DEVUELVE: la variable resultado se queda con None (caja gris) y el programa imprime dos líneas. Arréglala para que la máquina entregue el valor con return y el programa muestre solo 42.", PFR,
+             codigo=L("def calcular_doble(x):", "    print(x * 2)", "resultado = calcular_doble(21)", "print(resultado)"),
+             solucion=L("def calcular_doble(x):", "    return x * 2", "resultado = calcular_doble(21)", "print(resultado)"),
+             validacion=todos(lineas("42"), retorna("calcular_doble"), requiere={"construcciones": ["return"]}),
+             retro="print solo MUESTRA un valor; return lo ENTREGA para que el programa lo use. La diferencia es la caja verde frente a la gris.", pistas=["Cambia print por return dentro de la función."],
+             no_logrado="Debe mostrarse solo 42, y la función tiene que devolver el valor con return.", trampas=['print(42)']),
+        fase("51.4", "DEBUG", "¿Es par? (otra vez sin entregar)",
+             "Esta máquina debería DEVOLVER True si el número es par, pero solo lo muestra. Corrígela para que es_par(8) y es_par(7) entreguen su valor y el programa muestre True y False (una sola vez cada uno).", PFR,
+             codigo=L("def es_par(n):", "    print(n % 2 == 0)", "print(es_par(8))", "print(es_par(7))"),
+             solucion=L("def es_par(n):", "    return n % 2 == 0", "print(es_par(8))", "print(es_par(7))"),
+             validacion=todos(lineas("True", "False"), retorna("es_par"), requiere={"construcciones": ["return"]}),
+             retro="Una función puede devolver también True o False.", pistas=["return n % 2 == 0 devuelve True o False."],
+             no_logrado="Debe mostrar True y luego False, devolviendo el resultado con return.", trampas=[L("print(True)", "print(False)")]),
+    ]))
+
+    # ---------------------------------------------------- Nivel 5 · Información confidencial (ÁMBITO LOCAL)
+    n.append(nivel(52, 5, "Información confidencial", "variables locales y ámbito", "funciones_ambito",
+                   "Lo que ocurre dentro de una máquina es confidencial: sus variables locales no se ven desde fuera. Solo sale lo que la máquina entrega con return.", FAB, [
+        fase("52.1", "EXPLORAR", "El cuarto interno de la máquina",
+             "Concepto nuevo: las variables que se crean dentro de una función son LOCALES. Mira cómo aparece el chip interno = 20 dentro de la máquina… y desaparece cuando la máquina termina. Solo sale lo que se devuelve.",
+             PFR, codigo=L("def calcular():", "    interno = 5 * 4", "    return interno", "resultado = calcular()", "print(resultado)"),
+             retro="interno vivió solo mientras la máquina trabajaba. Lo único que salió fue el valor devuelto.", pistas=["El chip dentro de la máquina es la variable local."]),
+        fase("52.2", "PREDECIR", "Lo que pasa dentro, se queda dentro", "En Python, ¿qué pasa al ejecutar este programa?", PFR,
+             codigo=L("def calcular():", "    resultado = 5 * 4", "calcular()", "print(resultado)"),
+             opciones=[("a", "Muestra 20"), ("b", "Error: resultado solo existe dentro de la función"), ("c", "Muestra None")], correcta="b",
+             retro="resultado es una variable LOCAL: nace y muere dentro de calcular(). Desde fuera no existe (NameError).", pistas=["¿Dónde se creó resultado?"]),
+        fase("52.3", "PREDECIR", "¿La de afuera cambia?", "En Python, ¿qué muestra este programa?", PFR,
+             codigo=L("x = 10", "def cambiar():", "    x = 99", "cambiar()", "print(x)"),
+             opciones=[("a", "99"), ("b", "10"), ("c", "Un error")], correcta="b",
+             retro="Dentro de cambiar(), x = 99 crea OTRA variable local con el mismo nombre. La x de afuera sigue valiendo 10.", pistas=["¿Cuántas variables llamadas x hay?"]),
+        fase("52.4", "DEBUG", "Saca el valor de la máquina",
+             "Este programa da error porque resultado es local. Corrígelo para que muestre 20: haz que la función devuelva el valor con return y guárdalo en resultado.", PFR,
+             codigo=L("def calcular():", "    resultado = 5 * 4", "calcular()", "print(resultado)"),
+             solucion=L("def calcular():", "    return 5 * 4", "resultado = calcular()", "print(resultado)"),
+             validacion=todos({"tipo": "output_con_variable", "valorEsperado": "20", "variableRequerida": "resultado"}, retorna("calcular"), requiere={"construcciones": ["return"]}),
+             retro="Para sacar un valor de una función se usa return.", pistas=["Cambia la asignación de dentro por return 5 * 4.", "Afuera: resultado = calcular()"],
+             no_logrado="Debe mostrar 20 devolviendo el valor con return.", trampas=["print(20)"]),
+    ]))
+
+    # ---------------------------------------------------- Nivel 6 · Producción en cadena (ENCADENAMIENTO)
+    n.append(nivel(53, 5, "Producción en cadena", "usar el return de una función como parámetro de otra", "funciones_encadenamiento",
+                   "Las máquinas se pueden conectar: lo que sale de una entra a la siguiente. Así se arma una cadena de producción.", FAB, [
+        fase("53.1", "EXPLORAR", "Una máquina alimenta a otra",
+             "El producto terminado de una máquina puede ser el material de la siguiente: doble(sumar(2, 3)). Python primero ejecuta la máquina de adentro y su resultado entra a la de afuera. Mira cómo la caja verde de sumar pasa a ser la caja de materiales de doble.",
+             PFR, codigo=L("def sumar(a, b):", "    return a + b", "def doble(x):", "    return x * 2", "print(doble(sumar(2, 3)))"),
+             retro="sumar(2, 3) devolvió 5, y ese 5 fue el material de doble(5), que devolvió 10.", pistas=["Se ejecuta primero lo que está más adentro de los paréntesis."]),
+        fase("53.2", "PREDECIR", "¿Qué sale de la cadena?", "En Python, ¿qué muestra este programa?", PFR,
+             codigo=L("def doble(x):", "    return x * 2", "def sumar_uno(x):", "    return x + 1", "print(doble(sumar_uno(4)))"),
+             opciones=[("a", "9"), ("b", "10"), ("c", "8")], correcta="b",
+             retro="sumar_uno(4) devuelve 5 y doble(5) devuelve 10. Si el orden fuera al revés (sumar_uno(doble(4))) saldría 9.", pistas=["Empieza por la máquina de adentro."]),
+        fase("53.3", "RESOLVER", "Conecta dos máquinas",
+             "Construye cuadrado(n), que devuelva n * n, y mitad(n), que devuelva n // 2. Muestra el resultado de pasar el cuadrado de 6 por la máquina mitad (18), conectándolas en una sola línea.", PFR,
+             solucion=L("def cuadrado(n):", "    return n * n", "def mitad(n):", "    return n // 2", "print(mitad(cuadrado(6)))"),
+             validacion=todos(lineas("18"), retorna("cuadrado"), retorna("mitad"), llamada("cuadrado", 1), llamada("mitad", 1), requiere={"construcciones": ["return"]}),
+             retro="Encadenaste dos funciones: el return de una fue el parámetro de la otra.", pistas=["mitad(cuadrado(6))"],
+             no_logrado="Debe mostrar 18 usando las dos funciones, una dentro de la otra.", trampas=["print(18)"]),
+        fase("53.4", "RESOLVER", "La cadena de tres",
+             "Construye tres máquinas: quitar_dos(n) devuelve n - 2, duplicar(n) devuelve n * 2 y sumar_tres(n) devuelve n + 3. Pasa el número 10 por las tres, en ese orden, y muestra el resultado final (19).", PFR,
+             solucion=L("def quitar_dos(n):", "    return n - 2", "def duplicar(n):", "    return n * 2", "def sumar_tres(n):", "    return n + 3", "print(sumar_tres(duplicar(quitar_dos(10))))"),
+             validacion=todos(lineas("19"), retorna("quitar_dos"), retorna("duplicar"), retorna("sumar_tres"), requiere={"construcciones": ["return"]}),
+             retro="Una cadena de producción de tres pasos: cada máquina recibe lo que entregó la anterior.", pistas=["La primera en ejecutarse es la más interna: quitar_dos(10)."],
+             no_logrado="Debe mostrar 19: ((10 - 2) * 2) + 3, pasando el valor por las tres máquinas.", trampas=["print(19)"]),
+    ]))
+
+    # ---------------------------------------------------- Nivel 7 · Reparando la fábrica (DEPURACIÓN)
+    n.append(nivel(54, 5, "Reparando la fábrica", "depurar funciones", "funciones_depuracion",
+                   "La fábrica sufrió un apagón y varias máquinas fallan. Reparar es leer el error y encontrar qué le falta a cada máquina.", FAB, [
+        fase("54.1", "DEBUG", "Falta el return",
+             "Este programa muestra None en lugar de 8: a la máquina le falta algo. Corrígela para que muestre 8.", PFR,
+             codigo=L("def doble(x):", "    x * 2", "print(doble(4))"),
+             solucion=L("def doble(x):", "    return x * 2", "print(doble(4))"),
+             validacion=todos(lineas("8"), retorna("doble"), requiere={"construcciones": ["return"]}),
+             retro="Sin return la función devuelve None. Calcular x * 2 no basta: hay que entregarlo.", pistas=["Falta una palabra antes de x * 2."],
+             no_logrado="Debe mostrar 8: la función doble tiene que devolver el resultado.", trampas=["print(8)"]),
+        fase("54.2", "DEBUG", "Mal parámetro",
+             "Este programa da un error de tipos: la máquina pide dos valores y solo le dan uno. Corrígelo para que muestre 8.", PFR,
+             codigo=L("def sumar(a, b):", "    return a + b", "print(sumar(5))"),
+             solucion=L("def sumar(a, b):", "    return a + b", "print(sumar(5, 3))"),
+             validacion=todos(lineas("8"), llamada("sumar", 1), requiere={"construcciones": ["return"]}),
+             retro="Al llamar una función hay que dar un valor por cada parámetro.", pistas=["sumar necesita a y b."],
+             no_logrado="Debe mostrar 8 llamando a sumar con sus dos valores.", trampas=["print(8)"]),
+        fase("54.3", "DEBUG", "La máquina que nadie enciende",
+             "Este programa debería mostrar Hola, pero no muestra nada. Corrígelo.", PFR,
+             codigo=L("def saludar():", '    print("Hola")'),
+             solucion=L("def saludar():", '    print("Hola")', "saludar()"),
+             validacion=todos(lineas("Hola"), def_("saludar", 0), llamada("saludar", 1), requiere={"construcciones": ["def"]}),
+             retro="Definir una función no la ejecuta: hay que llamarla.", pistas=["¿Quién enciende la máquina?"],
+             no_logrado="Debe mostrar Hola: llama a la función saludar.", trampas=['print("Hola")']),
+        fase("54.4", "DEBUG", "Los tres fallos juntos",
+             "El código tiene TRES errores a la vez: a una máquina le falta el return, otra llamada no recibe todos sus valores y hay una máquina que nadie enciende. Repáralos para que el programa muestre 10 y luego Listo (suma 4 y 6, y anuncia Listo con la máquina anunciar).", PFR,
+             codigo=L("def sumar(a, b):", "    a + b", "def anunciar(texto):", "    print(texto)", "total = sumar(4)", "print(total)"),
+             solucion=L("def sumar(a, b):", "    return a + b", "def anunciar(texto):", "    print(texto)", "total = sumar(4, 6)", "print(total)", 'anunciar("Listo")'),
+             validacion=todos(lineas("10", "Listo"), retorna("sumar"), llamada("anunciar", 1), requiere={"construcciones": ["return"]}),
+             retro="¡Fábrica reparada! Falta de return, parámetros que no coinciden y funciones sin llamar: los tres fallos más comunes.", pistas=["Arregla una máquina a la vez, leyendo el error que aparece.", "sumar necesita 2 valores y anunciar nunca se llama."],
+             no_logrado="Debe mostrar 10 y luego Listo: revisa el return, los valores de sumar y la llamada a anunciar.", trampas=[L('print(10)', 'print("Listo")')]),
+    ]))
+    for x in n:
+        guardar(x)
+
+
+# =============================================================== NIVELES JEFE (uno al final de cada mundo)
+# Sin pistas, editor en blanco y un único enunciado.
+def jefe(n, fase_, eficiencia=True):
+    n["jefe"] = True
+    if eficiencia:
+        # Reto de optimización: solo un mensaje motivacional (no quita estrellas ni bloquea). Se usa el largo de la solución de referencia.
+        n["max_lineas_recomendadas"] = len([l for l in fase_["solucionReferencia"].split("\n") if l.strip()])
+    fase_["sinPistas"] = True
+    fase_.pop("pistas", None)
+    fase_["codigoInicial"] = ""
+    return n
+
+
+def jefes():
+    # ---- Mundo 1 · Laberinto ciego (Nivel 9)
+    muros = [[6, 0]] + [[x, 1] for x in range(0, 5)] + [[6, 1], [6, 2]] + [[x, 3] for x in range(1, 7)] + [[x, 5] for x in range(0, 7)]
+    lab = {"tipo": "laboratorio", "ancho": 8, "alto": 6, "robotPosicion": [0, 0], "robotDireccion": "este", "objetivoPosicion": [7, 5], "obstaculos": muros, "mostrarEnergia": False}
+    metodos_m1 = ["avanzar", "retroceder", "girar", "hablar", "recoger", "soltar", "mirar", "posicion", "energia"]
+    f1 = fase("44.1", "RESOLVER", "Laberinto ciego",
+              "El laberinto está a oscuras y esta vez nadie te dirá cuántos pasos dar. Mira el mapa, cuenta las casillas libres y programa a Robot1 para llegar a la meta, en la casilla (7,5), sin chocar con ningún muro.",
+              ["print"], metodos_m1,
+              solucion=L("robot1.avanzar(5)", 'robot1.girar("sur")', "robot1.avanzar(2)", 'robot1.girar("oeste")', "robot1.avanzar(5)", 'robot1.girar("sur")', "robot1.avanzar(2)",
+                         'robot1.girar("este")', "robot1.avanzar(7)", 'robot1.girar("sur")', "robot1.avanzar(1)"),
+              validacion={"tipo": "posicion", "valorEsperado": [7, 5]},
+              retro="¡Jefe derrotado! Calculaste cada tramo del laberinto sin ayuda.",
+              no_logrado="Robot1 debe llegar a la meta (7,5) sin chocar con los muros.",
+              trampas=[L("robot1.avanzar(7)", 'robot1.girar("sur")', "robot1.avanzar(5)"), L("robot1.avanzar(5)", 'robot1.girar("sur")', "robot1.avanzar(5)")])
+    n1 = nivel(44, 1, "Laberinto ciego", "integración del Mundo 1", "jefe_mundo_1",
+               "La salida está cerca, pero el último pasillo es un laberinto a oscuras. Aquí nadie te dará pasos: tendrás que calcularlos tú.", lab, [f1],
+               siguiente="¡Has escapado de la instalación! Pero al cruzar la puerta, Robot1 se da cuenta de que no recuerda nada. Su memoria se ha borrado. Entra al Mundo 2: Memoria.")
+    guardar(jefe(n1, f1))
+
+    # ---- Mundo 2 · La caja fuerte (Nivel 12)
+    def codigo_caja(a, b, c, d):
+        return str((a + b) * c - d % 7)
+
+    entradas = [(12, 5, 3, 40), (7, 8, 2, 50), (20, 1, 4, 23), (0, 0, 9, 6)]
+    casos = [{"etiqueta": f"Caja {i}", "entradas": [str(v) for v in e], "esperado": {"tipo": "output_lineas", "valores": [codigo_caja(*e)]}} for i, e in enumerate(entradas, 1)]
+    f2 = fase("45.1", "RESOLVER", "La caja fuerte",
+              "La caja fuerte del puente se abre con un código que tú calculas. La terminal te enviará, uno por uno y como texto, cuatro números: a, b, c y d. El código es: la suma de a y b, multiplicada por c, menos el residuo de dividir d entre 7. Muéstralo con print(). Se prueba con 4 combinaciones distintas.",
+              P3,
+              solucion=L("a = int(input())", "b = int(input())", "c = int(input())", "d = int(input())", "codigo = (a + b) * c - d % 7", "print(codigo)"),
+              casos=casos, validacion=casos_val({"construcciones": ["int", "input"], "operadores": ["+", "*", "-", "%"]}),
+              etiqueta_entrada="La caja fuerte pide un número (a, b, c y d, en ese orden)",
+              retro="¡Jefe derrotado! Convertiste los datos, usaste cuatro operaciones y la caja se abrió.",
+              no_logrado="El código debe ser (a + b) * c - d % 7 para las 4 cajas. Recuerda convertir lo que llega de input().",
+              trampas=[L("print(46)"), L("a = int(input())", "b = int(input())", "c = int(input())", "d = int(input())", "print((a + b) * c - d // 7)")])
+    n2 = nivel(45, 2, "La caja fuerte", "integración del Mundo 2", "jefe_mundo_2",
+               "La puerta al siguiente piso está cerrada con una caja fuerte. Su código depende de cuatro datos que llegan por la terminal.", D, [f2],
+               siguiente="¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. Entra al Mundo 3: Lógica.")
+    guardar(jefe(n2, f2))
+
+    # ---- Mundo 3 · Torneo de cartas (Nivel 13)
+    def regla_bj(total, cantidad):
+        if total == 21 and cantidad == 2:
+            return "Blackjack"
+        if total > 21:
+            return "Bust"
+        if total == 21:
+            return "21"
+        if total >= 17:
+            return "Plantarse"
+        return "Pedir carta"
+
+    manos = [[10, 11], [7, 7, 7], [10, 9, 5], [10, 7], [10, 10], [5, 6, 4], [6, 5], [9, 8, 4], [10, 10, 2], [10, 6]]
+    casos3 = []
+    for i, m in enumerate(manos, 1):
+        total = sum(m)
+        casos3.append({"etiqueta": f"Mano {i} · {total}", "escenario": {"cartas": mano(*m), "mostrarCartas": True, "variables": {"cantidad": len(m)}},
+                       "esperado": {"tipo": "output_lineas", "valores": [regla_bj(total, len(m))]}})
+    f3 = fase("46.1", "RESOLVER", "Torneo de cartas",
+              "Eres el crupier del gran torneo. Escribe las reglas completas para una mano (usa total y cantidad, el número de cartas que hay) y muestra UNA sola palabra: Blackjack (suma 21 con exactamente 2 cartas), Bust (se pasa de 21), 21 (suma 21 con 3 o más cartas), Plantarse (de 17 a 20) o Pedir carta (menos de 17). Se prueba con 10 manos distintas.",
+              P_ELIF,
+              solucion=L("if total == 21 and cantidad == 2:", '    print("Blackjack")', "elif total > 21:", '    print("Bust")', "elif total == 21:", '    print("21")',
+                         "elif total >= 17:", '    print("Plantarse")', "else:", '    print("Pedir carta")'),
+              casos=casos3, validacion=casos_val({"construcciones": ["if", "elif", "and"]}),
+              retro="¡Jefe derrotado! Tus reglas funcionan en cualquier mano: el orden de los if hizo la diferencia.",
+              no_logrado="Revisa el orden de las reglas: Blackjack va antes que el 21 normal, y Bust antes de comparar con 17.",
+              trampas=[L("if total > 21:", '    print("Bust")', "elif total == 21:", '    print("21")', "elif total >= 17:", '    print("Plantarse")', "else:", '    print("Pedir carta")')])
+    n3 = nivel(46, 3, "Torneo de cartas", "integración del Mundo 3", "jefe_mundo_3",
+               "El torneo final de la Sala de Estrategia empieza. El crupier ya no te dirá qué regla aplicar: tendrás que escribirlas todas.", {"tipo": "cartas"}, [f3],
+               siguiente="¡La sala de estrategia se abre! Pero al cruzar, Robot1 oye un zumbido: un edificio entero depende de un elevador que no deja de fallar. Entra al Mundo 4: Automatización.")
+    guardar(jefe(n3, f3))
+
+    # ---- Mundo 4 · Evacuación crítica (Nivel 13)
+    edificios = [[2, 3, 4, 5], [3, 3, 5, 5], [2, 2, 4, 5], [5, 5, 5, 5], [2, 3, 3, 4]]
+    casos4 = [caso_elev(f"Edificio {i}", p, ENTREGA, energiaInicial=10) for i, p in enumerate(edificios, 1)]
+    f4 = fase("47.1", "RESOLVER", "Evacuación crítica",
+              "¡Alarma en el edificio! Hay pasajeros esperando en todos los pisos y la batería del elevador solo alcanza para recorrer 10 pisos (cada piso recorrido gasta 1). Evacúa a todos hasta la planta baja sin quedarte sin energía. Se prueba con 5 edificios distintos.",
+              FOR, TODOS_M,
+              solucion=L("for i in range(4):", "    elevador.subir(1)", "    if elevador.hayPasajero():", "        elevador.recoger()", "for i in range(4):", "    elevador.bajar(1)", "elevador.soltar()"),
+              casos=casos4, validacion=casos_val(),
+              retro="¡Jefe derrotado! Recogiste a todos en un solo viaje y sobró energía.",
+              no_logrado="Deben quedar todos en la planta baja sin agotar la batería: planea un solo viaje de subida y bajada.",
+              trampas=[L("for v in range(2):", "    for i in range(4):", "        elevador.subir(1)", "        if elevador.hayPasajero():", "            elevador.recoger()", "    for i in range(4):", "        elevador.bajar(1)", "    elevador.soltar()")],
+              escenario={"energiaInicial": 10})
+    n4 = nivel(47, 4, "Evacuación crítica", "integración del Mundo 4", "jefe_mundo_4",
+               "El complejo entero está en llamas y el elevador tiene la batería casi agotada. Cada piso cuenta.", {**E, "energiaInicial": 10}, [f4],
+               siguiente="¡Evacuación completada! Robot1 descubre una puerta con luces parpadeantes: es la entrada a una fábrica de robots gigante. Allí lo espera el Mundo 5: Modularidad.")
+    guardar(jefe(n4, f4))
+
+    # ---- Mundo 5 · El Gran Ensamblaje (Nivel 8)
+    solucion5 = L("def cabeza():", '    print("Cabeza lista")', "def brazos():", '    print("Brazos listos")', "def piernas():", '    print("Piernas listas")', "cabeza()", "brazos()", "piernas()")
+    f5 = fase("55.1", "RESOLVER", "El Gran Ensamblaje",
+              "¡El pedido final! La fábrica debe construir un Robot1 gigante. Define EXACTAMENTE tres funciones: cabeza(), brazos() y piernas() (cada una muestra con print un mensaje de lo que ensambla) y llámalas, una vez cada una, en ese orden. El robot gigante se irá armando mientras tu código se ejecuta.",
+              PFA, solucion=solucion5,
+              escenario={**FAB, "ensamble": True},
+              validacion=todos({"tipo": "ensamble", "partes": ["cabeza", "brazos", "piernas"]}, def_("cabeza", 0), def_("brazos", 0), def_("piernas", 0), requiere={"construcciones": ["def"]}),
+              retro="¡Jefe derrotado! Dividiste el trabajo en tres máquinas y las pusiste a trabajar en orden: eso es modularidad.",
+              no_logrado="El robot está incompleto. Asegúrate de definir las 3 funciones y llamarlas en el orden correcto (cabeza, brazos, piernas).",
+              trampas=[L("def cabeza():", '    print("Cabeza lista")', "def brazos():", '    print("Brazos listos")', "cabeza()", "brazos()"),
+                       L("def cabeza():", '    print("Cabeza lista")', "def brazos():", '    print("Brazos listos")', "def piernas():", '    print("Piernas listas")', "piernas()", "brazos()", "cabeza()"),
+                       L("def cabeza():", '    print("Cabeza lista")', "def brazos():", '    print("Brazos listos")', "def piernas():", '    print("Piernas listas")'),
+                       L("def cabeza():", '    print("Cabeza lista")', "def brazos():", '    print("Brazos listos")', "def piernas():", '    print("Piernas listas")', "def pies():", '    print("Pies listos")', "cabeza()", "brazos()", "piernas()"),
+                       L('print("Cabeza lista")', 'print("Brazos listos")', 'print("Piernas listas")')])
+    n5 = nivel(55, 5, "El Gran Ensamblaje", "integración del Mundo 5", "jefe_mundo_5",
+               "Llegó el pedido más grande de la historia de la fábrica: un Robot1 gigante. Nadie te dirá cómo hacerlo: tendrás que dividirlo en máquinas.", {**FAB, "ensamble": True}, [f5],
+               siguiente="¡El Robot1 gigante está completo y la fábrica es un éxito! Robot1 ya sabe dividir un problema en máquinas. Pronto llegará el último desafío: el Mundo 6, donde diseñará un proyecto completo. (Próximamente.)")
+    guardar(jefe(n5, f5, eficiencia=False))
+
+
+# =============================================================== NIVEL 0 · ¿QUÉ ES UN ALGORITMO? (diagramas de flujo)
+def tarjeta(id, texto, forma="paso", accion=None):
+    t = {"id": id, "texto": texto}
+    if forma != "paso":
+        t["forma"] = forma
+    if accion:
+        t["accion"] = accion
+    return t
+
+
+def nivel0():
+    ini, fin = tarjeta("inicio", "Inicio", "inicio"), tarjeta("fin", "Fin", "fin")
+    caminar = lambda n: tarjeta(f"caminar{n}", f"Caminar {n} paso" + ("s" if n != 1 else ""), accion={"tipo": "caminar", "pasos": n})
+    abrir = tarjeta("abrir", "Abrir la puerta", accion={"tipo": "abrir"})
+    recoger = tarjeta("recoger", "Recoger la llave", accion={"tipo": "recoger"})
+    encender = tarjeta("encender", "Encender a Robot1", accion={"tipo": "encender"})
+
+    def ordenar(id, titulo, enunciado, tarjetas_barajadas, orden, escenario, pistas, retro):
+        f = {"id": id, "tipo": "ORDENAR", "titulo": titulo, "enunciado": enunciado, "codigoInicial": "",
+             "instruccionesPermitidas": [], "metodosPermitidos": [], "escenario": escenario,
+             "tarjetas": tarjetas_barajadas, "ordenCorrecto": orden, "validacion": {"tipo": "orden"},
+             "retroalimentacion": retro, "pistas": pistas,
+             "mensajeNoLogrado": "Esa tarjeta no iba todavía: ¡Robot1 chocó! Piensa qué tiene que pasar primero y vuelve a empezar."}
+        return f
+
+    fases = [
+        ordenar("0.1", "La puerta del laboratorio",
+                "Un ALGORITMO es una lista de pasos, en orden, que resuelve un problema. Robot1 está frente a una puerta: haz clic en las tarjetas en el orden correcto para que llegue y la abra. Cada diagrama de flujo empieza en Inicio y termina en Fin.",
+                [abrir, fin, ini, caminar(3)], ["inicio", "caminar3", "abrir", "fin"], {"tipo": "diagrama", "largo": 5, "puertaX": 4},
+                ["Un diagrama siempre empieza con Inicio.", "Robot1 tiene que estar junto a la puerta antes de abrirla."],
+                "¡Lo lograste! Escribiste tu primer algoritmo: pasos en el orden correcto. Si cambias el orden, el resultado cambia."),
+        ordenar("0.2", "La puerta con llave",
+                "Ahora la puerta está cerrada con llave, y la llave está tirada en el pasillo. Ordena el algoritmo completo para que Robot1 recoja la llave y abra la puerta.",
+                [abrir, caminar(3), fin, recoger, ini, caminar(1)], ["inicio", "caminar1", "recoger", "caminar3", "abrir", "fin"], {"tipo": "diagrama", "largo": 6, "puertaX": 5, "llaveX": 1},
+                ["La llave está a 1 paso de Robot1.", "Sin la llave, la puerta no abre."],
+                "Un algoritmo más largo: cada paso depende del anterior. ¡Ya piensas como programador!"),
+        ordenar("0.3", "Robot1 apagado",
+                "Robot1 está apagado y no puede caminar. Ordena TODO el algoritmo: despertarlo, recoger la llave y abrir la puerta.",
+                [caminar(3), fin, abrir, encender, recoger, ini, caminar(1)], ["inicio", "encender", "caminar1", "recoger", "caminar3", "abrir", "fin"],
+                {"tipo": "diagrama", "largo": 6, "puertaX": 5, "llaveX": 1, "apagado": True},
+                ["Un robot apagado no se mueve.", "Primero encender, luego caminar."],
+                "¡Listo para programar! En el Mundo 1 escribirás estos mismos pasos como instrucciones de código."),
+    ]
+    n = nivel(0, 1, "Antes de empezar: el algoritmo", "algoritmo y diagrama de flujo", "algoritmo_diagrama_flujo",
+              "Antes de entrar al laboratorio, Robot1 necesita aprender lo más importante: seguir un algoritmo, una lista de pasos en el orden correcto.", {"tipo": "diagrama", "largo": 5, "puertaX": 4}, fases)
+    n["tutorial"] = True
+    n["ordinal"] = 0
+    guardar(n)
 
 
 if __name__ == "__main__":
     mundo2()
     mundo3()
     mundo4()
-    print("Niveles de los Mundos 2, 3 y 4 generados.")
+    mundo5()
+    jefes()
+    nivel0()
+    print("Niveles generados: Mundos 2, 3, 4 y 5, los 4 niveles jefe y el Nivel 0.")

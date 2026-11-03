@@ -38,6 +38,8 @@ export function formatearExpresion(nodo) {
       return nodo.valor ? "True" : "False";
     case "Identificador":
       return nodo.nombre;
+    case "Ninguno":
+      return "None";
     case "OperacionBinaria":
       if (nodo.operador === "**") return `${conParen(nodo.izquierda, precedencia(nodo) + 1)} ** ${conParen(nodo.derecha, precedencia(nodo))}`;
       return `${conParen(nodo.izquierda, precedencia(nodo))} ${nodo.operador} ${conParen(nodo.derecha, precedencia(nodo) + 1)}`;
@@ -83,4 +85,20 @@ export function variablesUsadas(nodo, acumulado = new Set()) {
       break;
   }
   return acumulado;
+}
+
+/** Nombres que una función ASIGNA (parámetros aparte): en Python esos nombres son locales en TODA la función. */
+export function variablesAsignadas(sentencias, destino = new Set()) {
+  for (const s of sentencias) {
+    if (s.tipo === "Asignacion") destino.add(s.variable);
+    else if (s.tipo === "Para") {
+      destino.add(s.variable);
+      variablesAsignadas(s.bloque.sentencias, destino);
+    } else if (s.tipo === "Mientras") variablesAsignadas(s.bloque.sentencias, destino);
+    else if (s.tipo === "Condicional") {
+      variablesAsignadas(s.bloqueSi.sentencias, destino);
+      if (s.bloqueSino) variablesAsignadas(s.bloqueSino.sentencias, destino);
+    }
+  }
+  return destino;
 }

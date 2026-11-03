@@ -1,0 +1,225 @@
+{
+  "id": 54,
+  "mundo": 5,
+  "nombre": "Reparando la fábrica",
+  "concepto": "depurar funciones",
+  "concepto_evaluado": "funciones_depuracion",
+  "narrativa": "La fábrica sufrió un apagón y varias máquinas fallan. Reparar es leer el error y encontrar qué le falta a cada máquina.",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "54.1",
+      "tipo": "DEBUG",
+      "titulo": "Falta el return",
+      "enunciado": "Este programa muestra None en lugar de 8: a la máquina le falta algo. Corrígela para que muestre 8.",
+      "codigoInicial": "def doble(x):\n    x * 2\nprint(doble(4))",
+      "solucionReferencia": "def doble(x):\n    return x * 2\nprint(doble(4))",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "8"
+            ]
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "doble"
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "Sin return la función devuelve None. Calcular x * 2 no basta: hay que entregarlo.",
+      "pistas": [
+        "Falta una palabra antes de x * 2."
+      ],
+      "mensajeNoLogrado": "Debe mostrar 8: la función doble tiene que devolver el resultado.",
+      "solucionesIncorrectas": [
+        "def doble(x):\n    x * 2\nprint(doble(4))",
+        "print(8)"
+      ]
+    },
+    {
+      "id": "54.2",
+      "tipo": "DEBUG",
+      "titulo": "Mal parámetro",
+      "enunciado": "Este programa da un error de tipos: la máquina pide dos valores y solo le dan uno. Corrígelo para que muestre 8.",
+      "codigoInicial": "def sumar(a, b):\n    return a + b\nprint(sumar(5))",
+      "solucionReferencia": "def sumar(a, b):\n    return a + b\nprint(sumar(5, 3))",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "8"
+            ]
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "sumar",
+            "minimo": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "Al llamar una función hay que dar un valor por cada parámetro.",
+      "pistas": [
+        "sumar necesita a y b."
+      ],
+      "mensajeNoLogrado": "Debe mostrar 8 llamando a sumar con sus dos valores.",
+      "solucionesIncorrectas": [
+        "def sumar(a, b):\n    return a + b\nprint(sumar(5))",
+        "print(8)"
+      ]
+    },
+    {
+      "id": "54.3",
+      "tipo": "DEBUG",
+      "titulo": "La máquina que nadie enciende",
+      "enunciado": "Este programa debería mostrar Hola, pero no muestra nada. Corrígelo.",
+      "codigoInicial": "def saludar():\n    print(\"Hola\")",
+      "solucionReferencia": "def saludar():\n    print(\"Hola\")\nsaludar()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "Hola"
+            ]
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "saludar",
+            "parametros": 0
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "saludar",
+            "minimo": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "def"
+          ]
+        }
+      },
+      "retroalimentacion": "Definir una función no la ejecuta: hay que llamarla.",
+      "pistas": [
+        "¿Quién enciende la máquina?"
+      ],
+      "mensajeNoLogrado": "Debe mostrar Hola: llama a la función saludar.",
+      "solucionesIncorrectas": [
+        "def saludar():\n    print(\"Hola\")",
+        "print(\"Hola\")"
+      ]
+    },
+    {
+      "id": "54.4",
+      "tipo": "DEBUG",
+      "titulo": "Los tres fallos juntos",
+      "enunciado": "El código tiene TRES errores a la vez: a una máquina le falta el return, otra llamada no recibe todos sus valores y hay una máquina que nadie enciende. Repáralos para que el programa muestre 10 y luego Listo (suma 4 y 6, y anuncia Listo con la máquina anunciar).",
+      "codigoInicial": "def sumar(a, b):\n    a + b\ndef anunciar(texto):\n    print(texto)\ntotal = sumar(4)\nprint(total)",
+      "solucionReferencia": "def sumar(a, b):\n    return a + b\ndef anunciar(texto):\n    print(texto)\ntotal = sumar(4, 6)\nprint(total)\nanunciar(\"Listo\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "10",
+              "Listo"
+            ]
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "sumar"
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "anunciar",
+            "minimo": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Fábrica reparada! Falta de return, parámetros que no coinciden y funciones sin llamar: los tres fallos más comunes.",
+      "pistas": [
+        "Arregla una máquina a la vez, leyendo el error que aparece.",
+        "sumar necesita 2 valores y anunciar nunca se llama."
+      ],
+      "mensajeNoLogrado": "Debe mostrar 10 y luego Listo: revisa el return, los valores de sumar y la llamada a anunciar.",
+      "solucionesIncorrectas": [
+        "def sumar(a, b):\n    a + b\ndef anunciar(texto):\n    print(texto)\ntotal = sumar(4)\nprint(total)",
+        "print(10)\nprint(\"Listo\")"
+      ]
+    }
+  ]
+}

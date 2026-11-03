@@ -80,7 +80,11 @@ export class Tour {
    * @param {object} [opciones]
    * @param {(pestana:string)=>void} [opciones.alNecesitarPestana] cambia a la pestaña (Jugar/Aprende/Consola) donde vive el paso
    */
-  constructor({ alNecesitarPestana = null } = {}) {
+  constructor({ alNecesitarPestana = null, pasos = null, alTerminar = null } = {}) {
+    // `pasos` propios = tour de un mundo nuevo (presenta su escenario); no marca el tour general como visto.
+    this.pasos = pasos || PASOS;
+    this.pasosPropios = pasos !== null;
+    this.alTerminar = alTerminar;
     this.indice = 0;
     this.overlay = null;
     this.activo = false;
@@ -148,7 +152,7 @@ export class Tour {
   mover(delta) {
     const siguiente = this.indice + delta;
     if (siguiente < 0) return;
-    if (siguiente >= PASOS.length) {
+    if (siguiente >= this.pasos.length) {
       this.terminar();
       return;
     }
@@ -158,20 +162,20 @@ export class Tour {
 
   /** Elemento del paso actual, solo si realmente se ve en la vista actual. */
   objetivoActual() {
-    const candidato = document.querySelector(PASOS[this.indice].selector);
+    const candidato = document.querySelector(this.pasos[this.indice].selector);
     return candidato && candidato.getClientRects().length > 0 && getComputedStyle(candidato).visibility !== "hidden" ? candidato : null;
   }
 
   async pintarPaso() {
     if (!this.activo) return;
-    const paso = PASOS[this.indice];
+    const paso = this.pasos[this.indice];
     const vigente = ++this.pasoVigente;
 
-    this.overlay.querySelector(".tour-progreso").textContent = `${this.indice + 1} de ${PASOS.length}`;
+    this.overlay.querySelector(".tour-progreso").textContent = `${this.indice + 1} de ${this.pasos.length}`;
     this.overlay.querySelector(".tour-titulo").textContent = paso.titulo;
     this.overlay.querySelector(".tour-texto").textContent = paso.texto;
     this.overlay.querySelector(".tour-atras").disabled = this.indice === 0;
-    this.overlay.querySelector(".tour-siguiente").textContent = this.indice === PASOS.length - 1 ? "Empezar a jugar" : "Siguiente";
+    this.overlay.querySelector(".tour-siguiente").textContent = this.indice === this.pasos.length - 1 ? "Empezar a jugar" : "Siguiente";
 
     // 1) Si el elemento está en otra pestaña (celular), se cambia a ella primero.
     if (paso.pestana && this.alNecesitarPestana) {
@@ -269,6 +273,7 @@ export class Tour {
     document.body.classList.remove("tour-activo");
     this.overlay?.remove();
     this.overlay = null;
-    Tour.marcarVisto();
+    if (this.pasosPropios) this.alTerminar?.();
+    else Tour.marcarVisto();
   }
 }

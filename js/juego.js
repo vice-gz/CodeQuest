@@ -1,5 +1,5 @@
 // juego.js (antes main.js)
-// Orquesta el juego de CodeQuest: 4 mundos, 35 niveles, sistema de fases y
+// Orquesta el juego de CodeQuest: 5 mundos, 56 niveles (con Nivel 0 y jefes), sistema de fases y
 // 3 paneles en vivo. Ciclo por fase: código -> Lexer -> Parser -> Validator ->
 // Interpreter (async) -> ESCENARIO DEL MUNDO (laboratorio, memoria, mesa de
 // cartas o elevador) -> paneles en vivo -> retroalimentación -> progreso.
@@ -52,7 +52,11 @@ import { resultadoDeError, RESULTADO_EXITO, RESULTADO_OBJETIVO_NO_ALCANZADO } fr
 import { supabase } from "./supabase.js";
 import { protegerPagina } from "./auth.js";
 import { renderizarNav } from "./nav.js";
-import { catalogo, obtenerNivel, mundoDeNivel, NIVELES_POR_MUNDO, TOTAL_NIVELES, MAX_ESTRELLAS } from "./game/catalogo.js";
+import { PanelTarjetas } from "./ui/tarjetas.js";
+import { PASOS_MUNDO, tourDeMundoVisto, marcarTourDeMundoVisto } from "./ui/toursMundo.js";
+import { mensajeEficiencia } from "./game/eficiencia.js";
+import { evaluarEleccion } from "./game/ordenar.js";
+import { catalogo, obtenerNivel, mundoDeNivel, TOTAL_NIVELES, MAX_ESTRELLAS, ordinalDeNivel, nivelPorOrdinal, siguienteNivel, REQUERIDOS_POR_MUNDO } from "./game/catalogo.js";
 
 // El repositorio se elige al arrancar: Supabase (normal), localStorage (demo de
 // admin) o uno que no guarda nada (Laboratorio Libre, ?modo=sandbox).
@@ -109,6 +113,9 @@ const el = {
   btnPista: document.getElementById("btn-pista"),
 
   prediccionEnvoltura: document.getElementById("prediccion-envoltura"),
+  tarjetasEnvoltura: document.getElementById("tarjetas-envoltura"),
+  lenguajeTag: document.getElementById("lenguaje-tag"),
+  tituloCodigo: document.getElementById("titulo-codigo"),
   prediccionEnunciado: document.getElementById("prediccion-enunciado"),
   prediccionOpciones: document.getElementById("prediccion-opciones"),
 
@@ -139,6 +146,13 @@ const codeEditor = new CodeEditor({ textareaEl: el.editorTextarea, lineNumbersEl
 const feedback = new Feedback(el.feedbackContenido);
 const outputPanel = new OutputPanel(el.salidaContenido);
 const memoryPanel = new MemoryPanel(el.memoriaContenido);
+const panelTarjetas = new PanelTarjetas({
+  envoltura: document.getElementById("tarjetas-envoltura"),
+  banco: document.getElementById("tarjetas-banco"),
+  diagrama: document.getElementById("tarjetas-diagrama"),
+  btnReiniciar: document.getElementById("btn-tarjetas-reiniciar"),
+});
+let ordenElegido = []; // Nivel 0: ids de las tarjetas ya aceptadas
 const statePanel = new StatePanel(el.estadoContenido);
 const phaseBar = new PhaseBar(el.barraFases);
 const diccionario = new Dictionary(el.diccionarioPanel, el.btnDiccionario, el.dicContador);
@@ -178,8 +192,8 @@ async function irANivel(id) {
   faseIndice = nivelData.fases.findIndex((f) => !estadoNivel.fases[f.id]?.completada);
   if (faseIndice === -1) faseIndice = 0; // nivel ya completo: se puede repasar desde el inicio
 
-  const ordinal = catalogo.mundos[mundoActualId].niveles.indexOf(id) + 1;
-  el.tituloNivel.textContent = `Nivel ${ordinal} — ${nivelData.nombre}`;
+  const ordinal = ordinalDeNivel(id); // el Nivel 0 es 0; los ids no son consecutivos
+  el.tituloNivel.textContent = `${nivelData.jefe ? "👑 Nivel Jefe" : `Nivel ${ordinal}`} — ${nivelData.nombre}`;
   el.etiquetaConcepto.textContent = nivelData.concepto;
   el.textoNarrativa.textContent = nivelData.narrativa || "";
   renderizarEstrellas(el.estrellasNivel, estadoNivel.estrellas);
@@ -276,6 +290,8 @@ function mensajeSalidaVacia() {
 
 function mensajeInicialFase(fase) {
   switch (fase.tipo) {
+    case "ORDENAR":
+      return "Elige las tarjetas en el orden correcto: cada una se ejecuta en cuanto la eliges.";
     case "PREDECIR":
       return "Lee el código, piensa qué va a pasar y elige tu predicción.";
     case "EXPLORAR":
@@ -289,9 +305,21 @@ function mensajeInicialFase(fase) {
 
 function configurarUIPorTipoFase() {
   const esPredecir = faseData.tipo === "PREDECIR";
+  const esOrdenar = faseData.tipo === "ORDENAR";
   el.prediccionEnvoltura.classList.toggle("oculto", !esPredecir);
   el.btnEjecutar.classList.toggle("oculto", esPredecir);
-  el.barraSimbolos?.classList.toggle("oculto", esPredecir);
+  el.barraSimbolos?.classList.toggle("oculto", esPredecir || esOrdenar);
+
+  // Nivel 0 (diagramas de flujo): sin editor ni consola; en su lugar, tarjetas para ordenar.
+  document.body.classList.toggle("modo-ordenar", esOrdenar);
+  el.tarjetasEnvoltura.classList.toggle("oculto", !esOrdenar);
+  document.querySelector(".editor-envoltura")?.classList.toggle("oculto", esOrdenar);
+  document.querySelector(".acciones-codigo")?.classList.toggle("oculto", esOrdenar);
+  el.lenguajeTag.classList.toggle("oculto", esOrdenar);
+  el.tituloCodigo.textContent = esOrdenar ? "Tu algoritmo" : "Código";
+  if (esOrdenar) montarTarjetas();
+  // Nivel Jefe: sin botón de pistas.
+  el.btnPista.classList.toggle("oculto", faseData.sinPistas === true);
 
   if (esPredecir) {
     codeEditor.deshabilitar(true);
@@ -324,6 +352,8 @@ const NOMBRE_CHIP = {
   or: "or",
   not: "not",
   booleanos: "True / False",
+  def: "def nombre(parámetros):",
+  return: "return valor",
 };
 
 function renderInstruccionesPermitidas(fase) {
@@ -335,6 +365,20 @@ function renderInstruccionesPermitidas(fase) {
     if (!def) chips.pop();
   });
   el.listaInstrucciones.innerHTML = chips.map((c) => `<span class="chip-instruccion">${c.replace(/</g, "&lt;")}</span>`).join("");
+}
+
+// ¿Ya jugó (superó) algún nivel que no sea de tutorial? Entonces el Nivel 0 no le estorba.
+function hayProgresoReal(progreso) {
+  return Object.values(progreso.mundos).some((m) => Object.entries(m.niveles || {}).some(([id, n]) => n.completado && !catalogo.niveles[id]?.tutorial));
+}
+
+// Un nivel se abre al completar el anterior del mundo. El Nivel 0 (tutorial) se da por hecho si la persona ya jugó
+// otros niveles (así nadie con progreso previo se queda bloqueado).
+function nivelAbierto(progreso, mundo, indice) {
+  if (indice === 0) return true;
+  const previoId = mundo.niveles[indice - 1];
+  if (progreso.mundos[mundo.id]?.niveles?.[previoId]?.completado) return true;
+  return catalogo.niveles[previoId]?.tutorial === true && hayProgresoReal(progreso);
 }
 
 // Solo los niveles del mundo actual: el primero está abierto y cada uno se
@@ -353,15 +397,17 @@ async function renderSelectorNiveles() {
   mundo.niveles.forEach((id, i) => {
     const estado = progreso.mundos[mundo.id]?.niveles?.[id];
     const completado = !!estado?.completado;
-    const anteriorCompletado = i === 0 || !!progreso.mundos[mundo.id]?.niveles?.[mundo.niveles[i - 1]]?.completado;
-    const desbloqueado = ModoDemo.activo() || anteriorCompletado || completado;
+    const desbloqueado = ModoDemo.activo() || nivelAbierto(progreso, mundo, i) || completado;
+    const ordinal = ordinalDeNivel(id);
+    const esJefe = catalogo.niveles[id].jefe === true;
 
     const boton = document.createElement("button");
     boton.type = "button";
     boton.className = "nivel-punto";
-    boton.textContent = String(i + 1);
-    boton.title = catalogo.niveles[id].nombre;
-    boton.setAttribute("aria-label", `Nivel ${i + 1}: ${catalogo.niveles[id].nombre}${completado ? " (completado)" : !desbloqueado ? " (bloqueado)" : ""}`);
+    if (esJefe) boton.classList.add("nivel-jefe");
+    boton.textContent = esJefe ? "👑" : String(ordinal);
+    boton.title = esJefe ? `Nivel Jefe: ${catalogo.niveles[id].nombre}` : catalogo.niveles[id].nombre;
+    boton.setAttribute("aria-label", `${esJefe ? "Nivel Jefe" : `Nivel ${ordinal}`}: ${catalogo.niveles[id].nombre}${completado ? " (completado)" : !desbloqueado ? " (bloqueado)" : ""}`);
     if (id === nivelActualId) boton.classList.add("activo");
     if (completado) boton.classList.add("completado");
     if (!desbloqueado) {
@@ -403,6 +449,58 @@ async function actualizarContadorTotal() {
     });
   });
   el.totalEstrellas.textContent = String(total);
+}
+
+// ---------- Nivel 0: ordenar tarjetas (diagramas de flujo) ----------
+
+function montarTarjetas() {
+  ordenElegido = [];
+  panelTarjetas.bloquear(false);
+  panelTarjetas.mostrar(faseData, {
+    alElegir: elegirTarjeta,
+    alReiniciar: () => {
+      if (enEjecucion) return;
+      ordenElegido = [];
+      panelTarjetas.reiniciar();
+      escenario.reiniciar();
+      feedback.mostrarInicial(mensajeInicialFase(faseData));
+    },
+  });
+}
+
+async function elegirTarjeta(id) {
+  if (enEjecucion) return;
+  enEjecucion = true;
+  panelTarjetas.bloquear(true);
+  const tarjeta = faseData.tarjetas.find((t) => t.id === id);
+  const eleccion = evaluarEleccion(faseData.ordenCorrecto, ordenElegido, id);
+  try {
+    if (eleccion.ok) {
+      ordenElegido.push(id);
+      panelTarjetas.agregarAlDiagrama(id);
+      await escenario.ejecutarPaso(tarjeta.accion);
+      if (eleccion.completo) {
+        await completarFaseActual(`orden:${ordenElegido.join(">")}`);
+      } else {
+        feedback.mostrarInicial("¡Bien! Sigue con la siguiente tarjeta.");
+      }
+    } else {
+      // Esa tarjeta no tocaba todavía: el robot choca, cuenta como intento y se empieza de nuevo.
+      const codigo = `orden:${[...ordenElegido, id].join(">")}`;
+      panelTarjetas.marcarError(id);
+      await escenario.chocar(tarjeta.accion);
+      await repo.registrarIntentoFase(mundoActualId, nivelActualId, faseData.id, { codigo });
+      await guardarEjecucion({ mundoId: mundoActualId, nivelId: nivelActualId, faseId: faseData.id, codigo, resultado: RESULTADO_OBJETIVO_NO_ALCANZADO });
+      feedback.mostrarObjetivoNoAlcanzado(faseData.mensajeNoLogrado || "Esa tarjeta no iba todavía: ¡Robot1 chocó! Piensa qué tiene que pasar primero e inténtalo de nuevo.");
+      ordenElegido = [];
+      panelTarjetas.reiniciar();
+      escenario.reiniciar();
+    }
+  } finally {
+    enEjecucion = false;
+    panelTarjetas.bloquear(false);
+    mostrarResultado(el.panelFeedback);
+  }
 }
 
 // ---------- Predicción ----------
@@ -501,7 +599,7 @@ async function evaluarResultado({ ast, visual, codigo, tiempoMs }) {
     fase: faseData,
     codigo,
     ast,
-    visual: { escenario, salidas: visual.salidas, memoria: visual.memoria },
+    visual: { escenario, salidas: visual.salidas, memoria: visual.memoria, llamadas: visual.llamadas, funciones: visual.funciones },
     casoVisual,
   });
 
@@ -557,18 +655,21 @@ async function completarFaseActual(codigo, tiempoMs) {
 
   const todasCompletas = nivelData.fases.every((f) => completadas.has(f.id));
 
+  // Reto de optimización (Niveles Jefe): solo un mensaje motivacional, no quita estrellas ni bloquea el avance.
+  const consejo = mensajeEficiencia(codigo, nivelData.max_lineas_recomendadas);
+
   if (todasCompletas) {
     const soloFasesDelNivel = {};
     nivelData.fases.forEach((f) => {
       if (estadoNivel.fases[f.id]) soloFasesDelNivel[f.id] = estadoNivel.fases[f.id];
     });
     const estrellas = calcularEstrellasNivel(soloFasesDelNivel);
-    const siguienteId = nivelActualId + 1;
-    const hayNivelSiguiente = siguienteId <= TOTAL_NIVELES;
+    const siguienteId = siguienteNivel(nivelActualId); // los ids no son consecutivos: se pregunta al catálogo
+    const hayNivelSiguiente = siguienteId !== null;
 
     await repo.completarNivel(mundoActualId, nivelActualId, {
       estrellas,
-      totalNivelesMundo: NIVELES_POR_MUNDO[mundoActualId],
+      nivelesRequeridos: REQUERIDOS_POR_MUNDO[mundoActualId],
       siguienteMundo: hayNivelSiguiente ? mundoDeNivel(siguienteId) : mundoActualId,
       siguienteNivel: hayNivelSiguiente ? siguienteId : nivelActualId,
     });
@@ -597,6 +698,7 @@ async function completarFaseActual(codigo, tiempoMs) {
           ? "Desbloqueaste el siguiente nivel."
           : "¡Completaste todos los mundos disponibles de CodeQuest!",
       botones,
+      consejo,
     });
 
     if (cierraMundo) {
@@ -612,6 +714,7 @@ async function completarFaseActual(codigo, tiempoMs) {
           `¡Completaste el Mundo ${mundoActualId}! Pronto habrá más retos para Robot1.`,
         nombreSiguiente: mundoSiguiente ? mundoSiguiente.nombre : null,
         enlacePerfil: ModoDemo.activo() ? null : "perfil.html",
+        consejo,
       });
       // Cambiar de mundo = cargar su página: nuevo escenario, nueva paleta y su bienvenida.
       if (resultado === "continuar") window.location.href = urlJuego(mundoSiguiente.id);
@@ -644,6 +747,7 @@ async function completarFaseActual(codigo, tiempoMs) {
     feedback.mostrarResultadoFase({
       mensaje: faseData.retroalimentacion || "¡Bien hecho!",
       botones,
+      consejo,
     });
   }
 }
@@ -698,6 +802,7 @@ async function reiniciarFase() {
 }
 
 async function mostrarPista() {
+  if (faseData.sinPistas === true) return; // Nivel Jefe: sin ayudas
   const pistas = faseData.pistas || [];
   if (pistas.length === 0) {
     feedback.mostrarInicial("Esta fase no tiene pistas: confía en lo que aprendiste.");
@@ -781,6 +886,9 @@ window.addEventListener("resize", () => escenario && escenario.ajustarTamano());
 // Dónde retomar: el nivel actual si es de este mundo; si no, el primero pendiente.
 function nivelInicial(progreso) {
   const mundo = catalogo.mundos[mundoActualId];
+  // Quien llega por primera vez empieza en el Nivel 0 (tutorial de algoritmos), no en el 1.
+  const primero = mundo.niveles[0];
+  if (catalogo.niveles[primero]?.tutorial && !progreso.mundos[mundo.id]?.niveles?.[primero]?.completado && !hayProgresoReal(progreso)) return primero;
   if (mundo.niveles.includes(progreso.jugador.nivelActual)) return progreso.jugador.nivelActual;
   const pendiente = mundo.niveles.find((id) => !progreso.mundos[mundo.id]?.niveles?.[id]?.completado);
   return pendiente ?? mundo.niveles[0];
@@ -840,16 +948,26 @@ function nivelInicial(progreso) {
   let inicio = nivelInicial(progreso);
   const ordinal = Number(params.get("nivel"));
   const delMundo = catalogo.mundos[mundoActualId].niveles;
-  if (Number.isInteger(ordinal) && ordinal >= 1 && ordinal <= delMundo.length) {
-    const anteriorHecho = ordinal === 1 || progreso.mundos[mundoActualId]?.niveles?.[delMundo[ordinal - 2]]?.completado === true;
-    if (enDemo || anteriorHecho) inicio = delMundo[ordinal - 1];
+  const pedido = params.get("nivel") !== null && Number.isInteger(ordinal) ? nivelPorOrdinal(mundoActualId, ordinal) : null;
+  if (pedido !== null) {
+    if (enDemo || nivelAbierto(progreso, catalogo.mundos[mundoActualId], delMundo.indexOf(pedido))) inicio = pedido;
   }
   await irANivel(inicio);
 
   // 4) Teoría la primera vez que se entra al mundo y, después, el recorrido por la interfaz.
-  await mostrarBienvenidaMundo(mundoActualId, { usuarioId: enDemo ? "demo" : perfil.user_id });
+  const usuarioTour = enDemo ? "demo" : perfil.user_id;
+  await mostrarBienvenidaMundo(mundoActualId, { usuarioId: usuarioTour });
   if (!Tour.yaSeVio()) {
     setTimeout(() => tour.iniciar(), 500);
+  } else if (!esSandbox && PASOS_MUNDO[mundoActualId] && !tourDeMundoVisto(usuarioTour, mundoActualId)) {
+    // Primera vez en un mundo nuevo (2, 3, 4 o 5): el tour presenta su escenario.
+    const mundoDelTour = mundoActualId;
+    const tourMundo = new Tour({
+      alNecesitarPestana: (pestana) => pestanas.seleccionar(pestana, { subir: false }),
+      pasos: PASOS_MUNDO[mundoDelTour],
+      alTerminar: () => marcarTourDeMundoVisto(usuarioTour, mundoDelTour),
+    });
+    setTimeout(() => tourMundo.iniciar(), 500);
   }
 })().catch((e) => {
   console.error(e);

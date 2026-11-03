@@ -2,6 +2,26 @@
 
 Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persistencia en Supabase, perfil y panel de administrador**. No se implementan los Mundos 3-6. La documentación del Avance 1 está en `docs/README_avance1.md`.
 
+## Mundo 5, Niveles Jefe, Nivel 0 y tours (Avance 3.8)
+
+- **Funciones en el lenguaje (Unidad 5, Modularidad).** CQL acepta `def`, parámetros, `return`, `None`, variables **locales** y recursión (límite de 100 llamadas anidadas), con errores educativos (`SYN_015`-`SYN_018`, `SEM_014`-`SEM_017`, `RUN_020`-`RUN_023`). Se comparó con el Python 3 real (`test_python_compat.mjs`: 155 programas, 39 con funciones). Diferencias deliberadas: `def` solo va al margen izquierdo (no dentro de un `if`/ciclo/otro `def`) y no existen valores por omisión, `*args`, `lambda`, `global` ni `nonlocal`.
+- **Mundo 5 · Modularidad (8 niveles, ids 48-55) con Visualizador de Flujo.** Escenario `fabrica` (`js/game/escenarios/fabrica.js`): una **línea de ensamble** que reacciona a lo que hace el intérprete (ganchos `funcionDefinida`, `llamadaIniciada`, `asignacionLocal`, `print`, `llamadaTerminada`): cada `def` construye una **máquina**; cada llamada manda una **caja de materiales** con los argumentos (`[5, 3]`); la máquina se ilumina y aparecen **chips con las variables locales** (`a = 5`, `resultado = 8`); un `print` sale como **burbuja**; el `return` sale como **caja de producto terminado** (verde) o una **caja gris con `None`**. Todo se anota en `escenario.registro` (se prueba sin dibujar). Progresión: 1 *Construyendo máquinas* (definir) · 2 *Activando la producción* (llamar, RESOLVER) · 3 *Personalizando productos* (parámetros, ESCRIBIR) · 4 *El producto terminado* (`return`, DEBUG de `print` por `return`) · 5 *Información confidencial* (ámbito local, PREDECIR) · 6 *Producción en cadena* (encadenar, RESOLVER) · 7 *Reparando la fábrica* (DEBUG: falta de `return`, mal parámetro, función sin llamar) · 8 👑 *El Gran Ensamblaje* (Jefe).
+- **Nivel 8 · El Gran Ensamblaje (id 55, Jefe).** Sin pistas y con el editor en blanco: hay que definir **exactamente** `cabeza()`, `brazos()` y `piernas()` y llamarlas, cada una al menos una vez, en ese orden (la validación `ensamble` mira la primera llamada de cada una). Un **Robot1 gigante** se arma en pantalla conforme corre el código. Si falla: «El robot está incompleto. Asegúrate de definir las 3 funciones y llamarlas en el orden correcto (cabeza, brazos, piernas).»
+- **Niveles Jefe (ids 44-47).** Uno al final de cada mundo del 1 al 4, **sin botón de pistas**, editor en blanco y un solo enunciado: Mundo 1 *Laberinto ciego* (Nivel 9), Mundo 2 *La caja fuerte* (Nivel 12; 4 casos, 4 operaciones y conversiones), Mundo 3 *Torneo de cartas* (Nivel 13; blackjack con `if`/`elif`/`and`, 10 manos) y Mundo 4 *Evacuación crítica* (Nivel 13; energía limitada de 10 pisos, 5 edificios). **Un mundo se abre al completar todos sus niveles, incluido el jefe.** La pantalla de transición narrativa ahora sale al terminar el jefe.
+- **Nivel 0 · Diagramas de flujo (id 0).** Primer nivel del Mundo 1, sin editor: se hace clic en las tarjetas (`Inicio`, `Caminar 3 pasos`, `Abrir la puerta`, `Fin`…) en el orden correcto; cada tarjeta correcta se ejecuta en el pasillo y, si se equivoca, Robot1 choca y se empieza de nuevo (el intento cuenta). 3 fases de dificultad creciente. Es **tutorial**: quien ya tenía progreso no queda bloqueado y no cuenta para completar el Mundo 1.
+- **Tours de inmersión.** La primera vez que se entra a los Mundos 2, 3, 4 y 5 sale un tour que presenta el escenario (usa la misma clase `Tour`; una vez por persona y mundo).
+- **Cambios de catálogo.** Ya hay **56 niveles** (máximo 168 estrellas). Los ids **no son consecutivos** (0, 1-43, 44-47 jefes, 48-55 Mundo 5): el número que ve el estudiante dentro de su mundo es el *ordinal* (el Nivel 0 es 0), y el siguiente nivel se pregunta al catálogo en vez de sumar 1. En el panel de profesor y en el CSV los niveles se siguen identificando con el id interno; la equivalencia está en `MEJORAS_Y_GUIA_PROFESOR.md`.
+- **Pruebas nuevas/ajustadas:** `test_niveles.mjs` (56 niveles, 176 fases, jefes y Nivel 0), `test_juego_dom.mjs` (26: Nivel 0, jefe, fábrica y tours), `test_navegacion.mjs` (ordinales y siguiente nivel).
+- **Docs regeneradas:** `docs/GUIA_NIVELES_MUNDOS_1_A_5.md` (los 56 niveles; reemplaza a `..._2_A_4`) y `docs/REFERENCIA_LENGUAJE_CQL.md` (sección 6.6 Funciones).
+
+## Ajustes pedagógicos finales (Avance 3.9)
+
+- **Terminología:** el estudiante ve «Python», no «CQL» (niveles, mensajes de error, etiqueta del editor y página de inicio). `test_niveles.mjs` falla si reaparece «CQL» en un nivel.
+- **Decimal con coma (Nivel 11, fase 11.4):** el error sigue siendo el punto de partida de la depuración; ahora lo explica un error propio, `SYN_019` («En Python los decimales se escriben con punto, no con coma»).
+- **Fases LIBRE reales:** solo validan «ejecutado» y no exigen objetivos; 7.3 y 8.3 pasaron a RESOLVER.
+- **Comprobación tras EXPLORAR:** en los Mundos 1 y 2, un EXPLORAR de «solo ejecutar» va seguido de PREDECIR, MODIFICAR o DEBUG (nuevas fases 1.4, 3.5, 6.4 y 16.5, colocadas tras su EXPLORAR sin renumerar las demás para no romper el progreso guardado). Los niveles pueden tener de 3 a 5 fases.
+- **Reto de eficiencia (Niveles Jefe 1 a 4):** la propiedad `max_lineas_recomendadas` del nivel (el largo de su solución de referencia) activa un mensaje motivacional si el código que pasó es más largo (`js/game/eficiencia.js`, mostrado en el panel y en la pantalla de transición). No quita estrellas ni bloquea el avance; las líneas de comentario cuentan.
+
 ## Dashboard de la tesis: gráficas y filtro por grupo (Avance 3.7)
 
 La pestaña **Resumen** del panel de administración ahora es un dashboard, y un **filtro global por grupo** arriba de todo controla qué datos se ven.
@@ -99,11 +119,12 @@ Archivos: `css/responsive.css` (se carga al final en todas las páginas), `js/ui
 
 | Mundo | Escenario (`js/game/escenarios/`) | Qué se aprende | Niveles |
 |---|---|---|---|
-| 1 · Despertar | `laboratorio.js` (cuadrícula con Robot1, sin cambios) | instrucciones, print, errores | 1-8 |
-| 2 · Memoria | `datos.js` — Centro de Recuperación: chips de memoria, cables de datos, terminal. **Sin robot** | variables, tipos, operadores, entrada | 9-19 |
-| 3 · Lógica | `cartas.js` — mesa de cartas: las cartas se voltean, se iluminan en verde/rojo y cada `if` se juzga con VERDADERO/FALSO | `if`, `elif`, `else`, comparadores, `and`/`or`/`not`, anidados | 20-31 (12) |
-| 4 · Automatización | `elevador.js` — edificio de 5 pisos con elevador, energía y letrero de repeticiones | `while`, `for`/`range`, contadores, capacidad | 32-43 (12) |
-| 5 · Programador, 6 · Proyecto | — | tarjetas "Próximamente" en el mapa | — |
+| 1 · Despertar | `laboratorio.js` (cuadrícula con Robot1) y `diagrama.js` (Nivel 0: pasillo con puerta) | algoritmo y diagrama de flujo, instrucciones, print, errores, input | 0 (tutorial), 1-8 y jefe 44 |
+| 2 · Memoria | `datos.js` — Centro de Recuperación: chips de memoria, cables de datos, terminal. **Sin robot** | variables, tipos, operadores, input y conversiones | 9-19 y jefe 45 |
+| 3 · Lógica | `cartas.js` — mesa de cartas: las cartas se voltean, se iluminan en verde/rojo y cada `if` se juzga con VERDADERO/FALSO | `if`, `elif`, `else`, comparadores, `and`/`or`/`not`, anidados | 20-31 (12) y jefe 46 |
+| 4 · Automatización | `elevador.js` — edificio de 5 pisos con elevador, energía y letrero de repeticiones | `while`, `for`/`range`, contadores, capacidad | 32-43 (12) y jefe 47 |
+| 5 · Modularidad | `fabrica.js` — línea de ensamble: cada `def` es una máquina; viaja la caja con los argumentos, aparecen las variables locales y sale el `return` | funciones, parámetros, `return`, variables locales, depuración | 48-55 (8) |
+| 6 · Proyecto | — | tarjeta "Próximamente" en el mapa | — |
 
 **Los Mundos 3 y 4 tienen 12 niveles en tres bloques** (lo verifica `npm test`): **Aprender** (1-4: fases Explorar, Predecir y Modificar), **Practicar** (5-8: mezclan DEBUG —incluidos bucles infinitos y errores de sangría— y Escribir) y **Dominar** (9-12: Resolver y Libre; los niveles 10, 11 y 12 prueban el programa en 4 a 8 casos distintos).
 
@@ -117,7 +138,7 @@ Archivos: `css/responsive.css` (se carga al final en todas las páginas), `js/ui
    (Los alumnos que no pasaron del Mundo 1 no se ven afectados; el historial de `ejecuciones` se conserva.)
 
 ### Cómo probar cada cosa
-- **Mapa y desbloqueo:** un mundo se abre al completar TODOS los niveles del anterior; el 1 siempre está abierto. El estado se indica con icono y texto (▶ Disponible, ✔ Completado, 🔒 Bloqueado/Próximamente), no solo con color. Con el **Modo Demo** del panel de admin (`mundos.html?demo=true`) están todos abiertos.
+- **Mapa y desbloqueo:** un mundo se abre al completar TODOS los niveles del anterior **incluido su Nivel Jefe** (el Nivel 0 es tutorial y no cuenta); el 1 siempre está abierto. El estado se indica con icono y texto (▶ Disponible, ✔ Completado, 🔒 Bloqueado/Próximamente), no solo con color. Con el **Modo Demo** del panel de admin (`mundos.html?demo=true`) están todos abiertos.
 - **Teoría:** al entrar por primera vez a un mundo aparece su bienvenida (se recuerda por usuario y mundo en el navegador). El botón **Conceptos** (juego y mapa) abre el glosario con ilustraciones: variable, algoritmo, operadores, condicional, comparadores/lógica y ciclo.
 - **Mundo 3:** escribe `if numero > 21:` + `print("Bust")` en el nivel 1. Tu regla se prueba en **4 mesas**; elige la que quieres ver con los botones de arriba del escenario. Un `print("Bust")` "a ciegas" NO pasa y el juego dice qué mesa falló y por qué.
 - **Conceptos:** `conceptos.html` (también el botón **Conceptos** del juego y del menú) explica variables, algoritmo, operadores, condicionales, comparadores y ciclos con dibujos y ejemplos; no necesita sesión.
@@ -131,7 +152,7 @@ Archivos: `css/responsive.css` (se carga al final en todas las páginas), `js/ui
 - **"Casos" para validar lógica y ciclos:** una fase puede tener varias mesas/edificios (`casos` en el JSON). El programa se ejecuta con animación en el caso visible y en silencio en los demás; la fase solo se supera si pasa **todos**. Así no se pueden "adivinar" las respuestas. La lógica vive en `js/game/evaluacion.js` y la usan juego y pruebas.
 - **Variables de la mesa:** `carta1`, `carta2`…, `total` y, con `mostrarColor`, `color1`, `color2`… (`"roja"`/`"negra"`). En el nivel 20 el total también se llama `numero`, como pedía la especificación.
 - **Numeración:** dentro de un mundo los niveles se numeran 1..N (internamente siguen siendo 1..35). El perfil y el panel de admin siguen mostrando el id global.
-- **Desbloqueo de mundos:** se abre al completar TODOS los niveles del anterior (la especificación decía "mundo_id ≤ mundo_actual"; en juego normal equivale, pero esta regla tampoco se salta con datos viejos). `juego.html?mundo=X&nivel=N` abre el nivel N de ese mundo si ya está desbloqueado.
+- **Desbloqueo de mundos:** se abre al completar TODOS los niveles del anterior, jefe incluido (la especificación decía "mundo_id ≤ mundo_actual"; en juego normal equivale, pero esta regla tampoco se salta con datos viejos). `juego.html?mundo=X&nivel=N` abre el nivel N de ese mundo si ya está desbloqueado.
 - **`mesa.poner_carta(valor, color)` y `mesa.voltear()`** existen (color `"roja"` o `"negra"`, máximo 6 cartas) pero son **visuales**: no cambian `carta1`, `total` ni el resto de variables, que salen de la mano de cada mesa. Se usan en las fases Libres.
 - **El motor sigue siendo el mismo:** en vez de ramificar `ejecutor.js` por mundo, cada mundo es un escenario con la misma interfaz (`escenarios/index.js` elige cuál según `escenario.tipo` del JSON del nivel).
 - **Ilustraciones del mapa:** son SVG propios dibujados en código (no hay imágenes externas); cada mundo tiene una composición distinta.
@@ -142,14 +163,14 @@ Archivos: `css/responsive.css` (se carga al final en todas las páginas), `js/ui
 `docs/REFERENCIA_LENGUAJE_CQL.md` documenta todo CQL: lexemas, los 35 tokens, gramática, tipos, operadores y precedencia, sentencias, objetos de cada mundo (`robot1`, `mesa`, `elevador`), qué se desbloquea en cada nivel, el catálogo de 48 errores y lo que el lenguaje no tiene. Las tablas de tokens, errores y desbloqueos se generan desde el código: `node herramientas/generar_referencia_cql.mjs`.
 
 ### Guía para facilitar
-`docs/GUIA_NIVELES_MUNDOS_2_A_4.md` explica, nivel por nivel y fase por fase, qué pide cada una y cómo se pasa (sin código; las soluciones están escondidas como spoiler). Se regenera con `python3 herramientas/generar_guia.py`.
+`docs/GUIA_NIVELES_MUNDOS_1_A_5.md` explica, nivel por nivel y fase por fase, qué pide cada una y cómo se pasa (sin código; las soluciones están escondidas como spoiler). Se regenera con `python3 herramientas/generar_guia.py`.
 
 ### Pruebas (`npm test`)
-`test_cql.mjs` (lenguaje y escenarios: 46), `test_python_compat.mjs` (116 programas comparados con el Python real), `test_niveles.mjs` (137 fases de 43 niveles con su solución de referencia + 64 soluciones tramposas o rotas que deben ser rechazadas, y la estructura por bloques), `test_navegacion.mjs` (desbloqueo, catálogo y glosario), `test_csv.mjs` (exportación), `test_persistencia.mjs`, `test_editor.mjs` y `test_juego_dom.mjs` (21 pruebas), que abre `juego.html` real en jsdom con un Supabase simulado y juega los 4 mundos, la transición, el parámetro `?nivel`, el Laboratorio Libre y el modo demo.
+`test_cql.mjs` (lenguaje y escenarios: 60), `test_python_compat.mjs` (155 programas comparados con el Python real), `test_niveles.mjs` (176 fases de 56 niveles con su solución de referencia + 116 soluciones tramposas o rotas que deben ser rechazadas, y la estructura por bloques), `test_fabrica.mjs` (visualizador de flujo del Mundo 5: eventos en orden, dibujo en todos los estados y validación del jefe), `test_navegacion.mjs` (desbloqueo, catálogo y glosario), `test_csv.mjs` (exportación), `test_persistencia.mjs`, `test_editor.mjs` y `test_juego_dom.mjs` (31 pruebas), que abre `juego.html` real en jsdom con un Supabase simulado y juega los 5 mundos, el Nivel 0, los jefes, los tours, la transición, el parámetro `?nivel`, el Laboratorio Libre y el modo demo.
 Los niveles de los Mundos 2-4 se generan con `python3 herramientas/generar_niveles.py` (edita ahí y vuelve a correr; luego `npm test`).
 
 ### Para el Avance 4
-Mundos 5 (depuración) y 6 (proyecto): un escenario nuevo en `js/game/escenarios/` + una entrada en `js/game/escenarios/index.js`, su paleta en `js/game/paletas.js`, niveles en `levels/mundo5/`, y quitar el "Próximamente" en `js/game/mundosInfo.js`/`landing.js`.
+Mundo 6 (proyecto): un escenario nuevo en `js/game/escenarios/` + una entrada en `js/game/escenarios/index.js`, su paleta en `js/game/paletas.js`, niveles en `levels/mundo6/` (agrégalos a `herramientas/generar_niveles.py`), y añadirlo a `MUNDOS_ACTIVOS` en `js/landing.js`.
 
 ---
 
@@ -321,7 +342,7 @@ Entra con el usuario admin (redirige a `admin.html`). Prueba: Resumen, filtros d
 - **Valores de `ejecuciones.resultado`**: `exito`, `objetivo_no_alcanzado` y `error_lexico|error_sintaxis|error_semantico|error_ejecucion|error_inesperado` (por prefijo del código CQL). Una predicción incorrecta ahora también se registra. Si tu tabla tiene un CHECK sobre `resultado`, ajusta `resultadoDeError()` en `js/persistence/progreso.js`.
 - **Sincronización**: lecturas desde memoria; escrituras en una cola persistente (localStorage por usuario) que se envía en segundo plano y se reintenta al volver la red. El progreso de Avance 1 guardado en `codequest:progreso:v2` **no se importa** a las cuentas.
 - **Profesor**: aterriza en `perfil.html`; no hay relación profesor–estudiantes en el esquema, así que no tiene panel propio.
-- Los Mundos 3-6 de la landing aparecen como "Próximamente" sin nombre (edítalos en `js/landing.js`). Completa institución y personas en la sección "Sobre el proyecto" de `index.html`.
+- La landing muestra los Mundos 1 a 5 como «Disponible» y el 6 como «Próximamente» (edítalo en `MUNDOS_ACTIVOS` de `js/landing.js`). Completa institución y personas en la sección "Sobre el proyecto" de `index.html`.
 
 ## Supuestos sobre tus tablas (verifícalos)
 

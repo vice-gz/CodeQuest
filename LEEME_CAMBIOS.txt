@@ -1,22 +1,15 @@
-CodeQuest — Dashboard del administrador (gráficas con Chart.js + filtro por grupo)
+CAMBIOS · Ajustes pedagógicos finales (Avance 3.9)
+Copia cada archivo en la MISMA ruta de tu proyecto (sobrescribe).
 
-Cómo aplicarlo
-  1. Copia estos archivos sobre los de tu proyecto, respetando las carpetas (reemplazan a los que ya tienes).
-  2. En Supabase -> SQL Editor ejecuta  supabase/avance3_3.sql  (es idempotente).
-     Sin ese SQL el panel funciona pero SIN el filtro por grupo (y avisa cómo instalarlo).
-  3. Abre admin.html con conexión a internet (Chart.js se descarga de un CDN).
-
-Archivos
-  admin.html                      filtro «Ver datos de», 4 KPIs, 3 gráficas y botón de exportar
-  css/admin.css                   estilos del filtro, KPIs y gráficas
-  js/admin.js                     filtro global, dashboard y exportación del grupo seleccionado
-  js/ui/dashboardDatos.js         (nuevo) lógica de filtros, KPIs y datos de las gráficas
-  js/ui/dashboardGraficas.js      (nuevo) las 3 gráficas con Chart.js
-  supabase/avance3_3.sql          (nuevo) admin_grupos(), admin_inscripciones(), admin_dashboard_datos()
-  test_dashboard_admin.mjs        (nuevo) 16 pruebas del panel
-  test_dashboard_sql.mjs          (nuevo) prueba las funciones SQL en un PostgreSQL real temporal
-  package.json                    el script "test" incluye las pruebas nuevas
-  README.md                       sección «Dashboard de la tesis»
-  herramientas/responsive/*.mjs   solo para la revisión de pantallas en navegador (opcional)
-
-Para comprobar:  npm test      (o solo: node test_dashboard_admin.mjs)
+1. Decimal con coma (nivel 11) y «CQL» → «Python»
+   herramientas/generar_niveles.py, levels/mundo2/level11.json, levels/mundo3/level24.json,
+   js/interpreter/errors.js, js/interpreter/parser.js (error nuevo SYN_019), js/ui/erroresCatalogo.js,
+   juego.html (etiqueta del editor), index.html (texto de inicio)
+2. Fases LIBRE reales: levels/mundo1/level7.json y level8.json (7.3 y 8.3 pasan a RESOLVER)
+3. Pregunta PREDECIR tras EXPLORAR: levels/mundo1/level1.json, level3.json, level6.json, levels/mundo2/level16.json
+4. Reto de eficiencia: levels/mundo1/level44.json, levels/mundo2/level45.json, levels/mundo3/level46.json,
+   levels/mundo4/level47.json (max_lineas_recomendadas), js/game/eficiencia.js (NUEVO), js/juego.js,
+   js/ui/feedback.js, js/ui/transicionMundo.js, css/styles.css, css/panels.css
+Pruebas actualizadas: test_niveles.mjs, test_cql.mjs, test_persistencia.mjs, test_juego_dom.mjs
+Docs regeneradas: docs/REFERENCIA_LENGUAJE_CQL.md, docs/GUIA_NIVELES_MUNDOS_1_A_5.md, README.md
+Después de copiar:  npm test

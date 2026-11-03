@@ -38,7 +38,7 @@
       "id": "11.2",
       "tipo": "PREDECIR",
       "titulo": "Unir textos",
-      "enunciado": "Concepto nuevo: en CQL, sumar dos textos los une en uno solo (se llama concatenar). Aquí a y b son textos porque están entre comillas. ¿Qué muestra este programa?",
+      "enunciado": "Concepto nuevo: en Python, sumar dos textos los une en uno solo (se llama concatenar). Aquí a y b son textos porque están entre comillas. ¿Qué muestra este programa?",
       "codigoInicial": "a = \"5\"\nb = \"3\"\nprint(a + b)",
       "instruccionesPermitidas": [
         "asignacion",
@@ -105,7 +105,7 @@
       "id": "11.4",
       "tipo": "DEBUG",
       "titulo": "El decimal con coma",
-      "enunciado": "En CQL los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 2.5 y se muestre.",
+      "enunciado": "En Python los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 2.5 y se muestre.",
       "codigoInicial": "precio = 2,5\nprint(precio)",
       "solucionReferencia": "precio = 2.5\nprint(precio)",
       "instruccionesPermitidas": [
@@ -130,10 +130,11 @@
           }
         ]
       },
-      "retroalimentacion": "Los decimales usan punto: 2.5.",
+      "retroalimentacion": "Los decimales usan punto: 2.5. En Python los decimales se escriben con punto, no con coma.",
       "pistas": [
         "Cambia la coma por un punto."
       ],
+      "mensajeNoLogrado": "En Python los decimales se escriben con punto, no con coma. precio debe valer 2.5 y mostrarse.",
       "solucionesIncorrectas": [
         "precio = 2,5\nprint(precio)"
       ]
