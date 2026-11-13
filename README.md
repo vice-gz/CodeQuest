@@ -87,7 +87,7 @@ Los cuatro niveles del Mundo 6 ya no se parecen: cada uno tiene su propia escena
 - **Dibujo más barato:** los fondos estáticos de los Mundos 2 y 6 se pintan una vez en una capa en caché (`capaCacheada` en `dibujo.js`); los resplandores (`shadowBlur`) se omiten en calidad baja (`conBrillo`, `brilloCalidad`).
 - **CSS:** se quitó `backdrop-filter` de `.panel`, `.boton-secundario` y `.encabezado-codigo` (fondos opacos: no se veía nada, pero se recalculaba en cada cuadro del canvas). En `.encabezado-codigo` además hacía que el botón flotante «Ejecutar» del celular no quedara al pie (un `backdrop-filter` vuelve contenedor a sus hijos `position: fixed`). Regla: **no uses `backdrop-filter`, `transform` ni `filter` en los ancestros del botón flotante**.
 - **Página de inicio:** barra y tarjetas de mundos ya no se desbordan en 768 px y 320 px.
-- **Limpieza:** `hero-robot1.jpg` (copia idéntica sin uso), `commands.js` (sin referencias), documentos viejos (`GUIA_NIVELES_MUNDOS_2_A_4/2_A_5`, `README_avance1`, `docs/README`) y `LEEME_CAMBIOS.txt`; la imagen de Nix pasó de 447 KB (JPG) a 19 KB (WebP 640 px). El `.env` real no se incluye: copia `.env.example` a `.env`.
+- **Limpieza:** `hero-robot1.jpg` (copia idéntica sin uso), `commands.js` (sin referencias), documentos viejos (`GUIA_NIVELES_MUNDOS_2_A_4/2_A_5`, `README_avance1`, `docs/README`) y `LEEME_CAMBIOS.txt`; la imagen de Nix pasó de 447 KB (JPG) a 19 KB (WebP 640 px). El `.env` real no se incluye: créalo como se explica en «Configurar `.env`».
 - **Medir:** `node herramientas/medir_rendimiento.mjs ETIQUETA 2,5,6` (con `dist/` compilado contra el servidor simulado) cuenta dibujos del canvas por segundo y CPU, en reposo y tras 6 reinicios de fase (si los bucles se acumularan, los dibujos subirían). **Pruebas:** `test_rendimiento.mjs`.
 - Tras extraer el proyecto de un `.rar`/`.zip` que no conserve permisos: `chmod -R u+x node_modules/.bin`.
 
@@ -373,8 +373,13 @@ npm install
 
 ## 2. Configurar `.env`
 
+Crea un archivo llamado `.env` en la raíz del proyecto (junto a `package.json`) con estas líneas:
+
 ```bash
-cp .env.example .env
+VITE_SUPABASE_URL=https://TU-PROYECTO.supabase.co
+VITE_SUPABASE_ANON_KEY=tu_clave_anon_o_publishable
+# Opcional: si lo rellenas, el registro solo acepta correos de ese dominio (déjalo vacío para aceptar cualquiera)
+VITE_DOMINIO_INSTITUCIONAL=
 ```
 Rellena `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (Supabase → Project Settings → API). **Solo la clave anon/publishable; nunca la `service_role`.** `.env` está en `.gitignore`.
 
