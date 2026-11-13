@@ -24,12 +24,12 @@ const prueba = (nombre, fn) => {
   console.log(`  ✓ ${nombre}`);
 };
 
-prueba("catálogo: 5 mundos con 10, 12, 13, 13 y 8 niveles (56 en total, 168 estrellas)", () => {
+prueba("catálogo: 5 mundos con 21, 13, 13, 8 y 4 niveles (59 en total, 177 estrellas)", () => {
   assert.deepEqual(Object.keys(catalogo.mundos), ["1", "2", "3", "4", "5"]);
-  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.niveles.length), [10, 12, 13, 13, 8]);
-  assert.equal(catalogo.totalNiveles, 56);
-  assert.equal(catalogo.maxEstrellas, 168);
-  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.nombre), ["Despertar", "Memoria", "Lógica", "Automatización", "Modularidad"]);
+  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.niveles.length), [21, 13, 13, 8, 4]);
+  assert.equal(catalogo.totalNiveles, 59);
+  assert.equal(catalogo.maxEstrellas, 177);
+  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.nombre), ["Fundamentos y Datos", "Lógica", "Automatización", "Modularidad", "Proyecto"]);
 });
 
 prueba("desbloqueo: solo el Mundo 1 está abierto al empezar", () => {
@@ -65,39 +65,47 @@ prueba("el mundo se completa con todos sus niveles REQUERIDOS (el Nivel 0 es tut
   const todos = catalogo.mundos[1].niveles.flatMap(filasDeNivel);
   const r = calcularResumen(todos, catalogo);
   assert.equal(r.mundos[1].completado, true);
-  assert.equal(r.mundos[1].estrellas, 30, "10 niveles × 3 estrellas (incluye el Nivel 0 y el jefe)");
+  assert.equal(r.mundos[1].estrellas, 63, "21 niveles × 3 estrellas (incluye el Nivel 0 y los dos jefes)");
   assert.equal(r.mundos[2].completado, false);
   // quien ya jugaba antes de que existiera el Nivel 0 (le falta solo ese) NO queda bloqueado
   const sinNivel0 = catalogo.mundos[1].niveles.filter((id) => id !== 0).flatMap(filasDeNivel);
   assert.equal(calcularResumen(sinNivel0, catalogo).mundos[1].completado, true);
-  // pero sin el jefe el mundo no está completo
-  const sinJefe = catalogo.mundos[1].niveles.filter((id) => id !== 44).flatMap(filasDeNivel);
-  assert.equal(calcularResumen(sinJefe, catalogo).mundos[1].completado, false);
+  // pero sin cualquiera de los dos jefes el mundo no está completo
+  for (const jefe of [44, 45]) {
+    const sinJefe = catalogo.mundos[1].niveles.filter((id) => id !== jefe).flatMap(filasDeNivel);
+    assert.equal(calcularResumen(sinJefe, catalogo).mundos[1].completado, false, `sin el jefe ${jefe}`);
+  }
   assert.equal(calcularResumen(todos.slice(0, -1), catalogo).mundos[1].completado, false);
 });
 
-prueba("ordinales: el Nivel 0 es 0, los jefes son 9, 12, 13 y 13, y el siguiente nivel no depende de sumar 1 al id", () => {
+prueba("ordinales: el Nivel 0 es 0, los jefes son 14, 20, 13 y 13, y el siguiente nivel no depende de sumar 1 al id", () => {
   assert.equal(ordinalDeNivel(catalogo, 0), 0);
   assert.equal(ordinalDeNivel(catalogo, 1), 1);
-  assert.deepEqual([44, 45, 46, 47].map((id) => ordinalDeNivel(catalogo, id)), [9, 12, 13, 13]);
+  assert.deepEqual([44, 45, 46, 47].map((id) => ordinalDeNivel(catalogo, id)), [14, 20, 13, 13]);
+  assert.deepEqual([14, 18].map((id) => ordinalDeNivel(catalogo, id)), [15, 19], "después del jefe intermedio, los ids van un número detrás del ordinal");
   assert.deepEqual([48, 55].map((id) => ordinalDeNivel(catalogo, id)), [1, 8]);
   assert.equal(nivelPorOrdinal(catalogo, 1, 0), 0);
-  assert.equal(nivelPorOrdinal(catalogo, 1, 9), 44);
+  assert.equal(nivelPorOrdinal(catalogo, 1, 14), 44);
+  assert.equal(nivelPorOrdinal(catalogo, 1, 20), 45);
   assert.equal(siguienteNivelId(catalogo, 0), 1);
-  assert.equal(siguienteNivelId(catalogo, 8), 44, "después del nivel 8 viene el jefe, no el nivel 9 (que es del Mundo 2)");
-  assert.equal(siguienteNivelId(catalogo, 44), 9, "el jefe del Mundo 1 lleva al primer nivel del Mundo 2");
-  assert.equal(siguienteNivelId(catalogo, 47), 48, "el jefe del Mundo 4 lleva al Mundo 5");
-  assert.equal(siguienteNivelId(catalogo, 55), null);
+  assert.equal(siguienteNivelId(catalogo, 13), 44, "después del Nivel 13 viene el jefe intermedio, no el id 14");
+  assert.equal(siguienteNivelId(catalogo, 44), 14, "el jefe intermedio lleva al Pozo (id 14, Nivel 15)");
+  assert.equal(siguienteNivelId(catalogo, 18), 45, "El Viaje lleva a La Caja Fuerte");
+  assert.equal(siguienteNivelId(catalogo, 45), 20, "el jefe del Mundo 1 lleva al primer nivel del Mundo 2 (Lógica)");
+  assert.equal(siguienteNivelId(catalogo, 47), 48, "el jefe del Mundo 3 lleva al Mundo 4");
+  assert.equal(siguienteNivelId(catalogo, 55), 56, "el jefe del Mundo 4 lleva al Mundo 5");
+  assert.equal(siguienteNivelId(catalogo, 59), null, "el Proyecto libre es el último nivel de CodeQuest");
+  assert.deepEqual([56, 59].map((id) => ordinalDeNivel(catalogo, id)), [1, 4]);
 });
 
-prueba("los 6 mundos tienen datos, paleta e ilustración propia (y distintas entre sí)", () => {
-  assert.equal(MUNDOS_INFO.length, 6);
+prueba("los 5 mundos tienen datos, paleta e ilustración propia (y distintas entre sí)", () => {
+  assert.equal(MUNDOS_INFO.length, 5);
   for (const m of MUNDOS_INFO) {
     assert.ok(PALETAS[m.id] && ILUSTRACIONES[m.id], `faltan paleta o ilustración del mundo ${m.id}`);
     assert.ok(m.aprenderas.length >= 3 && m.resumen.length > 30);
   }
-  assert.equal(new Set(Object.values(ILUSTRACIONES)).size, 6);
-  assert.equal(new Set(Object.values(PALETAS).map((p) => p.acento)).size, 6);
+  assert.equal(new Set(Object.values(ILUSTRACIONES)).size, 5);
+  assert.equal(new Set(Object.values(PALETAS).map((p) => p.acento)).size, 5);
 });
 
 prueba("teoría: bienvenida para cada mundo jugable", () => {
@@ -126,13 +134,13 @@ prueba("glosario: cada concepto tiene título, definición, analogía y ejemplo"
 
 prueba("glosario: solo se muestran los conceptos de los mundos ya vistos", () => {
   const ids = (m) => conceptosHasta(m).map((c) => c.id);
-  assert.ok(ids(1).includes("instruccion") && ids(1).includes("print"));
-  for (const futuro of ["variable", "condicional", "else", "comparadores", "while", "for_range"]) assert.ok(!ids(1).includes(futuro), `${futuro} no debe verse en el Mundo 1`);
-  assert.ok(ids(2).includes("variable") && !ids(2).includes("condicional"));
-  assert.ok(ids(3).includes("condicional") && ids(3).includes("else") && ids(3).includes("comparadores") && ids(3).includes("variable"));
-  assert.ok(!ids(3).includes("while"));
-  assert.ok(!ids(4).includes("funcion"), "las funciones no se ven antes del Mundo 5");
-  assert.ok(["funcion", "parametro", "retorno", "ambito"].every((id) => ids(5).includes(id)));
+  // Mundo 1 fusionado: robot, variables, operadores y las primeras decisiones y ciclos (semáforo, boleta, pozo)
+  assert.ok(["instruccion", "print", "variable", "asignacion_compuesta", "intercambio", "redondeo", "condicional", "comparadores", "logicos", "while", "contador"].every((id) => ids(1).includes(id)));
+  for (const futuro of ["else", "elif", "for_range", "funcion"]) assert.ok(!ids(1).includes(futuro), `${futuro} no debe verse en el Mundo 1`);
+  assert.ok(ids(2).includes("else") && ids(2).includes("elif") && !ids(2).includes("for_range"));
+  assert.ok(ids(3).includes("for_range"));
+  assert.ok(!ids(3).includes("funcion"), "las funciones no se ven antes del Mundo 4");
+  assert.ok(["funcion", "parametro", "retorno", "ambito"].every((id) => ids(4).includes(id)));
   assert.equal(ids(5).length, CONCEPTOS.length);
   assert.ok(conceptosDelMundo(3).every((c) => c.mundo === 3));
 });
@@ -144,7 +152,7 @@ prueba("glosario: el buscador ignora mayúsculas y acentos y exige todas las pal
   assert.ok(buscarConceptos(todos, "sangría").some((c) => c.id === "sangria"));
   assert.ok(buscarConceptos(todos, "sangria").some((c) => c.id === "sangria"), "sin acento también");
   assert.deepEqual(buscarConceptos(todos, "bucle infinito").map((c) => c.id), ["bucle_infinito"]);
-  assert.equal(buscarConceptos(conceptosHasta(1), "variable").length, 0, "en el Mundo 1 no se encuentra 'variable'");
+  assert.equal(buscarConceptos(conceptosHasta(1), "return").length, 0, "en el Mundo 1 no se encuentra 'return'");
   assert.equal(buscarConceptos(todos, "").length, todos.length);
   assert.equal(buscarConceptos(todos, "zzzzqq").length, 0);
 });

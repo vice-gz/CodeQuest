@@ -2,6 +2,7 @@
   "id": 3,
   "mundo": 1,
   "nombre": "Haz que me entienda",
+  "ordinal": 3,
   "concepto": "instrucciones disponibles, llamadas a métodos, sintaxis",
   "concepto_evaluado": "llamadas_a_metodos",
   "narrativa": "Robot1 revela el resto de instrucciones que entiende: hablar y girar.",
@@ -137,7 +138,8 @@
       "pistas": [
         "Primero muévete en horizontal.",
         "Gira al \"sur\" para bajar y avanza 1."
-      ]
+      ],
+      "max_lineas_recomendadas": 3
     }
   ],
   "escenario": {

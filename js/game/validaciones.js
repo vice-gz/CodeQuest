@@ -10,9 +10,10 @@
 //   output_con_variable               output exacto + variableRequerida usada en el código
 //   output_lineas                     las líneas de print son EXACTAMENTE `valores`, en orden
 //   variables                         memoria final: { x: 10, nombre: "Ana" }
+//   min_lineas                        el programa tiene al menos `minimo` líneas de código (sin vacías ni comentarios)
 //   todos                             todas las `condiciones` (lista de validaciones)
 // Cualquier validación acepta además `requiere`:
-//   { construcciones: ["if","else"], prohibe: ["print"], operador: "+", operadores: ["/","%"], variable: "total" }
+//   { construcciones: ["if","else"], prohibe: ["print"], operador: "+", operadores: ["/","%"], variable: "total", algunaVariable: true }
 // Cada escenario añade sus propios tipos en escenario.evaluar() (posición, objetivos,
 // cartas, elevador...). Un tipo que nadie conoce cuenta como NO cumplido.
 
@@ -23,6 +24,13 @@ export function codigoSinTextos(codigo) {
     .replace(/'[^']*'/g, "''");
 }
 
+/** Líneas de programa: no vacías y que no sean solo un comentario. */
+export function contarLineasDePrograma(codigo) {
+  return String(codigo ?? "")
+    .split("\n")
+    .filter((l) => l.trim() !== "" && !l.trim().startsWith("#")).length;
+}
+
 export function crearAyudas({ salidas = [], memoria = {}, codigo = "" }) {
   const fuente = codigoSinTextos(codigo);
   const lineasPrint = salidas.filter((s) => s.tipo === "PRINT").map((s) => String(s.valor));
@@ -31,7 +39,10 @@ export function crearAyudas({ salidas = [], memoria = {}, codigo = "" }) {
     lineasPrint,
     inc: (v) => salidas.some((s) => String(s.valor).includes(String(v))),
     exact: (v) => salidas.some((s) => String(s.valor) === String(v)),
-    tieneVar: (n) => new RegExp(`\\b${n}\\s*=(?!=)`).test(fuente),
+    // «x = …» y también la asignación compuesta «x += …» (-=, *=, /=, //=, %=)
+    tieneAlgunaVariable: () => /(^|\n)[ \t]*[A-Za-z_]\w*[ \t]*(?:\/\/|[-+*/%])?=(?!=)/.test(fuente),
+    lineasDeCodigo: contarLineasDePrograma(codigo),
+    tieneVar: (n) => new RegExp(`\\b${n}\\s*(?:\\/\\/|[-+*/%])?=(?!=)`).test(fuente),
     tiene: (palabra) => (/^[A-Za-z_]+$/.test(palabra) ? new RegExp(`\\b${palabra}\\b`).test(fuente) : fuente.includes(palabra)),
     memoria,
   };
@@ -44,6 +55,7 @@ function cumpleRequisitos(req, h) {
   if (req.operador && !h.fuente.includes(req.operador)) return false;
   if ((req.operadores || []).some((o) => !h.fuente.includes(o))) return false;
   if (req.variable && !h.tieneVar(req.variable)) return false;
+  if (req.algunaVariable && !h.tieneAlgunaVariable()) return false;
   return true;
 }
 
@@ -74,6 +86,8 @@ export function evaluarValidacion(validacion, escenario, ctx) {
     }
     case "variables":
       return Object.entries(v.variables || {}).every(([nombre, valor]) => h.memoria[nombre] === valor);
+    case "min_lineas":
+      return h.lineasDeCodigo >= (v.minimo ?? 1);
     case "todos":
       return (v.condiciones || []).every((c) => evaluarValidacion(c, escenario, ctx));
     default: {

@@ -1,0 +1,208 @@
+{
+  "id": 9,
+  "mundo": 1,
+  "nombre": "La salida",
+  "concepto": "robot, obstáculos y salida",
+  "concepto_evaluado": "secuencia_y_obstaculos",
+  "narrativa": "Robot1 encontró la puerta, pero el pasillo se volvió un laberinto.",
+  "ensena": [
+    "robot1.recoger()"
+  ],
+  "fases": [
+    {
+      "id": "9.1",
+      "tipo": "RESOLVER",
+      "titulo": "Recupera la tarjeta",
+      "enunciado": "Instrucción nueva: robot1.recoger() levanta el objeto de la casilla donde está Robot1. La tarjeta morada está en (2,0): ve hasta ella y recógela.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(2)\nrobot1.recoger()",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "recoger"
+      ],
+      "validacion": {
+        "tipo": "posicion",
+        "valorEsperado": [
+          2,
+          0
+        ]
+      },
+      "retroalimentacion": "Tarjeta asegurada. Primero llegar, después recoger: el orden importa.",
+      "pistas": [
+        "Avanza hasta la casilla morada.",
+        "Después, en otra línea, robot1.recoger()."
+      ],
+      "escenario": {
+        "objetos": [
+          {
+            "posicion": [
+              2,
+              0
+            ],
+            "tipo": "tarjeta"
+          }
+        ],
+        "objetivoPosicion": [
+          2,
+          0
+        ],
+        "obstaculos": []
+      },
+      "max_lineas_recomendadas": 2
+    },
+    {
+      "id": "9.2",
+      "tipo": "PREDECIR",
+      "titulo": "Lee el laberinto",
+      "enunciado": "Robot1 está en (0,0) mirando al este y hay un muro justo en (1,0). ¿Qué instrucción debe ir PRIMERO?",
+      "codigoInicial": "# muro en (1,0)\n# Robot1 en (0,0) mirando al este",
+      "instruccionesPermitidas": [],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar"
+      ],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "robot1.avanzar(1), porque la meta está a la derecha"
+        },
+        {
+          "id": "b",
+          "texto": "robot1.girar(\"sur\"), porque el este está bloqueado"
+        },
+        {
+          "id": "c",
+          "texto": "robot1.recoger(), para quitar el muro"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Exacto: antes de moverte hay que mirar dónde están los muros.",
+      "pistas": [
+        "Si la casilla de al lado tiene muro, avanzar hacia allá es chocar."
+      ]
+    },
+    {
+      "id": "9.3",
+      "tipo": "RESOLVER",
+      "titulo": "Escapa del laberinto",
+      "enunciado": "La salida está en (5,3). Encuentra una ruta entre los muros y anuncia tu escape con print(\"Libre\").",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(3)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)\nprint(\"Libre\")",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "girar",
+        "retroceder",
+        "hablar",
+        "recoger"
+      ],
+      "validacion": {
+        "tipo": "estado",
+        "posicionEsperada": [
+          5,
+          3
+        ],
+        "outputEsperado": "Libre"
+      },
+      "retroalimentacion": "¡Robot1 escapó! Secuencia, giros, obstáculos y salida en un solo programa.",
+      "pistas": [
+        "La columna 0 y la fila 3 están libres de muros.",
+        "No olvides el print(\"Libre\")."
+      ],
+      "mensajeNoLogrado": "Robot1 debe terminar en (5,3) y mostrar \"Libre\" con print().",
+      "escenario": {
+        "robotPosicion": [
+          0,
+          0
+        ],
+        "objetivoPosicion": [
+          5,
+          3
+        ],
+        "obstaculos": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            2
+          ]
+        ]
+      },
+      "solucionesIncorrectas": [
+        "robot1.girar(\"sur\")\nrobot1.avanzar(3)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)"
+      ],
+      "max_lineas_recomendadas": 5
+    }
+  ],
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 4,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      5,
+      3
+    ],
+    "obstaculos": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        4,
+        2
+      ]
+    ],
+    "mostrarEnergia": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "ordinal": 9
+}

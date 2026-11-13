@@ -1,16 +1,18 @@
 // paletas.js
 // Identidad de color de cada mundo (fuente única: la usan los escenarios en
 // canvas y aplicarTema(), que la vuelca en variables CSS del <body>).
-// Mundo 1 cian/verde · 2 morado · 3 rojo/dorado · 4 naranja · 5 y 6 reservados.
+// Mundo 1 cian/verde · 2 rojo/dorado · 3 naranja · 4 azul · 5 rosa.
 
 export const PALETAS = {
-  1: { nombre: "Despertar", acento: "#5eead4", acento2: "#7dde86", fondo: "#0a0d14", glow: "rgba(94, 234, 212, 0.35)" },
-  2: { nombre: "Memoria", acento: "#a78bfa", acento2: "#c4b5fd", fondo: "#0b0a16", glow: "rgba(167, 139, 250, 0.35)" },
-  3: { nombre: "Lógica", acento: "#f87171", acento2: "#fbbf24", fondo: "#0d0a0a", glow: "rgba(248, 113, 113, 0.35)" },
-  4: { nombre: "Automatización", acento: "#fb923c", acento2: "#fdba74", fondo: "#0d0a07", glow: "rgba(251, 146, 60, 0.35)" },
-  5: { nombre: "Modularidad", acento: "#38bdf8", acento2: "#7dd3fc", fondo: "#080c12", glow: "rgba(56, 189, 248, 0.35)" },
-  6: { nombre: "Proyecto", acento: "#f472b6", acento2: "#f9a8d4", fondo: "#0d080c", glow: "rgba(244, 114, 182, 0.35)" },
+  1: { nombre: "Fundamentos y Datos", acento: "#00f5d4", acento2: "#38f997", fondo: "#070d19", glow: "rgba(0, 245, 212, 0.42)" },
+  2: { nombre: "Lógica", acento: "#ff5c7c", acento2: "#ffca3a", fondo: "#14080e", glow: "rgba(255, 92, 124, 0.42)" },
+  3: { nombre: "Automatización", acento: "#ff8c24", acento2: "#ffd166", fondo: "#140b05", glow: "rgba(255, 140, 36, 0.42)" },
+  4: { nombre: "Modularidad", acento: "#00bbf9", acento2: "#72efdd", fondo: "#060e1a", glow: "rgba(0, 187, 249, 0.42)" },
+  5: { nombre: "Proyecto", acento: "#ff4ecd", acento2: "#ff9ebb", fondo: "#140714", glow: "rgba(255, 78, 205, 0.42)" },
 };
+
+/** La consola de datos (escenario «datos») conserva el morado del antiguo Mundo 2 aunque ahora viva en el Mundo 1. */
+export const PALETA_MEMORIA = { nombre: "Memoria", acento: "#b37eff", acento2: "#e0c3fc", fondo: "#0b081c", glow: "rgba(179, 126, 255, 0.42)" };
 
 export function paletaDe(mundo) {
   return PALETAS[mundo] || PALETAS[1];

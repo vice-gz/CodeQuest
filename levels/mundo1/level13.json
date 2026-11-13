@@ -1,0 +1,94 @@
+{
+  "id": 13,
+  "mundo": 1,
+  "nombre": "El Sistema de Energía",
+  "ordinal": 13,
+  "concepto": "constantes (MAXIMO) y variables que cambian",
+  "concepto_evaluado": "constantes_vs_variables",
+  "narrativa": "La planta de energía del pueblo tiene un tanque. Algunos datos no deben cambiar nunca (la capacidad máxima) y otros cambian todo el tiempo (la carga actual).",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "13.1",
+      "tipo": "EXPLORAR",
+      "titulo": "MAXIMO y actual",
+      "enunciado": "Concepto nuevo: por costumbre, los valores que NO deben cambiar se escriben en MAYÚSCULAS (MAXIMO). Los que cambian, en minúsculas. Mira qué chip se reasigna.",
+      "codigoInicial": "MAXIMO = 100\nactual = 40\nactual = actual + 25\nprint(actual)\nprint(MAXIMO)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "MAXIMO se queda igual; actual cambia con el tiempo.",
+      "pistas": [
+        "Solo el chip de actual muestra «antes»."
+      ]
+    },
+    {
+      "id": "13.2",
+      "tipo": "MODIFICAR",
+      "titulo": "Hasta el tope",
+      "enunciado": "actual vale 20 y se le suma 30. Cambia el 30 por el número correcto para que actual llegue exactamente a MAXIMO (100). Debes seguir usando una suma.",
+      "codigoInicial": "MAXIMO = 100\nactual = 20\nactual = actual + 30\nprint(actual)",
+      "solucionReferencia": "MAXIMO = 100\nactual = 20\nactual = actual + 80\nprint(actual)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_exacto",
+        "valorEsperado": "100",
+        "requiere": {
+          "operador": "+"
+        }
+      },
+      "retroalimentacion": "Calculaste cuánto faltaba para llegar al máximo.",
+      "pistas": [
+        "¿Cuánto le falta a 20 para llegar a 100?"
+      ],
+      "solucionesIncorrectas": [
+        "MAXIMO = 100\nactual = 20\nactual = actual + 30\nprint(actual)",
+        "MAXIMO = 100\nactual = MAXIMO\nprint(actual)"
+      ],
+      "max_lineas_recomendadas": 4
+    },
+    {
+      "id": "13.3",
+      "tipo": "RESOLVER",
+      "titulo": "¿Cuánto falta?",
+      "enunciado": "Con MAXIMO = 100 y actual = 35, calcula en faltante cuánto falta para llenar y muéstralo (65).",
+      "codigoInicial": "",
+      "solucionReferencia": "MAXIMO = 100\nactual = 35\nfaltante = MAXIMO - actual\nprint(faltante)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_con_variable",
+        "valorEsperado": "65",
+        "variableRequerida": "faltante",
+        "requiere": {
+          "operador": "-"
+        }
+      },
+      "retroalimentacion": "Usaste un valor fijo y uno cambiante en la misma resta.",
+      "pistas": [
+        "faltante = MAXIMO - actual"
+      ],
+      "max_lineas_recomendadas": 4
+    }
+  ]
+}

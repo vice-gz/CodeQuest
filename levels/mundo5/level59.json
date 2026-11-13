@@ -1,0 +1,79 @@
+{
+  "id": 59,
+  "mundo": 5,
+  "nombre": "Proyecto libre",
+  "concepto": "proyecto final de CodeQuest",
+  "concepto_evaluado": "jefe_mundo_5",
+  "narrativa": "Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido.",
+  "narrativaSiguienteMundo": "¡Felicidades, has completado CodeQuest! Ahora piensas como un programador.",
+  "escenario": {
+    "tipo": "nucleo"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "59.1",
+      "tipo": "RESOLVER",
+      "titulo": "Proyecto libre",
+      "enunciado": "Este es TU proyecto: un juego, una calculadora, una simulación… lo que imagines. Escribe un programa de al menos 10 líneas de código (los comentarios y las líneas vacías no cuentan) que use un if, un while y al menos una variable. Se comprobará que se ejecute sin errores.",
+      "codigoInicial": "",
+      "solucionReferencia": "energia = 10\nciclos = 0\nprint(\"Iniciando el sistema\")\nwhile energia > 0:\n    energia = energia - 3\n    ciclos = ciclos + 1\n    if energia > 5:\n        print(\"Energía alta\")\n    else:\n        print(\"Energía baja\")\nprint(\"Ciclos: \" + str(ciclos))",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str",
+        "if",
+        "elif",
+        "else",
+        "while",
+        "for",
+        "and",
+        "or",
+        "not",
+        "booleanos",
+        "def",
+        "return"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "ejecutado"
+          },
+          {
+            "tipo": "min_lineas",
+            "minimo": 10
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "if",
+            "while"
+          ],
+          "algunaVariable": true
+        }
+      },
+      "retroalimentacion": "¡Tu proyecto funciona! Usaste decisiones, ciclos y variables en un mismo programa.",
+      "mensajeNoLogrado": "Tu programa necesita al menos 10 líneas de código (sin contar comentarios ni líneas vacías) y usar un if, un while y una variable.",
+      "solucionesIncorrectas": [
+        "energia = 10\nwhile energia > 0:\n    energia = energia - 3\n    if energia > 5:\n        print(\"alta\")\n    else:\n        print(\"baja\")",
+        "a = 1\nb = 2\nc = 3\nd = 4\ne = 5\nf = 6\ng = 7\nh = 8\ni = 9\nj = 10",
+        "n = 0\nwhile n < 3:\n    n = n + 1\n    print(n)\nprint(1)\nprint(2)\nprint(3)\nprint(4)\nprint(5)\nprint(6)",
+        "n = 0\nif n == 0:\n    print(\"cero\")\nprint(1)\nprint(2)\nprint(3)\nprint(4)\nprint(5)\nprint(6)\nprint(7)",
+        "# Un comentario\n# otro\n# y otro\nenergia = 10\nwhile energia > 0:\n    energia = energia - 5\n    if energia > 5:\n        print(\"a\")"
+      ],
+      "mision": "Tu proyecto: un programa de al menos 10 líneas de código con un if, un while y una variable, sin errores.",
+      "sinPistas": true
+    }
+  ],
+  "jefe": true,
+  "proyecto": true
+}

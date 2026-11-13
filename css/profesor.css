@@ -1,5 +1,5 @@
 /* ============================================================
-   CodeQuest — Avance 2.2: página del profesor
+   CodeQuest — Página del profesor
    ============================================================ */
 
 .profesor-cabecera {
@@ -8,29 +8,36 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .rejilla-clases {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 18px;
   margin-top: 16px;
 }
 
 .tarjeta-clase {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 18px;
-  border-radius: 14px;
-  background: var(--panel);
-  border: 1px solid var(--borde-suave);
+  gap: 9px;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(165deg, rgba(24, 34, 70, 0.9) 0%, rgba(14, 20, 44, 0.94) 100%);
+  border: 1px solid rgba(0, 245, 212, 0.25);
+  box-shadow: var(--sombra-panel);
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.tarjeta-clase:hover {
+  transform: translateY(-3px);
+  border-color: var(--teal);
 }
 
 .tarjeta-clase h3 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
 }
 
 .tarjeta-clase p {
@@ -39,10 +46,11 @@
 
 .codigo-clase {
   font-family: var(--fuente-mono);
-  font-size: 1.6rem;
-  font-weight: 600;
+  font-size: 1.65rem;
+  font-weight: 700;
   letter-spacing: 0.18em;
   color: var(--teal);
+  text-shadow: 0 0 14px rgba(0, 245, 212, 0.35);
 }
 
 .codigo-inline {
@@ -54,7 +62,7 @@
 #vista-clase {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 /* ---------- Alertas tempranas ---------- */
@@ -73,5 +81,5 @@
 }
 
 .fila-riesgo {
-  background: rgba(255, 184, 77, 0.06);
+  background: rgba(255, 200, 61, 0.08);
 }

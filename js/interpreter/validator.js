@@ -12,7 +12,7 @@
 // intérprete lo detecta al ejecutar.
 //
 // Permisos en instruccionesPermitidas de cada fase:
-//   print, input, int, float, str, asignacion, if, elif, else, while, for, and, or, not, booleanos
+//   print, input, int, float, str, round, asignacion, if, elif, else, while, for, and, or, not, booleanos
 // Las comparaciones (==, !=, <, >, <=, >=) y True/False se aceptan cuando la fase
 // permite if, while o booleanos.
 
@@ -21,10 +21,10 @@ import { esDireccionValida } from "../game/movimiento.js";
 import { BIBLIOTECA_ROBOT } from "./bibliotecas.js";
 import { formatearExpresion } from "./ast.js";
 
-const FUNCIONES_CONOCIDAS = new Set(["print", "input", "int", "float", "str"]);
-const FUNCIONES_QUE_RETORNAN_VALOR = new Set(["input", "int", "float", "str"]);
+const FUNCIONES_CONOCIDAS = new Set(["print", "input", "int", "float", "str", "round"]);
+const FUNCIONES_QUE_RETORNAN_VALOR = new Set(["input", "int", "float", "str", "round"]);
 // Nombres de funciones de Python: no se pueden usar como nombre de variable.
-const RESERVADOS = new Set(["print", "input", "int", "float", "str", "range"]);
+const RESERVADOS = new Set(["print", "input", "int", "float", "str", "round", "range"]);
 
 const DESCONOCIDO = { t: null, input: false };
 const esNumerico = (x) => x.t === "entero" || x.t === "decimal";
@@ -133,6 +133,12 @@ export class Validator {
         if (nodo.nombre === "str") return { t: "texto", input: false };
         if (nodo.nombre === "int") return { t: "entero", input: false };
         if (nodo.nombre === "float") return { t: "decimal", input: false };
+        if (nodo.nombre === "round") {
+          // round(x) da un entero; round(x, n) conserva el tipo de x
+          if (nodo.argumentos.length === 1) return { t: "entero", input: false };
+          const t = this.tipoDe(nodo.argumentos[0]).t;
+          return t === "entero" || t === "decimal" ? { t, input: false } : DESCONOCIDO;
+        }
         return DESCONOCIDO;
       case "OperacionBinaria": {
         const a = this.tipoDe(nodo.izquierda);
@@ -301,7 +307,16 @@ export class Validator {
     if (nodo.nombre === "print" && n === 0) throw Errores.printNecesitaValor(nodo.linea);
     if (nodo.nombre === "input" && n > 1) throw Errores.argumentosFuncion("input", "como máximo un mensaje", nodo.linea);
     if (["int", "float", "str"].includes(nodo.nombre) && n !== 1) throw Errores.argumentosFuncion(nodo.nombre, "exactamente un valor", nodo.linea);
+    if (nodo.nombre === "round" && (n < 1 || n > 2)) throw Errores.argumentosFuncion("round", "uno o dos valores: round(x) o round(x, decimales)", nodo.linea);
     nodo.argumentos.forEach((arg) => this.validarExpresion(arg));
+    if (nodo.nombre === "round") {
+      // round(input()) : lo que llega de input() es texto; se explica igual que en las operaciones
+      const info = this.tipoDe(nodo.argumentos[0]);
+      if (info.input) throw Errores.inputDevuelveTexto(nodo.linea, `round(float(${formatearExpresion(nodo.argumentos[0])}))`);
+      if (info.t === "texto") throw Errores.roundInvalido("un texto", nodo.linea);
+      const dec = nodo.argumentos[1] && this.tipoDe(nodo.argumentos[1]);
+      if (dec && dec.t && dec.t !== "entero") throw Errores.roundInvalido("decimales", nodo.linea);
+    }
   }
 
   validarLlamadaMetodo(nodo, comoExpresion) {

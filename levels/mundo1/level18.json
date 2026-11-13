@@ -1,0 +1,292 @@
+{
+  "id": 18,
+  "mundo": 1,
+  "nombre": "El Viaje",
+  "ordinal": 19,
+  "concepto": "combinar operadores y round(x, 2)",
+  "concepto_evaluado": "integracion_operadores",
+  "narrativa": "Los amigos de Robot1 se van de paseo a la playa y quieren dividir la gasolina en partes iguales, al centavo.",
+  "escenario": {
+    "tipo": "viaje",
+    "variables": {
+      "distancia": 240,
+      "rendimiento": 12,
+      "precio": 24.5,
+      "pasajeros": 3
+    }
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "18.1",
+      "tipo": "EXPLORAR",
+      "titulo": "¿Cuántos litros?",
+      "enunciado": "El auto recorre rendimiento kilómetros con un litro. Para saber cuántos litros necesita, divide la distancia entre el rendimiento. Ejecuta y mira el indicador de gasolina.",
+      "codigoInicial": "litros = distancia / rendimiento\nprint(litros)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "float",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "240 km entre 12 km por litro son 20.0 litros (con / siempre sale decimal).",
+      "pistas": [
+        "Mira la barra de gasolina."
+      ]
+    },
+    {
+      "id": "18.2",
+      "tipo": "DEBUG",
+      "titulo": "El precio con coma",
+      "enunciado": "El precio del litro se escribió como en la gasolinera: con coma. En Python los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 24.5 y se muestre.",
+      "codigoInicial": "precio = 24,5\nprint(precio)",
+      "solucionReferencia": "precio = 24.5\nprint(precio)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "float",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "variables": {
+          "distancia": 240,
+          "rendimiento": 12,
+          "pasajeros": 3
+        }
+      },
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "variables",
+            "variables": {
+              "precio": 24.5
+            }
+          },
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "24.5"
+            ]
+          }
+        ]
+      },
+      "retroalimentacion": "Los decimales usan punto: 24.5. En Python los decimales se escriben con punto, no con coma.",
+      "pistas": [
+        "Cambia la coma por un punto."
+      ],
+      "mensajeNoLogrado": "En Python los decimales se escriben con punto, no con coma. precio debe valer 24.5 y mostrarse.",
+      "solucionesIncorrectas": [
+        "precio = 24,5\nprint(precio)",
+        "print(precio)",
+        "precio = 24\nprint(precio)"
+      ],
+      "max_lineas_recomendadas": 2
+    },
+    {
+      "id": "18.3",
+      "tipo": "PREDECIR",
+      "titulo": "Centavos de más",
+      "enunciado": "Concepto nuevo: round(x, 2) redondea x a 2 decimales (los centavos). ¿Qué muestra este programa?",
+      "codigoInicial": "print(round(10 / 3, 2))",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "float",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "3.33"
+        },
+        {
+          "id": "b",
+          "texto": "3.3333333333333335"
+        },
+        {
+          "id": "c",
+          "texto": "3"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: 10 / 3 es 3.333… y round(…, 2) lo deja en 3.33. Sin el 2, round() redondea al entero (3).",
+      "pistas": [
+        "El 2 indica cuántos decimales quedan."
+      ]
+    },
+    {
+      "id": "18.4",
+      "tipo": "RESOLVER",
+      "titulo": "¿Cuánto paga cada quien?",
+      "enunciado": "Con los datos de cada viaje calcula litros = distancia / rendimiento, costo = litros * precio y por_persona = round(costo / pasajeros, 2). Muestra costo y luego por_persona. Se prueba con 4 viajes.",
+      "codigoInicial": "",
+      "solucionReferencia": "litros = distancia / rendimiento\ncosto = litros * precio\npor_persona = round(costo / pasajeros, 2)\nprint(costo)\nprint(por_persona)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "float",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "240 km · 3 personas",
+          "escenario": {
+            "variables": {
+              "distancia": 240,
+              "rendimiento": 12,
+              "precio": 24.5,
+              "pasajeros": 3
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "por_persona": 163.33
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "490.0",
+                  "163.33"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "150 km · 4 personas",
+          "escenario": {
+            "variables": {
+              "distancia": 150,
+              "rendimiento": 15,
+              "precio": 23.8,
+              "pasajeros": 4
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "por_persona": 59.5
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "238.0",
+                  "59.5"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "100 km · 3 personas",
+          "escenario": {
+            "variables": {
+              "distancia": 100,
+              "rendimiento": 8,
+              "precio": 25.0,
+              "pasajeros": 3
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "por_persona": 104.17
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "312.5",
+                  "104.17"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "360 km · 5 personas",
+          "escenario": {
+            "variables": {
+              "distancia": 360,
+              "rendimiento": 14,
+              "precio": 24.3,
+              "pasajeros": 5
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "por_persona": 124.97
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "624.8571428571429",
+                  "124.97"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "round"
+          ],
+          "operadores": [
+            "/",
+            "*"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Buen viaje! Combinaste división, multiplicación y round() para repartir al centavo.",
+      "pistas": [
+        "Tres variables: litros, costo y por_persona.",
+        "por_persona = round(costo / pasajeros, 2)"
+      ],
+      "mensajeNoLogrado": "Revisa los 4 viajes: por_persona debe redondearse a 2 decimales con round(…, 2).",
+      "solucionesIncorrectas": [
+        "litros = distancia / rendimiento\ncosto = litros * precio\npor_persona = costo / pasajeros\nprint(costo)\nprint(por_persona)",
+        "litros = distancia / rendimiento\ncosto = litros * precio\npor_persona = round(costo / pasajeros)\nprint(costo)\nprint(por_persona)"
+      ],
+      "max_lineas_recomendadas": 5
+    }
+  ]
+}

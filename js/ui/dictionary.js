@@ -55,7 +55,7 @@ export const CATALOGO = [
     categoria: "Entrada",
     descripcion:
       'Pausa el programa y pide un dato a quien está jugando. Como en Python, input() SIEMPRE devuelve texto, aunque se escriba un número: si lo necesitas como número, conviértelo con int() o float(). Puede llevar un mensaje: input("¿Cuántos pisos?").',
-    desbloqueaEn: "6.1",
+    desbloqueaEn: "7.1",
   },
   {
     id: "int",
@@ -63,28 +63,28 @@ export const CATALOGO = [
     categoria: "Conversión",
     descripcion:
       'Convierte un valor en número entero: int("12") vale 12 y int(3.9) vale 3. Si el texto no parece un número entero (int("hola"), int("3.5")) da un ValueError. Lo típico: int(input()).',
-    desbloqueaEn: "6.3",
+    desbloqueaEn: "7.4",
   },
   {
     id: "float",
     firma: "float(valor)",
     categoria: "Conversión",
     descripcion: 'Convierte un valor en número decimal: float("3.5") vale 3.5 y float(3) vale 3.0. Si el texto no parece un número, da un ValueError.',
-    desbloqueaEn: "14.4",
+    desbloqueaEn: "18.1",
   },
   {
     id: "str",
     firma: "str(valor)",
     categoria: "Conversión",
     descripcion: 'Convierte un valor en texto: str(5) vale "5". Sirve para unir números con textos: "Total: " + str(5).',
-    desbloqueaEn: "16.4",
+    desbloqueaEn: "15.2",
   },
   {
     id: "recoger",
     firma: "robot1.recoger()",
     categoria: "Objetos",
     descripcion: "Recoge el objeto que haya en la casilla donde está Robot1.",
-    desbloqueaEn: "8.1",
+    desbloqueaEn: "9.1",
   },
   {
     id: "asignacion",
@@ -92,7 +92,7 @@ export const CATALOGO = [
     categoria: "Variables",
     descripcion:
       "Guarda un valor con un nombre para reutilizarlo después. Aparece en el panel de Memoria.",
-    desbloqueaEn: "9.1",
+    desbloqueaEn: "6.1",
   },
   {
     id: "operadores",
@@ -100,14 +100,35 @@ export const CATALOGO = [
     categoria: "Operadores",
     descripcion:
       "Operaciones aritméticas. Primero se resuelve ** (potencia), después * y /, y al final + y -, igual que en matemáticas. Ojo: / SIEMPRE da un decimal (10 / 2 vale 5.0).",
-    desbloqueaEn: "12.2",
+    desbloqueaEn: "12.1",
   },
   {
     id: "modulo",
     firma: "a // b   a % b",
     categoria: "Operadores",
     descripcion: "a // b es la división entera (solo la parte entera: 17 // 4 vale 4). a % b devuelve el residuo (17 % 5 vale 2).",
-    desbloqueaEn: "13.1",
+    desbloqueaEn: "16.1",
+  },
+  {
+    id: "asignacion_compuesta",
+    firma: "nombre += valor",
+    categoria: "Variables",
+    descripcion: "Atajo para reasignar: ahorro += 100 es lo mismo que ahorro = ahorro + 100. También existen -=, *=, /=, //= y %=. La variable debe tener un valor antes.",
+    desbloqueaEn: "6.4",
+  },
+  {
+    id: "round",
+    firma: "round(x)   round(x, n)",
+    categoria: "Conversión",
+    descripcion: "round(x) redondea al entero más cercano (round(300.0) vale 300) y round(x, n) deja n decimales (round(10 / 3, 2) vale 3.33). En un empate exacto va al número par: round(4.5) vale 4.",
+    desbloqueaEn: "18.3",
+  },
+  {
+    id: "pozo",
+    firma: "pozo.bajar()  pozo.hayAgua()  pozo.llenar()  pozo.subir(n)",
+    categoria: "Objetos",
+    descripcion: "El pozo del Mundo 1: bajar() baja la cubeta 1 metro, hayAgua() dice True si ya llegó al agua, llenar() la llena y subir(n) la sube n metros.",
+    desbloqueaEn: "14.1",
   },
   {
     id: "def",
@@ -144,57 +165,57 @@ export const CATALOGO = [
     firma: "robot1.energia()",
     categoria: "Estado",
     descripcion: "Devuelve la energía que le queda a Robot1. Pruébala en el Laboratorio Libre.",
-    desbloqueaEn: "8.3",
+    desbloqueaEn: "9.3",
   },
   {
     id: "posicion",
     firma: "robot1.posicion()",
     categoria: "Estado",
     descripcion: "Devuelve la posición actual de Robot1 como (columna,fila). Pruébala en el Laboratorio Libre.",
-    desbloqueaEn: "8.3",
+    desbloqueaEn: "9.3",
   },
   {
     id: "mirar",
     firma: "robot1.mirar()",
     categoria: "Estado",
     descripcion: "Devuelve la dirección hacia la que mira Robot1. Pruébala en el Laboratorio Libre.",
-    desbloqueaEn: "8.3",
+    desbloqueaEn: "9.3",
   },
-  // ----- Mundo 3: decisiones -----
+  // ----- Decisiones (Mundo 1 y Mundo 2) -----
   {
     id: "if",
     firma: "if condición:",
     categoria: "Decisiones",
     descripcion: "Ejecuta las líneas con sangría solo si la condición es verdadera (True). Si es falsa, las salta.",
-    desbloqueaEn: "20.1",
+    desbloqueaEn: "8.1",
   },
   {
     id: "else",
     firma: "else:",
     categoria: "Decisiones",
     descripcion: "El camino alternativo de un if: se ejecuta cuando la condición del if es falsa.",
-    desbloqueaEn: "21.1",
+    desbloqueaEn: "8.1",
   },
   {
     id: "comparadores",
     firma: "==  !=  <  >  <=  >=",
     categoria: "Decisiones",
     descripcion: "Comparan dos valores y dan True o False. Ojo: un solo = guarda un valor; dos == preguntan si son iguales.",
-    desbloqueaEn: "22.1",
+    desbloqueaEn: "8.1",
   },
   {
     id: "and_or",
     firma: "a and b   a or b",
     categoria: "Decisiones",
     descripcion: "and es verdadero si AMBAS condiciones lo son; or, si al menos UNA lo es.",
-    desbloqueaEn: "24.1",
+    desbloqueaEn: "8.2",
   },
   {
     id: "not_booleanos",
     firma: "not x   True   False",
     categoria: "Decisiones",
     descripcion: "True y False son valores lógicos que se pueden guardar en variables. not invierte uno: not True es False.",
-    desbloqueaEn: "25.1",
+    desbloqueaEn: "14.2",
   },
   {
     id: "elif",
@@ -217,13 +238,13 @@ export const CATALOGO = [
     descripcion: "Voltea las cartas de la mesa: las que están boca abajo se muestran y, si ya están todas visibles, las vuelve a tapar.",
     desbloqueaEn: "28.3",
   },
-  // ----- Mundo 4: ciclos y elevador -----
+  // ----- Ciclos y elevador (while desde el Mundo 1; Mundo 3) -----
   {
     id: "while",
     firma: "while condición:",
     categoria: "Ciclos",
     descripcion: "Repite sus líneas con sangría MIENTRAS la condición sea verdadera. Dentro hay que cambiar algo, o no termina.",
-    desbloqueaEn: "32.1",
+    desbloqueaEn: "14.2",
   },
   {
     id: "for",

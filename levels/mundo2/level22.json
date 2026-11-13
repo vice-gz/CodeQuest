@@ -1,0 +1,263 @@
+{
+  "id": 22,
+  "mundo": 2,
+  "nombre": "Comparar es preguntar",
+  "concepto": "comparación de igualdad (==)",
+  "concepto_evaluado": "comparadores_igualdad",
+  "narrativa": "Una condición es una pregunta. La más común es: ¿son iguales?",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "22.1",
+      "tipo": "EXPLORAR",
+      "titulo": "¿Son iguales?",
+      "enunciado": "Concepto nuevo: == pregunta si dos valores son iguales y != si son distintos. OJO: un solo = guarda un valor; DOS == preguntan.",
+      "codigoInicial": "if carta1 == carta2:\n    print(\"Par\")\nelse:\n    print(\"Distintas\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 7,
+            "palo": "picas"
+          },
+          {
+            "valor": 7,
+            "palo": "picas"
+          }
+        ]
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 14",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 16",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "== compara; = guarda. Son cosas distintas.",
+      "pistas": [
+        "Compara el sello de la mesa en las dos manos."
+      ]
+    },
+    {
+      "id": "22.2",
+      "tipo": "PREDECIR",
+      "titulo": "Distinto de",
+      "enunciado": "Las dos cartas valen 6. ¿Qué muestra este programa?",
+      "codigoInicial": "if carta1 != carta2:\n    print(\"Distintas\")\nelse:\n    print(\"Par\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 6,
+            "palo": "picas"
+          },
+          {
+            "valor": 6,
+            "palo": "picas"
+          }
+        ]
+      },
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Distintas"
+        },
+        {
+          "id": "b",
+          "texto": "Par"
+        },
+        {
+          "id": "c",
+          "texto": "Nada"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "6 != 6 es falso (son iguales), así que se ejecuta el else.",
+      "pistas": [
+        "!= significa «es distinto de»."
+      ]
+    },
+    {
+      "id": "22.3",
+      "tipo": "MODIFICAR",
+      "titulo": "Solo el 21 exacto",
+      "enunciado": "Este programa da Blackjack con cualquier total mayor que 21. Modifícalo para que solo se muestre Blackjack con 21 exacto; en cualquier otro caso, Sigue.",
+      "codigoInicial": "if total > 21:\n    print(\"Blackjack\")\nelse:\n    print(\"Sigue\")",
+      "solucionReferencia": "if total == 21:\n    print(\"Blackjack\")\nelse:\n    print(\"Sigue\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 11,
+                "palo": "corazones"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 21",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Blackjack"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 20",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 10,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Sigue"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 22",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 3,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Sigue"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "Preguntaste por un valor exacto con ==.",
+      "pistas": [
+        "Cambia > por =="
+      ],
+      "mensajeNoLogrado": "Con 22 NO es Blackjack.",
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Blackjack\")\nelse:\n    print(\"Sigue\")",
+        "if total >= 21:\n    print(\"Blackjack\")\nelse:\n    print(\"Sigue\")"
+      ]
+    }
+  ]
+}

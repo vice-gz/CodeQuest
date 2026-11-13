@@ -1,59 +1,78 @@
 /* ============================================================
-   panels.css — Paneles en vivo: Salida, Memoria, Estado de Robot1
-   (prompt de cambios, sección 5.2 a 5.4)
+   panels.css — Paneles en vivo: Salida, Memoria, Estado de Nix/Robot1,
+   Diccionario, Tour guiado y Transición de mundos (Paleta Cyber-Mágico).
    ============================================================ */
 
+:root {
+  --fondo-principal: #120E24;
+  --fondo-panel: #1E1836;
+  --fondo-editor: #0A0813;
+  --barra-titulo: #2A2148;
+  --texto-principal: #E2D9F3;
+  --texto-tenue: #9C8DB8;
+  --acento-cian: #00E5FF;
+  --acento-morado: #A855F7;
+  --borde-panel: #4C3A82;
+  --borde-sombra: #06040D;
+}
+
 .panel-lateral {
-  padding-bottom: 14px;
+  padding-bottom: 16px;
 }
 
 .panel-vacio {
   margin: 0;
-  font-size: 0.83rem;
-  color: var(--texto-muted);
+  font-size: 0.84rem;
+  color: var(--texto-tenue);
   font-style: italic;
 }
 
 /* ---------- Salida ---------- */
 
 .salida-contenido {
-  max-height: 150px;
+  max-height: 155px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   font-family: var(--fuente-mono);
   font-size: 0.85rem;
 }
 
 .salida-linea {
   display: flex;
-  gap: 8px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: var(--panel-alt);
+  gap: 10px;
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: var(--fondo-editor);
+  border: 1px solid rgba(76, 58, 130, 0.55);
+  border-left: 3px solid var(--acento-cian);
 }
 
 .salida-icono {
-  color: var(--texto-muted);
+  color: var(--texto-tenue);
   flex-shrink: 0;
+  font-weight: 700;
 }
 
-.salida-print .salida-icono { color: var(--teal); }
-.salida-hablar .salida-icono { color: var(--morado); }
+.salida-print { border-left-color: var(--acento-cian); }
+.salida-print .salida-icono { color: var(--acento-cian); }
+.salida-hablar { border-left-color: var(--acento-morado); }
+.salida-hablar .salida-icono { color: var(--acento-morado); }
+.salida-entrada { border-left-color: var(--ambar); }
 .salida-entrada .salida-icono { color: var(--ambar); }
 
 .salida-valor {
   word-break: break-word;
-  color: var(--texto);
+  color: var(--texto-principal);
 }
 
-/* ---------- Memoria ---------- */
+/* ---------- Memoria (Chips cian y morado) ---------- */
 
 .memoria-contenido {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   font-family: var(--fuente-mono);
   font-size: 0.85rem;
 }
@@ -62,66 +81,131 @@
   display: flex;
   gap: 8px;
   align-items: baseline;
-  padding: 5px 8px;
-  border-radius: 6px;
-  background: var(--panel-alt);
+  padding: 7px 12px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(10, 8, 19, 0.92) 0%, rgba(42, 33, 72, 0.65) 100%);
+  border: 1.5px solid var(--borde-panel);
+  border-left: 3.5px solid var(--acento-cian);
+  box-shadow: 0 2px 0 var(--borde-sombra), 0 0 14px -6px rgba(0, 229, 255, 0.35);
+}
+
+.memoria-fila:nth-child(even) {
+  border-left-color: var(--acento-morado);
+  box-shadow: 0 2px 0 var(--borde-sombra), 0 0 14px -6px rgba(168, 85, 247, 0.4);
 }
 
 .memoria-nombre {
-  color: var(--teal);
-  font-weight: 600;
+  color: var(--acento-cian);
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.32);
+}
+
+.memoria-fila:nth-child(even) .memoria-nombre {
+  color: #D8B4FE;
+  background: rgba(168, 85, 247, 0.16);
+  border-color: rgba(168, 85, 247, 0.4);
 }
 
 .memoria-igual {
-  color: var(--texto-muted);
+  color: var(--texto-tenue);
 }
 
 .memoria-valor {
-  color: var(--texto);
+  color: var(--texto-principal);
+  font-weight: 600;
   word-break: break-word;
 }
 
-/* ---------- Estado de Robot1 ---------- */
+/* ---------- Estado ---------- */
 
 .estado-contenido {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .estado-fila {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: var(--panel-alt);
+  padding: 7px 12px;
+  border-radius: 9px;
+  background: var(--fondo-editor);
+  border: 1px solid var(--borde-panel);
 }
 
 .estado-etiqueta {
-  font-size: 0.78rem;
-  color: var(--texto-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--texto-tenue);
 }
 
 .estado-valor {
   font-family: var(--fuente-mono);
   font-size: 0.88rem;
-  color: var(--texto);
+  font-weight: 700;
+  color: var(--acento-cian);
 }
 
-/* ---------- Entrada interactiva (entrada() sin valor simulado) ---------- */
+/* ---------- Adaptación de Escenarios (Mundos 1, 2, 3) y Botón Ejecutar ---------- */
+
+body[data-mundo="1"] .panel-mundo .lienzo-envoltura {
+  background:
+    radial-gradient(circle at 20% 25%, rgba(168, 85, 247, 0.22), transparent 45%),
+    radial-gradient(circle at 80% 75%, rgba(0, 229, 255, 0.15), transparent 45%),
+    var(--fondo-principal);
+}
+
+body[data-escenario="datos"] .panel-mundo .lienzo-envoltura,
+body[data-escenario="datos"] .panel-memoria {
+  border-color: var(--acento-cian);
+  box-shadow: 0 4px 0 var(--borde-sombra), 0 0 26px -8px rgba(0, 229, 255, 0.45);
+}
+
+body[data-mundo="2"] .panel-mundo,
+body[data-mundo="2"] .panel-mundo .lienzo-envoltura {
+  background: radial-gradient(ellipse at 50% 45%, #241742 0%, #140D28 70%, #0A0813 100%);
+  border-color: var(--acento-morado);
+}
+
+/* Botón Ejecutar en color --acento-cian con texto oscuro para resaltar sobre el fondo morado */
+#btn-ejecutar,
+.boton.boton-ejecutar {
+  background: linear-gradient(135deg, var(--acento-cian) 0%, #5CEEFF 100%);
+  color: var(--borde-sombra);
+  border-color: transparent;
+  font-weight: 800;
+  box-shadow: 0 4px 0 #007B99, 0 0 22px -3px rgba(0, 229, 255, 0.72);
+}
+
+#btn-ejecutar:hover:not(:disabled),
+.boton.boton-ejecutar:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4DF0FF 0%, #8CF6FF 100%);
+  box-shadow: 0 6px 0 #007B99, 0 0 28px -1px rgba(0, 229, 255, 0.9);
+}
+
+#btn-ejecutar:active:not(:disabled),
+.boton.boton-ejecutar:active:not(:disabled) {
+  box-shadow: 0 1px 0 #007B99;
+}
+
+/* ---------- Entrada interactiva ---------- */
 
 .entrada-interactiva {
   margin-top: 8px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 184, 77, 0.45);
-  background: rgba(255, 184, 77, 0.08);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 200, 61, 0.48);
+  background: rgba(255, 200, 61, 0.09);
 }
 
 .entrada-etiqueta {
   margin: 0 0 8px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--ambar);
 }
 
@@ -134,17 +218,18 @@
   flex: 1;
   min-width: 0;
   border-radius: 8px;
-  border: 1px solid var(--borde);
-  background: var(--bg-elevado);
+  border: 1.5px solid var(--borde);
+  background: #070b19;
   color: var(--texto);
   font-family: var(--fuente-mono);
-  font-size: 0.85rem;
-  padding: 8px 10px;
+  font-size: 0.86rem;
+  padding: 8px 11px;
   outline: none;
 }
 
 .entrada-campo:focus {
   border-color: var(--ambar);
+  box-shadow: 0 0 0 3px rgba(255, 200, 61, 0.2);
 }
 
 .entrada-campo-error {
@@ -159,7 +244,7 @@
 
 .entrada-ayuda {
   margin: 8px 0 0;
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   color: var(--texto-muted);
 }
 
@@ -170,10 +255,10 @@
 /* ---------- Diccionario ---------- */
 
 .boton-barra {
-  background: var(--panel);
+  background: rgba(20, 28, 60, 0.85);
   border-color: var(--borde);
   color: var(--texto);
-  padding: 8px 12px;
+  padding: 8px 13px;
   font-size: 0.82rem;
   display: inline-flex;
   align-items: center;
@@ -181,27 +266,33 @@
 }
 
 .boton-barra:hover {
-  border-color: var(--teal);
+  border-color: var(--mundo-acento, var(--teal));
+  background: var(--panel-alt);
 }
 
 .dic-contador {
   font-family: var(--fuente-mono);
   font-size: 0.72rem;
-  color: var(--teal);
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(0, 245, 212, 0.14);
+  color: var(--mundo-acento, var(--teal));
 }
 
 .diccionario-panel {
   position: absolute;
   top: calc(100% + 8px);
   right: 24px;
-  width: min(420px, calc(100vw - 32px));
+  width: min(430px, calc(100vw - 32px));
   max-height: 70vh;
   overflow-y: auto;
-  background: var(--panel);
-  border: 1px solid var(--borde);
-  border-radius: 14px;
-  padding: 18px 20px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  background: rgba(16, 23, 50, 0.96);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid var(--borde);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.65);
   z-index: 40;
 }
 
@@ -214,14 +305,14 @@
 
 .dic-encabezado h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.05rem;
 }
 
 .dic-cerrar {
   background: transparent;
   border: none;
   color: var(--texto-muted);
-  font-size: 1rem;
+  font-size: 1.05rem;
   cursor: pointer;
   padding: 4px 6px;
 }
@@ -232,15 +323,16 @@
 
 .dic-intro {
   margin: 0 0 14px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--texto-muted);
 }
 
 .dic-categoria {
   margin: 14px 0 8px;
   font-size: 0.72rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--teal);
 }
 
@@ -251,9 +343,9 @@
 }
 
 .dic-entrada {
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--panel-alt);
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: rgba(8, 12, 28, 0.82);
   border: 1px solid var(--borde-suave);
 }
 
@@ -261,14 +353,15 @@
   display: block;
   font-family: var(--fuente-mono);
   font-size: 0.85rem;
-  color: var(--texto);
+  font-weight: 600;
+  color: var(--teal);
   margin-bottom: 4px;
 }
 
 .dic-descripcion {
   margin: 0;
-  font-size: 0.82rem;
-  color: #c7cbea;
+  font-size: 0.83rem;
+  color: #d6dffa;
 }
 
 .dic-pendientes {
@@ -287,7 +380,7 @@ body.tour-activo {
 .tour-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(5, 7, 16, 0.72);
+  background: rgba(4, 6, 15, 0.76);
   z-index: 100;
 }
 
@@ -296,40 +389,41 @@ body.tour-activo {
   position: fixed;
   border: 2px solid var(--teal);
   border-radius: 14px;
-  box-shadow: 0 0 0 9999px rgba(5, 7, 16, 0.72);
+  box-shadow: 0 0 0 9999px rgba(4, 6, 15, 0.76), 0 0 24px rgba(0, 245, 212, 0.45);
   pointer-events: none;
   transition: all 0.25s ease;
 }
 
 .tour-globo {
   position: fixed;
-  background: var(--panel);
-  border: 1px solid var(--teal);
-  border-radius: 14px;
-  padding: 18px 20px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  overflow-y: auto;
+  background: linear-gradient(165deg, var(--panel-alt) 0%, var(--panel) 100%);
+  border: 1.5px solid var(--teal);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.65), 0 0 24px -6px rgba(0, 245, 212, 0.35);
 }
 
 .tour-progreso {
   margin: 0 0 6px;
   font-family: var(--fuente-mono);
   font-size: 0.72rem;
+  font-weight: 700;
   color: var(--teal);
 }
 
 .tour-titulo {
   margin: 0 0 8px;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
 }
 
 .tour-texto {
-  margin: 0 0 16px;
-  font-size: 0.88rem;
-  color: #c7cbea;
+  margin: 0;
+  font-size: 0.89rem;
+  color: #d6dffa;
 }
 
-/* Los controles NO van dentro del globo: quedan fijos al pie de la pantalla para que
-   siempre se puedan tocar, aunque el globo o el elemento resaltado queden lejos. */
 .tour-controles {
   position: fixed;
   left: 0;
@@ -340,7 +434,7 @@ body.tour-activo {
   justify-content: center;
   gap: 10px;
   padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(to top, rgba(5, 7, 16, 0.95) 70%, transparent);
+  background: linear-gradient(to top, rgba(4, 6, 15, 0.96) 70%, transparent);
 }
 
 .tour-controles .boton {
@@ -367,7 +461,7 @@ body.tour-activo {
   height: 44px;
   border-radius: 50%;
   border: 1.5px solid var(--borde);
-  background: rgba(8, 11, 24, 0.92);
+  background: rgba(6, 9, 22, 0.92);
   color: var(--texto);
   font-size: 1.15rem;
   cursor: pointer;
@@ -378,22 +472,13 @@ body.tour-activo {
   color: var(--teal);
 }
 
-.tour-globo {
-  z-index: 2;
-  overflow-y: auto;
-}
-
-.tour-texto {
-  margin-bottom: 0;
-}
-
 /* ---------- Modo demo ---------- */
 
 .demo-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(5, 7, 16, 0.75);
-  backdrop-filter: blur(3px);
+  background: rgba(4, 6, 15, 0.78);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -402,10 +487,11 @@ body.tour-activo {
 
 .demo-tarjeta {
   background: var(--panel);
-  border: 1px solid var(--borde);
-  border-radius: 16px;
+  border: 1.5px solid var(--borde);
+  border-radius: 18px;
   padding: 28px 30px;
   width: min(360px, calc(100vw - 32px));
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.65);
 }
 
 .demo-tarjeta h2 {
@@ -434,8 +520,8 @@ body.tour-activo {
 .demo-campo input {
   width: 100%;
   border-radius: 9px;
-  border: 1px solid var(--borde);
-  background: var(--bg-elevado);
+  border: 1.5px solid var(--borde);
+  background: #070b19;
   color: var(--texto);
   font-family: var(--fuente-mono);
   font-size: 0.88rem;
@@ -462,11 +548,12 @@ body.tour-activo {
 
 .insignia-demo {
   font-family: var(--fuente-mono);
-  font-size: 0.7rem;
-  color: #08201c;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #060914;
   background: var(--ambar);
-  border-radius: 6px;
-  padding: 3px 7px;
+  border-radius: 999px;
+  padding: 4px 10px;
 }
 
 /* ============================================================
@@ -486,8 +573,8 @@ body.sin-scroll {
   justify-content: center;
   padding: 24px;
   background:
-    radial-gradient(ellipse at 50% 20%, rgba(94, 234, 212, 0.18), transparent 60%),
-    linear-gradient(180deg, #060914 0%, #0b1030 55%, #05060f 100%);
+    radial-gradient(ellipse at 50% 20%, rgba(0, 245, 212, 0.22), transparent 60%),
+    linear-gradient(180deg, #050814 0%, #0d1438 55%, #04060f 100%);
   animation: transicion-entrada 0.7s ease both;
 }
 
@@ -497,6 +584,12 @@ body.sin-scroll {
   align-items: center;
   gap: 18px;
   max-width: 640px;
+  padding: 36px 32px;
+  border-radius: 24px;
+  background: rgba(16, 23, 50, 0.78);
+  border: 1.5px solid rgba(0, 245, 212, 0.35);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
   text-align: center;
 }
 
@@ -504,6 +597,7 @@ body.sin-scroll {
   margin: 0;
   font-family: var(--fuente-mono);
   font-size: 0.8rem;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--teal);
@@ -518,15 +612,15 @@ body.sin-scroll {
 .transicion-estrellas {
   margin: 0;
   color: var(--ambar);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .transicion-consejo {
   margin: 0 0 14px;
-  padding: 8px 12px;
-  border-left: 3px solid #f59e0b;
-  border-radius: 6px;
-  background: rgba(245, 158, 11, 0.12);
+  padding: 9px 14px;
+  border-left: 3px solid var(--ambar);
+  border-radius: 8px;
+  background: rgba(255, 200, 61, 0.12);
   font-size: 0.9rem;
   text-align: left;
 }
@@ -568,7 +662,6 @@ body.sin-scroll {
   }
 }
 
-/* Laboratorio Libre: sin niveles, fases, estrellas ni pistas. */
 body.modo-sandbox .selector-niveles,
 body.modo-sandbox #contador-estrellas-total,
 body.modo-sandbox #barra-fases,

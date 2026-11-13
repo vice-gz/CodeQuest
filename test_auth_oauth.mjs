@@ -101,7 +101,7 @@ async function empaquetar(dominio) {
         setup(b) {
           b.onResolve({ filter: /(^|\/)supabase\.js$/ }, () => ({ path: "supabase", namespace: "stub" }));
           b.onLoad({ filter: /.*/, namespace: "stub" }, () => ({ contents: STUB_SUPABASE, loader: "js", resolveDir: RAIZ }));
-          b.onLoad({ filter: /js\/.*\.js$/, namespace: "file" }, (a) => ({
+          b.onLoad({ filter: /js[\\/].*\.js$/, namespace: "file" }, (a) => ({
             contents: readFileSync(a.path, "utf8").replace(/window\.location\.href = ([^;]+);/g, "globalThis.__ir($1);"),
             loader: "js",
             resolveDir: dirname(a.path),

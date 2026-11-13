@@ -2,10 +2,10 @@
   "id": 44,
   "mundo": 1,
   "nombre": "Laberinto ciego",
-  "concepto": "integración del Mundo 1",
-  "concepto_evaluado": "jefe_mundo_1",
-  "narrativa": "La salida está cerca, pero el último pasillo es un laberinto a oscuras. Aquí nadie te dará pasos: tendrás que calcularlos tú.",
-  "narrativaSiguienteMundo": "¡Has escapado de la instalación! Pero al cruzar la puerta, Robot1 se da cuenta de que no recuerda nada. Su memoria se ha borrado. Entra al Mundo 2: Memoria.",
+  "ordinal": 14,
+  "concepto": "integración de los Bloques A a C",
+  "concepto_evaluado": "jefe_intermedio_mundo_1",
+  "narrativa": "Antes del último tramo del pueblo, Robot1 debe atravesar el viejo almacén: un laberinto a oscuras. Aquí nadie te dará pasos: tendrás que calcularlos tú.",
   "escenario": {
     "tipo": "laboratorio",
     "ancho": 8,
@@ -147,6 +147,7 @@
         "robot1.avanzar(7)\nrobot1.girar(\"sur\")\nrobot1.avanzar(5)",
         "robot1.avanzar(5)\nrobot1.girar(\"sur\")\nrobot1.avanzar(5)"
       ],
+      "max_lineas_recomendadas": 11,
       "sinPistas": true
     }
   ],

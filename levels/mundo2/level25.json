@@ -1,0 +1,315 @@
+{
+  "id": 25,
+  "mundo": 2,
+  "nombre": "O, y no",
+  "concepto": "operadores lógicos or y not",
+  "concepto_evaluado": "operadores_or_not",
+  "narrativa": "Otras veces basta con que se cumpla una de varias cosas, o hay que dar la vuelta a una pregunta.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "25.1",
+      "tipo": "DEBUG",
+      "titulo": "Alguna roja",
+      "enunciado": "Concepto nuevo: or (\"o\") exige que al menos UNA condición sea verdadera. Este programa debería mostrar Hay roja si carta1 O carta2 es roja, pero usa and. Corrígelo.",
+      "codigoInicial": "if color1 == \"roja\" and color2 == \"roja\":\n    print(\"Hay roja\")\nelse:\n    print(\"Todo negro\")",
+      "solucionReferencia": "if color1 == \"roja\" or color2 == \"roja\":\n    print(\"Hay roja\")\nelse:\n    print(\"Todo negro\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarColor": true
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Hay roja"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "corazones"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Hay roja"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "treboles"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Todo negro"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 9,
+                "palo": "diamantes"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Hay roja"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "or"
+          ]
+        }
+      },
+      "retroalimentacion": "or acepta que se cumpla cualquiera de las dos.",
+      "pistas": [
+        "Cambia la palabra que une las dos preguntas."
+      ],
+      "solucionesIncorrectas": [
+        "if color1 == \"roja\" and color2 == \"roja\":\n    print(\"Hay roja\")\nelse:\n    print(\"Todo negro\")"
+      ]
+    },
+    {
+      "id": "25.2",
+      "tipo": "ESCRIBIR",
+      "titulo": "Lo contrario",
+      "enunciado": "Concepto nuevo: not invierte una condición. Usa not para mostrar Negra cuando carta1 NO sea roja y Roja cuando sí lo sea.",
+      "codigoInicial": "",
+      "solucionReferencia": "if not color1 == \"roja\":\n    print(\"Negra\")\nelse:\n    print(\"Roja\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarColor": true
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "corazones"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Roja"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Negra"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "diamantes"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Roja"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 8,
+                "palo": "treboles"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              }
+            ],
+            "mostrarColor": true
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Negra"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "else",
+            "not"
+          ]
+        }
+      },
+      "retroalimentacion": "not da la vuelta al resultado: not True es False.",
+      "pistas": [
+        "not color1 == \"roja\""
+      ],
+      "mensajeNoLogrado": "Debes usar not en la condición.",
+      "solucionesIncorrectas": [
+        "if color1 == \"roja\":\n    print(\"Roja\")\nelse:\n    print(\"Negra\")"
+      ]
+    },
+    {
+      "id": "25.3",
+      "tipo": "PREDECIR",
+      "titulo": "Quién va primero",
+      "enunciado": "Primero se resuelve not, luego and y al final or. ¿Qué muestra este programa?",
+      "codigoInicial": "if True or False and False:\n    print(\"A\")\nelse:\n    print(\"B\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "if",
+        "else",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "A"
+        },
+        {
+          "id": "b",
+          "texto": "B"
+        },
+        {
+          "id": "c",
+          "texto": "Nada"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "False and False es False, y True or False es True: se ejecuta A.",
+      "pistas": [
+        "and se resuelve antes que or."
+      ]
+    }
+  ]
+}

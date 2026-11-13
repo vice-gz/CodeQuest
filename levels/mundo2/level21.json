@@ -1,0 +1,266 @@
+{
+  "id": 21,
+  "mundo": 2,
+  "nombre": "Ganar o perder",
+  "concepto": "if / else",
+  "concepto_evaluado": "condicional_if_else",
+  "narrativa": "La mesa quiere una respuesta para cada situación, no solo para una.",
+  "escenario": {
+    "tipo": "cartas"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "21.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Dos caminos",
+      "enunciado": "Concepto nuevo: else (\"si no\") es el camino alternativo: se ejecuta cuando la condición del if es falsa. Siempre se ejecuta UNA de las dos ramas.",
+      "codigoInicial": "if total > 21:\n    print(\"Perdiste\")\nelse:\n    print(\"Ganaste\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 10,
+            "palo": "picas"
+          },
+          {
+            "valor": 9,
+            "palo": "picas"
+          },
+          {
+            "valor": 6,
+            "palo": "picas"
+          }
+        ]
+      },
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "ejecutado"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Con if / else, siempre se ejecuta exactamente una de las dos ramas.",
+      "pistas": [
+        "Prueba las dos mesas y compara."
+      ]
+    },
+    {
+      "id": "21.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Gana o pierde?",
+      "enunciado": "La mano suma 17. ¿Qué muestra este programa?",
+      "codigoInicial": "if total > 21:\n    print(\"Perdiste\")\nelse:\n    print(\"Ganaste\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "mostrarCartas": true,
+        "cartas": [
+          {
+            "valor": 10,
+            "palo": "picas"
+          },
+          {
+            "valor": 7,
+            "palo": "picas"
+          }
+        ]
+      },
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Perdiste"
+        },
+        {
+          "id": "b",
+          "texto": "Ganaste"
+        },
+        {
+          "id": "c",
+          "texto": "Perdiste y Ganaste"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "17 no es mayor que 21: la condición es falsa y se ejecuta el else.",
+      "pistas": [
+        "¿17 > 21?"
+      ]
+    },
+    {
+      "id": "21.3",
+      "tipo": "MODIFICAR",
+      "titulo": "Una casa más estricta",
+      "enunciado": "Ahora la casa pierde a quien suma más de 17. Modifica el programa para que muestre Perdiste con total mayor que 17 y Ganaste en cualquier otro caso.",
+      "codigoInicial": "if total > 21:\n    print(\"Perdiste\")\nelse:\n    print(\"Ganaste\")",
+      "solucionReferencia": "if total > 17:\n    print(\"Perdiste\")\nelse:\n    print(\"Ganaste\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Mesa 1 · 25",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 9,
+                "palo": "picas"
+              },
+              {
+                "valor": 6,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Perdiste"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 2 · 18",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 8,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Perdiste"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 3 · 17",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 10,
+                "palo": "picas"
+              },
+              {
+                "valor": 7,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Ganaste"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Mesa 4 · 12",
+          "escenario": {
+            "cartas": [
+              {
+                "valor": 7,
+                "palo": "picas"
+              },
+              {
+                "valor": 5,
+                "palo": "picas"
+              }
+            ]
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Ganaste"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "Solo cambió el número: la estructura if / else es la misma.",
+      "pistas": [
+        "Cambia el número de la condición."
+      ],
+      "mensajeNoLogrado": "Con 18 ya se pierde; con 17 todavía se gana.",
+      "solucionesIncorrectas": [
+        "if total > 21:\n    print(\"Perdiste\")\nelse:\n    print(\"Ganaste\")"
+      ]
+    }
+  ]
+}

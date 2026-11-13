@@ -1,0 +1,140 @@
+{
+  "id": 56,
+  "mundo": 5,
+  "nombre": "La máquina expendedora",
+  "concepto": "proyecto: input, if y cálculos",
+  "concepto_evaluado": "proyecto_expendedora",
+  "narrativa": "Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido.",
+  "escenario": {
+    "tipo": "expendedora"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "56.1",
+      "tipo": "RESOLVER",
+      "titulo": "La máquina expendedora",
+      "enunciado": "La máquina expendedora te pide primero el DINERO que metes y después el PRECIO del producto (los dos son números enteros). Si el dinero alcanza, muestra Cambio: seguido del cambio que devuelve (por ejemplo, Cambio: 3). Si no alcanza, muestra Dinero insuficiente. Cuidado con el caso en que el dinero es justo el precio.",
+      "codigoInicial": "",
+      "solucionReferencia": "dinero = int(input())\nprecio = int(input())\nif dinero >= precio:\n    print(\"Cambio: \" + str(dinero - precio))\nelse:\n    print(\"Dinero insuficiente\")",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str",
+        "if",
+        "elif",
+        "else",
+        "while",
+        "for",
+        "and",
+        "or",
+        "not",
+        "booleanos",
+        "def",
+        "return"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "10 para un producto de 7",
+          "entradas": [
+            "10",
+            "7"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Cambio: 3"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Dinero justo",
+          "entradas": [
+            "5",
+            "5"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Cambio: 0"
+            ]
+          }
+        },
+        {
+          "etiqueta": "No alcanza",
+          "entradas": [
+            "3",
+            "8"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Dinero insuficiente"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Billete grande",
+          "entradas": [
+            "20",
+            "1"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Cambio: 19"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Falta una moneda",
+          "entradas": [
+            "99",
+            "100"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Dinero insuficiente"
+            ]
+          }
+        }
+      ],
+      "etiquetaEntrada": "La máquina pide un número entero (primero el dinero y luego el precio)",
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "input",
+            "int",
+            "if",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "La máquina cobra bien: convierte lo que llega de input(), decide con if y calcula el cambio.",
+      "pistas": [
+        "Convierte cada entrada con int(input()).",
+        "if dinero >= precio: ... else: ...  (con >= el dinero justo también alcanza)."
+      ],
+      "mensajeNoLogrado": "Revisa los 5 casos: el dinero justo da Cambio: 0 y, si no alcanza, solo debe verse Dinero insuficiente.",
+      "solucionesIncorrectas": [
+        "dinero = int(input())\nprecio = int(input())\nprint(\"Cambio: \" + str(dinero - precio))",
+        "dinero = int(input())\nprecio = int(input())\nif dinero > precio:\n    print(\"Cambio: \" + str(dinero - precio))\nelse:\n    print(\"Dinero insuficiente\")",
+        "dinero = int(input())\nprecio = int(input())\nif dinero >= precio:\n    print(\"Cambio: \" + str(precio - dinero))\nelse:\n    print(\"Dinero insuficiente\")",
+        "print(\"Cambio: 3\")"
+      ],
+      "sinPistas": false,
+      "mision": "Cobra: si el dinero alcanza muestra «Cambio: X» (con dinero justo, Cambio: 0); si no, «Dinero insuficiente»."
+    }
+  ],
+  "proyecto": true
+}

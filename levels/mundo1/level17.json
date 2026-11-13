@@ -1,0 +1,346 @@
+{
+  "id": 17,
+  "mundo": 1,
+  "nombre": "La Boleta",
+  "ordinal": 18,
+  "concepto": "expresiones booleanas sin if (True / False)",
+  "concepto_evaluado": "expresiones_booleanas",
+  "narrativa": "Fin de cursos en la escuela del pueblo. La directora quiere que el sistema decida quién aprueba, pero sin escribir un if para cada alumno.",
+  "escenario": {
+    "tipo": "boleta",
+    "variables": {
+      "promedio": 85,
+      "asistencia": 90
+    }
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "17.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Una comparación es un valor",
+      "enunciado": "Concepto nuevo: una comparación no necesita if: da directamente True o False, y ese valor se puede guardar en una variable. Ejecuta y mira el sello.",
+      "codigoInicial": "aprobado = promedio >= 70\nprint(aprobado)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "promedio >= 70 se convirtió en True y se guardó en aprobado, como cualquier otro valor.",
+      "pistas": [
+        "En la Memoria, aprobado es LÓGICO."
+      ]
+    },
+    {
+      "id": "17.2",
+      "tipo": "PREDECIR",
+      "titulo": "Dos reglas a la vez",
+      "enunciado": "¿Qué muestra este programa?",
+      "codigoInicial": "promedio = 90\nasistencia = 75\naprobado = promedio >= 70 and asistencia >= 80\nprint(aprobado)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "True"
+        },
+        {
+          "id": "b",
+          "texto": "False"
+        },
+        {
+          "id": "c",
+          "texto": "Un error, porque falta el if"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: el promedio cumple, pero la asistencia (75) no llega a 80, y con and deben cumplirse las dos.",
+      "pistas": [
+        "Revisa cada regla por separado."
+      ]
+    },
+    {
+      "id": "17.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "La regla de la escuela",
+      "enunciado": "Con promedio y asistencia (los trae cada boleta), guarda en aprobado si el alumno pasa: promedio de 70 o más Y asistencia de 80 o más. Sin if: escribe la comparación directo. Muestra aprobado. Se prueba con 4 boletas.",
+      "codigoInicial": "",
+      "solucionReferencia": "aprobado = promedio >= 70 and asistencia >= 80\nprint(aprobado)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "85 y 90 %",
+          "escenario": {
+            "variables": {
+              "promedio": 85,
+              "asistencia": 90
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "aprobado": true
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "True"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "90 y 75 %",
+          "escenario": {
+            "variables": {
+              "promedio": 90,
+              "asistencia": 75
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "aprobado": false
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "False"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "65 y 95 %",
+          "escenario": {
+            "variables": {
+              "promedio": 65,
+              "asistencia": 95
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "aprobado": false
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "False"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "70 y 80 %",
+          "escenario": {
+            "variables": {
+              "promedio": 70,
+              "asistencia": 80
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "aprobado": true
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "True"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "and"
+          ],
+          "variable": "aprobado"
+        }
+      },
+      "retroalimentacion": "Una sola línea decide por todos los alumnos. Fíjate en el caso 70 y 80: >= incluye el límite.",
+      "pistas": [
+        "aprobado = promedio >= 70 and asistencia >= 80"
+      ],
+      "mensajeNoLogrado": "aprobado debe ser True solo si promedio >= 70 y asistencia >= 80 (revisa las 4 boletas, incluida la del límite).",
+      "solucionesIncorrectas": [
+        "aprobado = promedio > 70 and asistencia > 80\nprint(aprobado)",
+        "aprobado = True\nprint(aprobado)",
+        "aprobado = promedio >= 70 or asistencia >= 80\nprint(aprobado)"
+      ],
+      "max_lineas_recomendadas": 2
+    },
+    {
+      "id": "17.4",
+      "tipo": "RESOLVER",
+      "titulo": "Derecho a extraordinario",
+      "enunciado": "Quien NO aprueba puede presentar examen extraordinario si su promedio es de 50 o más O su asistencia es de 90 o más. Calcula aprobado (la regla de antes) y extraordinario = not aprobado and (...). Muestra aprobado y luego extraordinario. Se prueba con 5 boletas.",
+      "codigoInicial": "",
+      "solucionReferencia": "aprobado = promedio >= 70 and asistencia >= 80\nextraordinario = not aprobado and (promedio >= 50 or asistencia >= 90)\nprint(aprobado)\nprint(extraordinario)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "and",
+        "or",
+        "not",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "85 y 90 %",
+          "escenario": {
+            "variables": {
+              "promedio": 85,
+              "asistencia": 90
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "True",
+              "False"
+            ]
+          }
+        },
+        {
+          "etiqueta": "65 y 95 %",
+          "escenario": {
+            "variables": {
+              "promedio": 65,
+              "asistencia": 95
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "False",
+              "True"
+            ]
+          }
+        },
+        {
+          "etiqueta": "40 y 70 %",
+          "escenario": {
+            "variables": {
+              "promedio": 40,
+              "asistencia": 70
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "False",
+              "False"
+            ]
+          }
+        },
+        {
+          "etiqueta": "55 y 60 %",
+          "escenario": {
+            "variables": {
+              "promedio": 55,
+              "asistencia": 60
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "False",
+              "True"
+            ]
+          }
+        },
+        {
+          "etiqueta": "90 y 75 %",
+          "escenario": {
+            "variables": {
+              "promedio": 90,
+              "asistencia": 75
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "False",
+              "True"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "and",
+            "or",
+            "not"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Boletas entregadas! not, and, or y los paréntesis te dejan escribir reglas completas sin un solo if.",
+      "pistas": [
+        "El paréntesis agrupa la parte del or.",
+        "extraordinario = not aprobado and (promedio >= 50 or asistencia >= 90)"
+      ],
+      "mensajeNoLogrado": "Revisa las 5 boletas: quien aprueba nunca va a extraordinario.",
+      "solucionesIncorrectas": [
+        "aprobado = promedio >= 70 and asistencia >= 80\nextraordinario = promedio >= 50 or asistencia >= 90\nprint(aprobado)\nprint(extraordinario)"
+      ],
+      "max_lineas_recomendadas": 4
+    }
+  ]
+}

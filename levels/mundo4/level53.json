@@ -1,0 +1,200 @@
+{
+  "id": 53,
+  "mundo": 4,
+  "nombre": "Producción en cadena",
+  "concepto": "usar el return de una función como parámetro de otra",
+  "concepto_evaluado": "funciones_encadenamiento",
+  "narrativa": "Las máquinas se pueden conectar: lo que sale de una entra a la siguiente. Así se arma una cadena de producción.",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "53.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Una máquina alimenta a otra",
+      "enunciado": "El producto terminado de una máquina puede ser el material de la siguiente: doble(sumar(2, 3)). Python primero ejecuta la máquina de adentro y su resultado entra a la de afuera. Mira cómo la caja verde de sumar pasa a ser la caja de materiales de doble.",
+      "codigoInicial": "def sumar(a, b):\n    return a + b\ndef doble(x):\n    return x * 2\nprint(doble(sumar(2, 3)))",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "sumar(2, 3) devolvió 5, y ese 5 fue el material de doble(5), que devolvió 10.",
+      "pistas": [
+        "Se ejecuta primero lo que está más adentro de los paréntesis."
+      ]
+    },
+    {
+      "id": "53.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué sale de la cadena?",
+      "enunciado": "En Python, ¿qué muestra este programa?",
+      "codigoInicial": "def doble(x):\n    return x * 2\ndef sumar_uno(x):\n    return x + 1\nprint(doble(sumar_uno(4)))",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "9"
+        },
+        {
+          "id": "b",
+          "texto": "10"
+        },
+        {
+          "id": "c",
+          "texto": "8"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "sumar_uno(4) devuelve 5 y doble(5) devuelve 10. Si el orden fuera al revés (sumar_uno(doble(4))) saldría 9.",
+      "pistas": [
+        "Empieza por la máquina de adentro."
+      ]
+    },
+    {
+      "id": "53.3",
+      "tipo": "RESOLVER",
+      "titulo": "Conecta dos máquinas",
+      "enunciado": "Construye cuadrado(n), que devuelva n * n, y mitad(n), que devuelva n // 2. Muestra el resultado de pasar el cuadrado de 6 por la máquina mitad (18), conectándolas en una sola línea.",
+      "codigoInicial": "",
+      "solucionReferencia": "def cuadrado(n):\n    return n * n\ndef mitad(n):\n    return n // 2\nprint(mitad(cuadrado(6)))",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "18"
+            ]
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "cuadrado"
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "mitad"
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "cuadrado",
+            "minimo": 1
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "mitad",
+            "minimo": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "Encadenaste dos funciones: el return de una fue el parámetro de la otra.",
+      "pistas": [
+        "mitad(cuadrado(6))"
+      ],
+      "mensajeNoLogrado": "Debe mostrar 18 usando las dos funciones, una dentro de la otra.",
+      "solucionesIncorrectas": [
+        "print(18)"
+      ]
+    },
+    {
+      "id": "53.4",
+      "tipo": "RESOLVER",
+      "titulo": "La cadena de tres",
+      "enunciado": "Construye tres máquinas: quitar_dos(n) devuelve n - 2, duplicar(n) devuelve n * 2 y sumar_tres(n) devuelve n + 3. Pasa el número 10 por las tres, en ese orden, y muestra el resultado final (19).",
+      "codigoInicial": "",
+      "solucionReferencia": "def quitar_dos(n):\n    return n - 2\ndef duplicar(n):\n    return n * 2\ndef sumar_tres(n):\n    return n + 3\nprint(sumar_tres(duplicar(quitar_dos(10))))",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "19"
+            ]
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "quitar_dos"
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "duplicar"
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "sumar_tres"
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "Una cadena de producción de tres pasos: cada máquina recibe lo que entregó la anterior.",
+      "pistas": [
+        "La primera en ejecutarse es la más interna: quitar_dos(10)."
+      ],
+      "mensajeNoLogrado": "Debe mostrar 19: ((10 - 2) * 2) + 3, pasando el valor por las tres máquinas.",
+      "solucionesIncorrectas": [
+        "print(19)"
+      ]
+    }
+  ]
+}

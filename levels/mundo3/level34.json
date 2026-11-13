@@ -1,0 +1,129 @@
+{
+  "id": 34,
+  "mundo": 3,
+  "nombre": "Contar repeticiones",
+  "concepto": "contadores en un while",
+  "concepto_evaluado": "contadores",
+  "narrativa": "Para repetir algo exactamente N veces, el ciclo necesita llevar la cuenta de cuántas van.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "34.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Un contador",
+      "enunciado": "Concepto nuevo: un contador es una variable que empieza en 0 y suma 1 en cada vuelta. La condición del while lo compara con el máximo.",
+      "codigoInicial": "viajes = 0\nwhile viajes < 3:\n    elevador.subir(1)\n    elevador.bajar(1)\n    viajes = viajes + 1\nprint(viajes)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar"
+      ],
+      "validacion": {
+        "tipo": "elevador_piso",
+        "valorEsperado": 1
+      },
+      "retroalimentacion": "El contador cuenta las vueltas y decide cuándo parar.",
+      "pistas": [
+        "Mira el letrero de repetición y el chip viajes."
+      ]
+    },
+    {
+      "id": "34.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Cuántos viajes?",
+      "enunciado": "¿Qué muestra este programa al final?",
+      "codigoInicial": "viajes = 0\nwhile viajes < 4:\n    elevador.subir(1)\n    elevador.bajar(1)\n    viajes = viajes + 1\nprint(viajes)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar"
+      ],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "3"
+        },
+        {
+          "id": "b",
+          "texto": "4"
+        },
+        {
+          "id": "c",
+          "texto": "5"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "viajes empieza en 0 y el ciclo para cuando llega a 4.",
+      "pistas": [
+        "Cuenta: 0, 1, 2, 3 y luego la condición falla con 4."
+      ]
+    },
+    {
+      "id": "34.3",
+      "tipo": "MODIFICAR",
+      "titulo": "Cinco viajes",
+      "enunciado": "Este programa hace 3 viajes. Modifícalo para que el elevador haga 5 viajes y muestre al final que hizo 5.",
+      "codigoInicial": "viajes = 0\nwhile viajes < 3:\n    elevador.subir(1)\n    elevador.bajar(1)\n    viajes = viajes + 1\nprint(viajes)",
+      "solucionReferencia": "viajes = 0\nwhile viajes < 5:\n    elevador.subir(1)\n    elevador.bajar(1)\n    viajes = viajes + 1\nprint(viajes)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar"
+      ],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "5"
+            ]
+          },
+          {
+            "tipo": "elevador_piso",
+            "valorEsperado": 1
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "while"
+          ],
+          "variable": "viajes"
+        }
+      },
+      "retroalimentacion": "El número de la condición decide cuántas veces se repite.",
+      "pistas": [
+        "Cambia el número de la condición."
+      ],
+      "mensajeNoLogrado": "Debe mostrar 5.",
+      "solucionesIncorrectas": [
+        "viajes = 0\nwhile viajes < 3:\n    elevador.subir(1)\n    elevador.bajar(1)\n    viajes = viajes + 1\nprint(viajes)"
+      ]
+    }
+  ]
+}

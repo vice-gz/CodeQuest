@@ -1,5 +1,5 @@
 // juego.js (antes main.js)
-// Orquesta el juego de CodeQuest: 5 mundos, 56 niveles (con Nivel 0 y jefes), sistema de fases y
+// Orquesta el juego de CodeQuest: 5 mundos, 59 niveles (con Nivel 0 y jefes), sistema de fases y
 // 3 paneles en vivo. Ciclo por fase: código -> Lexer -> Parser -> Validator ->
 // Interpreter (async) -> ESCENARIO DEL MUNDO (laboratorio, memoria, mesa de
 // cartas o elevador) -> paneles en vivo -> retroalimentación -> progreso.
@@ -12,7 +12,7 @@
 import { Lexer } from "./interpreter/lexer.js";
 import { Parser } from "./interpreter/parser.js";
 import { Validator } from "./interpreter/validator.js";
-import { CQLError } from "./interpreter/errors.js";
+import { CQLError, Errores } from "./interpreter/errors.js";
 
 import { crearEscenario, configDeFase } from "./game/escenarios/index.js";
 import { ejecutarPrograma, evaluarFase } from "./game/evaluacion.js";
@@ -28,9 +28,9 @@ import { PhaseBar } from "./ui/phases.js";
 import { renderizarEstrellas, calcularEstrellasNivel } from "./ui/stars.js";
 
 import { Dictionary } from "./ui/dictionary.js";
-import { Tour } from "./ui/tour.js";
+import { Tour, PASOS_NIVEL_0 } from "./ui/tour.js";
 import { ModoDemo } from "./ui/demoMode.js";
-import { abrirGlosario, mostrarBienvenidaMundo } from "./ui/conceptos.js";
+import { abrirGlosario, mostrarBienvenidaMundo, CONCEPTOS } from "./ui/conceptos.js";
 import {
   configurarPestanas,
   seguirTeclado,
@@ -55,6 +55,15 @@ import { renderizarNav } from "./nav.js";
 import { PanelTarjetas } from "./ui/tarjetas.js";
 import { PASOS_MUNDO, tourDeMundoVisto, marcarTourDeMundoVisto } from "./ui/toursMundo.js";
 import { mensajeEficiencia } from "./game/eficiencia.js";
+import { Hud } from "./ui/hud.js";
+import { PLANTILLAS, plantillaMetodo, insertarEnEditor } from "./ui/chipsInsercion.js";
+import { ContadorLineas } from "./ui/contadorLineas.js";
+import { listarRequisitos } from "./game/requisitos.js";
+import { MODOS_ANIMACION, leerModo, guardarModo, aplicarModo } from "./game/rendimiento.js";
+import { crearAutoguardado, leerBorrador } from "./game/autoguardado.js";
+import { registrarLineas, totalLineasEscritas } from "./game/lineasEscritas.js";
+import { crearIndicadorCarga, crearCargaNivel } from "./ui/cargando.js";
+import { mostrarPantallaFinal } from "./ui/pantallaFinal.js";
 import { evaluarEleccion } from "./game/ordenar.js";
 import { catalogo, obtenerNivel, mundoDeNivel, TOTAL_NIVELES, MAX_ESTRELLAS, ordinalDeNivel, nivelPorOrdinal, siguienteNivel, REQUERIDOS_POR_MUNDO } from "./game/catalogo.js";
 
@@ -62,6 +71,7 @@ import { catalogo, obtenerNivel, mundoDeNivel, TOTAL_NIVELES, MAX_ESTRELLAS, ord
 // admin) o uno que no guarda nada (Laboratorio Libre, ?modo=sandbox).
 let repo = null;
 let esSandbox = false;
+let usuarioActual = "anon"; // para el autoguardado y el conteo de líneas (se fija al iniciar sesión)
 
 // Todas las ejecuciones guardan el concepto que evalúa el nivel (concepto_evaluado).
 function guardarEjecucion(datos) {
@@ -154,10 +164,72 @@ const panelTarjetas = new PanelTarjetas({
 });
 let ordenElegido = []; // Nivel 0: ids de las tarjetas ya aceptadas
 const statePanel = new StatePanel(el.estadoContenido);
+
+// 3.2 · Feedback de carga (consola, comprobación del resultado y capa de «CARGANDO...» del nivel)
+const cargaNivel = crearCargaNivel(document.getElementById("cargando-nivel"));
+const indicadorEjecucion = crearIndicadorCarga({ contenedor: el.salidaContenido, texto: "EJECUTANDO...", retardoMs: 150 });
+const indicadorComprobacion = crearIndicadorCarga({ contenedor: el.feedbackContenido, texto: "COMPROBANDO TU RESULTADO...", retardoMs: 250 });
+
+// 3.3 · Autoguardado del código en localStorage (se recupera tras recargar la página con F5)
+const fasePideCodigo = (f) => Boolean(f) && !["PREDECIR", "ORDENAR"].includes(f.tipo);
+const autoguardado = crearAutoguardado({
+  usuarioId: () => usuarioActual,
+  faseId: () => (esSandbox || !fasePideCodigo(faseData) ? null : faseData.id),
+  codigoInicial: () => faseData?.codigoInicial || "",
+  obtenerCodigo: () => codeEditor.obtenerCodigo(),
+});
+const contador = new ContadorLineas(document.getElementById("contador-lineas"));
+// Límite recomendado: el de la fase o, si no, el del nivel (`max_lineas_recomendadas` en el JSON). Sin límite solo cuenta.
+const limiteDeLineas = () => faseData?.max_lineas_recomendadas ?? nivelData?.max_lineas_recomendadas ?? null;
+function actualizarContador() {
+  contador.ocultar(!fasePideCodigo(faseData));
+  contador.actualizar(codeEditor.obtenerCodigo(), limiteDeLineas());
+}
+el.editorTextarea.addEventListener("input", () => {
+  autoguardado.programar();
+  actualizarContador();
+});
+window.addEventListener("pagehide", () => {
+  autoguardado.guardarAhora();
+  escenario?.destruir?.();
+});
+document.addEventListener("visibilitychange", () => document.visibilityState === "hidden" && autoguardado.guardarAhora());
 const phaseBar = new PhaseBar(el.barraFases);
+
+// Interfaz «de videojuego»: misión de una línea, progreso, lámparas de casos y Nix con su globo (ver ui/hud.js).
+const porId = (id) => document.getElementById(id);
+const hud = new Hud(
+  {
+    misionTexto: porId("hud-mision-texto"),
+    fases: porId("hud-fases"),
+    diodos: porId("hud-diodos"),
+    btnMasInfo: porId("btn-mas-info"),
+    masInfo: porId("mas-info"),
+    globo: porId("nix-globo"),
+    globoTexto: porId("nix-texto"),
+    btnNixDetalle: porId("btn-nix-detalle"),
+    nixSprite: porId("nix-sprite"),
+    panelFeedback: document.querySelector(".panel-feedback"),
+    btnFeedbackDetalle: porId("btn-feedback-detalle"),
+    feedbackContenido: el.feedbackContenido,
+  },
+  {
+    esMovil: () => typeof window.matchMedia === "function" && window.matchMedia("(max-width: 992px)").matches,
+    irAAprende: () => pestanas.seleccionar("aprende", { subir: false }),
+  }
+);
+hud.observarFeedback();
+let hudCasosFase = null; // fase para la que ya están dibujadas las lámparas de casos
+let hudNivel = null; // nivel para el que ya se decidió si «Más info» se abre
 const diccionario = new Dictionary(el.diccionarioPanel, el.btnDiccionario, el.dicContador);
 // El tour cambia de pestaña (Jugar / Aprende / Consola) cuando el elemento que explica está en otra.
 const tour = new Tour({ alNecesitarPestana: (pestana) => pestanas.seleccionar(pestana, { subir: false }) });
+const tourNivel0 = new Tour({
+  alNecesitarPestana: (pestana) => pestanas.seleccionar(pestana, { subir: false }),
+  pasos: PASOS_NIVEL_0,
+  alTerminar: () => Tour.marcarVistoNivel0(),
+});
+let arranqueListo = false;
 
 let nivelActualId = 1;
 let nivelData = null;
@@ -184,6 +256,22 @@ const urlJuego = (mundo) => `juego.html?mundo=${mundo}${enDemo ? "&demo=true" : 
 const urlMapa = () => `mundos.html${enDemo ? "?demo=true" : ""}`;
 
 async function irANivel(id) {
+  cargaNivel.mostrar(150); // si preparar el nivel tarda (red lenta), se ve «CARGANDO...»; si es rápido, no aparece
+  try {
+    await prepararNivel(id);
+    if (arranqueListo && !esSandbox) {
+      if (id === 0 && !Tour.yaSeVioNivel0()) {
+        setTimeout(() => tourNivel0.iniciar(), 450);
+      } else if (id >= 1 && !Tour.yaSeVio()) {
+        setTimeout(() => tour.iniciar(), 450);
+      }
+    }
+  } finally {
+    cargaNivel.ocultar();
+  }
+}
+
+async function prepararNivel(id) {
   nivelActualId = id;
   mundoActualId = mundoDeNivel(id);
   nivelData = await cargarNivel(id);
@@ -209,7 +297,10 @@ async function irANivel(id) {
 function montarEscenario(casoIndice = 0) {
   casoVisual = casoIndice;
   const caso = faseData.casos?.[casoIndice] ?? null;
+  // Cada escenario anterior dejaba su animación de reposo viva sobre el mismo canvas: se detiene antes de crear el siguiente.
+  escenario?.destruir?.();
   escenario = crearEscenario(configDeFase(nivelData, faseData, caso), { canvas: el.lienzo });
+  document.body.dataset.escenario = escenario.tipo; // el Mundo 1 alterna escenarios: el CSS de la consola de datos sigue al escenario, no al mundo
   escenario.ajustarTamano();
 
   el.tituloMundo.textContent = escenario.tituloPanel;
@@ -231,6 +322,11 @@ function actualizarPanelEstado() {
 
 function renderSelectorCasos() {
   const casos = faseData.casos || [];
+  // Las lámparas del HUD (una por caso) sustituyen visualmente a los botones de caso; se crean una vez por fase.
+  if (hudCasosFase !== faseData.id) {
+    hud.ponerCasos(casos, casoVisual, (i) => cambiarCaso(i));
+    hudCasosFase = faseData.id;
+  } else hud.marcarActivo(casoVisual);
   el.selectorCasos.classList.toggle("oculto", casos.length < 2);
   el.selectorCasos.innerHTML = "";
   if (casos.length < 2) return;
@@ -255,9 +351,18 @@ function cambiarCaso(i) {
 }
 
 async function cargarFase(indice) {
+  autoguardado.guardarAhora(); // lo que se estaba escribiendo en la fase anterior no se pierde al cambiar de fase
   faseIndice = indice;
   faseData = nivelData.fases[indice];
   pistaIndiceActual = 0;
+  hudCasosFase = null;
+  hud.ponerMision(faseData);
+  hud.ocultarGlobo();
+  hud.plegarFeedback(true);
+  if (hudNivel !== nivelActualId) {
+    hudNivel = nivelActualId;
+    hud.abrirSiEsPrimeraVez(`codequest:masinfo:${usuarioActual}:${nivelActualId}`);
+  }
 
   montarEscenario(0);
 
@@ -271,6 +376,20 @@ async function cargarFase(indice) {
   outputPanel.mostrarVacio(mensajeSalidaVacia());
   feedback.mostrarInicial(mensajeInicialFase(faseData));
 
+  // 3.3 · ¿Había código escrito antes de recargar? Se recupera (y se avisa).
+  if (!esSandbox && fasePideCodigo(faseData)) {
+    const borrador = leerBorrador(usuarioActual, faseData.id);
+    if (borrador !== null && borrador !== (faseData.codigoInicial || "")) {
+      codeEditor.establecerCodigo(borrador);
+      feedback.mostrarInicial("Recuperamos el código que tenías escrito antes de salir de la página. Puedes seguir desde ahí o presionar Reiniciar para empezar de cero.");
+    }
+  }
+
+  actualizarContador();
+  el.listaInstrucciones.querySelectorAll(".chip-insertable").forEach((b) => {
+    b.disabled = el.editorTextarea.disabled; // sin editor (predecir, ordenar) no hay dónde insertar
+  });
+
   const estadoNivel = await repo.obtenerEstadoNivel(mundoActualId, nivelActualId);
   const completadas = new Set(
     Object.entries(estadoNivel.fases)
@@ -278,6 +397,7 @@ async function cargarFase(indice) {
       .map(([k]) => k)
   );
   phaseBar.render(nivelData.fases, faseIndice, completadas, (i) => cargarFase(i));
+  hud.ponerFases(nivelData.fases, faseIndice, completadas);
 
   configurarUIPorTipoFase();
 }
@@ -318,6 +438,7 @@ function configurarUIPorTipoFase() {
   el.lenguajeTag.classList.toggle("oculto", esOrdenar);
   el.tituloCodigo.textContent = esOrdenar ? "Tu algoritmo" : "Código";
   if (esOrdenar) montarTarjetas();
+  requestAnimationFrame(() => escenario?.ajustarTamano());
   // Nivel Jefe: sin botón de pistas.
   el.btnPista.classList.toggle("oculto", faseData.sinPistas === true);
 
@@ -354,18 +475,35 @@ const NOMBRE_CHIP = {
   booleanos: "True / False",
   def: "def nombre(parámetros):",
   return: "return valor",
+  round: "round()",
 };
 
 function renderInstruccionesPermitidas(fase) {
-  const chips = (fase.instruccionesPermitidas || []).map((i) => NOMBRE_CHIP[i] || `${i}()`);
+  // Cada instrucción es un BOTÓN que inserta su sintaxis de Python en el editor, donde esté el cursor.
   const objeto = escenario.biblioteca.objeto;
+  const botones = (fase.instruccionesPermitidas || []).map((i) => ({ etiqueta: NOMBRE_CHIP[i] || `${i}()`, clave: i, metodo: "" }));
   (fase.metodosPermitidos || []).forEach((m) => {
-    const def = escenario.biblioteca.metodos[m];
-    chips.push(`${objeto}.${m}()`);
-    if (!def) chips.pop();
+    if (escenario.biblioteca.metodos[m]) botones.push({ etiqueta: `${objeto}.${m}()`, clave: "", metodo: m });
   });
-  el.listaInstrucciones.innerHTML = chips.map((c) => `<span class="chip-instruccion">${c.replace(/</g, "&lt;")}</span>`).join("");
+  el.listaInstrucciones.innerHTML = botones
+    .map(
+      (b) =>
+        `<button type="button" class="chip-instruccion chip-insertable" data-clave="${b.clave}" data-metodo="${b.metodo}" title="Insertar en el editor" aria-label="Insertar ${b.etiqueta.replace(/"/g, "")} en el editor">${b.etiqueta.replace(/</g, "&lt;")}</button>`
+    )
+    .join("");
 }
+
+// Clic en una instrucción disponible → se escribe en el editor (en celular, además, se pasa a la pestaña Jugar donde está el editor).
+el.listaInstrucciones.addEventListener("click", (e) => {
+  const boton = e.target.closest(".chip-insertable");
+  if (!boton || el.editorTextarea.disabled) return;
+  const plantilla = boton.dataset.metodo ? plantillaMetodo(escenario.biblioteca.objeto, boton.dataset.metodo) : PLANTILLAS[boton.dataset.clave];
+  if (!plantilla) return;
+  if (insertarEnEditor(codeEditor, plantilla) && hud.esMovil()) {
+    pestanas.seleccionar("jugar", { subir: false });
+    codeEditor.textarea.focus();
+  }
+});
 
 // ¿Ya jugó (superó) algún nivel que no sea de tutorial? Entonces el Nivel 0 no le estorba.
 function hayProgresoReal(progreso) {
@@ -545,6 +683,12 @@ async function ejecutarCodigo() {
   const codigo = codeEditor.obtenerCodigo();
   outputPanel.limpiar();
   memoryPanel.limpiar();
+  hud.reiniciarCasos();
+  hud.ocultarGlobo(); // Nix no debe seguir con el mensaje de la ejecución anterior mientras la escena anima esta
+  el.btnEjecutar.classList.add("cargando");
+  el.btnEjecutar.setAttribute("aria-busy", "true");
+  const entradasDelCaso = !faseData.entradasInteractivas && Array.isArray(faseData.casos?.[casoVisual]?.entradas) && faseData.casos[casoVisual].entradas.length ? [...faseData.casos[casoVisual].entradas] : null;
+  indicadorEjecucion.iniciar(); // «EJECUTANDO...» si tarda; se quita con la primera salida
 
   const inicio = performance.now();
   const tiempo = () => Math.round(performance.now() - inicio);
@@ -564,14 +708,28 @@ async function ejecutarCodigo() {
       ast,
       escenario,
       callbacks: {
-        onSalida: (s) => outputPanel.agregar(s),
-        onAsignacion: (nombre, valor) => memoryPanel.actualizar(nombre, valor),
+        onSalida: (s) => {
+          indicadorEjecucion.terminar();
+          outputPanel.agregar(s);
+        },
+        // `variablesOcultas`: datos del escenario que el juego esconde a propósito (el número secreto de la adivinanza).
+        onAsignacion: (nombre, valor) => !faseData.variablesOcultas?.includes(nombre) && memoryPanel.actualizar(nombre, valor),
         onEstado: () => actualizarPanelEstado(),
-        // La ejecución se pausa aquí hasta que el estudiante escribe un valor.
-        pedirEntrada: (opciones) => outputPanel.pedirEntrada({ etiqueta: opciones?.etiqueta || faseData.etiquetaEntrada }),
+        // Niveles con CASOS que traen sus entradas (jefes, proyectos): la ejecución usa las del caso elegido con las lámparas, igual que
+        // la evaluación. Antes había que teclearlas a mano y, si el alumno ponía otros números, el caso 1 fallaba aunque su programa
+        // estuviera bien. En los demás niveles la ejecución se pausa aquí hasta que el estudiante escribe un valor.
+        pedirEntrada: entradasDelCaso
+          ? async () => {
+              indicadorEjecucion.terminar();
+              if (!entradasDelCaso.length) throw Errores.sinValoresDeEntrada();
+              return String(entradasDelCaso.shift());
+            }
+          : (opciones) => indicadorEjecucion.terminar() || outputPanel.pedirEntrada({ etiqueta: opciones?.etiqueta || faseData.etiquetaEntrada }),
       },
     });
     actualizarPanelEstado();
+    indicadorEjecucion.terminar();
+    indicadorComprobacion.iniciar(); // la comprobación guarda en Supabase: si tarda, se ve «COMPROBANDO...»
 
     await evaluarResultado({ ast, visual, codigo, tiempoMs: tiempo() });
   } catch (error) {
@@ -580,6 +738,10 @@ async function ejecutarCodigo() {
     await manejarError(error, codigo, tiempo());
   } finally {
     enEjecucion = false;
+    indicadorEjecucion.terminar();
+    indicadorComprobacion.terminar();
+    el.btnEjecutar.classList.remove("cargando");
+    el.btnEjecutar.removeAttribute("aria-busy");
     el.btnEjecutar.disabled = false;
     pestanas.marcarNuevo("consola"); // punto en «Consola» si la salida quedó en otra pestaña
     mostrarResultado(el.panelFeedback);
@@ -600,8 +762,16 @@ async function evaluarResultado({ ast, visual, codigo, tiempoMs }) {
     codigo,
     ast,
     visual: { escenario, salidas: visual.salidas, memoria: visual.memoria, llamadas: visual.llamadas, funciones: visual.funciones },
-    casoVisual,
+    // En las fases que se JUEGAN a mano (el radar de adivinanza) lo que el estudiante tecleó no se compara con ningún caso: los casos se prueban todos en silencio.
+    casoVisual: faseData.entradasInteractivas ? -1 : casoVisual,
   });
+  // El núcleo del proyecto libre sincroniza sus módulos y, si todo cumple, se activa: se ESPERA para que se vea antes de la pantalla final.
+  await escenario.marcarRequisitos?.(listarRequisitos(faseData, codigo));
+  if (evaluacion.casos?.length) {
+    const resultados = evaluacion.casos.map((c) => c.ok);
+    hud.marcarCasos(resultados); // lámparas del HUD (✓ / ✗)
+    escenario.marcarCasos?.(resultados); // y, si la escena las tiene (la máquina expendedora), también ahí
+  }
 
   if (evaluacion.exito) {
     await completarFaseActual(codigo, tiempoMs);
@@ -624,6 +794,8 @@ async function evaluarResultado({ ast, visual, codigo, tiempoMs }) {
 }
 
 async function completarFaseActual(codigo, tiempoMs) {
+  autoguardado.descartar(); // 3.3 · la fase se completó: el borrador ya no hace falta
+  if (!esSandbox) registrarLineas(usuarioActual, faseData.id, faseData.tipo, codigo); // para la pantalla final
   const estadoPrevio = await repo.obtenerEstadoNivel(mundoActualId, nivelActualId);
   const yaCompletada = estadoPrevio.fases[faseData.id]?.completada === true;
 
@@ -651,6 +823,7 @@ async function completarFaseActual(codigo, tiempoMs) {
       .map(([k]) => k)
   );
   phaseBar.render(nivelData.fases, faseIndice, completadas, (i) => cargarFase(i));
+  hud.ponerFases(nivelData.fases, faseIndice, completadas);
   await actualizarDiccionario();
 
   const todasCompletas = nivelData.fases.every((f) => completadas.has(f.id));
@@ -701,7 +874,9 @@ async function completarFaseActual(codigo, tiempoMs) {
       consejo,
     });
 
-    if (cierraMundo) {
+    if (cierraMundo && !mundoSiguiente) {
+      await mostrarFinDelJuego(); // 3.4 · último nivel del último mundo: pantalla final de CodeQuest
+    } else if (cierraMundo) {
       const mundoProgreso = (await repo.obtenerProgreso()).mundos[mundoActualId];
       const estrellasMundo = Object.values(mundoProgreso?.niveles || {}).reduce((t, n) => t + (n.estrellas || 0), 0);
       const resultado = await mostrarTransicionMundo({
@@ -752,6 +927,25 @@ async function completarFaseActual(codigo, tiempoMs) {
   }
 }
 
+// 3.4 · Pantalla final: estrellas totales y líneas de código escritas.
+async function mostrarFinDelJuego() {
+  const progreso = await repo.obtenerProgreso();
+  let estrellas = 0;
+  Object.values(progreso.mundos).forEach((mundo) => {
+    Object.values(mundo.niveles).forEach((nivel) => {
+      estrellas += nivel.estrellas || 0;
+    });
+  });
+  await mostrarPantallaFinal({
+    estrellas,
+    estrellasMax: MAX_ESTRELLAS,
+    lineas: totalLineasEscritas(usuarioActual),
+    nombre: progreso.jugador?.nombre || null,
+    urlMapa: urlMapa(),
+    urlPerfil: enDemo ? null : "perfil.html",
+  });
+}
+
 async function manejarError(error, codigo, tiempoMs) {
   if (error instanceof CQLError) {
     // Algunas fases EXPLORAR existen justamente para que el estudiante lea
@@ -798,6 +992,7 @@ async function manejarError(error, codigo, tiempoMs) {
 // ---------- Reiniciar / pistas ----------
 
 async function reiniciarFase() {
+  autoguardado.descartar(); // Reiniciar = empezar de cero: se borra el borrador
   await cargarFase(faseIndice);
 }
 
@@ -854,7 +1049,10 @@ configurarBarraSimbolos(el.barraSimbolos, codeEditor);
 el.btnReiniciar.addEventListener("click", reiniciarFase);
 el.btnPista.addEventListener("click", mostrarPista);
 
-el.btnTour.addEventListener("click", () => tour.iniciar());
+el.btnTour.addEventListener("click", () => {
+  if (nivelActualId === 0 || faseData?.tipo === "ORDENAR") tourNivel0.iniciar();
+  else tour.iniciar();
+});
 el.btnConceptos.addEventListener("click", () => abrirGlosario(mundoActualId || 1));
 
 function marcarInsignia(texto) {
@@ -875,11 +1073,52 @@ async function iniciarSandbox() {
   el.etiquetaConcepto.textContent = nivelData.concepto;
   el.textoNarrativa.textContent = nivelData.narrativa;
   await cargarFase(0);
+  const params = new URLSearchParams(window.location.search);
+  const conceptoId = params.get("concepto");
+  if (conceptoId) {
+    const concepto = CONCEPTOS.find((c) => c.id === conceptoId);
+    if (concepto?.ejemplo) {
+      codeEditor.establecerCodigo(concepto.ejemplo);
+      el.etiquetaConcepto.textContent = concepto.titulo;
+      feedback.mostrarInicial(`Concepto cargado: ${concepto.titulo}. Presiona ▶ Ejecutar para probar el ejemplo o modifícalo libremente.`);
+    }
+  }
   await actualizarDiccionario();
   marcarInsignia("LABORATORIO LIBRE · sin estrellas ni progreso");
 }
 
 window.addEventListener("resize", () => escenario && escenario.ajustarTamano());
+
+// El dpr también cambia al hacer zoom o al mover la ventana a otra pantalla, sin que haya «resize»: se vuelve a ajustar el tablero.
+// Botón «Animaciones»: auto (el juego se adapta a la computadora) → completas → ligeras (sin animación en reposo ni resplandores).
+const ETIQUETA_ANIMACION = { auto: "Auto", completas: "Completas", ligeras: "Ligeras" };
+function pintarBotonAnimaciones() {
+  const modo = leerModo();
+  const boton = document.getElementById("btn-animaciones");
+  if (!boton) return;
+  document.getElementById("animaciones-etiqueta").textContent = ETIQUETA_ANIMACION[modo];
+  boton.setAttribute("aria-label", `Animaciones: ${ETIQUETA_ANIMACION[modo].toLowerCase()}. Pulsa para cambiar`);
+}
+aplicarModo();
+pintarBotonAnimaciones();
+document.getElementById("btn-animaciones")?.addEventListener("click", () => {
+  guardarModo(MODOS_ANIMACION[(MODOS_ANIMACION.indexOf(leerModo()) + 1) % MODOS_ANIMACION.length]);
+  pintarBotonAnimaciones();
+});
+
+function vigilarDensidadDePantalla() {
+  if (typeof window.matchMedia !== "function") return;
+  const consulta = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+  consulta.addEventListener?.(
+    "change",
+    () => {
+      escenario?.ajustarTamano();
+      vigilarDensidadDePantalla(); // la consulta depende del dpr de ese momento: se crea otra
+    },
+    { once: true }
+  );
+}
+vigilarDensidadDePantalla();
 
 // ---------- Arranque ----------
 
@@ -927,6 +1166,7 @@ function nivelInicial(progreso) {
   } else {
     repo = new SupabaseProgressRepository({ supabase, catalogo, alCambiarEstado: mostrarEstadoRed });
   }
+  usuarioActual = enDemo ? "demo" : perfil.user_id;
   const progreso = await repo.cargarProgreso();
   if (!progreso) {
     window.location.href = "auth.html";
@@ -957,7 +1197,12 @@ function nivelInicial(progreso) {
   // 4) Teoría la primera vez que se entra al mundo y, después, el recorrido por la interfaz.
   const usuarioTour = enDemo ? "demo" : perfil.user_id;
   await mostrarBienvenidaMundo(mundoActualId, { usuarioId: usuarioTour });
-  if (!Tour.yaSeVio()) {
+  arranqueListo = true;
+  if (nivelActualId === 0 || faseData?.tipo === "ORDENAR") {
+    if (!Tour.yaSeVioNivel0()) {
+      setTimeout(() => tourNivel0.iniciar(), 500);
+    }
+  } else if (!Tour.yaSeVio()) {
     setTimeout(() => tour.iniciar(), 500);
   } else if (!esSandbox && PASOS_MUNDO[mundoActualId] && !tourDeMundoVisto(usuarioTour, mundoActualId)) {
     // Primera vez en un mundo nuevo (2, 3, 4 o 5): el tour presenta su escenario.
@@ -973,4 +1218,4 @@ function nivelInicial(progreso) {
   console.error(e);
   const f = document.getElementById("feedback-contenido");
   if (f) f.innerHTML = "<p class=\"feedback-texto\">No se pudo iniciar el juego. Recarga la página.</p>";
-});
+}).finally(() => cargaNivel.ocultar()); // la capa «CARGANDO...» nunca se queda pegada (ni por un error ni al abrir el Laboratorio Libre)

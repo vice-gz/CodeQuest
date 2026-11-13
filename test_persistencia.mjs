@@ -89,11 +89,13 @@ const prueba = async (nombre, fn) => {
 };
 
 console.log("Catálogo y funciones puras");
-await prueba("56 niveles, 5 mundos (Nivel 0 + 8 + jefe, 11 + jefe, 12 + jefe, 12 + jefe y 8), 168 estrellas máximas", () => {
-  assert.equal(catalogo.totalNiveles, 56);
+await prueba("59 niveles, 5 mundos (21 del Mundo 1 fusionado, 13, 13, 8 y 4 de proyecto), 177 estrellas máximas", () => {
+  assert.equal(catalogo.totalNiveles, 59);
   assert.deepEqual(Object.keys(catalogo.mundos), ["1", "2", "3", "4", "5"]);
-  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.niveles.length), [10, 12, 13, 13, 8]);
-  assert.equal(catalogo.maxEstrellas, 168);
+  assert.deepEqual(Object.values(catalogo.mundos).map((m) => m.niveles.length), [21, 13, 13, 8, 4]);
+  assert.equal(catalogo.maxEstrellas, 177);
+  // el Mundo 1 se ordena por `ordinal`: el jefe intermedio (id 44) va entre el 13 y el 14, y La Caja Fuerte (id 45) al final
+  assert.deepEqual(catalogo.mundos[1].niveles, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 44, 14, 15, 16, 17, 18, 45]);
 });
 
 // Las fases del Nivel 1 salen del catálogo (el Nivel 1 tiene 4 fases desde que se añadió una pregunta de comprensión tras el EXPLORAR).

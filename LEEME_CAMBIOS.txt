@@ -1,15 +1,34 @@
-CAMBIOS · Ajustes pedagógicos finales (Avance 3.9)
-Copia cada archivo en la MISMA ruta de tu proyecto (sobrescribe).
+CAMBIOS · Mundo 1 «Fundamentos y Datos»: fusión de los Mundos 1 y 2 y minijuegos (v3.4.0)
+Aplícalo sobre lo anterior (v3.3.0). Después: npm test
 
-1. Decimal con coma (nivel 11) y «CQL» → «Python»
-   herramientas/generar_niveles.py, levels/mundo2/level11.json, levels/mundo3/level24.json,
-   js/interpreter/errors.js, js/interpreter/parser.js (error nuevo SYN_019), js/ui/erroresCatalogo.js,
-   juego.html (etiqueta del editor), index.html (texto de inicio)
-2. Fases LIBRE reales: levels/mundo1/level7.json y level8.json (7.3 y 8.3 pasan a RESOLVER)
-3. Pregunta PREDECIR tras EXPLORAR: levels/mundo1/level1.json, level3.json, level6.json, levels/mundo2/level16.json
-4. Reto de eficiencia: levels/mundo1/level44.json, levels/mundo2/level45.json, levels/mundo3/level46.json,
-   levels/mundo4/level47.json (max_lineas_recomendadas), js/game/eficiencia.js (NUEVO), js/juego.js,
-   js/ui/feedback.js, js/ui/transicionMundo.js, css/styles.css, css/panels.css
-Pruebas actualizadas: test_niveles.mjs, test_cql.mjs, test_persistencia.mjs, test_juego_dom.mjs
-Docs regeneradas: docs/REFERENCIA_LENGUAJE_CQL.md, docs/GUIA_NIVELES_MUNDOS_1_A_5.md, README.md
-Después de copiar:  npm test
+IMPORTANTE
+- Borra las carpetas levels/mundo2 a levels/mundo6 antes de copiar las nuevas: los mundos se renumeraron
+  (2 Lógica · 3 Automatización · 4 Modularidad · 5 Proyecto) y ya no existe levels/mundo6.
+- El progreso guardado en Supabase deja de corresponder (los ids 0-18 tienen contenido nuevo y los mundos cambiaron de
+  número). Vacía progreso_fases y progreso_jugador antes de usarlo con alumnos.
+
+NUEVOS
+  js/game/escenarios/minijuego.js (base) · alcancia.js · semaforo.js · vasos.js · receta.js · pozo.js
+  cronometro.js · boleta.js · viaje.js · cajafuerte.js
+
+NIVELES (todos regenerados)
+  levels/mundo1/level0-18.json, level44.json, level45.json   (los 0-5, 7 y 9 se escriben a mano)
+  levels/mundo2 (Lógica, ids 20-31 y 46) · mundo3 (Automatización, 32-43 y 47) · mundo4 (Modularidad, 48-55) · mundo5 (Proyecto, 56-59)
+
+INTÉRPRETE (round() y +=, -=, *=, /=, //=, %=)
+  js/interpreter/lexer.js, parser.js, interpreter.js, validator.js, aritmetica.js, errors.js, bibliotecas.js
+
+JUEGO E INTERFAZ
+  js/juego.js, js/game/escenarios/index.js, datos.js, cartas.js, elevador.js, fabrica.js, proyecto.js, expendedora.js, pixelBase.js
+  js/game/validaciones.js, js/game/paletas.js, js/game/mundosInfo.js, js/persistence/progreso.js
+  js/ui/chipsInsercion.js, conceptos.js, glosarioDatos.js, dictionary.js, ilustraciones.js, toursMundo.js, erroresCatalogo.js
+  js/landing.js, index.html, css/mundos.css, css/panels.css, css/hud.css
+
+HERRAMIENTAS Y DOCUMENTACIÓN
+  herramientas/generar_niveles.py, generar_guia.py, generar_referencia_cql.mjs, responsive/medir.mjs
+  docs/GUIA_NIVELES_MUNDOS_1_A_5.md, docs/REFERENCIA_LENGUAJE_CQL.md, README.md
+
+PRUEBAS
+  test_niveles.mjs, test_juego_dom.mjs, test_navegacion.mjs, test_persistencia.mjs, test_python_compat.mjs,
+  test_dashboard_admin.mjs, test_csv.mjs, test_fabrica.mjs, test_expendedora.mjs, test_escenas_mundo6.mjs, test_auth_oauth.mjs
+  (además ya corren en Windows: rutas con \ y saltos de línea \r\n de Python)

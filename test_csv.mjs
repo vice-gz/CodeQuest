@@ -52,7 +52,7 @@ prueba("construye filas completas (nivel dentro del mundo, estrellas, errores) y
   const filasNivel = (id) => catalogo.niveles[id].fases.map((f) => ({ nivel_id: id, fase_id: f.id, completada: true, intentos: 1, pistas_usadas: 0 }));
   const resumenes = new Map([["a", calcularResumen([...filasNivel(1), ...filasNivel(2)], catalogo)]]);
   const usuarios = [
-    { id: "a", nombre: "Ana", email: "ana@x.mx", rol: "estudiante", mundo: 2, nivel: 10, experiencia: 600, fechaRegistro: "2026-10-01", ultimaActividad: "2026-10-20" },
+    { id: "a", nombre: "Ana", email: "ana@x.mx", rol: "estudiante", mundo: 2, nivel: 21, experiencia: 600, fechaRegistro: "2026-10-01", ultimaActividad: "2026-10-20" },
     { id: "b", nombre: "Beto", email: "beto@x.mx", rol: "estudiante", mundo: 1, nivel: 1, experiencia: 0, fechaRegistro: "", ultimaActividad: null },
   ];
   const errores = new Map([["a", { totalEjecuciones: 5, totalErrores: 4, errorMasFrecuente: "SEM_001" }]]);
@@ -62,8 +62,8 @@ prueba("construye filas completas (nivel dentro del mundo, estrellas, errores) y
   const cab = col(lineas[0]);
   const ana = Object.fromEntries(cab.map((c, i) => [c, col(lineas[1])[i]]));
   assert.equal(ana["Nombre del alumno"], "Ana");
-  assert.equal(ana["Nivel actual"], "2", "el nivel 10 es el 2.º del Mundo 2");
-  assert.equal(ana["Nivel (número global)"], "10");
+  assert.equal(ana["Nivel actual"], "2", "el nivel 21 es el 2.º del Mundo 2 (Lógica)");
+  assert.equal(ana["Nivel (número global)"], "21");
   assert.equal(ana["Estrellas totales"], "6");
   assert.equal(ana["Total de errores"], "4");
   assert.equal(ana["Error más frecuente"], "SEM_001");

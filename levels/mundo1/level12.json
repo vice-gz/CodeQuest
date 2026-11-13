@@ -1,0 +1,326 @@
+{
+  "id": 12,
+  "mundo": 1,
+  "nombre": "La Receta",
+  "ordinal": 12,
+  "concepto": "operadores * y /, y redondeo con int() y round()",
+  "concepto_evaluado": "operadores_y_redondeo",
+  "narrativa": "Doña Rosa hará su pastel para la fiesta del pueblo. Su receta es para 4 personas, pero los invitados cambian: hay que recalcular los ingredientes.",
+  "escenario": {
+    "tipo": "receta",
+    "invitadosBase": 4,
+    "variables": {
+      "invitados": 6
+    },
+    "ingredientes": [
+      {
+        "nombre": "huevos",
+        "unidad": "pzas",
+        "piezas": true
+      },
+      {
+        "nombre": "harina",
+        "unidad": "g"
+      }
+    ]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "12.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Receta para el doble",
+      "enunciado": "Para 8 invitados la receta se multiplica por factor = 8 / 4. Fíjate en el resultado: en Python la división / SIEMPRE da un decimal (2.0), y por eso huevos sale 6.0.",
+      "codigoInicial": "invitados = 8\nfactor = invitados / 4\nhuevos = 3 * factor\nharina = 200 * factor\nprint(huevos)\nprint(harina)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "* multiplica y / divide. Como / da decimal, todo lo que se calcula con factor también es decimal.",
+      "pistas": [
+        "Mira la etiqueta DECIMAL en la Memoria."
+      ]
+    },
+    {
+      "id": "12.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Medio huevo?",
+      "enunciado": "Ahora son 6 invitados. ¿Qué muestra el programa?",
+      "codigoInicial": "invitados = 6\nfactor = invitados / 4\nhuevos = 3 * factor\nprint(huevos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "4.5"
+        },
+        {
+          "id": "b",
+          "texto": "4"
+        },
+        {
+          "id": "c",
+          "texto": "5"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: 6 / 4 = 1.5 y 3 * 1.5 = 4.5. Pero nadie puede romper medio huevo… hay que redondear.",
+      "pistas": [
+        "Primero calcula factor."
+      ]
+    },
+    {
+      "id": "12.3",
+      "tipo": "MODIFICAR",
+      "titulo": "Redondea los huevos",
+      "enunciado": "Los invitados los trae cada fiesta (variable invitados). Cambia la línea de huevos para redondear al entero más cercano con el truco int(x + 0.5): int() corta los decimales, y sumar 0.5 antes hace que 4.5 suba a 5. Se prueba con 4 fiestas.",
+      "codigoInicial": "factor = invitados / 4\nhuevos = 3 * factor\nprint(huevos)",
+      "solucionReferencia": "factor = invitados / 4\nhuevos = int(3 * factor + 0.5)\nprint(huevos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "6 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 6
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "huevos": 5
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "5"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "10 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 10
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "huevos": 8
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "8"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "2 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 2
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "huevos": 2
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "4 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 4
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "huevos": 3
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "3"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "int"
+          ]
+        }
+      },
+      "retroalimentacion": "int(x + 0.5) redondea hacia el entero más cercano. Ojo: round(4.5) en Python da 4, porque en un empate exacto redondea al número PAR.",
+      "pistas": [
+        "huevos = int(3 * factor + 0.5)"
+      ],
+      "mensajeNoLogrado": "huevos debe ser un entero redondeado (por ejemplo, 5 con 6 invitados) en las 4 fiestas.",
+      "solucionesIncorrectas": [
+        "factor = invitados / 4\nhuevos = 3 * factor\nprint(huevos)",
+        "factor = invitados / 4\nhuevos = int(3 * factor)\nprint(huevos)",
+        "factor = invitados / 4\nhuevos = round(3 * factor)\nprint(huevos)"
+      ],
+      "max_lineas_recomendadas": 3
+    },
+    {
+      "id": "12.4",
+      "tipo": "RESOLVER",
+      "titulo": "La receta completa",
+      "enunciado": "Para los invitados de cada fiesta calcula factor = invitados / 4; huevos (3 por receta, redondeado con int(x + 0.5)) y harina (200 g por receta, con round() para quitar el .0). Muestra huevos y luego harina. Se prueba con 4 fiestas.",
+      "codigoInicial": "",
+      "solucionReferencia": "factor = invitados / 4\nhuevos = int(3 * factor + 0.5)\nharina = round(200 * factor)\nprint(huevos)\nprint(harina)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "int",
+        "round"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "6 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 6
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "5",
+              "300"
+            ]
+          }
+        },
+        {
+          "etiqueta": "10 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 10
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "8",
+              "500"
+            ]
+          }
+        },
+        {
+          "etiqueta": "3 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 3
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2",
+              "150"
+            ]
+          }
+        },
+        {
+          "etiqueta": "7 invitados",
+          "escenario": {
+            "variables": {
+              "invitados": 7
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "5",
+              "350"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "int",
+            "round"
+          ],
+          "operadores": [
+            "*",
+            "/"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Pastel listo! round(x) da un entero: round(300.0) es 300, sin el .0.",
+      "pistas": [
+        "harina = round(200 * factor)"
+      ],
+      "mensajeNoLogrado": "Debe mostrar los huevos (entero) y la harina sin decimales (con round) en las 4 fiestas.",
+      "solucionesIncorrectas": [
+        "factor = invitados / 4\nhuevos = int(3 * factor + 0.5)\nharina = 200 * factor\nprint(huevos)\nprint(harina)"
+      ],
+      "max_lineas_recomendadas": 5
+    }
+  ]
+}

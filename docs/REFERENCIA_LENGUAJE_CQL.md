@@ -90,7 +90,7 @@ CQL, como Python, usa la **sangría** para agrupar instrucciones en bloques. El 
 
 ### 2.4 Tabla de tokens
 
-Hay **40 tipos de token**. Esta tabla sale del propio lexer:
+Hay **41 tipos de token**. Esta tabla sale del propio lexer:
 
 #### Palabras clave
 
@@ -147,6 +147,7 @@ Hay **40 tipos de token**. Esta tabla sale del propio lexer:
 | Token | Lexema | Para qué sirve |
 |---|---|---|
 | `ASIGNACION` | `=` | Guarda un valor en una variable |
+| `ASIGNACION_COMPUESTA` | `+= -= *= /= //= %=` | Reasigna operando con el valor actual: x += 1 es x = x + 1 (la variable debe existir antes) |
 | `PUNTO` | `.` | Separa el objeto del método: robot1.avanzar |
 | `PAREN_IZQ` | `(` | Abre una llamada o agrupa una expresión |
 | `PAREN_DER` | `)` | Cierra una llamada o un grupo |
@@ -330,7 +331,7 @@ nombre = "Beto"       # reasigna: el valor anterior se pierde
 total = a + b * 2     # el lado derecho es cualquier expresión
 ```
 
-Una sola variable por línea (no existe `x = y = 3`) y sin operadores abreviados (no existe `x += 1`; se escribe `x = x + 1`). El lado derecho puede incluir llamadas con valor: `pos = robot1.posicion()`, `n = int(input())`. Los nombres `print`, `input`, `int`, `float`, `str` y `range` están reservados (`SEM_012`).
+Una sola variable por línea (no existe `x = y = 3`) y con los atajos de Python para reasignar: `ahorro += mesada` es lo mismo que `ahorro = ahorro + mesada` (también `-=`, `*=`, `/=`, `//=` y `%=`; la variable debe tener valor antes, si no es `SEM_001` como en Python). El lado derecho puede incluir llamadas con valor: `pos = robot1.posicion()`, `n = int(input())`. Los nombres `print`, `input`, `int`, `float`, `str` y `range` están reservados (`SEM_012`).
 
 ### 6.2 Condicionales
 
@@ -375,7 +376,7 @@ Los argumentos pueden ser expresiones, pero deben dar **enteros** y el paso no p
 - **Métodos de un objeto**: `robot1.avanzar(3)`, `elevador.subir(1)`, `mesa.voltear()`.
 - Los métodos que **devuelven valor** también se pueden usar dentro de expresiones: `if elevador.hayPasajero():`, `print(robot1.energia())`. Usar en una expresión un método que no devuelve valor es el error `SEM_009`.
 
-### 6.6 Funciones: `def`, parámetros y `return` (Mundo 5)
+### 6.6 Funciones: `def`, parámetros y `return` (Mundo 4)
 
 ```python
 def calcular_area(ancho, alto):     # define la función (aún no se ejecuta nada)
@@ -391,7 +392,7 @@ print(calcular_area(4, 5))         # 20
 - **Variables locales.** Lo que se asigna dentro de una función es **local**: no existe fuera (`SEM_015`) y, si la función asigna una variable, esa variable es local en TODA la función, aunque haya una global con el mismo nombre (`RUN_023`, UnboundLocalError). Las variables globales sí se pueden **leer** desde la función. No existen `global` ni `nonlocal`.
 - **Recursión.** Una función puede llamarse a sí misma; el límite es de 100 llamadas anidadas (`RUN_021`, RecursionError).
 - **Nombre sin paréntesis** (`x = doble`) no ejecuta nada: error `SEM_016`. `def` solo va al margen izquierdo (`SYN_018`); `return` fuera de una función es `SYN_017`. Los nombres `print`, `input`, `int`, `float` y `str` no se pueden usar como nombre de función ni de parámetro.
-- **Mundo 5:** cada `def` se dibuja como una **máquina** en la fábrica; cada llamada la enciende (entra el argumento, sale el `return`).
+- **Mundo 4:** cada `def` se dibuja como una **máquina** en la fábrica; cada llamada la enciende (entra el argumento, sale el `return`).
 
 ### 6.7 Comentarios y líneas vacías
 
@@ -413,6 +414,7 @@ Son las de Python (más `range`, que únicamente vive dentro del `for`). `entrad
 | `int(valor)` | Convierte a número entero | entero | `int("12")` → 12; `int(3.9)` → 3 (corta, no redondea); `int(" 7 ")` → 7. Un texto que no parece un entero (`int("hola")`, `int("3.5")`) → **ValueError** `RUN_017`: «El valor ingresado no es un número válido» |
 | `float(valor)` | Convierte a número decimal | decimal | `float("3.5")` → 3.5; `float(3)` → 3.0. Texto inválido → `RUN_017` |
 | `str(valor)` | Convierte a texto | texto | `str(5)` → `"5"`; `str(2.5)` → `"2.5"`; `str(True)` → `"True"`. Sirve para unir números con textos: `"Total: " + str(5)` |
+| `round(x)` / `round(x, n)` | Redondea un número | entero (con `n`: el tipo de `x`) | Igual que Python: `round(2.7)` → 3; en un empate exacto va al **par** (`round(4.5)` → 4, `round(5.5)` → 6); `round(10 / 3, 2)` → 3.33; `round(2.675, 2)` → 2.67 (el float guarda 2.67499…). Un texto → `RUN_024` (TypeError); `n` debe ser entero |
 | `range(...)` | Genera la cuenta de un `for` | — | Ver 6.4. Sus argumentos deben ser enteros |
 
 `int`, `float` y `str` necesitan **exactamente un** valor (`SEM_013`).
@@ -448,11 +450,34 @@ El laboratorio es una cuadrícula con **(0, 0) en la esquina superior izquierda*
 | `posicion()` → texto | Devuelve la posición como texto `"(x,y)"` | |
 | `energia()` → número | Devuelve la energía que le queda | |
 
-### 8.2 Mundo 2 · Memoria (sin objetos)
+### 8.2 Mundo 1 · la consola de datos y los minijuegos (sin objetos, salvo el pozo)
 
-El «Centro de Recuperación» dibuja cada variable como un **chip de memoria** (con su nombre, valor y tipo) y muestra los cables por donde viaja cada dato. No hay robot: se programa solo con variables, operadores, `print`, `input` y las conversiones `int`, `float` y `str`.
+El Mundo 1 (Fundamentos y Datos) **alterna escenarios**: cada nivel dice cuál usa en `escenario.tipo`. La **consola de datos** («Centro de Recuperación», Niveles 11 y 13) dibuja cada variable como un **chip de memoria** (nombre, valor y tipo) con los cables por donde viaja cada dato. Los **minijuegos** son dibujos sencillos que reaccionan a las variables del programa:
 
-### 8.3 Mundo 3 · Lógica (la mesa de cartas)
+| Nivel | Escenario | Qué reacciona |
+|---|---|---|
+| 6 · La Alcancía | `alcancia` | Cada vez que `ahorro` sube cae una moneda y se marca una semana del calendario (validación propia `alcancia_depositos`) |
+| 8 · Semáforos y Decisiones | `semaforo` | Las variables `color` y `peaton` (las trae cada caso); `print("Avanzar")` / `print("Frenar")` mueven el auto; cada condición del `if` se muestra con su True/False |
+| 10 · El Intercambio | `vasos` | `vasoA`, `vasoB`, `vasoC` y `temp` son vasos; al asignar, un chorro va del vaso que se lee al que recibe (copiar no vacía el origen) |
+| 12 · La Receta | `receta` | `invitados`, `factor` y los ingredientes; si una cantidad por piezas queda con decimales (4.5 huevos) se marca |
+| 15 · El Pozo | `pozo` | El objeto `pozo` (tabla de abajo) |
+| 17 · El Cronómetro | `cronometro` | `total` (lo trae cada caso) y la pantalla HH:MM:SS con `horas`, `minutos` y `segundos` |
+| 18 · La Boleta | `boleta` | `promedio` y `asistencia` (de cada caso); al guardar un lógico en `aprobado` cae el sello |
+| 19 · El Viaje | `viaje` | `litros`, `costo` y `por_persona` (avisa si hay más de 2 decimales) |
+| 20 👑 · La Caja Fuerte | `cajafuerte` | Las 4 entradas `a`, `b`, `c`, `d`; si `print` muestra la combinación de esa caja, se abre |
+
+**El objeto `pozo`** (Nivel 15): el agua está a `profundidad` metros (cambia en cada caso).
+
+| Método | Qué hace | Errores posibles |
+|---|---|---|
+| `bajar()` | Baja la cubeta 1 metro | Bajar estando ya en el agua (`RUN_025`) |
+| `hayAgua()` → lógico | ¿La cubeta ya llegó al agua? | |
+| `llenar()` | Llena la cubeta (solo dentro del agua) | |
+| `subir(n)` | Sube la cubeta n metros | n debe ser número |
+
+Validación propia: `{ "tipo": "pozo", "lleno": true, "arriba": true }`.
+
+### 8.3 Mundo 2 · Lógica (la mesa de cartas)
 
 Cada mesa trae **variables ya definidas** que el programa puede leer:
 
@@ -461,7 +486,7 @@ Cada mesa trae **variables ya definidas** que el programa puede leer:
 | `carta1`, `carta2`, `carta3`… | El valor de cada carta de la mano (número) |
 | `total` | La suma de los valores de la mano |
 | `color1`, `color2`… | `"roja"` o `"negra"` (cuando el nivel lo habilita) |
-| `numero` | Igual que `total` (solo en el Nivel 1 del Mundo 3) |
+| `numero` | Igual que `total` (solo en el Nivel 1 del Mundo 2) |
 
 Métodos de la mesa (solo en las fases «Libre»; son **visuales**: no cambian `carta1`, `total`, etc.):
 
@@ -488,7 +513,7 @@ El **piso 1 es la planta baja**; el edificio llega hasta el piso 5. Los pasajero
 
 ---
 
-### 8.5 Mundo 5 · Modularidad (la fábrica de robots)
+### 8.5 Mundo 4 · Modularidad (la fábrica de robots)
 
 No hay un objeto nuevo: lo que se dibuja son **tus funciones**, como una **línea de ensamble con visualización paso a paso**:
 
@@ -508,8 +533,12 @@ Validaciones propias de la fábrica (las usan los niveles): la función *se defi
 ### 8.6 Nivel 0 y Niveles Jefe
 
 - **Nivel 0 (antes del Mundo 1):** no se escribe código. Se hace clic en las tarjetas de un **diagrama de flujo** (`Inicio`, pasos como `Caminar 3 pasos` o `Abrir la puerta`, y `Fin`) en el orden correcto; cada tarjeta correcta se ejecuta en un pasillo y, si no tocaba todavía, Robot1 choca y se empieza de nuevo. Es el equivalente visual de «un programa es una lista de instrucciones en orden».
-- **Nivel 8 del Mundo 5 · El Gran Ensamblaje (Jefe):** hay que definir exactamente tres funciones, `cabeza()`, `brazos()` y `piernas()`, y llamarlas en ese orden; un **Robot1 gigante** se arma en pantalla conforme se ejecutan las llamadas. Sin pistas y con el editor en blanco.
+- **Nivel 8 del Mundo 4 · El Gran Ensamblaje (Jefe):** hay que definir exactamente tres funciones, `cabeza()`, `brazos()` y `piernas()`, y llamarlas en ese orden; un **Robot1 gigante** se arma en pantalla conforme se ejecutan las llamadas. Sin pistas y con el editor en blanco.
 - **Niveles Jefe** (último nivel de los Mundos 1 a 4): usan el CQL de su mundo, pero **sin botón de pistas**, con el editor en blanco y un solo enunciado; los de los Mundos 2 a 4 se prueban en varios casos.
+
+### 8.7 Mundo 5 · Proyecto (el taller)
+
+No hay sintaxis nueva ni objetos nuevos: el escenario es la **terminal y la memoria** de la consola de datos del Mundo 1 (chips de variables, cables de datos y terminal) en color rosa. Cada nivel es un proyecto que junta `input()`, `if`, `while` y variables, y se prueba con **varios casos** (si falla uno, no pasa; el panel dice cuál). Los casos pueden dejar variables ya cargadas en la memoria (la contraseña a revisar con su `longitud` y `tiene_numero`, o el `secreto` del juego de adivinanza), porque CQL no tiene `len()` ni operaciones sobre texto. El Nivel 4 es el **proyecto libre**: al menos 10 líneas de código (sin contar comentarios ni líneas vacías) con un `if`, un `while` y una variable; se comprueba que se ejecute sin errores. Al completarlo sale la **pantalla final** de CodeQuest.
 
 ## 9. Qué se desbloquea y cuándo
 
@@ -524,39 +553,42 @@ Esta tabla es la del **Diccionario** del juego:
 | `robot1.hablar("texto")` | Salida | Mundo 1 · Nivel 3 (Haz que me entienda), fase 3.1 | Robot1 dice un texto: aparece una burbuja en el mundo 2D y una línea en Salida. No es lo mismo que print(). |
 | `robot1.girar(direccion)` | Movimiento | Mundo 1 · Nivel 3 (Haz que me entienda), fase 3.3 | Cambia hacia dónde mira Robot1. Direcciones válidas: "norte", "sur", "este", "oeste". |
 | `robot1.retroceder(n)` | Movimiento | Mundo 1 · Nivel 4 (¿Cuánto?), fase 4.1 | Robot1 retrocede n casillas sin cambiar la dirección a la que mira. |
-| `input()` | Entrada | Mundo 1 · Nivel 6 (La terminal), fase 6.1 | Pausa el programa y pide un dato a quien está jugando. Como en Python, input() SIEMPRE devuelve texto, aunque se escriba un número: si lo necesitas como número, conviértelo con int() o float(). Puede llevar un mensaje: input("¿Cuántos pisos?"). |
-| `int(valor)` | Conversión | Mundo 1 · Nivel 6 (La terminal), fase 6.3 | Convierte un valor en número entero: int("12") vale 12 y int(3.9) vale 3. Si el texto no parece un número entero (int("hola"), int("3.5")) da un ValueError. Lo típico: int(input()). |
-| `float(valor)` | Conversión | Mundo 2 · Nivel 6 (Información del exterior), fase 14.4 | Convierte un valor en número decimal: float("3.5") vale 3.5 y float(3) vale 3.0. Si el texto no parece un número, da un ValueError. |
-| `str(valor)` | Conversión | Mundo 2 · Nivel 8 (Módulos que se combinan), fase 16.4 | Convierte un valor en texto: str(5) vale "5". Sirve para unir números con textos: "Total: " + str(5). |
-| `robot1.recoger()` | Objetos | Mundo 1 · Nivel 8 (La salida), fase 8.1 | Recoge el objeto que haya en la casilla donde está Robot1. |
-| `nombre = valor` | Variables | Mundo 2 · Nivel 1 (Necesito recordar), fase 9.1 | Guarda un valor con un nombre para reutilizarlo después. Aparece en el panel de Memoria. |
-| `+  -  *  /  **` | Operadores | Mundo 2 · Nivel 4 (Cálculo de energía), fase 12.2 | Operaciones aritméticas. Primero se resuelve ** (potencia), después * y /, y al final + y -, igual que en matemáticas. Ojo: / SIEMPRE da un decimal (10 / 2 vale 5.0). |
-| `a // b   a % b` | Operadores | Mundo 2 · Nivel 5 (Calcula el reparto), fase 13.1 | a // b es la división entera (solo la parte entera: 17 // 4 vale 4). a % b devuelve el residuo (17 % 5 vale 2). |
-| `def nombre(parametros):` | Funciones | Mundo 5 · Nivel 1 (Construyendo máquinas), fase 48.1 | Define una función: un bloque de código con nombre que puedes usar (llamar) las veces que quieras. Los parámetros son los valores que recibe. Las variables que crees dentro son locales: solo existen ahí. |
-| `nombre(valores)` | Funciones | Mundo 5 · Nivel 1 (Construyendo máquinas), fase 48.1 | Llama (ejecuta) una función que ya definiste con def. Si tiene parámetros, hay que darle un valor por cada uno. |
-| `return valor` | Funciones | Mundo 5 · Nivel 4 (El producto terminado), fase 51.1 | Termina la función y devuelve un valor a quien la llamó: resultado = calcular_doble(4). Si una función no tiene return (o solo dice return), devuelve None. |
-| `None` | Funciones | Mundo 5 · Nivel 4 (El producto terminado), fase 51.1 | El valor que significa «nada». Una función sin return devuelve None, y print(None) muestra None. |
-| `robot1.energia()` | Estado | Mundo 1 · Nivel 8 (La salida), fase 8.3 | Devuelve la energía que le queda a Robot1. Pruébala en el Laboratorio Libre. |
-| `robot1.posicion()` | Estado | Mundo 1 · Nivel 8 (La salida), fase 8.3 | Devuelve la posición actual de Robot1 como (columna,fila). Pruébala en el Laboratorio Libre. |
-| `robot1.mirar()` | Estado | Mundo 1 · Nivel 8 (La salida), fase 8.3 | Devuelve la dirección hacia la que mira Robot1. Pruébala en el Laboratorio Libre. |
-| `if condición:` | Decisiones | Mundo 3 · Nivel 1 (Pasarse de 21), fase 20.1 | Ejecuta las líneas con sangría solo si la condición es verdadera (True). Si es falsa, las salta. |
-| `else:` | Decisiones | Mundo 3 · Nivel 2 (Ganar o perder), fase 21.1 | El camino alternativo de un if: se ejecuta cuando la condición del if es falsa. |
-| `==  !=  <  >  <=  >=` | Decisiones | Mundo 3 · Nivel 3 (Comparar es preguntar), fase 22.1 | Comparan dos valores y dan True o False. Ojo: un solo = guarda un valor; dos == preguntan si son iguales. |
-| `a and b   a or b` | Decisiones | Mundo 3 · Nivel 5 (Dos condiciones a la vez), fase 24.1 | and es verdadero si AMBAS condiciones lo son; or, si al menos UNA lo es. |
-| `not x   True   False` | Decisiones | Mundo 3 · Nivel 6 (O, y no), fase 25.1 | True y False son valores lógicos que se pueden guardar en variables. not invierte uno: not True es False. |
-| `elif condición:` | Decisiones | Mundo 3 · Nivel 7 (Varios caminos), fase 26.1 | Añade otra pregunta a un if. Se evalúan en orden y solo se ejecuta la primera rama verdadera. |
-| `mesa.poner_carta(valor, color)` | Decisiones | Mundo 3 · Nivel 9 (El aviso del crupier), fase 28.3 | Pone una carta nueva en la mesa; color es "roja" o "negra". Es solo visual: no cambia total ni carta1. Pruébala en la Mesa libre. |
-| `mesa.voltear()` | Decisiones | Mundo 3 · Nivel 9 (El aviso del crupier), fase 28.3 | Voltea las cartas de la mesa: las que están boca abajo se muestran y, si ya están todas visibles, las vuelve a tapar. |
-| `while condición:` | Ciclos | Mundo 4 · Nivel 1 (El ascensor automático), fase 32.1 | Repite sus líneas con sangría MIENTRAS la condición sea verdadera. Dentro hay que cambiar algo, o no termina. |
-| `for i in range(n):` | Ciclos | Mundo 4 · Nivel 2 (Repetir con for), fase 33.1 | Repite n veces. range(n) cuenta de 0 a n-1; range(a, b) de a a b-1; range(a, b, paso) salta de paso en paso. |
-| `elevador.subir(n)` | Elevador | Mundo 4 · Nivel 1 (El ascensor automático), fase 32.1 | Sube el elevador n pisos. Si se sale del edificio (pisos 1 a 5) da error. |
-| `elevador.bajar(n)` | Elevador | Mundo 4 · Nivel 3 (Contar repeticiones), fase 34.1 | Baja el elevador n pisos. El piso 1 es la planta baja. |
-| `elevador.piso()` | Elevador | Mundo 4 · Nivel 5 (El bucle infinito), fase 36.2 | Devuelve el piso donde está el elevador. Sirve para las condiciones de un while. |
-| `elevador.recoger()` | Elevador | Mundo 4 · Nivel 6 (Recoger pasajeros), fase 37.1 | Sube a la cabina a los pasajeros que esperan en este piso (caben 4). Con elevador.hayPasajero() se sabe si hay alguien. |
-| `elevador.soltar()` | Elevador | Mundo 4 · Nivel 6 (Recoger pasajeros), fase 37.2 | Baja de la cabina a todos los pasajeros. En la planta baja quedan entregados. |
-| `elevador.llevando()` | Elevador | Mundo 4 · Nivel 9 (Evacuación completa), fase 40.2 | Devuelve cuántos pasajeros van en la cabina (personas, no pisos). |
+| `input()` | Entrada | Mundo 1 · Nivel 7 (La terminal), fase 7.1 | Pausa el programa y pide un dato a quien está jugando. Como en Python, input() SIEMPRE devuelve texto, aunque se escriba un número: si lo necesitas como número, conviértelo con int() o float(). Puede llevar un mensaje: input("¿Cuántos pisos?"). |
+| `int(valor)` | Conversión | Mundo 1 · Nivel 7 (La terminal), fase 7.4 | Convierte un valor en número entero: int("12") vale 12 y int(3.9) vale 3. Si el texto no parece un número entero (int("hola"), int("3.5")) da un ValueError. Lo típico: int(input()). |
+| `float(valor)` | Conversión | Mundo 1 · Nivel 19 (El Viaje), fase 18.1 | Convierte un valor en número decimal: float("3.5") vale 3.5 y float(3) vale 3.0. Si el texto no parece un número, da un ValueError. |
+| `str(valor)` | Conversión | Mundo 1 · Nivel 16 (El Puente de Datos), fase 15.2 | Convierte un valor en texto: str(5) vale "5". Sirve para unir números con textos: "Total: " + str(5). |
+| `robot1.recoger()` | Objetos | Mundo 1 · Nivel 9 (La salida), fase 9.1 | Recoge el objeto que haya en la casilla donde está Robot1. |
+| `nombre = valor` | Variables | Mundo 1 · Nivel 6 (La Alcancía), fase 6.1 | Guarda un valor con un nombre para reutilizarlo después. Aparece en el panel de Memoria. |
+| `+  -  *  /  **` | Operadores | Mundo 1 · Nivel 12 (La Receta), fase 12.1 | Operaciones aritméticas. Primero se resuelve ** (potencia), después * y /, y al final + y -, igual que en matemáticas. Ojo: / SIEMPRE da un decimal (10 / 2 vale 5.0). |
+| `a // b   a % b` | Operadores | Mundo 1 · Nivel 17 (El Cronómetro), fase 16.1 | a // b es la división entera (solo la parte entera: 17 // 4 vale 4). a % b devuelve el residuo (17 % 5 vale 2). |
+| `nombre += valor` | Variables | Mundo 1 · Nivel 6 (La Alcancía), fase 6.4 | Atajo para reasignar: ahorro += 100 es lo mismo que ahorro = ahorro + 100. También existen -=, *=, /=, //= y %=. La variable debe tener un valor antes. |
+| `round(x)   round(x, n)` | Conversión | Mundo 1 · Nivel 19 (El Viaje), fase 18.3 | round(x) redondea al entero más cercano (round(300.0) vale 300) y round(x, n) deja n decimales (round(10 / 3, 2) vale 3.33). En un empate exacto va al número par: round(4.5) vale 4. |
+| `pozo.bajar()  pozo.hayAgua()  pozo.llenar()  pozo.subir(n)` | Objetos | Mundo 1 · Nivel 15 (El Pozo), fase 14.1 | El pozo del Mundo 1: bajar() baja la cubeta 1 metro, hayAgua() dice True si ya llegó al agua, llenar() la llena y subir(n) la sube n metros. |
+| `def nombre(parametros):` | Funciones | Mundo 4 · Nivel 1 (Construyendo máquinas), fase 48.1 | Define una función: un bloque de código con nombre que puedes usar (llamar) las veces que quieras. Los parámetros son los valores que recibe. Las variables que crees dentro son locales: solo existen ahí. |
+| `nombre(valores)` | Funciones | Mundo 4 · Nivel 1 (Construyendo máquinas), fase 48.1 | Llama (ejecuta) una función que ya definiste con def. Si tiene parámetros, hay que darle un valor por cada uno. |
+| `return valor` | Funciones | Mundo 4 · Nivel 4 (El producto terminado), fase 51.1 | Termina la función y devuelve un valor a quien la llamó: resultado = calcular_doble(4). Si una función no tiene return (o solo dice return), devuelve None. |
+| `None` | Funciones | Mundo 4 · Nivel 4 (El producto terminado), fase 51.1 | El valor que significa «nada». Una función sin return devuelve None, y print(None) muestra None. |
+| `robot1.energia()` | Estado | Mundo 1 · Nivel 9 (La salida), fase 9.3 | Devuelve la energía que le queda a Robot1. Pruébala en el Laboratorio Libre. |
+| `robot1.posicion()` | Estado | Mundo 1 · Nivel 9 (La salida), fase 9.3 | Devuelve la posición actual de Robot1 como (columna,fila). Pruébala en el Laboratorio Libre. |
+| `robot1.mirar()` | Estado | Mundo 1 · Nivel 9 (La salida), fase 9.3 | Devuelve la dirección hacia la que mira Robot1. Pruébala en el Laboratorio Libre. |
+| `if condición:` | Decisiones | Mundo 1 · Nivel 8 (Semáforos y Decisiones), fase 8.1 | Ejecuta las líneas con sangría solo si la condición es verdadera (True). Si es falsa, las salta. |
+| `else:` | Decisiones | Mundo 1 · Nivel 8 (Semáforos y Decisiones), fase 8.1 | El camino alternativo de un if: se ejecuta cuando la condición del if es falsa. |
+| `==  !=  <  >  <=  >=` | Decisiones | Mundo 1 · Nivel 8 (Semáforos y Decisiones), fase 8.1 | Comparan dos valores y dan True o False. Ojo: un solo = guarda un valor; dos == preguntan si son iguales. |
+| `a and b   a or b` | Decisiones | Mundo 1 · Nivel 8 (Semáforos y Decisiones), fase 8.2 | and es verdadero si AMBAS condiciones lo son; or, si al menos UNA lo es. |
+| `not x   True   False` | Decisiones | Mundo 1 · Nivel 15 (El Pozo), fase 14.2 | True y False son valores lógicos que se pueden guardar en variables. not invierte uno: not True es False. |
+| `elif condición:` | Decisiones | Mundo 2 · Nivel 7 (Varios caminos), fase 26.1 | Añade otra pregunta a un if. Se evalúan en orden y solo se ejecuta la primera rama verdadera. |
+| `mesa.poner_carta(valor, color)` | Decisiones | Mundo 2 · Nivel 9 (El aviso del crupier), fase 28.3 | Pone una carta nueva en la mesa; color es "roja" o "negra". Es solo visual: no cambia total ni carta1. Pruébala en la Mesa libre. |
+| `mesa.voltear()` | Decisiones | Mundo 2 · Nivel 9 (El aviso del crupier), fase 28.3 | Voltea las cartas de la mesa: las que están boca abajo se muestran y, si ya están todas visibles, las vuelve a tapar. |
+| `while condición:` | Ciclos | Mundo 1 · Nivel 15 (El Pozo), fase 14.2 | Repite sus líneas con sangría MIENTRAS la condición sea verdadera. Dentro hay que cambiar algo, o no termina. |
+| `for i in range(n):` | Ciclos | Mundo 3 · Nivel 2 (Repetir con for), fase 33.1 | Repite n veces. range(n) cuenta de 0 a n-1; range(a, b) de a a b-1; range(a, b, paso) salta de paso en paso. |
+| `elevador.subir(n)` | Elevador | Mundo 3 · Nivel 1 (El ascensor automático), fase 32.1 | Sube el elevador n pisos. Si se sale del edificio (pisos 1 a 5) da error. |
+| `elevador.bajar(n)` | Elevador | Mundo 3 · Nivel 3 (Contar repeticiones), fase 34.1 | Baja el elevador n pisos. El piso 1 es la planta baja. |
+| `elevador.piso()` | Elevador | Mundo 3 · Nivel 5 (El bucle infinito), fase 36.2 | Devuelve el piso donde está el elevador. Sirve para las condiciones de un while. |
+| `elevador.recoger()` | Elevador | Mundo 3 · Nivel 6 (Recoger pasajeros), fase 37.1 | Sube a la cabina a los pasajeros que esperan en este piso (caben 4). Con elevador.hayPasajero() se sabe si hay alguien. |
+| `elevador.soltar()` | Elevador | Mundo 3 · Nivel 6 (Recoger pasajeros), fase 37.2 | Baja de la cabina a todos los pasajeros. En la planta baja quedan entregados. |
+| `elevador.llevando()` | Elevador | Mundo 3 · Nivel 9 (Evacuación completa), fase 40.2 | Devuelve cuántos pasajeros van en la cabina (personas, no pisos). |
 
-Los operadores aritméticos `+ - *` se usan desde el Mundo 2; `/`, `//` y `%` se enseñan en el Nivel 5 del Mundo 2 (Calcula el reparto). `**` está disponible en todo CQL aunque ningún nivel lo exige.
+Los operadores aritméticos se enseñan en el Mundo 1: `+` y la reasignación en La Alcancía (Nivel 6), `*` y `/` en La Receta (Nivel 12) y `//` y `%` en El Cronómetro (Nivel 17). `**` está disponible en todo CQL aunque ningún nivel lo exige.
 
 ---
 
@@ -603,7 +635,7 @@ Todos los errores de CQL tienen un **código**, un **mensaje**, una explicación
 | `SEM_001` | ‹x› no es un valor: se escribe False | Los valores lógicos se escriben con mayúscula inicial: True y False. | Escribe False |
 | `SEM_001` | La variable ‹x› no existe todavía | Recuerda: antes de usar una variable, debes darle un valor. | Ejemplo: ‹x› = 3 |
 | `SEM_002` | El método ‹x›.‹x› no existe | El objeto ‹x› solo entiende los métodos definidos en su manual de instrucciones. | Revisa cómo se llama el método que quieres usar. |
-| `SEM_003` | La función ‹x› no existe | Aquí solo se usan estas funciones de Python: print, input, int, float y str (más las que definas tú con def). | Por ejemplo, usa print(...) para mostrar algo en pantalla. |
+| `SEM_003` | La función ‹x› no existe | Aquí solo se usan estas funciones de Python: print, input, int, float, str y round (más las que definas tú con def). | Por ejemplo, usa print(...) para mostrar algo en pantalla. |
 | `SEM_004` | ‹x›.‹x›() necesita un número | Este movimiento solo acepta una cantidad numérica. | Ejemplo: ‹x›.‹x›(3) o ‹x›.‹x›(pasos). |
 | `SEM_004` | robot1.avanzar() necesita un número | Robot1 solo puede avanzar una cantidad numérica de casillas. | Ejemplo: robot1.avanzar(3) o robot1.avanzar(pasos). |
 | `SEM_005` | print() necesita un valor | print() muestra algo en pantalla, así que necesita saber qué mostrar. | Ejemplo: print("Hola mundo") |
@@ -651,6 +683,8 @@ Todos los errores de CQL tienen un **código**, un **mensaje**, una explicación
 | `RUN_021` | RecursionError: demasiadas llamadas de función una dentro de otra | Una función se llamó a sí misma (o a otra) una y otra vez sin parar. El límite en CodeQuest es de 100 llamadas anidadas. | Revisa que la función tenga una condición que la detenga. |
 | `RUN_022` | TypeError: ‹x›() no puede convertir None | None es lo que devuelve una función que no tiene return: no es un número ni un texto. | Agrega return con el valor en la función que estás llamando. |
 | `RUN_023` | UnboundLocalError: la variable "‹x›" es local en ‹x›() y todavía no tiene valor | Si una función asigna una variable (x = ...), esa variable es LOCAL en toda la función: no se puede leer la de afuera con el mismo nombre antes de asignarle un valor. | Recibe el valor como parámetro y devuelve el nuevo con return: def f(n): return n + 1   y afuera:  total = f(total) |
+| `RUN_024` | TypeError: round() solo redondea números (recibió ‹x›) | round() redondea un número: round(2.7) da 3 y round(3.14159, 2) da 3.14. Un texto (aunque tenga dígitos) no se puede redondear. | Si el dato viene de input(), conviértelo primero: round(float(input()), 1). |
+| `RUN_025` | La cubeta ya está en el agua: si baja más, se atora en el fondo del pozo | Bajaste la cubeta más metros de los que tiene el pozo. Por eso conviene PREGUNTAR antes de bajar: pozo.hayAgua() dice si la cubeta ya llegó al agua. | Usa un ciclo que baje solo mientras no haya agua:  while not pozo.hayAgua(): |
 
 ---
 
@@ -664,13 +698,13 @@ CQL es deliberadamente pequeño. Todo esto **no existe** (y la mayoría produce 
 | Listas, diccionarios, tuplas (`[ ]`, `{ }`) | `LEX_001`: carácter no reconocido |
 | Recorrer con `for x in lista` | `SYN_012`: el for solo acepta `range(...)` |
 | `break`, `continue`, `pass` | Se leen como nombres de variable sin sentido |
-| `+=`, `-=`, `x = y = 3`, varias asignaciones en una línea | Error de sintaxis |
+| `**=`, `x = y = 3`, varias asignaciones en una línea | Error de sintaxis |
 | `;` para separar instrucciones, llaves `{ }` | `LEX_001` |
 | Secuencias de escape en textos (`\n`, `\"`), textos de varias líneas, f-strings | No se interpretan |
 | `print` con varios argumentos | Solo se muestra el primero |
 | `True`/`False` como número (`True + 1`) o «verdadero/falso» de números y textos (`if 5:`) | `RUN_015`, `RUN_006` |
 | Comparaciones encadenadas (`1 < x < 5`) | `SYN_014` |
-| `import`, clases, módulos, `len()`, `type()`, `round()`, `abs()` y el resto de funciones de Python | No existen: solo `print`, `input`, `int`, `float`, `str` y `range` (`SEM_003`) |
+| `import`, clases, módulos, `len()`, `type()`, `abs()` y el resto de funciones de Python | No existen: solo `print`, `input`, `int`, `float`, `str`, `round` y `range` (`SEM_003`) |
 | `entrada()` (el nombre antiguo) | `SEM_003`: «se llama input()» |
 | Variables con tilde o `ñ` en el nombre | `LEX_001` |
 
@@ -678,7 +712,7 @@ CQL es deliberadamente pequeño. Todo esto **no existe** (y la mayoría produce 
 
 ## 12. Ejemplos
 
-### Mundo 1 — instrucciones en orden
+### Mundo 1 · Fundamentos y Datos — instrucciones en orden (robot)
 
 ```python
 robot1.avanzar(3)
@@ -687,7 +721,7 @@ robot1.avanzar(2)
 robot1.hablar("¡Llegué!")
 ```
 
-### Mundo 2 — variables, operadores y entrada
+### Mundo 1 · Fundamentos y Datos — variables, operadores, entrada y redondeo
 
 ```python
 MAXIMO = 100
@@ -701,9 +735,20 @@ print(17 / 4)               # 4.25  (/ siempre da decimal)
 print(17 // 4)              # 4     (división entera)
 print(17 % 5)               # 2     (residuo)
 print("Total: " + str(5))   # str() convierte el número en texto
+
+ahorro = 0
+ahorro += 100               # atajo de ahorro = ahorro + 100
+huevos = int(4.5 + 0.5)     # 5   (redondeo «de la escuela»)
+print(round(10 / 3, 2))     # 3.33
+aprobado = 85 >= 70 and 90 >= 80   # True, sin if
+
+metros = 0
+while not pozo.hayAgua():   # El Pozo: while, not y un contador
+    pozo.bajar()
+    metros += 1
 ```
 
-### Mundo 3 — decisiones
+### Mundo 2 — decisiones
 
 ```python
 if total > 21:
@@ -720,7 +765,7 @@ if not seguro:
     print("Peligro")
 ```
 
-### Mundo 4 — ciclos y el elevador
+### Mundo 3 — ciclos y el elevador
 
 ```python
 # Sube revisando cada piso y recoge a quien encuentre
@@ -736,7 +781,7 @@ elevador.soltar()
 print(elevador.llevando())   # 0
 ```
 
-### Mundo 5 — funciones
+### Mundo 4 — funciones
 
 ```python
 def calcular_area(ancho, alto):
@@ -754,7 +799,7 @@ def saludar(nombre):
 saludar("Robot1")
 ```
 
-Un error típico del Mundo 5 (la variable local no existe afuera):
+Un error típico del Mundo 4 (la variable local no existe afuera):
 
 ```python
 def calcular():
@@ -768,7 +813,7 @@ SEM_015 · NameError: la variable "resultado" solo existe dentro de la función 
 Haz que calcular() devuelva el valor con return, y guárdalo al llamarla: resultado = calcular(...)
 ```
 
-### Mundo 4, Nivel Jefe — la energía se planea
+### Mundo 3, Nivel Jefe — la energía se planea
 
 ```python
 # 5 pisos, cabina de 4 y batería de 10: un solo viaje de subida y uno de bajada gasta 8

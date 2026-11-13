@@ -1,0 +1,174 @@
+{
+  "id": 57,
+  "mundo": 5,
+  "nombre": "El validador de contraseñas",
+  "concepto": "proyecto: variables, if y and",
+  "concepto_evaluado": "proyecto_contrasenas",
+  "narrativa": "Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido.",
+  "escenario": {
+    "tipo": "puerta"
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "57.1",
+      "tipo": "RESOLVER",
+      "titulo": "El validador de contraseñas",
+      "enunciado": "El sistema ya revisó la contraseña y te dejó listas tres variables en la memoria: contrasena (el texto), longitud (cuántos caracteres tiene) y tiene_numero (True si contiene algún número). Una contraseña es segura si tiene MÁS de 8 caracteres y además contiene un número. Muestra Contraseña segura o Contraseña débil.",
+      "codigoInicial": "",
+      "solucionReferencia": "if longitud > 8 and tiene_numero:\n    print(\"Contraseña segura\")\nelse:\n    print(\"Contraseña débil\")",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str",
+        "if",
+        "elif",
+        "else",
+        "while",
+        "for",
+        "and",
+        "or",
+        "not",
+        "booleanos",
+        "def",
+        "return"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Robot12345",
+          "entradas": [],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Contraseña segura"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "contrasena": "Robot12345",
+              "longitud": 10,
+              "tiene_numero": true
+            }
+          }
+        },
+        {
+          "etiqueta": "Larga pero sin número",
+          "entradas": [],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Contraseña débil"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "contrasena": "robotitos",
+              "longitud": 9,
+              "tiene_numero": false
+            }
+          }
+        },
+        {
+          "etiqueta": "Con número pero corta",
+          "entradas": [],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Contraseña débil"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "contrasena": "R2d2",
+              "longitud": 4,
+              "tiene_numero": true
+            }
+          }
+        },
+        {
+          "etiqueta": "Justo 8 caracteres",
+          "entradas": [],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Contraseña débil"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "contrasena": "robot123",
+              "longitud": 8,
+              "tiene_numero": true
+            }
+          }
+        },
+        {
+          "etiqueta": "9 caracteres con número",
+          "entradas": [],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Contraseña segura"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "contrasena": "robot1234",
+              "longitud": 9,
+              "tiene_numero": true
+            }
+          }
+        },
+        {
+          "etiqueta": "Corta y sin número",
+          "entradas": [],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Contraseña débil"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "contrasena": "abc",
+              "longitud": 3,
+              "tiene_numero": false
+            }
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "and",
+            "else"
+          ]
+        }
+      },
+      "retroalimentacion": "Dos condiciones unidas con and: las dos tienen que cumplirse para que la contraseña sea segura.",
+      "pistas": [
+        "Las dos condiciones se unen con and: longitud > 8 and tiene_numero.",
+        "«Más de 8» es > 8; con 8 justos no alcanza."
+      ],
+      "mensajeNoLogrado": "Una contraseña es segura SOLO si tiene más de 8 caracteres Y contiene un número. Revisa los casos que fallan.",
+      "solucionesIncorrectas": [
+        "if longitud > 8:\n    print(\"Contraseña segura\")\nelse:\n    print(\"Contraseña débil\")",
+        "if longitud >= 8 and tiene_numero:\n    print(\"Contraseña segura\")\nelse:\n    print(\"Contraseña débil\")",
+        "if longitud > 8 or tiene_numero:\n    print(\"Contraseña segura\")\nelse:\n    print(\"Contraseña débil\")",
+        "print(\"Contraseña segura\")"
+      ],
+      "mision": "Muestra «Contraseña segura» solo si tiene MÁS de 8 caracteres Y contiene un número; si no, «Contraseña débil»."
+    }
+  ],
+  "proyecto": true
+}

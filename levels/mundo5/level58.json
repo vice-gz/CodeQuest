@@ -1,0 +1,189 @@
+{
+  "id": 58,
+  "mundo": 5,
+  "nombre": "El juego de adivinanza",
+  "concepto": "proyecto: while, límite de intentos e if",
+  "concepto_evaluado": "proyecto_adivinanza",
+  "narrativa": "Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido.",
+  "escenario": {
+    "tipo": "radar",
+    "maxIntentos": 5
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "58.1",
+      "tipo": "RESOLVER",
+      "titulo": "El juego de adivinanza",
+      "enunciado": "La computadora ya eligió un número secreto y lo guardó en la variable secreto. El jugador tiene como máximo 5 INTENTOS, y en cada uno escribe un número. Si acierta, muestra ¡Adivinaste! y el juego termina. Si se queda corto, muestra Muy bajo; si se pasa, Muy alto. Si gasta los 5 intentos sin acertar, muestra Perdiste. El juego no debe pedir más números de los necesarios.",
+      "codigoInicial": "",
+      "solucionReferencia": "intentos = 0\nacertado = False\nwhile intentos < 5 and not acertado:\n    intento = int(input())\n    intentos = intentos + 1\n    if intento == secreto:\n        print(\"¡Adivinaste!\")\n        acertado = True\n    elif intento < secreto:\n        print(\"Muy bajo\")\n    else:\n        print(\"Muy alto\")\nif not acertado:\n    print(\"Perdiste\")",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str",
+        "if",
+        "elif",
+        "else",
+        "while",
+        "for",
+        "and",
+        "or",
+        "not",
+        "booleanos",
+        "def",
+        "return"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Acierta al tercero",
+          "entradas": [
+            "3",
+            "9",
+            "7"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Muy bajo",
+              "Muy alto",
+              "¡Adivinaste!"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "secreto": 7
+            }
+          }
+        },
+        {
+          "etiqueta": "Acierta al primero",
+          "entradas": [
+            "4"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "¡Adivinaste!"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "secreto": 4
+            }
+          }
+        },
+        {
+          "etiqueta": "Pierde",
+          "entradas": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Muy bajo",
+              "Muy bajo",
+              "Muy bajo",
+              "Muy bajo",
+              "Muy bajo",
+              "Perdiste"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "secreto": 10
+            }
+          }
+        },
+        {
+          "etiqueta": "Acierta justo en el último intento",
+          "entradas": [
+            "9",
+            "8",
+            "7",
+            "6",
+            "5"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Muy alto",
+              "Muy alto",
+              "Muy alto",
+              "Muy alto",
+              "¡Adivinaste!"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "secreto": 5
+            }
+          }
+        },
+        {
+          "etiqueta": "Alto, bajo y acierta",
+          "entradas": [
+            "5",
+            "1",
+            "2"
+          ],
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Muy alto",
+              "Muy bajo",
+              "¡Adivinaste!"
+            ]
+          },
+          "escenario": {
+            "variables": {
+              "secreto": 2
+            }
+          }
+        }
+      ],
+      "etiquetaEntrada": "Tu intento: un número del 1 al 10",
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "while",
+            "if",
+            "int",
+            "input"
+          ]
+        }
+      },
+      "retroalimentacion": "Un ciclo con límite de intentos y un if para comparar: el juego termina al acertar o al agotar los 5 intentos.",
+      "pistas": [
+        "Lleva la cuenta con una variable intentos y repite mientras intentos < 5.",
+        "Usa otra variable (acertado) para salir del ciclo cuando el jugador gane."
+      ],
+      "mensajeNoLogrado": "Revisa los casos: acertar en el 5.º intento todavía gana, y no se deben pedir números de más después de acertar.",
+      "solucionesIncorrectas": [
+        "intentos = 0\nwhile intentos < 5:\n    intento = int(input())\n    intentos = intentos + 1\n    if intento == secreto:\n        print(\"¡Adivinaste!\")\n    elif intento < secreto:\n        print(\"Muy bajo\")\n    else:\n        print(\"Muy alto\")\nprint(\"Perdiste\")",
+        "intentos = 0\nacertado = False\nwhile intentos < 4 and not acertado:\n    intento = int(input())\n    intentos = intentos + 1\n    if intento == secreto:\n        print(\"¡Adivinaste!\")\n        acertado = True\n    elif intento < secreto:\n        print(\"Muy bajo\")\n    else:\n        print(\"Muy alto\")\nif not acertado:\n    print(\"Perdiste\")",
+        "intentos = 0\nacertado = False\nwhile intentos < 5 and not acertado:\n    intento = int(input())\n    intentos = intentos + 1\n    if intento == secreto:\n        print(\"¡Adivinaste!\")\n        acertado = True\n    elif intento > secreto:\n        print(\"Muy bajo\")\n    else:\n        print(\"Muy alto\")\nif not acertado:\n    print(\"Perdiste\")",
+        "print(\"¡Adivinaste!\")"
+      ],
+      "mision": "¡Juega! Tienes máximo 5 intentos: «Muy bajo», «Muy alto» o «¡Adivinaste!» (y termina); si se acaban, «Perdiste».",
+      "entradasInteractivas": true,
+      "variablesOcultas": [
+        "secreto"
+      ]
+    }
+  ],
+  "proyecto": true
+}

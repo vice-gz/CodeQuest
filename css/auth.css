@@ -1,5 +1,5 @@
 /* ============================================================
-   CodeQuest — Avance 2: tarjeta de acceso (login / registro)
+   CodeQuest — Tarjeta de acceso (login / registro)
    ============================================================ */
 
 .seccion-acceso {
@@ -8,12 +8,13 @@
 }
 
 .auth-tarjeta {
-  width: min(440px, 100%);
-  padding: 26px;
-  border-radius: 16px;
-  background: var(--panel);
-  border: 1px solid var(--borde);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  width: min(450px, 100%);
+  padding: 28px;
+  border-radius: 22px;
+  background: linear-gradient(165deg, rgba(24, 34, 70, 0.92) 0%, rgba(12, 18, 40, 0.96) 100%);
+  border: 1.5px solid rgba(0, 245, 212, 0.3);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px -12px rgba(0, 245, 212, 0.25);
+  backdrop-filter: blur(14px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -22,27 +23,29 @@
 .auth-pestanas {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 11px;
-  background: var(--bg-elevado);
+  gap: 5px;
+  padding: 5px;
+  border-radius: 13px;
+  background: rgba(6, 9, 22, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .auth-pestana {
   padding: 10px;
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   background: transparent;
   color: var(--texto-muted);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .auth-pestana.activa {
   background: var(--panel-alt);
-  color: var(--texto);
-  box-shadow: inset 0 0 0 1px var(--borde);
+  color: var(--teal);
+  box-shadow: inset 0 0 0 1px rgba(0, 245, 212, 0.35);
 }
 
 .auth-form {
@@ -80,20 +83,23 @@
 .auth-marca {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 1.4rem;
+  gap: 9px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--texto);
   text-decoration: none;
+  letter-spacing: -0.02em;
 }
 
 .auth-marca span {
   color: var(--teal);
+  filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.65));
 }
 
 .auth-volver {
   color: var(--texto-muted);
   font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -112,7 +118,7 @@
 
 .opcion-rol {
   position: relative;
-  display: flex; /* las dos tarjetas miden lo mismo aunque una lleve más texto */
+  display: flex;
   cursor: pointer;
 }
 
@@ -127,12 +133,13 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 12px;
-  border-radius: 11px;
-  border: 1px solid var(--borde);
-  background: var(--bg-elevado);
+  gap: 3px;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1.5px solid var(--borde);
+  background: rgba(8, 12, 28, 0.8);
   font-size: 0.9rem;
+  transition: all 0.15s ease;
 }
 
 .opcion-rol small {
@@ -142,7 +149,8 @@
 
 .opcion-rol input:checked + span {
   border-color: var(--teal);
-  background: rgba(94, 234, 212, 0.1);
+  background: rgba(0, 245, 212, 0.12);
+  box-shadow: 0 0 16px -4px rgba(0, 245, 212, 0.35);
 }
 
 .opcion-rol input:focus-visible + span {
@@ -150,23 +158,22 @@
   outline-offset: 2px;
 }
 
-
 /* ---------------------------------------------------------------- Acceso con Google y GitHub */
 
 .auth-social {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 6px;
+  margin: 0 0 4px;
 }
 
 .auth-separador {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 6px 0 2px;
+  margin: 10px 0 14px;
   color: var(--texto-muted);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
 }
 
 .auth-separador::before,
@@ -181,10 +188,11 @@
   display: inline-flex;
   align-items: center;
   width: 100%;
-  min-height: 48px;
+  min-height: 52px;
   gap: 12px;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 .icono-social {
@@ -193,7 +201,6 @@
   flex: 0 0 auto;
 }
 
-/* Google: fondo blanco (su guía de marca); GitHub: gris oscuro con letra blanca. */
 .boton-google {
   background: #ffffff;
   color: #1f1f1f;
@@ -219,8 +226,7 @@
   cursor: progress;
 }
 
-
-/* ---------------------------------------------------------------- Selector de rol (alumno / profesor) con iconos */
+/* ---------------------------------------------------------------- Selector de rol con iconos */
 
 .icono-rol {
   width: 28px;
@@ -233,8 +239,6 @@
   color: var(--ambar);
 }
 
-/* ---------------------------------------------------------------- Encabezado y botones de Google / GitHub arriba */
-
 .auth-encabezado {
   margin: 0 0 18px;
   text-align: center;
@@ -242,7 +246,7 @@
 
 .auth-encabezado h1 {
   margin: 0 0 4px;
-  font-size: 1.5rem;
+  font-size: 1.55rem;
 }
 
 .auth-encabezado p {
@@ -251,23 +255,10 @@
   font-size: 0.95rem;
 }
 
-.auth-social {
-  margin: 0 0 4px;
-}
-
-.auth-social .boton-social {
-  min-height: 52px;
-  font-size: 1rem;
-}
-
 .ayuda-social {
   margin: 2px 0 0;
   text-align: center;
   font-size: 0.8rem;
-}
-
-.auth-social .auth-separador {
-  margin: 10px 0 14px;
 }
 
 /* ---------------------------------------------------------------- «Un último paso»: alumno o profesor */
@@ -311,8 +302,8 @@
   padding: 16px;
   border-radius: 14px;
   border: 2px solid var(--borde);
-  background: var(--bg-elevado);
-  transition: border-color 0.15s, background 0.15s;
+  background: rgba(8, 12, 28, 0.85);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 
 .tarjeta-rol .icono-rol {
@@ -335,8 +326,8 @@
 
 .tarjeta-rol input:checked + span {
   border-color: var(--teal);
-  background: rgba(94, 234, 212, 0.1);
-  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.18);
+  background: rgba(0, 245, 212, 0.12);
+  box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.18);
 }
 
 .tarjeta-rol input:checked + span .icono-rol {

@@ -217,6 +217,11 @@ export class Parser {
       return this.parsearAsignacion();
     }
 
+    // asignacion compuesta := IDENTIFICADOR ("+=" | "-=" | "*=" | "/=" | "//=" | "%=") expresion
+    if (siguiente && siguiente.tipo === TipoToken.ASIGNACION_COMPUESTA) {
+      return this.parsearAsignacionCompuesta();
+    }
+
     // llamada_metodo := IDENTIFICADOR "." IDENTIFICADOR "(" argumentos? ")"
     if (siguiente && siguiente.tipo === TipoToken.PUNTO) {
       return this.parsearLlamadaMetodo();
@@ -248,6 +253,25 @@ export class Parser {
     const expresion = this.parsearExpresion();
     this.terminarSentencia(nombre.linea);
     return { tipo: "Asignacion", variable: nombre.valor, expresion, linea: nombre.linea };
+  }
+
+  // ahorro += mesada  ≡  ahorro = ahorro + mesada (como en Python con números y textos). Se guarda como una Asignacion
+  // normal (con `compuesta` para mostrarla tal cual), así el validador y el intérprete no necesitan un caso aparte:
+  // si la variable aún no existe da el mismo NameError que en Python.
+  parsearAsignacionCompuesta() {
+    const nombre = this.avanzar(); // IDENTIFICADOR
+    const op = this.avanzar(); // += ...
+    if (this.finDeSentencia()) throw Errores.esperabaValor(nombre.linea);
+    const derecha = this.parsearExpresion();
+    this.terminarSentencia(nombre.linea);
+    const izquierda = { tipo: "Identificador", nombre: nombre.valor, linea: nombre.linea };
+    return {
+      tipo: "Asignacion",
+      variable: nombre.valor,
+      expresion: { tipo: "OperacionBinaria", operador: op.valor, izquierda, derecha, linea: op.linea },
+      compuesta: op.valor,
+      linea: nombre.linea,
+    };
   }
 
   parsearLlamadaMetodo() {

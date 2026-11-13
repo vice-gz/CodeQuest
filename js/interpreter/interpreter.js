@@ -22,7 +22,7 @@
 import { Errores } from "./errors.js";
 import { formatearExpresion, variablesUsadas, variablesAsignadas } from "./ast.js";
 import { Flotante, esEntero, esFlotante, esLogico, formatear, aJS, nombreDeTipo } from "./valores.js";
-import { OPERACIONES, negar, iguales, ordenar, convertirAEntero, convertirADecimal } from "./aritmetica.js";
+import { OPERACIONES, negar, iguales, ordenar, convertirAEntero, convertirADecimal, redondear } from "./aritmetica.js";
 
 export const MAX_INSTRUCCIONES = 1000;
 export const MAX_PROFUNDIDAD = 100; // llamadas de función anidadas (RecursionError)
@@ -43,7 +43,8 @@ export class Interpreter {
    */
   constructor(motor, { variablesIniciales = {}, maxInstrucciones = MAX_INSTRUCCIONES } = {}) {
     this.motor = motor;
-    this.variables = new Map(Object.entries(variablesIniciales));
+    // Un número con decimales que trae el escenario (precio: 24.5) es un float de Python, no un int.
+    this.variables = new Map(Object.entries(variablesIniciales).map(([n, v]) => [n, typeof v === "number" && !Number.isInteger(v) ? new Flotante(v) : v]));
     this.maxInstrucciones = maxInstrucciones;
     this.iteraciones = 0;
     // Funciones del estudiante (def): se guardan al ejecutar el def; cada llamada crea un marco con sus variables locales.
@@ -211,12 +212,12 @@ export class Interpreter {
       // Se muestra como lo haría Python: True/False, 4.25, 5.0 ...
       await this.motor.print(esFlotante(valor) || esLogico(valor) || valor === null ? formatear(valor) : valor, { fuentes });
     } else {
-      // input(), int(), float(), str() como instrucción suelta: se ejecutan y el resultado se descarta.
+      // input(), int(), float(), str(), round() como instrucción suelta: se ejecutan y el resultado se descarta.
       await this.evaluarFuncion(nodo);
     }
   }
 
-  /** Funciones integradas que devuelven un valor: input, int, float, str. */
+  /** Funciones integradas que devuelven un valor: input, int, float, str, round. */
   async evaluarFuncion(nodo) {
     if (this.funciones.has(nodo.nombre)) return this.llamarFuncionUsuario(nodo);
     const args = [];
@@ -234,6 +235,8 @@ export class Interpreter {
         return convertirADecimal(args[0], nodo.linea);
       case "str":
         return formatear(args[0]);
+      case "round":
+        return redondear(args[0], args[1], nodo.linea);
       default:
         throw Errores.funcionNoDefinida(nodo.nombre, nodo.linea);
     }

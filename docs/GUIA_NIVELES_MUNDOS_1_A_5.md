@@ -6,8 +6,8 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 
 ## Cómo funciona todo
 
-- **Mundos:** se juegan en orden. Un mundo se abre al completar **todos** los niveles del anterior, **incluido su Nivel Jefe** (👑, el último de cada mundo del 1 al 4: sin botón de pistas, editor en blanco y un solo enunciado). El **Nivel 0** (diagramas de flujo) es el primero del Mundo 1 y se da por hecho si ya se había jugado antes.
-- **Niveles:** cada nivel tiene 3 o 4 fases que se hacen en orden (el Nivel Jefe tiene una sola). En el juego los niveles se numeran dentro de su mundo (Nivel 0, 1, 2…); entre paréntesis va el número interno.
+- **Mundos:** se juegan en orden. Un mundo se abre al completar **todos** los niveles del anterior, **incluidos sus Niveles Jefe** (👑: sin botón de pistas, editor en blanco y un solo enunciado; cierran cada mundo, y el Mundo 1 tiene además un jefe intermedio, el Laberinto ciego). El **Nivel 0** (diagramas de flujo) es el primero del Mundo 1 y se da por hecho si ya se había jugado antes.
+- **Niveles:** cada nivel tiene de 3 a 5 fases que se hacen en orden (el Nivel Jefe tiene una sola). En el juego los niveles se numeran dentro de su mundo (Nivel 0, 1, 2…); entre paréntesis va el número interno.
 - **Estrellas por nivel:** ⭐ completar todas las fases · ⭐⭐ además, sin usar pistas · ⭐⭐⭐ además, acertando a la **primera** en cada fase.
 - **Casos:** en las fases de lógica y ciclos el programa se prueba en varias mesas o edificios. Un programa que solo funciona para el caso que se ve **no pasa**.
 - **Sangría:** dentro de `if`, `while` y `for` las líneas van movidas 4 espacios (tecla **Tab**). Cada pregunta o ciclo termina en dos puntos `:`.
@@ -27,7 +27,7 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 
 ## Resumen
 
-### Mundo 1 · Despertar
+### Mundo 1 · Fundamentos y Datos
 
 | Nivel | Nombre | Concepto | Fases |
 |---|---|---|---|
@@ -37,29 +37,23 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 | 3 (id 3) | Haz que me entienda | instrucciones disponibles, llamadas a métodos, sintaxis | 5: Explorar, Predecir, Explorar, Predecir, Resolver |
 | 4 (id 4) | ¿Cuánto? | parámetros, argumentos, literales numéricos | 3: Explorar, Predecir, Resolver |
 | 5 (id 5) | La orden equivocada | sintaxis, errores, mensajes del sistema | 4: Explorar, Debug, Predecir, Debug |
-| 6 (id 6) | La terminal | input(), int(), print() | 4: Explorar, Predecir, Escribir, Resolver |
-| 7 (id 7) | El sistema desconocido | experimentación, combinación de conceptos | 3: Predecir, Resolver, Resolver |
-| 8 (id 8) | La salida | integración total | 3: Resolver, Predecir, Resolver |
-| 9 👑 (id 44) | Laberinto ciego | integración del Mundo 1 | 1: Resolver |
+| 6 (id 6) | La Alcancía | variables y reasignación (ahorro = ahorro + mesada) | 4: Explorar, Predecir, Modificar, Escribir |
+| 7 (id 7) | La terminal | input(), int(), print() | 4: Explorar, Predecir, Escribir, Resolver |
+| 8 (id 8) | Semáforos y Decisiones | if / else, comparaciones (==) y and / or | 4: Explorar, Predecir, Escribir, Resolver |
+| 9 (id 9) | La salida | robot, obstáculos y salida | 3: Resolver, Predecir, Resolver |
+| 10 (id 10) | El Intercambio | intercambiar variables con una temporal (temp) | 4: Explorar, Predecir, Debug, Resolver |
+| 11 (id 11) | Identificadores | nombres de variables válidos (identificadores) | 4: Explorar, Debug, Predecir, Debug |
+| 12 (id 12) | La Receta | operadores * y /, y redondeo con int() y round() | 4: Explorar, Predecir, Modificar, Resolver |
+| 13 (id 13) | El Sistema de Energía | constantes (MAXIMO) y variables que cambian | 3: Explorar, Modificar, Resolver |
+| 14 👑 (id 44) | Laberinto ciego | integración de los Bloques A a C | 1: Resolver |
+| 15 (id 14) | El Pozo | ciclo while, not y contadores | 4: Explorar, Predecir, Escribir, Resolver |
+| 16 (id 15) | El Puente de Datos | input(), int(), operadores y robot juntos | 3: Escribir, Resolver, Resolver |
+| 17 (id 16) | El Cronómetro | división entera // y residuo % | 4: Explorar, Predecir, Debug, Resolver |
+| 18 (id 17) | La Boleta | expresiones booleanas sin if (True / False) | 4: Explorar, Predecir, Escribir, Resolver |
+| 19 (id 18) | El Viaje | combinar operadores y round(x, 2) | 4: Explorar, Debug, Predecir, Resolver |
+| 20 👑 (id 45) | La Caja Fuerte | integración del Mundo 1 | 1: Resolver |
 
-### Mundo 2 · Memoria
-
-| Nivel | Nombre | Concepto | Fases |
-|---|---|---|---|
-| 1 (id 9) | Necesito recordar | variable, asignación, identificador, literal | 3: Explorar, Predecir, Escribir |
-| 2 (id 10) | Cambia de opinión | reasignación, estado | 3: Explorar, Predecir, Resolver |
-| 3 (id 11) | No todo es lo mismo | entero, decimal, texto | 4: Explorar, Predecir, Debug, Debug |
-| 4 (id 12) | Cálculo de energía | operadores, expresiones | 3: Explorar, Modificar, Resolver |
-| 5 (id 13) | Calcula el reparto | multiplicación, división, división entera y residuo | 4: Explorar, Predecir, Predecir, Resolver |
-| 6 (id 14) | Información del exterior | input(), int() y float() | 4: Explorar, Predecir, Escribir, Resolver |
-| 7 (id 15) | El identificador incorrecto | identificadores | 4: Explorar, Debug, Predecir, Debug |
-| 8 (id 16) | Módulos que se combinan | combinación de variables, tipos y operadores | 5: Explorar, Predecir, Escribir, Resolver, Escribir |
-| 9 (id 17) | El sistema de energía | valores que cambian y valores que no | 3: Explorar, Modificar, Resolver |
-| 10 (id 18) | El puente de datos | variables, operadores, input y conversiones juntos | 3: Escribir, Resolver, Libre |
-| 11 (id 19) | La puerta del Mundo 3 | integración total del Mundo 2 | 3: Resolver, Escribir, Libre |
-| 12 👑 (id 45) | La caja fuerte | integración del Mundo 2 | 1: Resolver |
-
-### Mundo 3 · Lógica
+### Mundo 2 · Lógica
 
 | Nivel | Nombre | Concepto | Fases |
 |---|---|---|---|
@@ -75,9 +69,9 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 | 10 (id 29) | Pares | pares y condiciones combinadas | 3: Resolver, Resolver, Libre |
 | 11 (id 30) | Combinaciones | combinaciones lógicas | 3: Resolver, Resolver, Libre |
 | 12 (id 31) | El crupier final | integración de condicionales | 3: Resolver, Resolver, Libre |
-| 13 👑 (id 46) | Torneo de cartas | integración del Mundo 3 | 1: Resolver |
+| 13 👑 (id 46) | Torneo de cartas | integración del Mundo 2 | 1: Resolver |
 
-### Mundo 4 · Automatización
+### Mundo 3 · Automatización
 
 | Nivel | Nombre | Concepto | Fases |
 |---|---|---|---|
@@ -93,9 +87,9 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 | 10 (id 41) | La cabina chica | capacidad limitada | 3: Resolver, Resolver, Libre |
 | 11 (id 42) | Reportes por piso | ciclos con reportes | 3: Resolver, Resolver, Libre |
 | 12 (id 43) | El gran operativo | contadores con ciclos | 3: Resolver, Resolver, Libre |
-| 13 👑 (id 47) | Evacuación crítica | integración del Mundo 4 | 1: Resolver |
+| 13 👑 (id 47) | Evacuación crítica | integración del Mundo 3 | 1: Resolver |
 
-### Mundo 5 · Modularidad
+### Mundo 4 · Modularidad
 
 | Nivel | Nombre | Concepto | Fases |
 |---|---|---|---|
@@ -106,15 +100,24 @@ Guía para **facilitar** el juego: qué trabaja cada nivel, qué pide cada fase 
 | 5 (id 52) | Información confidencial | variables locales y ámbito | 4: Explorar, Predecir, Predecir, Debug |
 | 6 (id 53) | Producción en cadena | usar el return de una función como parámetro de otra | 4: Explorar, Predecir, Resolver, Resolver |
 | 7 (id 54) | Reparando la fábrica | depurar funciones | 4: Debug, Debug, Debug, Debug |
-| 8 👑 (id 55) | El Gran Ensamblaje | integración del Mundo 5 | 1: Resolver |
+| 8 👑 (id 55) | El Gran Ensamblaje | integración del Mundo 4 | 1: Resolver |
+
+### Mundo 5 · Proyecto
+
+| Nivel | Nombre | Concepto | Fases |
+|---|---|---|---|
+| 1 (id 56) | La máquina expendedora | proyecto: input, if y cálculos | 1: Resolver |
+| 2 (id 57) | El validador de contraseñas | proyecto: variables, if y and | 1: Resolver |
+| 3 (id 58) | El juego de adivinanza | proyecto: while, límite de intentos e if | 1: Resolver |
+| 4 👑 (id 59) | Proyecto libre | proyecto final de CodeQuest | 1: Resolver |
 
 ---
 
-## Mundo 1 · Despertar
+## Mundo 1 · Fundamentos y Datos
 
-- **Escenario:** Laboratorio tecnológico (cuadrícula 2D con **Robot1**; el Nivel 0 es un pasillo con una puerta).
-- **Qué se aprende:** El Nivel 0 enseña qué es un algoritmo ordenando tarjetas de un diagrama de flujo. Después: instrucciones (`avanzar`, `girar`, `hablar`, `retroceder`, `recoger`), `print()`, errores y `input()` con `int()`. El Nivel Jefe es el Laberinto ciego.
-- **Niveles:** 10 · **Estrellas posibles:** 30
+- **Escenario:** Laboratorio de **Robot1** y el pueblo (cada nivel elige su escenario: robot, consola de datos o un minijuego).
+- **Qué se aprende:** Fusión de los antiguos Mundos 1 y 2, todo en Python. El Nivel 0 enseña qué es un algoritmo con un diagrama de flujo. Bloque A (robot): `print()`, `avanzar`, `girar` y errores. Bloque B: variables y reasignación en **La Alcancía** (`ahorro += mesada`), `input()` e `int()` en la terminal y `if` / `and` / `or` en **Semáforos**. Bloque C: el **Intercambio** de vasos (`temp`), identificadores, **La Receta** (`*`, `/`, `int(x + 0.5)` y `round()`) y constantes; cierra el jefe intermedio **Laberinto ciego**. Bloque D: `while` y contadores en **El Pozo**, el puente de datos, `//` y `%` en **El Cronómetro**, expresiones booleanas sin `if` en **La Boleta**, `round(x, 2)` en **El Viaje** y el jefe final **La Caja Fuerte**. Cada fase donde se escribe código trae un límite de líneas recomendado (contador «Líneas: X / Límite»).
+- **Niveles:** 21 · **Estrellas posibles:** 63
 
 ### Nivel 0 del Mundo 1 (id 0) — Antes de empezar: el algoritmo
 
@@ -551,11 +554,110 @@ robot1.avanzar(1)
 ```
 </details>
 
-### Nivel 6 del Mundo 1 (id 6) — La terminal
+### Nivel 6 del Mundo 1 (id 6) — La Alcancía
+
+**Concepto:** variables y reasignación (ahorro = ahorro + mesada)  ·  **Historia:** _Robot1 salió del laboratorio y llegó al pueblo. Sus habitantes tienen problemas reales que se resuelven con datos. Lupita quiere juntar $400 en su alcancía en 4 semanas. Una variable será su alcancía: una caja con nombre que guarda el dinero._
+
+#### Fase 1 · EXPLORAR — «Tu primera variable»  `6.1`
+
+**Qué hay que hacer:** Concepto nuevo: una VARIABLE es una caja con nombre que guarda un valor. ahorro = 0 crea la caja ahorro con un 0 adentro. Después, ahorro = ahorro + 100 toma lo que ya había, le suma 100 y lo guarda otra vez en la MISMA caja (eso es reasignar). Ejecuta y mira caer la moneda.
+
+**Cómo se pasa:**
+
+- Basta con ejecutar el programa sin errores.
+
+**Pistas del juego:** Mira el panel de Memoria: el valor de ahorro cambia.
+
+#### Fase 2 · PREDECIR — «¿Cuánto hay en la alcancía?»  `6.2`
+
+**Qué hay que hacer:** Lee el programa con calma, renglón por renglón. ¿Qué muestra al final?
+
+**Cómo se pasa:**
+
+- ▫️ 100
+- ✅ 250
+- ▫️ 50
+- Se pasa eligiendo: **250**.
+
+**Pistas del juego:** Ve sumando: empieza en 50.
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+ahorro = 50
+ahorro = ahorro + 100
+ahorro = ahorro + 100
+print(ahorro)
+```
+</details>
+
+#### Fase 3 · MODIFICAR — «La mesada cambia»  `6.3`
+
+**Qué hay que hacer:** La mesada se guarda en su propia variable. Cambia SOLO el valor de mesada para que, después de dos semanas, la alcancía tenga 300.
+
+**Cómo se pasa:**
+
+- Al terminar, `ahorro` debe valer 300.
+- El programa debe mostrar «300».
+- Debe crear una variable llamada `mesada`.
+
+**Pistas del juego:** Dos mesadas iguales deben sumar 300.
+
+**Si no pasa, el juego dice:** «Después de dos depósitos de mesada, ahorro debe valer 300.»
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+mesada = 100
+ahorro = 0
+ahorro = ahorro + mesada
+ahorro = ahorro + mesada
+print(ahorro)
+```
+</details>
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+mesada = 150
+ahorro = 0
+ahorro = ahorro + mesada
+ahorro = ahorro + mesada
+print(ahorro)
+```
+</details>
+
+#### Fase 4 · ESCRIBIR — «Cuatro semanas de ahorro»  `6.4`
+
+**Qué hay que hacer:** Empieza con ahorro = 0 y mesada = 100. Durante 4 semanas, cada semana suma la mesada a la alcancía con ahorro = ahorro + mesada. Python tiene un atajo que hace lo mismo: ahorro += mesada. Al final muestra ahorro (400).
+
+**Cómo se pasa:**
+
+- El programa debe mostrar «400».
+- Debe crear una variable llamada `mesada`.
+
+**Pistas del juego:** Cuatro semanas = cuatro reasignaciones. · ahorro += mesada
+
+**Si no pasa, el juego dice:** «Deben caer 4 depósitos en la alcancía (uno por semana) y mostrarse 400.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+ahorro = 0
+mesada = 100
+ahorro += mesada
+ahorro += mesada
+ahorro += mesada
+ahorro += mesada
+print(ahorro)
+```
+</details>
+
+### Nivel 7 del Mundo 1 (id 7) — La terminal
 
 **Concepto:** input(), int(), print()  ·  **Historia:** _La instalación tiene una terminal. Ahora los datos no los escribe el programa: los escribes tú._
 
-#### Fase 1 · EXPLORAR — «La terminal te pregunta»  `6.1`
+#### Fase 1 · EXPLORAR — «La terminal te pregunta»  `7.1`
 
 **Qué hay que hacer:** Instrucción nueva: input() pausa el programa y te pide un valor. Ejecuta, escribe lo que quieras en el campo que aparece y observa el panel de Salida.
 
@@ -569,7 +671,7 @@ robot1.avanzar(1)
 
 **Pistas del juego:** Puedes escribir un número o una palabra: pruébalo.
 
-#### Fase 2 · PREDECIR — «¿Qué hace input()?»  `6.4`
+#### Fase 2 · PREDECIR — «¿Qué hace input()?»  `7.2`
 
 **Qué hay que hacer:** Acabas de ejecutar input(). ¿Qué hace esta instrucción?
 
@@ -589,7 +691,7 @@ input()
 ```
 </details>
 
-#### Fase 3 · ESCRIBIR — «Usa lo que escribes»  `6.2`
+#### Fase 3 · ESCRIBIR — «Usa lo que escribes»  `7.3`
 
 **Qué hay que hacer:** input() DEVUELVE un valor, así que puedes ponerlo justo donde harías falta un dato: dentro de print(). Escribe un programa que muestre lo que teclees. Escribe 7 cuando se te pida.
 
@@ -612,7 +714,7 @@ print(input())
 ```
 </details>
 
-#### Fase 4 · RESOLVER — «Tú marcas el rumbo»  `6.3`
+#### Fase 4 · RESOLVER — «Tú marcas el rumbo»  `7.4`
 
 **Qué hay que hacer:** En Python, input() SIEMPRE lee texto, incluso si escribes un número. Para contar casillas necesitas un número entero: conviértelo con int(input()). Haz que Robot1 avance las casillas que teclees, luego gire al sur y avance 1, para llegar a (3,1). Escribe 3 cuando se te pida.
 
@@ -637,91 +739,113 @@ robot1.avanzar(1)
 ```
 </details>
 
-### Nivel 7 del Mundo 1 (id 7) — El sistema desconocido
+### Nivel 8 del Mundo 1 (id 8) — Semáforos y Decisiones
 
-**Concepto:** experimentación, combinación de conceptos  ·  **Historia:** _El laboratorio se abre a zonas dañadas: aparecen muros. Robot1 tendrá que rodearlos._
+**Concepto:** if / else, comparaciones (==) y and / or  ·  **Historia:** _En la avenida principal hay un cruce peligroso. El auto autónomo del pueblo necesita reglas para decidir cuándo avanzar y cuándo frenar._
 
-#### Fase 1 · PREDECIR — «Aparecen los muros»  `7.1`
+#### Fase 1 · EXPLORAR — «El semáforo pregunta»  `8.1`
 
-**Qué hay que hacer:** Los bloques grises son muros: Robot1 no puede atravesarlos. Hay uno en (2,0) y Robot1 está en (0,0) mirando al este. ¿Qué pasa si ejecutas robot1.avanzar(5)?
+**Qué hay que hacer:** Concepto nuevo: if hace una PREGUNTA y elige qué hacer. color == "rojo" compara (== significa «¿es igual?») y responde True o False. Si es True se ejecuta lo de adentro del if; si es False, lo del else. Las líneas de adentro llevan 4 espacios de sangría. Ejecuta: el semáforo está en rojo.
 
 **Cómo se pasa:**
 
-- ▫️ Atraviesa el muro y llega al final
-- ✅ Choca con el muro y el programa se detiene
-- ▫️ Rodea el muro automáticamente
-- Se pasa eligiendo: **Choca con el muro y el programa se detiene**.
+- Basta con ejecutar el programa sin errores.
 
-**Pistas del juego:** Robot1 hace exactamente lo que le indicas, ni más ni menos.
+**Pistas del juego:** Arriba a la izquierda de la escena aparece la condición y su resultado.
+
+#### Fase 2 · PREDECIR — «Las dos condiciones»  `8.2`
+
+**Qué hay que hacer:** and exige que las DOS condiciones sean True. Aquí el semáforo está en rojo pero NO hay peatón. ¿Qué muestra el programa?
+
+**Cómo se pasa:**
+
+- ▫️ Frenar
+- ✅ Avanzar
+- ▫️ Las dos cosas
+- Se pasa eligiendo: **Avanzar**.
+
+**Pistas del juego:** ¿Las dos condiciones son verdaderas?
 
 <details><summary>Ver el código de la fase</summary>
 
 ```python
-robot1.avanzar(5)
+color = "rojo"
+peaton = False
+if color == "rojo" and peaton == True:
+    print("Frenar")
+else:
+    print("Avanzar")
 ```
 </details>
 
-#### Fase 2 · RESOLVER — «Rodea los escombros»  `7.2`
+#### Fase 3 · ESCRIBIR — «Rojo o peatón»  `8.3`
 
-**Qué hay que hacer:** Llega a la batería en (5,0) sin chocar. Hay muros en (2,0) y (3,1). Usa girar() para buscar una fila libre.
-
-**En pantalla:** Mundo 2D: cuadrícula de 6×3; Robot1 empieza en (0,0) mirando al este; bandera en (5,0); 2 muros.
+**Qué hay que hacer:** El auto debe frenar si el semáforo está en rojo O si hay un peatón cruzando (peaton == True). En cualquier otro caso, avanza. Usa if, else y or, y muestra "Frenar" o "Avanzar". Se prueba con 4 cruces.
 
 **Cómo se pasa:**
 
-- Robot1 debe terminar en la casilla (5,0).
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
 
-**Pistas del juego:** La fila 2 está despejada de lado a lado. · Baja, cruza y sube.
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | verde · sin peatón |  | Mostrar «Avanzar» |
+  | rojo · sin peatón |  | Mostrar «Frenar» |
+  | verde · con peatón |  | Mostrar «Frenar» |
+  | amarillo · sin peatón |  | Mostrar «Avanzar» |
 
-**Si no pasa, el juego dice:** «Robot1 no llegó a (5,0). Busca una fila sin muros para cruzar.»
+- Tu código debe usar: `if` y `or`.
+
+**Pistas del juego:** Une las dos preguntas con or. · if color == "rojo" or peaton == True:
+
+**Si no pasa, el juego dice:** «Revisa los 4 cruces: hay que frenar con rojo o con peatón.»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-robot1.avanzar(1)
-robot1.girar("sur")
-robot1.avanzar(2)
-robot1.girar("este")
-robot1.avanzar(4)
-robot1.girar("norte")
-robot1.avanzar(2)
+if color == "rojo" or peaton == True:
+    print("Frenar")
+else:
+    print("Avanzar")
 ```
 </details>
 
-#### Fase 3 · RESOLVER — «Batería y puerta»  `7.3`
+#### Fase 4 · RESOLVER — «Solo con luz verde»  `8.4`
 
-**Qué hay que hacer:** Ahora hay DOS objetivos: la batería en (5,0) y la puerta en (5,2). Pasa por los dos, en el orden que quieras. Cada estrella se apaga al pisarla.
-
-**En pantalla:** Mundo 2D: cuadrícula de 6×3; Robot1 empieza en (0,0) mirando al este; bandera en (5,0) y (5,2); 2 muros.
+**Qué hay que hacer:** La patrulla escolar puso una regla más estricta: el auto solo avanza si el semáforo está en verde Y no hay peatón (peaton == False). Muestra "Avanzar" en ese caso y "Frenar" en cualquier otro. Se prueba con 5 cruces.
 
 **Cómo se pasa:**
 
-- Robot1 debe pisar **todas** las banderas del mapa.
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
 
-**Pistas del juego:** Puedes atenderlos en cualquier orden. · Mira qué estrella sigue encendida.
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | verde · sin peatón |  | Mostrar «Avanzar» |
+  | verde · con peatón |  | Mostrar «Frenar» |
+  | rojo · sin peatón |  | Mostrar «Frenar» |
+  | amarillo · sin peatón |  | Mostrar «Frenar» |
+  | rojo · con peatón |  | Mostrar «Frenar» |
 
-**Si no pasa, el juego dice:** «Faltó pisar alguno de los dos objetivos.»
+- Tu código debe usar: `if` y `and`.
+
+**Pistas del juego:** Une las dos condiciones con and.
+
+**Si no pasa, el juego dice:** «Solo se avanza con verde y sin peatón; todo lo demás es Frenar.»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-robot1.avanzar(1)
-robot1.girar("sur")
-robot1.avanzar(2)
-robot1.girar("este")
-robot1.avanzar(4)
-robot1.girar("norte")
-robot1.avanzar(2)
-robot1.girar("sur")
-robot1.avanzar(2)
+if color == "verde" and peaton == False:
+    print("Avanzar")
+else:
+    print("Frenar")
 ```
 </details>
 
-### Nivel 8 del Mundo 1 (id 8) — La salida
+### Nivel 9 del Mundo 1 (id 9) — La salida
 
-**Concepto:** integración total  ·  **Historia:** _Robot1 encontró la puerta, pero el pasillo se volvió un laberinto._
+**Concepto:** robot, obstáculos y salida  ·  **Historia:** _Robot1 encontró la puerta, pero el pasillo se volvió un laberinto._
 
-#### Fase 1 · RESOLVER — «Recupera la tarjeta»  `8.1`
+#### Fase 1 · RESOLVER — «Recupera la tarjeta»  `9.1`
 
 **Qué hay que hacer:** Instrucción nueva: robot1.recoger() levanta el objeto de la casilla donde está Robot1. La tarjeta morada está en (2,0): ve hasta ella y recógela.
 
@@ -741,7 +865,7 @@ robot1.recoger()
 ```
 </details>
 
-#### Fase 2 · PREDECIR — «Lee el laberinto»  `8.2`
+#### Fase 2 · PREDECIR — «Lee el laberinto»  `9.2`
 
 **Qué hay que hacer:** Robot1 está en (0,0) mirando al este y hay un muro justo en (1,0). ¿Qué instrucción debe ir PRIMERO?
 
@@ -762,7 +886,7 @@ robot1.recoger()
 ```
 </details>
 
-#### Fase 3 · RESOLVER — «Escapa del laberinto»  `8.3`
+#### Fase 3 · RESOLVER — «Escapa del laberinto»  `9.3`
 
 **Qué hay que hacer:** La salida está en (5,3). Encuentra una ruta entre los muros y anuncia tu escape con print("Libre").
 
@@ -788,501 +912,120 @@ print("Libre")
 ```
 </details>
 
-### Nivel Jefe 👑 del Mundo 1 (id 44) — Laberinto ciego
+### Nivel 10 del Mundo 1 (id 10) — El Intercambio
 
-**Concepto:** integración del Mundo 1  ·  **Historia:** _La salida está cerca, pero el último pasillo es un laberinto a oscuras. Aquí nadie te dará pasos: tendrás que calcularlos tú._
+**Concepto:** intercambiar variables con una temporal (temp)  ·  **Historia:** _En la cafetería del pueblo los pedidos salieron cruzados: el agua está en el vaso del jugo y al revés. Hay que intercambiarlos sin tirar nada._
 
-> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco y se prueba en varios casos.
+#### Fase 1 · EXPLORAR — «Copiar no es mover»  `10.1`
 
-#### Fase 1 · RESOLVER — «Laberinto ciego»  `44.1`
-
-**Qué hay que hacer:** El laberinto está a oscuras y esta vez nadie te dirá cuántos pasos dar. Mira el mapa, cuenta las casillas libres y programa a Robot1 para llegar a la meta, en la casilla (7,5), sin chocar con ningún muro.
-
-**En pantalla:** Mundo 2D: cuadrícula de 8×6; Robot1 empieza en (0,0) mirando al este; bandera en (7,5); 21 muros.
-
-**Cómo se pasa:**
-
-- Robot1 debe terminar en la casilla (7,5).
-
-**Si no pasa, el juego dice:** «Robot1 debe llegar a la meta (7,5) sin chocar con los muros.»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-robot1.avanzar(5)
-robot1.girar("sur")
-robot1.avanzar(2)
-robot1.girar("oeste")
-robot1.avanzar(5)
-robot1.girar("sur")
-robot1.avanzar(2)
-robot1.girar("este")
-robot1.avanzar(7)
-robot1.girar("sur")
-robot1.avanzar(1)
-```
-</details>
-
-> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡Has escapado de la instalación! Pero al cruzar la puerta, Robot1 se da cuenta de que no recuerda nada. Su memoria se ha borrado. Entra al Mundo 2: Memoria._
-
----
-
-## Mundo 2 · Memoria
-
-- **Escenario:** Centro de Recuperación (módulos de memoria y terminal, **sin robot**).
-- **Qué se aprende:** Variables, tipos de dato, operadores, input() y conversiones de tipo (int, float, str). Se ven chips que se iluminan al guardar un valor y cables que muestran de dónde viene cada dato.
-- **Niveles:** 12 · **Estrellas posibles:** 36
-
-### Nivel 1 del Mundo 2 (id 9) — Necesito recordar
-
-**Concepto:** variable, asignación, identificador, literal  ·  **Historia:** _En la terminal, cada valor que escribías se usaba y se perdía. Robot1 despierta en el Centro de Recuperación: para recordar, necesita módulos de memoria._
-
-#### Fase 1 · EXPLORAR — «El primer módulo»  `9.1`
-
-**Qué hay que hacer:** Concepto nuevo: el signo = guarda un valor con un nombre en un módulo de memoria. Ese nombre es una variable. Ejecuta y mira cómo se ilumina un chip.
+**Qué hay que hacer:** Cada vaso es una variable y su líquido es un texto. vasoA = vasoB COPIA el líquido de B en A. Ejecuta y fíjate: ¿qué le pasa al agua que tenía vasoA?
 
 **Cómo se pasa:**
 
 - Basta con ejecutar el programa sin errores.
 
-**Pistas del juego:** Mira los chips morados: el nombre está arriba y el valor al centro.
+**Pistas del juego:** Mira el aviso rojo arriba de los vasos.
 
-#### Fase 2 · PREDECIR — «¿Qué muestra print?»  `9.2`
+#### Fase 2 · PREDECIR — «¿Dónde quedó el agua?»  `10.2`
 
-**Qué hay que hacer:** Con nombre = "Robot1", ¿qué muestra print(nombre), sin comillas?
+**Qué hay que hacer:** Después de vasoA = vasoB, ¿qué tienen los vasos?
 
 **Cómo se pasa:**
 
-- ▫️ La palabra nombre
-- ✅ El texto Robot1
-- ▫️ Un error, porque faltan comillas
-- Se pasa eligiendo: **El texto Robot1**.
+- ✅ Los dos tienen jugo y el agua se perdió
+- ▫️ Se intercambiaron: A tiene jugo y B tiene agua
+- ▫️ vasoB quedó vacío
+- Se pasa eligiendo: **Los dos tienen jugo y el agua se perdió**.
 
-**Pistas del juego:** print("nombre") y print(nombre) son cosas distintas.
+**Pistas del juego:** vasoB no cambió en ningún renglón.
 
 <details><summary>Ver el código de la fase</summary>
 
 ```python
-nombre = "Robot1"
-print(nombre)
+vasoA = vasoB
+print(vasoA)
+print(vasoB)
 ```
 </details>
 
-#### Fase 3 · ESCRIBIR — «Guarda y reutiliza»  `9.3`
+#### Fase 3 · DEBUG — «El intercambio roto»  `10.3`
 
-**Qué hay que hacer:** Crea una variable llamada mision con el texto "Explorar" y muéstrala con print().
-
-**Cómo se pasa:**
-
-- Debe mostrar «Explorar» y el código tiene que crear la variable `mision`.
-
-**Pistas del juego:** Primero mision = "Explorar". · Luego print(mision), sin comillas.
-
-**Si no pasa, el juego dice:** «Debes usar una variable llamada mision y mostrarla con print().»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-mision = "Explorar"
-print(mision)
-```
-</details>
-
-### Nivel 2 del Mundo 2 (id 10) — Cambia de opinión
-
-**Concepto:** reasignación, estado  ·  **Historia:** _Un módulo de memoria no es una caja sellada: puede guardar otro valor cuando el programa lo decide._
-
-#### Fase 1 · EXPLORAR — «Un valor nuevo»  `10.1`
-
-**Qué hay que hacer:** Concepto nuevo: reasignar es darle otro valor a una variable que ya existe. El valor anterior se pierde. Ejecuta y mira el chip.
+**Qué hay que hacer:** Este programa quería intercambiar los líquidos, pero los dos vasos terminan iguales. Usa el vaso temp para guardar el líquido de vasoA ANTES de que se pierda (temp = vasoA). Se prueba con 3 pares de vasos.
 
 **Cómo se pasa:**
 
-- Basta con ejecutar el programa sin errores.
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
 
-**Pistas del juego:** Fíjate en el texto pequeño «antes:» dentro del chip.
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | agua y jugo |  | Al terminar, `vasoA` debe valer "jugo" y `vasoB` debe valer "agua". · Mostrar «jugo», luego «agua» |
+  | leche y cafe |  | Al terminar, `vasoA` debe valer "cafe" y `vasoB` debe valer "leche". · Mostrar «cafe», luego «leche» |
+  | te y refresco |  | Al terminar, `vasoA` debe valer "refresco" y `vasoB` debe valer "te". · Mostrar «refresco», luego «te» |
 
-#### Fase 2 · PREDECIR — «¿Con qué valor termina?»  `10.2`
+- Debe crear una variable llamada `temp`.
 
-**Qué hay que hacer:** ¿Qué muestra este programa?
+**Pistas del juego:** Primero: temp = vasoA. · Luego vasoA = vasoB y al final vasoB = temp.
 
-**Cómo se pasa:**
-
-- ▫️ 10
-- ✅ 25
-- ▫️ 35
-- Se pasa eligiendo: **25**.
-
-**Pistas del juego:** Una variable guarda UN solo valor a la vez.
+**Si no pasa, el juego dice:** «Al final vasoA debe tener lo que tenía vasoB y al revés, en los 3 pares.»
 
 <details><summary>Ver el código de la fase</summary>
 
 ```python
-puntos = 10
-puntos = 25
-print(puntos)
-```
-</details>
-
-#### Fase 3 · RESOLVER — «Carga la batería»  `10.3`
-
-**Qué hay que hacer:** La variable bateria vale 20. Cámbiala a 90 y muestra su valor.
-
-**Cómo se pasa:**
-
-- Al terminar, `bateria` debe valer 90.
-- El programa debe mostrar «90».
-
-**Pistas del juego:** Escribe bateria = 90 debajo de la primera línea. · Después usa print(bateria).
-
-**Si no pasa, el juego dice:** «bateria debe terminar valiendo 90 y debes mostrarla una sola vez.»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-bateria = 20
-bateria = 90
-print(bateria)
-```
-</details>
-
-### Nivel 3 del Mundo 2 (id 11) — No todo es lo mismo
-
-**Concepto:** entero, decimal, texto  ·  **Historia:** _La información llega en formas distintas: números enteros, decimales y textos. Cada chip lo indica con una etiqueta._
-
-#### Fase 1 · EXPLORAR — «Tres tipos de dato»  `11.1`
-
-**Qué hay que hacer:** Concepto nuevo: los datos tienen tipo. 15 es un ENTERO, 1.75 es un DECIMAL (con punto) y "Ana" es un TEXTO (entre comillas). Mira la etiqueta de cada chip.
-
-**Cómo se pasa:**
-
-- Basta con ejecutar el programa sin errores.
-
-**Pistas del juego:** Compara las etiquetas ENTERO, DECIMAL y TEXTO en la parte baja de los chips.
-
-#### Fase 2 · PREDECIR — «Unir textos»  `11.2`
-
-**Qué hay que hacer:** Concepto nuevo: en Python, sumar dos textos los une en uno solo (se llama concatenar). Aquí a y b son textos porque están entre comillas. ¿Qué muestra este programa?
-
-**Cómo se pasa:**
-
-- ▫️ 8
-- ✅ 53
-- ▫️ Un error
-- Se pasa eligiendo: **53**.
-
-**Pistas del juego:** Las comillas convierten al 5 y al 3 en textos. · Unir textos no es lo mismo que sumar números.
-
-<details><summary>Ver el código de la fase</summary>
-
-```python
-a = "5"
-b = "3"
-print(a + b)
-```
-</details>
-
-#### Fase 3 · DEBUG — «El número disfrazado»  `11.3`
-
-**Qué hay que hacer:** Este programa debería mostrar 16, pero da un error: edad está entre comillas, así que es un TEXTO, y no se puede sumar un texto con un número. Corrígelo.
-
-**Cómo se pasa:**
-
-- El programa debe mostrar «16».
-- Debe usar el operador `+`.
-- Debe crear una variable llamada `edad`.
-
-**Pistas del juego:** ¿Las comillas son necesarias aquí?
-
-**Si no pasa, el juego dice:** «La salida debe ser exactamente 16.»
-
-<details><summary>Ver el código de la fase</summary>
-
-```python
-edad = "15"
-print(edad + 1)
+vasoA = vasoB
+vasoB = vasoA
+print(vasoA)
+print(vasoB)
 ```
 </details>
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-edad = 15
-print(edad + 1)
+temp = vasoA
+vasoA = vasoB
+vasoB = temp
+print(vasoA)
+print(vasoB)
 ```
 </details>
 
-#### Fase 4 · DEBUG — «El decimal con coma»  `11.4`
+#### Fase 4 · RESOLVER — «La ronda de tres vasos»  `10.4`
 
-**Qué hay que hacer:** En Python los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 2.5 y se muestre.
+**Qué hay que hacer:** Ahora hay tres vasos. El líquido de vasoA debe pasar a vasoB, el de vasoB a vasoC y el de vasoC a vasoA, sin perder ninguno. Tienes un solo vaso extra: temp. Se prueba con 3 rondas distintas.
 
 **Cómo se pasa:**
 
-- Al terminar, `precio` debe valer 2.5.
-- El programa debe mostrar «2.5».
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
 
-**Pistas del juego:** Cambia la coma por un punto.
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | agua, jugo, leche |  | Al terminar, `vasoA` debe valer "leche", `vasoB` debe valer "agua" y `vasoC` debe valer "jugo". |
+  | cafe, te, limonada |  | Al terminar, `vasoA` debe valer "limonada", `vasoB` debe valer "cafe" y `vasoC` debe valer "te". |
+  | refresco, chocolate, agua |  | Al terminar, `vasoA` debe valer "agua", `vasoB` debe valer "refresco" y `vasoC` debe valer "chocolate". |
 
-**Si no pasa, el juego dice:** «En Python los decimales se escriben con punto, no con coma. precio debe valer 2.5 y mostrarse.»
+- Debe crear una variable llamada `temp`.
 
-<details><summary>Ver el código de la fase</summary>
+**Pistas del juego:** ¿Qué líquido se perdería primero? Guárdalo en temp. · Empieza por temp = vasoC.
 
-```python
-precio = 2,5
-print(precio)
-```
-</details>
+**Si no pasa, el juego dice:** «A debe quedar con lo de C, B con lo de A y C con lo de B, en las 3 rondas.»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-precio = 2.5
-print(precio)
+temp = vasoC
+vasoC = vasoB
+vasoB = vasoA
+vasoA = temp
 ```
 </details>
 
-### Nivel 4 del Mundo 2 (id 12) — Cálculo de energía
+### Nivel 11 del Mundo 1 (id 11) — Identificadores
 
-**Concepto:** operadores, expresiones  ·  **Historia:** _Los módulos pueden calcular. Los valores viajan por cables luminosos de un chip a otro._
+**Concepto:** nombres de variables válidos (identificadores)  ·  **Historia:** _La consola del ayuntamiento no encuentra algunos datos: alguien escribió mal sus nombres. Un nombre mal escrito deja un dato huérfano._
 
-#### Fase 1 · EXPLORAR — «Sumar módulos»  `12.1`
+#### Fase 1 · EXPLORAR — «Nombres válidos»  `11.1`
 
-**Qué hay que hacer:** Concepto nuevo: los operadores + y - calculan con variables. Mira cómo los valores de a y b fluyen hacia total.
-
-**Cómo se pasa:**
-
-- Basta con ejecutar el programa sin errores.
-
-**Pistas del juego:** Sigue los cables: salen de a y b y llegan a total.
-
-#### Fase 2 · MODIFICAR — «¿Cuánta queda?»  `12.2`
-
-**Qué hay que hacer:** La reserva es 80 y se usaron 35. Modifica UNA línea para que el programa muestre cuánta energía queda (45).
-
-**Cómo se pasa:**
-
-- El programa debe mostrar exactamente «45».
-- Debe usar el operador `-`.
-
-**Pistas del juego:** Lo que queda se calcula restando.
-
-**Si no pasa, el juego dice:** «Debe mostrar 45 usando una resta.»
-
-<details><summary>Ver el código de la fase</summary>
-
-```python
-reserva = 80
-usada = 35
-restante = reserva + usada
-print(restante)
-```
-</details>
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-reserva = 80
-usada = 35
-restante = reserva - usada
-print(restante)
-```
-</details>
-
-#### Fase 3 · RESOLVER — «Dos módulos, una suma»  `12.3`
-
-**Qué hay que hacer:** Dos módulos tienen 30 y 45 de energía. Guarda cada valor en una variable, suma ambas en total y muestra total (75).
-
-**Cómo se pasa:**
-
-- Debe mostrar «75» y el código tiene que crear la variable `total`.
-- Debe usar el operador `+`.
-
-**Pistas del juego:** Primero a = 30 y b = 45. · Luego total = a + b.
-
-**Si no pasa, el juego dice:** «Debes calcular total con + y mostrarlo.»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-a = 30
-b = 45
-total = a + b
-print(total)
-```
-</details>
-
-### Nivel 5 del Mundo 2 (id 13) — Calcula el reparto
-
-**Concepto:** multiplicación, división, división entera y residuo  ·  **Historia:** _Repartir recursos exige más que sumar: multiplicar, dividir y averiguar qué sobra._
-
-#### Fase 1 · EXPLORAR — «Cuatro operadores nuevos»  `13.1`
-
-**Qué hay que hacer:** Conceptos nuevos (como en Python): * multiplica; / divide y SIEMPRE da un decimal (17 / 4 es 4.25); // es la división entera: solo la parte entera (17 // 4 es 4); y % da el RESIDUO: lo que sobra al dividir.
-
-**Cómo se pasa:**
-
-- Basta con ejecutar el programa sin errores.
-
-**Pistas del juego:** % no es porcentaje: es el residuo de la división. · Fíjate en la etiqueta DECIMAL del chip cuando usas /.
-
-#### Fase 2 · PREDECIR — «La división siempre da decimal»  `13.2`
-
-**Qué hay que hacer:** En Python, ¿qué muestra este programa?
-
-**Cómo se pasa:**
-
-- ▫️ 5
-- ✅ 5.0
-- ▫️ 2
-- Se pasa eligiendo: **5.0**.
-
-**Pistas del juego:** Si quisieras un entero usarías //.
-
-<details><summary>Ver el código de la fase</summary>
-
-```python
-a = 10
-b = 2
-print(a / b)
-```
-</details>
-
-#### Fase 3 · PREDECIR — «¿Cuánto sobra?»  `13.3`
-
-**Qué hay que hacer:** ¿Qué muestra este programa?
-
-**Cómo se pasa:**
-
-- ✅ 2
-- ▫️ 3
-- ▫️ 3.5
-- Se pasa eligiendo: **2**.
-
-**Pistas del juego:** 14 = 4 × 3 + ?
-
-<details><summary>Ver el código de la fase</summary>
-
-```python
-x = 14
-y = x % 4
-print(y)
-```
-</details>
-
-#### Fase 4 · RESOLVER — «Cajas de cinco»  `13.4`
-
-**Qué hay que hacer:** Hay 23 baterías y se guardan en cajas de 5. Muestra primero cuántas cajas se llenan (4, usa la división entera) y luego cuántas baterías sobran (3), en ese orden.
-
-**Cómo se pasa:**
-
-- El programa debe mostrar «4», luego «3».
-- Debe usar los operadores `//` y `%`.
-
-**Pistas del juego:** Cajas llenas: baterias // 5. · Sobrante: baterias % 5.
-
-**Si no pasa, el juego dice:** «Debe mostrar 4 y luego 3, usando // y %.»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-baterias = 23
-print(baterias // 5)
-print(baterias % 5)
-```
-</details>
-
-### Nivel 6 del Mundo 2 (id 14) — Información del exterior
-
-**Concepto:** input(), int() y float()  ·  **Historia:** _Hasta ahora todos los datos los escribía el programa. Ahora un sensor externo va a enviar un valor._
-
-#### Fase 1 · EXPLORAR — «El sensor pregunta»  `14.1`
-
-**Qué hay que hacer:** Concepto nuevo: input() pausa el programa y espera un dato de quien juega; se guarda en una variable. OJO, como en Python: input() SIEMPRE lee TEXTO, aunque escribas un número. Cuando la terminal te lo pida, escribe 12 y mira qué muestra valor + valor.
-
-**Cómo se pasa:**
-
-- Basta con ejecutar el programa sin errores.
-
-> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **12**.
-
-**Pistas del juego:** Escribe 12 en el campo de la terminal y pulsa Enter. · Compara lo que muestra valor con lo que muestra valor + valor.
-
-#### Fase 2 · PREDECIR — «Convertir con int()»  `14.2`
-
-**Qué hay que hacer:** En Python, si necesitas un número debes convertir el texto: int("12") lo vuelve el número entero 12. ¿Qué muestra este programa?
-
-**Cómo se pasa:**
-
-- ✅ 13
-- ▫️ 121
-- ▫️ Un error
-- Se pasa eligiendo: **13**.
-
-**Pistas del juego:** int() convierte texto en número entero. · float() hace lo mismo pero con decimales.
-
-<details><summary>Ver el código de la fase</summary>
-
-```python
-numero = int("12")
-print(numero + 1)
-```
-</details>
-
-#### Fase 3 · ESCRIBIR — «Suma con el sensor»  `14.3`
-
-**Qué hay que hacer:** Pide el valor del sensor (escribe 12), conviértelo con int(input()), guárdalo en una variable, súmale 5 en total y muestra total (17).
-
-**Cómo se pasa:**
-
-- Debe mostrar «17» y el código tiene que crear la variable `total`.
-- Tu código debe usar: `int`.
-
-> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **12**.
-
-**Pistas del juego:** valor = int(input()) · total = valor + 5
-
-**Si no pasa, el juego dice:** «Con el valor 12, total debe ser 17. Recuerda convertir con int().»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-valor = int(input())
-total = valor + 5
-print(total)
-```
-</details>
-
-#### Fase 4 · RESOLVER — «La mitad del tramo»  `14.4`
-
-**Qué hay que hacer:** Pide el valor del sensor como número decimal con float(input()) (escribe 7) y muestra su mitad (3.5) usando una división.
-
-**Cómo se pasa:**
-
-- El programa debe mostrar exactamente «3.5».
-- Tu código debe usar: `float`.
-- Debe usar el operador `/`.
-
-> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **7**.
-
-**Pistas del juego:** Guarda float(input()) y divide entre 2.
-
-**Si no pasa, el juego dice:** «Con 7, la mitad es 3.5 (usa float y /).»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-tramo = float(input())
-print(tramo / 2)
-```
-</details>
-
-### Nivel 7 del Mundo 2 (id 15) — El identificador incorrecto
-
-**Concepto:** identificadores  ·  **Historia:** _Un nombre mal escrito deja un módulo huérfano: el programa no sabe encontrarlo._
-
-#### Fase 1 · EXPLORAR — «Nombres válidos»  `15.1`
-
-**Qué hay que hacer:** Concepto nuevo: el nombre de una variable (identificador) puede llevar letras, números y _, pero NO empieza con número. También importa si es mayúscula o minúscula.
+**Qué hay que hacer:** Concepto nuevo: el nombre de una variable (identificador) puede llevar letras, números y _, pero NO empieza con número ni lleva espacios. También importa si es mayúscula o minúscula.
 
 **Cómo se pasa:**
 
@@ -1290,7 +1033,7 @@ print(tramo / 2)
 
 **Pistas del juego:** energia_total usa guion bajo en vez de espacio.
 
-#### Fase 2 · DEBUG — «Empieza con número»  `15.2`
+#### Fase 2 · DEBUG — «Empieza con número»  `11.2`
 
 **Qué hay que hacer:** El nombre 2valor no es válido porque empieza con un número. Cámbialo por valor2 para que el programa muestre 5.
 
@@ -1316,7 +1059,7 @@ print(valor2)
 ```
 </details>
 
-#### Fase 3 · PREDECIR — «Mayúsculas importan»  `15.3`
+#### Fase 3 · PREDECIR — «Mayúsculas importan»  `11.3`
 
 **Qué hay que hacer:** ¿Qué pasa al ejecutar este programa?
 
@@ -1337,7 +1080,7 @@ print(nombre)
 ```
 </details>
 
-#### Fase 4 · DEBUG — «Una letra de más»  `15.4`
+#### Fase 4 · DEBUG — «Una letra de más»  `11.4`
 
 **Qué hay que hacer:** Corrige el programa para que muestre 10. Las dos líneas deben usar exactamente el mismo nombre.
 
@@ -1363,116 +1106,120 @@ print(puntos)
 ```
 </details>
 
-### Nivel 8 del Mundo 2 (id 16) — Módulos que se combinan
+### Nivel 12 del Mundo 1 (id 12) — La Receta
 
-**Concepto:** combinación de variables, tipos y operadores  ·  **Historia:** _Los módulos recuperados ya pueden trabajar juntos: valores de distintos tipos y cálculos que dependen de otros._
+**Concepto:** operadores * y /, y redondeo con int() y round()  ·  **Historia:** _Doña Rosa hará su pastel para la fiesta del pueblo. Su receta es para 4 personas, pero los invitados cambian: hay que recalcular los ingredientes._
 
-#### Fase 1 · EXPLORAR — «Área y etiqueta»  `16.1`
+#### Fase 1 · EXPLORAR — «Receta para el doble»  `12.1`
 
-**Qué hay que hacer:** Observa cómo un cálculo usa dos variables y cómo otra variable guarda un texto.
+**Qué hay que hacer:** Para 8 invitados la receta se multiplica por factor = 8 / 4. Fíjate en el resultado: en Python la división / SIEMPRE da un decimal (2.0), y por eso huevos sale 6.0.
 
 **Cómo se pasa:**
 
 - Basta con ejecutar el programa sin errores.
 
-**Pistas del juego:** Mira los tipos: dos ENTERO y un TEXTO.
+**Pistas del juego:** Mira la etiqueta DECIMAL en la Memoria.
 
-#### Fase 2 · PREDECIR — «¿Qué se muestra y en qué orden?»  `16.5`
+#### Fase 2 · PREDECIR — «¿Medio huevo?»  `12.2`
 
-**Qué hay que hacer:** Acabas de ver este programa. ¿Qué muestra, en orden?
+**Qué hay que hacer:** Ahora son 6 invitados. ¿Qué muestra el programa?
 
 **Cómo se pasa:**
 
-- ✅ Area y luego 40
-- ▫️ 40 y luego Area
-- ▫️ etiqueta y luego area
-- Se pasa eligiendo: **Area y luego 40**.
+- ✅ 4.5
+- ▫️ 4
+- ▫️ 5
+- Se pasa eligiendo: **4.5**.
 
-**Pistas del juego:** Calcula primero cuánto vale area.
+**Pistas del juego:** Primero calcula factor.
 
 <details><summary>Ver el código de la fase</summary>
 
 ```python
-ancho = 8
-alto = 5
-area = ancho * alto
-etiqueta = "Area"
-print(etiqueta)
-print(area)
+invitados = 6
+factor = invitados / 4
+huevos = 3 * factor
+print(huevos)
 ```
 </details>
 
-#### Fase 3 · ESCRIBIR — «El triángulo»  `16.2`
+#### Fase 3 · MODIFICAR — «Redondea los huevos»  `12.3`
 
-**Qué hay que hacer:** Guarda 12 en base y 5 en altura. Calcula area = base * altura / 2 y muéstrala (recuerda que / siempre da un decimal: verás 30.0).
+**Qué hay que hacer:** Los invitados los trae cada fiesta (variable invitados). Cambia la línea de huevos para redondear al entero más cercano con el truco int(x + 0.5): int() corta los decimales, y sumar 0.5 antes hace que 4.5 suba a 5. Se prueba con 4 fiestas.
 
 **Cómo se pasa:**
 
-- Debe mostrar «30.0» y el código tiene que crear la variable `area`.
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 6 invitados |  | Al terminar, `huevos` debe valer 5. · Mostrar «5» |
+  | 10 invitados |  | Al terminar, `huevos` debe valer 8. · Mostrar «8» |
+  | 2 invitados |  | Al terminar, `huevos` debe valer 2. · Mostrar «2» |
+  | 4 invitados |  | Al terminar, `huevos` debe valer 3. · Mostrar «3» |
+
+- Tu código debe usar: `int`.
+
+**Pistas del juego:** huevos = int(3 * factor + 0.5)
+
+**Si no pasa, el juego dice:** «huevos debe ser un entero redondeado (por ejemplo, 5 con 6 invitados) en las 4 fiestas.»
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+factor = invitados / 4
+huevos = 3 * factor
+print(huevos)
+```
+</details>
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+factor = invitados / 4
+huevos = int(3 * factor + 0.5)
+print(huevos)
+```
+</details>
+
+#### Fase 4 · RESOLVER — «La receta completa»  `12.4`
+
+**Qué hay que hacer:** Para los invitados de cada fiesta calcula factor = invitados / 4; huevos (3 por receta, redondeado con int(x + 0.5)) y harina (200 g por receta, con round() para quitar el .0). Muestra huevos y luego harina. Se prueba con 4 fiestas.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 6 invitados |  | Mostrar «5», luego «300» |
+  | 10 invitados |  | Mostrar «8», luego «500» |
+  | 3 invitados |  | Mostrar «2», luego «150» |
+  | 7 invitados |  | Mostrar «5», luego «350» |
+
+- Tu código debe usar: `int` y `round`.
 - Debe usar los operadores `*` y `/`.
 
-**Pistas del juego:** base * altura primero, luego / 2.
+**Pistas del juego:** harina = round(200 * factor)
 
-**Si no pasa, el juego dice:** «area debe ser 30.0 y calcularse con * y /.»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-base = 12
-altura = 5
-area = base * altura / 2
-print(area)
-```
-</details>
-
-#### Fase 4 · RESOLVER — «Mensaje recuperado»  `16.3`
-
-**Qué hay que hacer:** Guarda en mensaje el texto "Memoria recuperada" y en modulos el resultado de 4 * 3. Muestra primero mensaje y luego modulos.
-
-**Cómo se pasa:**
-
-- El programa debe mostrar «Memoria recuperada», luego «12».
-- Al terminar, `mensaje` debe valer "Memoria recuperada" y `modulos` debe valer 12.
-
-**Pistas del juego:** Dos variables y dos print.
+**Si no pasa, el juego dice:** «Debe mostrar los huevos (entero) y la harina sin decimales (con round) en las 4 fiestas.»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-mensaje = "Memoria recuperada"
-modulos = 4 * 3
-print(mensaje)
-print(modulos)
+factor = invitados / 4
+huevos = int(3 * factor + 0.5)
+harina = round(200 * factor)
+print(huevos)
+print(harina)
 ```
 </details>
 
-#### Fase 5 · ESCRIBIR — «Etiqueta con número»  `16.4`
+### Nivel 13 del Mundo 1 (id 13) — El Sistema de Energía
 
-**Qué hay que hacer:** Para unir un texto con un número hay que convertir el número en texto con str(); si no, Python da un error. Guarda 12 en modulos y muestra exactamente: Modulos: 12 (uniendo el texto "Modulos: " con modulos).
+**Concepto:** constantes (MAXIMO) y variables que cambian  ·  **Historia:** _La planta de energía del pueblo tiene un tanque. Algunos datos no deben cambiar nunca (la capacidad máxima) y otros cambian todo el tiempo (la carga actual)._
 
-**Cómo se pasa:**
-
-- El programa debe mostrar «Modulos: 12».
-- Tu código debe usar: `str`.
-- Debe crear una variable llamada `modulos`.
-
-**Pistas del juego:** print("Modulos: " + str(modulos))
-
-**Si no pasa, el juego dice:** «Debe mostrar Modulos: 12 usando str().»
-
-<details><summary>Ver una solución de ejemplo (spoiler)</summary>
-
-```python
-modulos = 12
-print("Modulos: " + str(modulos))
-```
-</details>
-
-### Nivel 9 del Mundo 2 (id 17) — El sistema de energía
-
-**Concepto:** valores que cambian y valores que no  ·  **Historia:** _Algunos datos no deben cambiar nunca (como la capacidad máxima) y otros cambian todo el tiempo (la carga actual)._
-
-#### Fase 1 · EXPLORAR — «MAXIMO y actual»  `17.1`
+#### Fase 1 · EXPLORAR — «MAXIMO y actual»  `13.1`
 
 **Qué hay que hacer:** Concepto nuevo: por costumbre, los valores que NO deben cambiar se escriben en MAYÚSCULAS (MAXIMO). Los que cambian, en minúsculas. Mira qué chip se reasigna.
 
@@ -1482,7 +1229,7 @@ print("Modulos: " + str(modulos))
 
 **Pistas del juego:** Solo el chip de actual muestra «antes».
 
-#### Fase 2 · MODIFICAR — «Hasta el tope»  `17.2`
+#### Fase 2 · MODIFICAR — «Hasta el tope»  `13.2`
 
 **Qué hay que hacer:** actual vale 20 y se le suma 30. Cambia el 30 por el número correcto para que actual llegue exactamente a MAXIMO (100). Debes seguir usando una suma.
 
@@ -1513,7 +1260,7 @@ print(actual)
 ```
 </details>
 
-#### Fase 3 · RESOLVER — «¿Cuánto falta?»  `17.3`
+#### Fase 3 · RESOLVER — «¿Cuánto falta?»  `13.3`
 
 **Qué hay que hacer:** Con MAXIMO = 100 y actual = 35, calcula en faltante cuánto falta para llenar y muéstralo (65).
 
@@ -1534,13 +1281,153 @@ print(faltante)
 ```
 </details>
 
-### Nivel 10 del Mundo 2 (id 18) — El puente de datos
+### Nivel Jefe 👑 del Mundo 1 (id 44) — Laberinto ciego
 
-**Concepto:** variables, operadores, input y conversiones juntos  ·  **Historia:** _Para cruzar el puente de datos hay que combinar todo lo recuperado hasta ahora._
+**Concepto:** integración de los Bloques A a C  ·  **Historia:** _Antes del último tramo del pueblo, Robot1 debe atravesar el viejo almacén: un laberinto a oscuras. Aquí nadie te dará pasos: tendrás que calcularlos tú._
 
-#### Fase 1 · ESCRIBIR — «Distancia»  `18.1`
+> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco.
+
+#### Fase 1 · RESOLVER — «Laberinto ciego»  `44.1`
+
+**Qué hay que hacer:** El laberinto está a oscuras y esta vez nadie te dirá cuántos pasos dar. Mira el mapa, cuenta las casillas libres y programa a Robot1 para llegar a la meta, en la casilla (7,5), sin chocar con ningún muro.
+
+**En pantalla:** Mundo 2D: cuadrícula de 8×6; Robot1 empieza en (0,0) mirando al este; bandera en (7,5); 21 muros.
+
+**Cómo se pasa:**
+
+- Robot1 debe terminar en la casilla (7,5).
+
+**Si no pasa, el juego dice:** «Robot1 debe llegar a la meta (7,5) sin chocar con los muros.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+robot1.avanzar(5)
+robot1.girar("sur")
+robot1.avanzar(2)
+robot1.girar("oeste")
+robot1.avanzar(5)
+robot1.girar("sur")
+robot1.avanzar(2)
+robot1.girar("este")
+robot1.avanzar(7)
+robot1.girar("sur")
+robot1.avanzar(1)
+```
+</details>
+
+### Nivel 15 del Mundo 1 (id 14) — El Pozo
+
+**Concepto:** ciclo while, not y contadores  ·  **Historia:** _Se secó la llave del pueblo y solo queda el pozo viejo. Nadie sabe a cuántos metros está el agua: habrá que bajar la cubeta y contar._
+
+#### Fase 1 · EXPLORAR — «Baja la cubeta»  `14.1`
+
+**Qué hay que hacer:** El objeto pozo tiene métodos: pozo.bajar() baja la cubeta 1 metro y pozo.hayAgua() responde True si la cubeta ya llegó al agua (si no, False). Ejecuta y observa.
+
+**Cómo se pasa:**
+
+- Basta con ejecutar el programa sin errores.
+
+**Pistas del juego:** Mira las marcas de metros en el pozo.
+
+#### Fase 2 · PREDECIR — «Repetir mientras…»  `14.2`
+
+**Qué hay que hacer:** Concepto nuevo: while repite su bloque MIENTRAS la condición sea True, y not invierte un valor lógico (not False es True). metros += 1 suma 1 al contador en cada vuelta. Si el agua está a 3 metros, ¿qué muestra este programa?
+
+**Cómo se pasa:**
+
+- ✅ 3
+- ▫️ 1
+- ▫️ Nada: se repite para siempre
+- Se pasa eligiendo: **3**.
+
+**Pistas del juego:** Cuenta cuántas veces se repite el bloque.
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+metros = 0
+while not pozo.hayAgua():
+    pozo.bajar()
+    metros += 1
+print(metros)
+```
+</details>
+
+#### Fase 3 · ESCRIBIR — «Cuenta los metros»  `14.3`
+
+**Qué hay que hacer:** Usa while not pozo.hayAgua(): para bajar la cubeta metro a metro hasta el agua, contando los metros en la variable metros (empieza en 0 y súmale 1 en cada vuelta). Al final muestra metros. Se prueba con 3 pozos de distinta profundidad.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | Pozo de 4 m |  | Mostrar «4» |
+  | Pozo de 7 m |  | Mostrar «7» |
+  | Pozo de 2 m |  | Mostrar «2» |
+
+- Tu código debe usar: `while` y `not`.
+- Debe crear una variable llamada `metros`.
+
+**Pistas del juego:** metros = 0 antes del ciclo. · Dentro del while: pozo.bajar() y metros += 1.
+
+**Si no pasa, el juego dice:** «Debe mostrar los metros que bajó la cubeta en los 3 pozos (cada uno tiene otra profundidad).»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+metros = 0
+while not pozo.hayAgua():
+    pozo.bajar()
+    metros += 1
+print(metros)
+```
+</details>
+
+#### Fase 4 · RESOLVER — «Agua para el pueblo»  `14.4`
+
+**Qué hay que hacer:** Ahora completa el trabajo: baja la cubeta hasta el agua contando los metros, llénala con pozo.llenar(), súbela con pozo.subir(metros) (sube esa cantidad de metros) y muestra los metros. Se prueba con 3 pozos.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | Pozo de 3 m |  |  · Mostrar «3» |
+  | Pozo de 6 m |  |  · Mostrar «6» |
+  | Pozo de 5 m |  |  · Mostrar «5» |
+
+- Tu código debe usar: `while` y `not`.
+
+**Pistas del juego:** Después del ciclo: pozo.llenar() · pozo.subir(metros) usa el contador.
+
+**Si no pasa, el juego dice:** «La cubeta debe terminar ARRIBA y LLENA, y debes mostrar los metros, en los 3 pozos.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+metros = 0
+while not pozo.hayAgua():
+    pozo.bajar()
+    metros += 1
+pozo.llenar()
+pozo.subir(metros)
+print(metros)
+```
+</details>
+
+### Nivel 16 del Mundo 1 (id 15) — El Puente de Datos
+
+**Concepto:** input(), int(), operadores y robot juntos  ·  **Historia:** _Robot1 vuelve al río: el puente del pueblo está roto y la terminal del puente le dirá cuánto mide cada tramo._
+
+#### Fase 1 · ESCRIBIR — «Distancia»  `15.1`
 
 **Qué hay que hacer:** Guarda tiempo = 3 y velocidad = 12. Calcula distancia = tiempo * velocidad y muéstrala (36).
+
+**En pantalla:** Mundo 2D: cuadrícula de 6×1; Robot1 empieza en (0,0) mirando al este; bandera en (5,0).
 
 **Cómo se pasa:**
 
@@ -1559,9 +1446,11 @@ print(distancia)
 ```
 </details>
 
-#### Fase 2 · RESOLVER — «Cruza con el sensor»  `18.2`
+#### Fase 2 · RESOLVER — «Cruza con el sensor»  `15.2`
 
 **Qué hay que hacer:** Pide un valor al sensor (escribe 10), conviértelo con int(), súmale 15 y muestra el resultado (25) usando una variable llamada resultado.
+
+**En pantalla:** Mundo 2D: cuadrícula de 6×1; Robot1 empieza en (0,0) mirando al este; bandera en (5,0).
 
 **Cómo se pasa:**
 
@@ -1580,83 +1469,342 @@ print(resultado)
 ```
 </details>
 
-#### Fase 3 · LIBRE — «Laboratorio de memoria»  `18.3`
+#### Fase 3 · RESOLVER — «El puente»  `15.3`
 
-**Qué hay que hacer:** Experimenta: crea las variables que quieras, cambia sus valores y combínalas. Nada de esto se evalúa.
+**Qué hay que hacer:** El sensor dice cuántas casillas mide el puente (escribe 3), pero Robot1 necesita 2 casillas más para bajar de él. Guarda en pasos el valor del sensor (convertido con int()) más 2, muestra pasos y haz que Robot1 avance pasos casillas para llegar a (5,0).
 
-**Cómo se pasa:**
-
-- No hay objetivo: escribe y ejecuta lo que quieras. La fase se completa al ejecutar.
-
-**Pistas del juego:** Prueba restar, multiplicar y reasignar.
-
-### Nivel 11 del Mundo 2 (id 19) — La puerta del Mundo 3
-
-**Concepto:** integración total del Mundo 2  ·  **Historia:** _La puerta al Mundo 3 pide un código de acceso hecho con todo lo que Robot1 recuperó._
-
-#### Fase 1 · RESOLVER — «El código de acceso»  `19.1`
-
-**Qué hay que hacer:** Guarda a = 7 y b = 3. Muestra, en este orden: a + b, a - b, a * b y a % b.
+**En pantalla:** Mundo 2D: cuadrícula de 6×1; Robot1 empieza en (0,0) mirando al este; bandera en (5,0).
 
 **Cómo se pasa:**
 
-- El programa debe mostrar «10», luego «4», luego «21», luego «1».
-- Debe usar los operadores `+`, `-`, `*` y `%`.
+- Robot1 debe terminar en la casilla (5,0).
+- El programa debe mostrar exactamente «5».
 
-**Pistas del juego:** Cuatro print, uno por cada operación.
+> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **3**.
+
+**Pistas del juego:** pasos = int(input()) + 2 · robot1.avanzar(pasos)
+
+**Si no pasa, el juego dice:** «Robot1 debe llegar a (5,0) avanzando pasos (el valor del sensor más 2), y debes mostrar pasos.»
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-a = 7
-b = 3
-print(a + b)
-print(a - b)
-print(a * b)
-print(a % b)
+pasos = int(input()) + 2
+print(pasos)
+robot1.avanzar(pasos)
 ```
 </details>
 
-#### Fase 2 · ESCRIBIR — «El triple»  `19.2`
+### Nivel 17 del Mundo 1 (id 16) — El Cronómetro
 
-**Qué hay que hacer:** Pide un número al sensor (escribe 9), conviértelo con int() y muestra su triple (27) con una variable llamada triple.
+**Concepto:** división entera // y residuo %  ·  **Historia:** _En la carrera del pueblo el cronómetro solo cuenta segundos. Los corredores quieren ver su tiempo en horas, minutos y segundos._
+
+#### Fase 1 · EXPLORAR — «Cuántas veces cabe»  `16.1`
+
+**Qué hay que hacer:** Concepto nuevo: // es la división ENTERA (cuántas veces cabe, sin decimales) y % es el residuo (lo que sobra). 17 // 5 es 3 porque el 5 cabe 3 veces en 17, y 17 % 5 es 2 porque sobran 2.
 
 **Cómo se pasa:**
 
-- Debe mostrar «27» y el código tiene que crear la variable `triple`.
+- Basta con ejecutar el programa sin errores.
 
-> ⌨️ Esta fase pide datos con `input()` (siempre llega como texto): cuando la terminal pregunte, escribe **9**.
+**Pistas del juego:** 3 × 5 = 15 y sobran 2.
 
-**Pistas del juego:** n = int(input()) · triple = n * 3
+#### Fase 2 · PREDECIR — «Segundos a minutos»  `16.2`
+
+**Qué hay que hacer:** total vale 125 segundos. ¿Qué muestra el programa?
+
+**Cómo se pasa:**
+
+- ✅ 2 y luego 5
+- ▫️ 2.08 y luego 0
+- ▫️ 5 y luego 2
+- Se pasa eligiendo: **2 y luego 5**.
+
+**Pistas del juego:** ¿Cuántas veces cabe 60 en 125?
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+print(total // 60)
+print(total % 60)
+```
+</details>
+
+#### Fase 3 · DEBUG — «El cronómetro loco»  `16.3`
+
+**Qué hay que hacer:** Este programa convierte total en minutos y segundos, pero los segundos salen mal. Corrige la línea de segundos: lo que sobra se calcula con %. Se prueba con 3 tiempos.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 125 s |  | Mostrar «2», luego «5» |
+  | 59 s |  | Mostrar «0», luego «59» |
+  | 600 s |  | Mostrar «10», luego «0» |
+
+- Debe usar los operadores `//` y `%`.
+
+**Pistas del juego:** segundos = total % 60
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+minutos = total // 60
+segundos = total // 60
+print(minutos)
+print(segundos)
+```
+</details>
 
 <details><summary>Ver una solución de ejemplo (spoiler)</summary>
 
 ```python
-n = int(input())
-triple = n * 3
-print(triple)
+minutos = total // 60
+segundos = total % 60
+print(minutos)
+print(segundos)
 ```
 </details>
 
-#### Fase 3 · LIBRE — «Tu mejor programa»  `19.3`
+#### Fase 4 · RESOLVER — «Horas, minutos y segundos»  `16.4`
 
-**Qué hay que hacer:** Construye el programa que quieras con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 2.
+**Qué hay que hacer:** Convierte total en horas, minutos y segundos: horas = total // 3600 (una hora tiene 3600 s); para los minutos, quita las horas completas con total % 3600 y divide entre 60 con //; los segundos son total % 60. Muestra horas, minutos y segundos, en ese orden. Se prueba con 4 tiempos.
 
 **Cómo se pasa:**
 
-- No hay objetivo: escribe y ejecuta lo que quieras. La fase se completa al ejecutar.
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
 
-**Pistas del juego:** Prueba pedir datos con int(input()) y calcular con ellos.
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 3725 s |  | Al terminar, `horas` debe valer 1, `minutos` debe valer 2 y `segundos` debe valer 5. · Mostrar «1», luego «2», luego «5» |
+  | 7384 s |  | Al terminar, `horas` debe valer 2, `minutos` debe valer 3 y `segundos` debe valer 4. · Mostrar «2», luego «3», luego «4» |
+  | 59 s |  | Al terminar, `horas` debe valer 0, `minutos` debe valer 0 y `segundos` debe valer 59. · Mostrar «0», luego «0», luego «59» |
+  | 86399 s |  | Al terminar, `horas` debe valer 23, `minutos` debe valer 59 y `segundos` debe valer 59. · Mostrar «23», luego «59», luego «59» |
 
-### Nivel Jefe 👑 del Mundo 2 (id 45) — La caja fuerte
+- Debe usar los operadores `//` y `%`.
 
-**Concepto:** integración del Mundo 2  ·  **Historia:** _La puerta al siguiente piso está cerrada con una caja fuerte. Su código depende de cuatro datos que llegan por la terminal._
+**Pistas del juego:** horas = total // 3600 · minutos = total % 3600 // 60
+
+**Si no pasa, el juego dice:** «Revisa los 4 tiempos: por ejemplo, 3725 s son 1 h, 2 min y 5 s.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+horas = total // 3600
+minutos = total % 3600 // 60
+segundos = total % 60
+print(horas)
+print(minutos)
+print(segundos)
+```
+</details>
+
+### Nivel 18 del Mundo 1 (id 17) — La Boleta
+
+**Concepto:** expresiones booleanas sin if (True / False)  ·  **Historia:** _Fin de cursos en la escuela del pueblo. La directora quiere que el sistema decida quién aprueba, pero sin escribir un if para cada alumno._
+
+#### Fase 1 · EXPLORAR — «Una comparación es un valor»  `17.1`
+
+**Qué hay que hacer:** Concepto nuevo: una comparación no necesita if: da directamente True o False, y ese valor se puede guardar en una variable. Ejecuta y mira el sello.
+
+**Cómo se pasa:**
+
+- Basta con ejecutar el programa sin errores.
+
+**Pistas del juego:** En la Memoria, aprobado es LÓGICO.
+
+#### Fase 2 · PREDECIR — «Dos reglas a la vez»  `17.2`
+
+**Qué hay que hacer:** ¿Qué muestra este programa?
+
+**Cómo se pasa:**
+
+- ▫️ True
+- ✅ False
+- ▫️ Un error, porque falta el if
+- Se pasa eligiendo: **False**.
+
+**Pistas del juego:** Revisa cada regla por separado.
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+promedio = 90
+asistencia = 75
+aprobado = promedio >= 70 and asistencia >= 80
+print(aprobado)
+```
+</details>
+
+#### Fase 3 · ESCRIBIR — «La regla de la escuela»  `17.3`
+
+**Qué hay que hacer:** Con promedio y asistencia (los trae cada boleta), guarda en aprobado si el alumno pasa: promedio de 70 o más Y asistencia de 80 o más. Sin if: escribe la comparación directo. Muestra aprobado. Se prueba con 4 boletas.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 85 y 90 % |  | Al terminar, `aprobado` debe valer true. · Mostrar «True» |
+  | 90 y 75 % |  | Al terminar, `aprobado` debe valer false. · Mostrar «False» |
+  | 65 y 95 % |  | Al terminar, `aprobado` debe valer false. · Mostrar «False» |
+  | 70 y 80 % |  | Al terminar, `aprobado` debe valer true. · Mostrar «True» |
+
+- Tu código debe usar: `and`.
+- Debe crear una variable llamada `aprobado`.
+
+**Pistas del juego:** aprobado = promedio >= 70 and asistencia >= 80
+
+**Si no pasa, el juego dice:** «aprobado debe ser True solo si promedio >= 70 y asistencia >= 80 (revisa las 4 boletas, incluida la del límite).»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+aprobado = promedio >= 70 and asistencia >= 80
+print(aprobado)
+```
+</details>
+
+#### Fase 4 · RESOLVER — «Derecho a extraordinario»  `17.4`
+
+**Qué hay que hacer:** Quien NO aprueba puede presentar examen extraordinario si su promedio es de 50 o más O su asistencia es de 90 o más. Calcula aprobado (la regla de antes) y extraordinario = not aprobado and (...). Muestra aprobado y luego extraordinario. Se prueba con 5 boletas.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 85 y 90 % |  | Mostrar «True», luego «False» |
+  | 65 y 95 % |  | Mostrar «False», luego «True» |
+  | 40 y 70 % |  | Mostrar «False», luego «False» |
+  | 55 y 60 % |  | Mostrar «False», luego «True» |
+  | 90 y 75 % |  | Mostrar «False», luego «True» |
+
+- Tu código debe usar: `and`, `or` y `not`.
+
+**Pistas del juego:** El paréntesis agrupa la parte del or. · extraordinario = not aprobado and (promedio >= 50 or asistencia >= 90)
+
+**Si no pasa, el juego dice:** «Revisa las 5 boletas: quien aprueba nunca va a extraordinario.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+aprobado = promedio >= 70 and asistencia >= 80
+extraordinario = not aprobado and (promedio >= 50 or asistencia >= 90)
+print(aprobado)
+print(extraordinario)
+```
+</details>
+
+### Nivel 19 del Mundo 1 (id 18) — El Viaje
+
+**Concepto:** combinar operadores y round(x, 2)  ·  **Historia:** _Los amigos de Robot1 se van de paseo a la playa y quieren dividir la gasolina en partes iguales, al centavo._
+
+#### Fase 1 · EXPLORAR — «¿Cuántos litros?»  `18.1`
+
+**Qué hay que hacer:** El auto recorre rendimiento kilómetros con un litro. Para saber cuántos litros necesita, divide la distancia entre el rendimiento. Ejecuta y mira el indicador de gasolina.
+
+**Cómo se pasa:**
+
+- Basta con ejecutar el programa sin errores.
+
+**Pistas del juego:** Mira la barra de gasolina.
+
+#### Fase 2 · DEBUG — «El precio con coma»  `18.2`
+
+**Qué hay que hacer:** El precio del litro se escribió como en la gasolinera: con coma. En Python los decimales se escriben con punto, no con coma. Corrige el programa para que precio valga 24.5 y se muestre.
+
+**Cómo se pasa:**
+
+- Al terminar, `precio` debe valer 24.5.
+- El programa debe mostrar «24.5».
+
+**Pistas del juego:** Cambia la coma por un punto.
+
+**Si no pasa, el juego dice:** «En Python los decimales se escriben con punto, no con coma. precio debe valer 24.5 y mostrarse.»
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+precio = 24,5
+print(precio)
+```
+</details>
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+precio = 24.5
+print(precio)
+```
+</details>
+
+#### Fase 3 · PREDECIR — «Centavos de más»  `18.3`
+
+**Qué hay que hacer:** Concepto nuevo: round(x, 2) redondea x a 2 decimales (los centavos). ¿Qué muestra este programa?
+
+**Cómo se pasa:**
+
+- ✅ 3.33
+- ▫️ 3.3333333333333335
+- ▫️ 3
+- Se pasa eligiendo: **3.33**.
+
+**Pistas del juego:** El 2 indica cuántos decimales quedan.
+
+<details><summary>Ver el código de la fase</summary>
+
+```python
+print(round(10 / 3, 2))
+```
+</details>
+
+#### Fase 4 · RESOLVER — «¿Cuánto paga cada quien?»  `18.4`
+
+**Qué hay que hacer:** Con los datos de cada viaje calcula litros = distancia / rendimiento, costo = litros * precio y por_persona = round(costo / pasajeros, 2). Muestra costo y luego por_persona. Se prueba con 4 viajes.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 240 km · 3 personas |  | Al terminar, `por_persona` debe valer 163.33. · Mostrar «490.0», luego «163.33» |
+  | 150 km · 4 personas |  | Al terminar, `por_persona` debe valer 59.5. · Mostrar «238.0», luego «59.5» |
+  | 100 km · 3 personas |  | Al terminar, `por_persona` debe valer 104.17. · Mostrar «312.5», luego «104.17» |
+  | 360 km · 5 personas |  | Al terminar, `por_persona` debe valer 124.97. · Mostrar «624.8571428571429», luego «124.97» |
+
+- Tu código debe usar: `round`.
+- Debe usar los operadores `/` y `*`.
+
+**Pistas del juego:** Tres variables: litros, costo y por_persona. · por_persona = round(costo / pasajeros, 2)
+
+**Si no pasa, el juego dice:** «Revisa los 4 viajes: por_persona debe redondearse a 2 decimales con round(…, 2).»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+litros = distancia / rendimiento
+costo = litros * precio
+por_persona = round(costo / pasajeros, 2)
+print(costo)
+print(por_persona)
+```
+</details>
+
+### Nivel Jefe 👑 del Mundo 1 (id 45) — La Caja Fuerte
+
+**Concepto:** integración del Mundo 1  ·  **Historia:** _El alcalde guardó el tesoro del pueblo en 4 cajas fuertes y olvidó los códigos. Solo queda una fórmula y los datos que llegan por la terminal._
 
 > 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco y se prueba en varios casos.
 
-#### Fase 1 · RESOLVER — «La caja fuerte»  `45.1`
+#### Fase 1 · RESOLVER — «La Caja Fuerte»  `45.1`
 
-**Qué hay que hacer:** La caja fuerte del puente se abre con un código que tú calculas. La terminal te enviará, uno por uno y como texto, cuatro números: a, b, c y d. El código es: la suma de a y b, multiplicada por c, menos el residuo de dividir d entre 7. Muéstralo con print(). Se prueba con 4 combinaciones distintas.
+**Qué hay que hacer:** El tesoro del pueblo está repartido en 4 cajas fuertes. Cada una se abre con un código que tú calculas. La terminal te enviará, uno por uno y como texto, cuatro números: a, b, c y d. El código es: la suma de a y b, multiplicada por c, menos el residuo de dividir d entre 7, es decir (a + b) * c - d % 7. Muéstralo con print(). Se prueba con las 4 cajas.
 
 **Cómo se pasa:**
 
@@ -1686,17 +1834,17 @@ print(codigo)
 ```
 </details>
 
-> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡Has cruzado el puente! Pero al otro lado te espera un desafío mayor: la puerta al Mundo 3 está bloqueada. Robot1 necesitará aprender a tomar decisiones. Entra al Mundo 3: Lógica._
+> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡Las 4 cajas están abiertas y el pueblo está a salvo! Robot1 ya domina los fundamentos y los datos. Ahora una mesa de cartas holográfica lo espera para enseñarle a decidir. Entra al Mundo 2: Lógica._
 
 ---
 
-## Mundo 3 · Lógica
+## Mundo 2 · Lógica
 
 - **Escenario:** Sala de Estrategia (mesa de cartas).
 - **Qué se aprende:** Decisiones con `if`, `elif`, `else`, comparadores y `and` / `or` / `not`. Al ejecutar las cartas se voltean y cada pregunta se juzga con ✓ VERDADERO o ✗ FALSO.
 - **Niveles:** 13 · **Estrellas posibles:** 39
 
-### Nivel 1 del Mundo 3 (id 20) — Pasarse de 21
+### Nivel 1 del Mundo 2 (id 20) — Pasarse de 21
 
 **Concepto:** condicional if  ·  **Historia:** _Robot1 cruza la puerta y entra a la Sala de Estrategia: una mesa de cartas holográfica que solo se abre ante quien sabe tomar decisiones._
 
@@ -1772,7 +1920,7 @@ if numero > 18:
 ```
 </details>
 
-### Nivel 2 del Mundo 3 (id 21) — Ganar o perder
+### Nivel 2 del Mundo 2 (id 21) — Ganar o perder
 
 **Concepto:** if / else  ·  **Historia:** _La mesa quiere una respuesta para cada situación, no solo para una._
 
@@ -1854,7 +2002,7 @@ else:
 ```
 </details>
 
-### Nivel 3 del Mundo 3 (id 22) — Comparar es preguntar
+### Nivel 3 del Mundo 2 (id 22) — Comparar es preguntar
 
 **Concepto:** comparación de igualdad (==)  ·  **Historia:** _Una condición es una pregunta. La más común es: ¿son iguales?_
 
@@ -1936,7 +2084,7 @@ else:
 ```
 </details>
 
-### Nivel 4 del Mundo 3 (id 23) — Mayor, menor o igual
+### Nivel 4 del Mundo 2 (id 23) — Mayor, menor o igual
 
 **Concepto:** comparación de orden (<, >, <=, >=)  ·  **Historia:** _Comparar también es decir quién es mayor. Y a veces el empate cuenta._
 
@@ -2019,7 +2167,7 @@ else:
 ```
 </details>
 
-### Nivel 5 del Mundo 3 (id 24) — Dos condiciones a la vez
+### Nivel 5 del Mundo 2 (id 24) — Dos condiciones a la vez
 
 **Concepto:** operador lógico and  ·  **Historia:** _A veces una sola pregunta no alcanza: la mesa pide que se cumplan dos cosas a la vez._
 
@@ -2142,7 +2290,7 @@ else:
 ```
 </details>
 
-### Nivel 6 del Mundo 3 (id 25) — O, y no
+### Nivel 6 del Mundo 2 (id 25) — O, y no
 
 **Concepto:** operadores lógicos or y not  ·  **Historia:** _Otras veces basta con que se cumpla una de varias cosas, o hay que dar la vuelta a una pregunta._
 
@@ -2243,7 +2391,7 @@ else:
 ```
 </details>
 
-### Nivel 7 del Mundo 3 (id 26) — Varios caminos
+### Nivel 7 del Mundo 2 (id 26) — Varios caminos
 
 **Concepto:** elif  ·  **Historia:** _Cuando hay más de dos situaciones, encadenar muchos if se vuelve un laberinto. Hay una forma más limpia._
 
@@ -2402,7 +2550,7 @@ else:
 ```
 </details>
 
-### Nivel 8 del Mundo 3 (id 27) — Decisiones dentro de decisiones
+### Nivel 8 del Mundo 2 (id 27) — Decisiones dentro de decisiones
 
 **Concepto:** condicionales anidados  ·  **Historia:** _Algunas reglas tienen una pregunta dentro de otra, como una puerta que lleva a otra puerta._
 
@@ -2517,7 +2665,7 @@ else:
 ```
 </details>
 
-### Nivel 9 del Mundo 3 (id 28) — El aviso del crupier
+### Nivel 9 del Mundo 2 (id 28) — El aviso del crupier
 
 **Concepto:** reglas con elif  ·  **Historia:** _El crupier holográfico empieza a exigir reglas completas. Ya no basta con acertar una mesa: tu programa se prueba en muchas._
 
@@ -2607,7 +2755,7 @@ else:
 
 **Pistas del juego:** mesa.poner_carta(5, "roja")
 
-### Nivel 10 del Mundo 3 (id 29) — Pares
+### Nivel 10 del Mundo 2 (id 29) — Pares
 
 **Concepto:** pares y condiciones combinadas  ·  **Historia:** _Los pares son la jugada favorita del crupier: hay que decidir cuándo dividir._
 
@@ -2698,7 +2846,7 @@ else:
 
 **Pistas del juego:** Prueba cambiar de mesa.
 
-### Nivel 11 del Mundo 3 (id 30) — Combinaciones
+### Nivel 11 del Mundo 2 (id 30) — Combinaciones
 
 **Concepto:** combinaciones lógicas  ·  **Historia:** _La mesa mezcla rangos, colores y pares. Hay que combinar and y or con cuidado._
 
@@ -2787,7 +2935,7 @@ else:
 
 **Pistas del juego:** Prueba con not.
 
-### Nivel 12 del Mundo 3 (id 31) — El crupier final
+### Nivel 12 del Mundo 2 (id 31) — El crupier final
 
 **Concepto:** integración de condicionales  ·  **Historia:** _El crupier holográfico propone el desafío final: una regla con varias condiciones combinadas que decide la jugada perfecta._
 
@@ -2877,7 +3025,7 @@ else:
 
 #### Fase 3 · LIBRE — «Mesa libre»  `31.3`
 
-**Qué hay que hacer:** Experimenta con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 3.
+**Qué hay que hacer:** Experimenta con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 2.
 
 **Cómo se pasa:**
 
@@ -2885,9 +3033,9 @@ else:
 
 **Pistas del juego:** Prueba cambiar de mesa.
 
-### Nivel Jefe 👑 del Mundo 3 (id 46) — Torneo de cartas
+### Nivel Jefe 👑 del Mundo 2 (id 46) — Torneo de cartas
 
-**Concepto:** integración del Mundo 3  ·  **Historia:** _El torneo final de la Sala de Estrategia empieza. El crupier ya no te dirá qué regla aplicar: tendrás que escribirlas todas._
+**Concepto:** integración del Mundo 2  ·  **Historia:** _El torneo final de la Sala de Estrategia empieza. El crupier ya no te dirá qué regla aplicar: tendrás que escribirlas todas._
 
 > 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco y se prueba en varios casos.
 
@@ -2934,17 +3082,17 @@ else:
 ```
 </details>
 
-> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡La sala de estrategia se abre! Pero al cruzar, Robot1 oye un zumbido: un edificio entero depende de un elevador que no deja de fallar. Entra al Mundo 4: Automatización._
+> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡La sala de estrategia se abre! Pero al cruzar, Robot1 oye un zumbido: un edificio entero depende de un elevador que no deja de fallar. Entra al Mundo 3: Automatización._
 
 ---
 
-## Mundo 4 · Automatización
+## Mundo 3 · Automatización
 
 - **Escenario:** Complejo industrial (edificio de 5 pisos con elevador).
 - **Qué se aprende:** Ciclos `while` y `for`, contadores. Un letrero muestra en qué repetición va el ciclo; el piso 1 es la planta baja.
 - **Niveles:** 13 · **Estrellas posibles:** 39
 
-### Nivel 1 del Mundo 4 (id 32) — El ascensor automático
+### Nivel 1 del Mundo 3 (id 32) — El ascensor automático
 
 **Concepto:** ciclo while  ·  **Historia:** _En el complejo industrial, el elevador solo hace lo que se le ordena. Repetir la misma orden a mano es agotador: hay que enseñarle a repetirse._
 
@@ -3022,7 +3170,7 @@ while piso < 5:
 ```
 </details>
 
-### Nivel 2 del Mundo 4 (id 33) — Repetir con for
+### Nivel 2 del Mundo 3 (id 33) — Repetir con for
 
 **Concepto:** ciclo for con range  ·  **Historia:** _Cuando ya sabes cuántas veces repetir, hay una herramienta más corta que el while con contador._
 
@@ -3094,7 +3242,7 @@ for i in range(4):
 ```
 </details>
 
-### Nivel 3 del Mundo 4 (id 34) — Contar repeticiones
+### Nivel 3 del Mundo 3 (id 34) — Contar repeticiones
 
 **Concepto:** contadores en un while  ·  **Historia:** _Para repetir algo exactamente N veces, el ciclo necesita llevar la cuenta de cuántas van._
 
@@ -3179,7 +3327,7 @@ print(viajes)
 ```
 </details>
 
-### Nivel 4 del Mundo 4 (id 35) — El valor de i
+### Nivel 4 del Mundo 3 (id 35) — El valor de i
 
 **Concepto:** for con variable y range(inicio, fin)  ·  **Historia:** _La variable del for no es solo un contador interno: puedes usarla dentro del ciclo._
 
@@ -3250,7 +3398,7 @@ for i in range(2, 5):
 ```
 </details>
 
-### Nivel 5 del Mundo 4 (id 36) — El bucle infinito
+### Nivel 5 del Mundo 3 (id 36) — El bucle infinito
 
 **Concepto:** ciclos con condición y bucles infinitos  ·  **Historia:** _Un ciclo que nunca termina congelaría todo el complejo. Aquí aprenderás a detectarlo y a escribir ciclos que sí terminan._
 
@@ -3345,7 +3493,7 @@ while elevador.piso() > 1:
 ```
 </details>
 
-### Nivel 6 del Mundo 4 (id 37) — Recoger pasajeros
+### Nivel 6 del Mundo 3 (id 37) — Recoger pasajeros
 
 **Concepto:** while con decisiones  ·  **Historia:** _Los pasajeros esperan en distintos pisos. El elevador debe recorrer el edificio y decidir qué hacer en cada uno._
 
@@ -3454,7 +3602,7 @@ elevador.soltar()
 ```
 </details>
 
-### Nivel 7 del Mundo 4 (id 38) — For con decisiones
+### Nivel 7 del Mundo 3 (id 38) — For con decisiones
 
 **Concepto:** for con if  ·  **Historia:** _Un for también puede tomar decisiones en cada vuelta, como un guardia que revisa cada piso._
 
@@ -3555,7 +3703,7 @@ elevador.soltar()
 ```
 </details>
 
-### Nivel 8 del Mundo 4 (id 39) — Cuenta lo que haces
+### Nivel 8 del Mundo 3 (id 39) — Cuenta lo que haces
 
 **Concepto:** contadores con condición  ·  **Historia:** _El jefe de seguridad pide números: ¿cuántos pisos tienen gente? Un contador lleva la cuenta mientras el elevador trabaja._
 
@@ -3667,7 +3815,7 @@ print(viajes)
 ```
 </details>
 
-### Nivel 9 del Mundo 4 (id 40) — Evacuación completa
+### Nivel 9 del Mundo 3 (id 40) — Evacuación completa
 
 **Concepto:** evacuación con ciclos  ·  **Historia:** _Empieza la evacuación del complejo. Tu programa se prueba en edificios distintos: no basta con acertar el que ves._
 
@@ -3754,7 +3902,7 @@ elevador.soltar()
 
 **Pistas del juego:** Prueba combinar while, for e if.
 
-### Nivel 10 del Mundo 4 (id 41) — La cabina chica
+### Nivel 10 del Mundo 3 (id 41) — La cabina chica
 
 **Concepto:** capacidad limitada  ·  **Historia:** _Un elevador de servicio más pequeño: solo caben 2 personas. Si intentas subir a una tercera, la cabina se llena y el programa falla._
 
@@ -3841,7 +3989,7 @@ while viajes < 2:
 
 **Pistas del juego:** Prueba llevando().
 
-### Nivel 11 del Mundo 4 (id 42) — Reportes por piso
+### Nivel 11 del Mundo 3 (id 42) — Reportes por piso
 
 **Concepto:** ciclos con reportes  ·  **Historia:** _El jefe de seguridad quiere saber EN QUÉ pisos hay gente y que solo se atienda a los pisos pares._
 
@@ -3921,7 +4069,7 @@ for i in range(4):
 
 **Pistas del juego:** Prueba % con otros números.
 
-### Nivel 12 del Mundo 4 (id 43) — El gran operativo
+### Nivel 12 del Mundo 3 (id 43) — El gran operativo
 
 **Concepto:** contadores con ciclos  ·  **Historia:** _El complejo entero debe evacuarse y el jefe de seguridad quiere un reporte: cuántas personas salvó el elevador._
 
@@ -4004,7 +4152,7 @@ print(viajes)
 
 #### Fase 3 · LIBRE — «Torre libre»  `43.3`
 
-**Qué hay que hacer:** Experimenta con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 4.
+**Qué hay que hacer:** Experimenta con todo lo aprendido. Nada se evalúa: es tu despedida del Mundo 3.
 
 **En pantalla:** El elevador empieza en el piso 1; pasajeros en piso 2, piso 3 y piso 5.
 
@@ -4014,9 +4162,9 @@ print(viajes)
 
 **Pistas del juego:** Prueba combinar while, for e if.
 
-### Nivel Jefe 👑 del Mundo 4 (id 47) — Evacuación crítica
+### Nivel Jefe 👑 del Mundo 3 (id 47) — Evacuación crítica
 
-**Concepto:** integración del Mundo 4  ·  **Historia:** _El complejo entero está en llamas y el elevador tiene la batería casi agotada. Cada piso cuenta._
+**Concepto:** integración del Mundo 3  ·  **Historia:** _El complejo entero está en llamas y el elevador tiene la batería casi agotada. Cada piso cuenta._
 
 > 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco y se prueba en varios casos.
 
@@ -4052,17 +4200,17 @@ elevador.soltar()
 ```
 </details>
 
-> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡Evacuación completada! Robot1 descubre una puerta con luces parpadeantes: es la entrada a una fábrica de robots gigante. Allí lo espera el Mundo 5: Modularidad._
+> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡Evacuación completada! Robot1 descubre una puerta con luces parpadeantes: es la entrada a una fábrica de robots gigante. Allí lo espera el Mundo 4: Modularidad._
 
 ---
 
-## Mundo 5 · Modularidad
+## Mundo 4 · Modularidad
 
 - **Escenario:** Fábrica de robots (cada función se construye como una **máquina**; a veces con una pista para Robot1).
 - **Qué se aprende:** Funciones: `def`, llamar una función, parámetros, `return`, variables locales y depuración de errores de ámbito y de orden.
 - **Niveles:** 8 · **Estrellas posibles:** 24
 
-### Nivel 1 del Mundo 5 (id 48) — Construyendo máquinas
+### Nivel 1 del Mundo 4 (id 48) — Construyendo máquinas
 
 **Concepto:** definir una función con def  ·  **Historia:** _Al otro lado de la puerta hay una fábrica de robots gigante. Aquí nadie repite el trabajo a mano: se construyen máquinas que reciben materiales, los procesan y entregan un producto terminado. Robot1 aprenderá a construir las suyas._
 
@@ -4159,7 +4307,7 @@ saludar()
 ```
 </details>
 
-### Nivel 2 del Mundo 5 (id 49) — Activando la producción
+### Nivel 2 del Mundo 4 (id 49) — Activando la producción
 
 **Concepto:** llamar funciones ya definidas  ·  **Historia:** _Las máquinas ya están construidas. Ahora hay que encenderlas, y el orden de las llamadas decide el orden de la producción._
 
@@ -4259,7 +4407,7 @@ for i in range(5):
 ```
 </details>
 
-### Nivel 3 del Mundo 5 (id 50) — Personalizando productos
+### Nivel 3 del Mundo 4 (id 50) — Personalizando productos
 
 **Concepto:** parámetros de una función  ·  **Historia:** _Una máquina que siempre hace lo mismo sirve poco. Con parámetros, la misma máquina fabrica productos distintos según los materiales que reciba._
 
@@ -4352,7 +4500,7 @@ fabricar("tuercas", 3)
 ```
 </details>
 
-### Nivel 4 del Mundo 5 (id 51) — El producto terminado
+### Nivel 4 del Mundo 4 (id 51) — El producto terminado
 
 **Concepto:** return y valor de retorno  ·  **Historia:** _Hasta ahora las máquinas mostraban cosas. Una buena máquina ENTREGA un producto terminado: un valor que el programa puede guardar y usar._
 
@@ -4462,7 +4610,7 @@ print(es_par(7))
 ```
 </details>
 
-### Nivel 5 del Mundo 5 (id 52) — Información confidencial
+### Nivel 5 del Mundo 4 (id 52) — Información confidencial
 
 **Concepto:** variables locales y ámbito  ·  **Historia:** _Lo que ocurre dentro de una máquina es confidencial: sus variables locales no se ven desde fuera. Solo sale lo que la máquina entrega con return._
 
@@ -4561,7 +4709,7 @@ print(resultado)
 ```
 </details>
 
-### Nivel 6 del Mundo 5 (id 53) — Producción en cadena
+### Nivel 6 del Mundo 4 (id 53) — Producción en cadena
 
 **Concepto:** usar el return de una función como parámetro de otra  ·  **Historia:** _Las máquinas se pueden conectar: lo que sale de una entra a la siguiente. Así se arma una cadena de producción._
 
@@ -4662,7 +4810,7 @@ print(sumar_tres(duplicar(quitar_dos(10))))
 ```
 </details>
 
-### Nivel 7 del Mundo 5 (id 54) — Reparando la fábrica
+### Nivel 7 del Mundo 4 (id 54) — Reparando la fábrica
 
 **Concepto:** depurar funciones  ·  **Historia:** _La fábrica sufrió un apagón y varias máquinas fallan. Reparar es leer el error y encontrar qué le falta a cada máquina._
 
@@ -4810,11 +4958,11 @@ anunciar("Listo")
 ```
 </details>
 
-### Nivel Jefe 👑 del Mundo 5 (id 55) — El Gran Ensamblaje
+### Nivel Jefe 👑 del Mundo 4 (id 55) — El Gran Ensamblaje
 
-**Concepto:** integración del Mundo 5  ·  **Historia:** _Llegó el pedido más grande de la historia de la fábrica: un Robot1 gigante. Nadie te dirá cómo hacerlo: tendrás que dividirlo en máquinas._
+**Concepto:** integración del Mundo 4  ·  **Historia:** _Llegó el pedido más grande de la historia de la fábrica: un Robot1 gigante. Nadie te dirá cómo hacerlo: tendrás que dividirlo en máquinas._
 
-> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco y se prueba en varios casos.
+> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco.
 
 #### Fase 1 · RESOLVER — «El Gran Ensamblaje»  `55.1`
 
@@ -4847,4 +4995,170 @@ piernas()
 ```
 </details>
 
-> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡El Robot1 gigante está completo y la fábrica es un éxito! Robot1 ya sabe dividir un problema en máquinas. Pronto llegará el último desafío: el Mundo 6, donde diseñará un proyecto completo. (Próximamente.)_
+> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _¡El Robot1 gigante está completo y la fábrica es un éxito! Robot1 ya sabe dividir un problema en máquinas. Ahora le espera el último desafío: el Mundo 5, el taller donde construirá proyectos completos por su cuenta._
+
+---
+
+## Mundo 5 · Proyecto
+
+- **Escenario:** Taller de proyectos (la terminal y la memoria, en color rosa).
+- **Qué se aprende:** No hay sintaxis nueva: cada nivel es un proyecto que integra `input()`, `if`, `while` y variables. Los niveles 1 a 3 se prueban con varios casos (si falla uno, no pasa) y el Nivel 4 es el proyecto libre que cierra CodeQuest.
+- **Niveles:** 4 · **Estrellas posibles:** 12
+
+### Nivel 1 del Mundo 5 (id 56) — La máquina expendedora
+
+**Concepto:** proyecto: input, if y cálculos  ·  **Historia:** _Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido._
+
+#### Fase 1 · RESOLVER — «La máquina expendedora»  `56.1`
+
+**Qué hay que hacer:** La máquina expendedora te pide primero el DINERO que metes y después el PRECIO del producto (los dos son números enteros). Si el dinero alcanza, muestra Cambio: seguido del cambio que devuelve (por ejemplo, Cambio: 3). Si no alcanza, muestra Dinero insuficiente. Cuidado con el caso en que el dinero es justo el precio.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | 10 para un producto de 7 |  | Mostrar «Cambio: 3» |
+  | Dinero justo |  | Mostrar «Cambio: 0» |
+  | No alcanza |  | Mostrar «Dinero insuficiente» |
+  | Billete grande |  | Mostrar «Cambio: 19» |
+  | Falta una moneda |  | Mostrar «Dinero insuficiente» |
+
+- Tu código debe usar: `input`, `int`, `if` y `else`.
+
+**Pistas del juego:** Convierte cada entrada con int(input()). · if dinero >= precio: ... else: ... (con >= el dinero justo también alcanza).
+
+**Si no pasa, el juego dice:** «Revisa los 5 casos: el dinero justo da Cambio: 0 y, si no alcanza, solo debe verse Dinero insuficiente.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+dinero = int(input())
+precio = int(input())
+if dinero >= precio:
+    print("Cambio: " + str(dinero - precio))
+else:
+    print("Dinero insuficiente")
+```
+</details>
+
+### Nivel 2 del Mundo 5 (id 57) — El validador de contraseñas
+
+**Concepto:** proyecto: variables, if y and  ·  **Historia:** _Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido._
+
+#### Fase 1 · RESOLVER — «El validador de contraseñas»  `57.1`
+
+**Qué hay que hacer:** El sistema ya revisó la contraseña y te dejó listas tres variables en la memoria: contrasena (el texto), longitud (cuántos caracteres tiene) y tiene_numero (True si contiene algún número). Una contraseña es segura si tiene MÁS de 8 caracteres y además contiene un número. Muestra Contraseña segura o Contraseña débil.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | Robot12345 |  | Mostrar «Contraseña segura» |
+  | Larga pero sin número |  | Mostrar «Contraseña débil» |
+  | Con número pero corta |  | Mostrar «Contraseña débil» |
+  | Justo 8 caracteres |  | Mostrar «Contraseña débil» |
+  | 9 caracteres con número |  | Mostrar «Contraseña segura» |
+  | Corta y sin número |  | Mostrar «Contraseña débil» |
+
+- Tu código debe usar: `if`, `and` y `else`.
+
+**Pistas del juego:** Las dos condiciones se unen con and: longitud > 8 and tiene_numero. · «Más de 8» es > 8; con 8 justos no alcanza.
+
+**Si no pasa, el juego dice:** «Una contraseña es segura SOLO si tiene más de 8 caracteres Y contiene un número. Revisa los casos que fallan.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+if longitud > 8 and tiene_numero:
+    print("Contraseña segura")
+else:
+    print("Contraseña débil")
+```
+</details>
+
+### Nivel 3 del Mundo 5 (id 58) — El juego de adivinanza
+
+**Concepto:** proyecto: while, límite de intentos e if  ·  **Historia:** _Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido._
+
+#### Fase 1 · RESOLVER — «El juego de adivinanza»  `58.1`
+
+**Qué hay que hacer:** La computadora ya eligió un número secreto y lo guardó en la variable secreto. El jugador tiene como máximo 5 INTENTOS, y en cada uno escribe un número. Si acierta, muestra ¡Adivinaste! y el juego termina. Si se queda corto, muestra Muy bajo; si se pasa, Muy alto. Si gasta los 5 intentos sin acertar, muestra Perdiste. El juego no debe pedir más números de los necesarios.
+
+**Cómo se pasa:**
+
+- Tu programa se prueba en **todos** estos casos (se ve uno con animación y los demás se prueban en silencio). Hay que acertar en cada uno:
+
+  | Caso | Situación | Resultado esperado |
+  |---|---|---|
+  | Acierta al tercero |  | Mostrar «Muy bajo», luego «Muy alto», luego «¡Adivinaste!» |
+  | Acierta al primero |  | Mostrar «¡Adivinaste!» |
+  | Pierde |  | Mostrar «Muy bajo», luego «Muy bajo», luego «Muy bajo», luego «Muy bajo», luego «Muy bajo», luego «Perdiste» |
+  | Acierta justo en el último intento |  | Mostrar «Muy alto», luego «Muy alto», luego «Muy alto», luego «Muy alto», luego «¡Adivinaste!» |
+  | Alto, bajo y acierta |  | Mostrar «Muy alto», luego «Muy bajo», luego «¡Adivinaste!» |
+
+- Tu código debe usar: `while`, `if`, `int` y `input`.
+
+**Pistas del juego:** Lleva la cuenta con una variable intentos y repite mientras intentos < 5. · Usa otra variable (acertado) para salir del ciclo cuando el jugador gane.
+
+**Si no pasa, el juego dice:** «Revisa los casos: acertar en el 5.º intento todavía gana, y no se deben pedir números de más después de acertar.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+intentos = 0
+acertado = False
+while intentos < 5 and not acertado:
+    intento = int(input())
+    intentos = intentos + 1
+    if intento == secreto:
+        print("¡Adivinaste!")
+        acertado = True
+    elif intento < secreto:
+        print("Muy bajo")
+    else:
+        print("Muy alto")
+if not acertado:
+    print("Perdiste")
+```
+</details>
+
+### Nivel Jefe 👑 del Mundo 5 (id 59) — Proyecto libre
+
+**Concepto:** proyecto final de CodeQuest  ·  **Historia:** _Robot1 llega al Laboratorio de creación: un taller con planos holográficos donde ya no hay lecciones, solo proyectos. Aquí se junta todo lo aprendido._
+
+> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco.
+
+#### Fase 1 · RESOLVER — «Proyecto libre»  `59.1`
+
+**Qué hay que hacer:** Este es TU proyecto: un juego, una calculadora, una simulación… lo que imagines. Escribe un programa de al menos 10 líneas de código (los comentarios y las líneas vacías no cuentan) que use un if, un while y al menos una variable. Se comprobará que se ejecute sin errores.
+
+**Cómo se pasa:**
+
+- Basta con ejecutar el programa sin errores.
+- El programa debe tener **al menos 10 líneas de código** (las líneas vacías y los comentarios no cuentan).
+- Tu código debe usar: `if` y `while`.
+
+**Si no pasa, el juego dice:** «Tu programa necesita al menos 10 líneas de código (sin contar comentarios ni líneas vacías) y usar un if, un while y una variable.»
+
+<details><summary>Ver una solución de ejemplo (spoiler)</summary>
+
+```python
+energia = 10
+ciclos = 0
+print("Iniciando el sistema")
+while energia > 0:
+    energia = energia - 3
+    ciclos = ciclos + 1
+    if energia > 5:
+        print("Energía alta")
+    else:
+        print("Energía baja")
+print("Ciclos: " + str(ciclos))
+```
+</details>
+
+> 🎬 **Al terminar este nivel** aparece la pantalla final de CodeQuest (con las estrellas totales y las líneas de código escritas): _¡Felicidades, has completado CodeQuest! Ahora piensas como un programador._

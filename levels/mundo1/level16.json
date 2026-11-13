@@ -1,0 +1,302 @@
+{
+  "id": 16,
+  "mundo": 1,
+  "nombre": "El Cronómetro",
+  "ordinal": 17,
+  "concepto": "división entera // y residuo %",
+  "concepto_evaluado": "division_entera_modulo",
+  "narrativa": "En la carrera del pueblo el cronómetro solo cuenta segundos. Los corredores quieren ver su tiempo en horas, minutos y segundos.",
+  "escenario": {
+    "tipo": "cronometro",
+    "variables": {
+      "total": 125
+    }
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "16.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Cuántas veces cabe",
+      "enunciado": "Concepto nuevo: // es la división ENTERA (cuántas veces cabe, sin decimales) y % es el residuo (lo que sobra). 17 // 5 es 3 porque el 5 cabe 3 veces en 17, y 17 % 5 es 2 porque sobran 2.",
+      "codigoInicial": "print(17 // 5)\nprint(17 % 5)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "// y % siempre van juntos: uno dice cuántas veces cabe y el otro, lo que sobra.",
+      "pistas": [
+        "3 × 5 = 15 y sobran 2."
+      ]
+    },
+    {
+      "id": "16.2",
+      "tipo": "PREDECIR",
+      "titulo": "Segundos a minutos",
+      "enunciado": "total vale 125 segundos. ¿Qué muestra el programa?",
+      "codigoInicial": "print(total // 60)\nprint(total % 60)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "2 y luego 5"
+        },
+        {
+          "id": "b",
+          "texto": "2.08 y luego 0"
+        },
+        {
+          "id": "c",
+          "texto": "5 y luego 2"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: en 125 segundos caben 2 minutos completos (120 s) y sobran 5 segundos.",
+      "pistas": [
+        "¿Cuántas veces cabe 60 en 125?"
+      ]
+    },
+    {
+      "id": "16.3",
+      "tipo": "DEBUG",
+      "titulo": "El cronómetro loco",
+      "enunciado": "Este programa convierte total en minutos y segundos, pero los segundos salen mal. Corrige la línea de segundos: lo que sobra se calcula con %. Se prueba con 3 tiempos.",
+      "codigoInicial": "minutos = total // 60\nsegundos = total // 60\nprint(minutos)\nprint(segundos)",
+      "solucionReferencia": "minutos = total // 60\nsegundos = total % 60\nprint(minutos)\nprint(segundos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "125 s",
+          "escenario": {
+            "variables": {
+              "total": 125
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2",
+              "5"
+            ]
+          }
+        },
+        {
+          "etiqueta": "59 s",
+          "escenario": {
+            "variables": {
+              "total": 59
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "0",
+              "59"
+            ]
+          }
+        },
+        {
+          "etiqueta": "600 s",
+          "escenario": {
+            "variables": {
+              "total": 600
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "10",
+              "0"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "operadores": [
+            "//",
+            "%"
+          ]
+        }
+      },
+      "retroalimentacion": "minutos con //, segundos con %: el cronómetro ya marca bien.",
+      "pistas": [
+        "segundos = total % 60"
+      ],
+      "solucionesIncorrectas": [
+        "minutos = total // 60\nsegundos = total // 60\nprint(minutos)\nprint(segundos)"
+      ],
+      "max_lineas_recomendadas": 4
+    },
+    {
+      "id": "16.4",
+      "tipo": "RESOLVER",
+      "titulo": "Horas, minutos y segundos",
+      "enunciado": "Convierte total en horas, minutos y segundos: horas = total // 3600 (una hora tiene 3600 s); para los minutos, quita las horas completas con total % 3600 y divide entre 60 con //; los segundos son total % 60. Muestra horas, minutos y segundos, en ese orden. Se prueba con 4 tiempos.",
+      "codigoInicial": "",
+      "solucionReferencia": "horas = total // 3600\nminutos = total % 3600 // 60\nsegundos = total % 60\nprint(horas)\nprint(minutos)\nprint(segundos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "3725 s",
+          "escenario": {
+            "variables": {
+              "total": 3725
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "horas": 1,
+                  "minutos": 2,
+                  "segundos": 5
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "1",
+                  "2",
+                  "5"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "7384 s",
+          "escenario": {
+            "variables": {
+              "total": 7384
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "horas": 2,
+                  "minutos": 3,
+                  "segundos": 4
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "2",
+                  "3",
+                  "4"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "59 s",
+          "escenario": {
+            "variables": {
+              "total": 59
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "horas": 0,
+                  "minutos": 0,
+                  "segundos": 59
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "0",
+                  "0",
+                  "59"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "86399 s",
+          "escenario": {
+            "variables": {
+              "total": 86399
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "horas": 23,
+                  "minutos": 59,
+                  "segundos": 59
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "23",
+                  "59",
+                  "59"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "operadores": [
+            "//",
+            "%"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Tiempo oficial! // y % juntos convierten cualquier cantidad en unidades más grandes.",
+      "pistas": [
+        "horas = total // 3600",
+        "minutos = total % 3600 // 60"
+      ],
+      "mensajeNoLogrado": "Revisa los 4 tiempos: por ejemplo, 3725 s son 1 h, 2 min y 5 s.",
+      "solucionesIncorrectas": [
+        "horas = total // 3600\nminutos = total // 60\nsegundos = total % 60\nprint(horas)\nprint(minutos)\nprint(segundos)"
+      ],
+      "max_lineas_recomendadas": 6
+    }
+  ]
+}

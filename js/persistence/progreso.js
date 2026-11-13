@@ -9,7 +9,7 @@
 
 import { calcularEstrellasNivel } from "../ui/stars.js";
 
-const NOMBRES_MUNDO = { 1: "Despertar", 2: "Memoria", 3: "Lógica", 4: "Automatización", 5: "Modularidad", 6: "Proyecto" };
+const NOMBRES_MUNDO = { 1: "Fundamentos y Datos", 2: "Lógica", 3: "Automatización", 4: "Modularidad", 5: "Proyecto" };
 
 /** Construye el catálogo a partir de la lista de JSON de niveles. */
 export function construirCatalogo(listaNiveles) {
@@ -22,7 +22,12 @@ export function construirCatalogo(listaNiveles) {
     }
     mundos[n.mundo].niveles.push(n.id);
   });
-  Object.values(mundos).forEach((m) => m.niveles.sort((a, b) => a - b));
+  // Orden dentro del mundo: por id, salvo que TODOS sus niveles declaren `ordinal` (el Mundo 1 fusionado alterna ids viejos
+  // y nuevos: el jefe intermedio 44 va entre el 13 y el 14). Así ningún mundo queda a medio ordenar.
+  Object.values(mundos).forEach((m) => {
+    const porOrdinal = m.niveles.every((id) => Number.isInteger(niveles[id].ordinal));
+    m.niveles.sort((a, b) => (porOrdinal ? niveles[a].ordinal - niveles[b].ordinal : a - b));
+  });
 
   // Número que ve el estudiante dentro de su mundo. Los ids NO son consecutivos (el Nivel 0, los jefes
   // y el Mundo 5 se añadieron después), así que cada nivel puede declarar su `ordinal` (el Nivel 0 es 0);

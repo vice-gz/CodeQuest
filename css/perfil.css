@@ -1,21 +1,24 @@
 /* ============================================================
-   CodeQuest — Avance 2: perfil de usuario
-   (también lo usa el detalle de usuario del panel de admin)
+   CodeQuest — Perfil de usuario y estadísticas
    ============================================================ */
 
 .pagina-perfil {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 1000px;
+  gap: 18px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 24px 24px 56px;
+  padding: 28px 24px 60px;
 }
 
 .pagina-titulo {
   margin: 8px 0 0;
-  font-size: 1.7rem;
-  letter-spacing: -0.02em;
+  font-size: 1.85rem;
+  letter-spacing: -0.025em;
+  background: linear-gradient(90deg, #ffffff, #00f5d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .texto-ambar { color: var(--ambar); }
@@ -36,14 +39,16 @@
 }
 
 .datos-usuario dt {
-  font-size: 0.75rem;
-  color: var(--texto-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--teal);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .datos-usuario dd {
-  margin: 2px 0 0;
+  margin: 3px 0 0;
+  font-weight: 500;
   overflow-wrap: anywhere;
 }
 
@@ -51,33 +56,39 @@
 
 .datos-rejilla {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
 }
 
 .dato-tarjeta {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: var(--panel-alt);
-  border: 1px solid var(--borde-suave);
+  gap: 3px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(24, 34, 70, 0.9), rgba(10, 15, 34, 0.92));
+  border: 1px solid rgba(0, 245, 212, 0.22);
+  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.55);
 }
 
 .dato-titulo {
   font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--texto-muted);
 }
 
 .dato-valor {
-  font-size: 1.6rem;
+  font-family: var(--fuente-mono);
+  font-size: 1.7rem;
   font-weight: 700;
   line-height: 1.2;
+  color: #ffffff;
 }
 
 .dato-detalle {
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   color: var(--texto-muted);
 }
 
@@ -90,10 +101,10 @@
 }
 
 .mundo-progreso {
-  padding: 16px 18px;
-  border-radius: 12px;
-  background: var(--panel-alt);
-  border: 1px solid var(--borde-suave);
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(12, 18, 40, 0.82);
+  border: 1px solid var(--borde);
 }
 
 .mundo-progreso header {
@@ -106,13 +117,14 @@
 
 .mundo-progreso h3 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.02rem;
 }
 
 .barra-progreso {
   height: 10px;
   border-radius: 999px;
-  background: var(--bg-elevado);
+  background: #070b18;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
 }
 
@@ -121,6 +133,7 @@
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--teal-oscuro), var(--teal));
+  box-shadow: 0 0 12px rgba(0, 245, 212, 0.45);
 }
 
 .mundo-progreso-datos {
@@ -132,7 +145,7 @@
   color: var(--texto-muted);
 }
 
-/* ---------- Gráficos de barras (HTML/CSS, sin librerías) ---------- */
+/* ---------- Gráficos de barras ---------- */
 
 .graficos {
   display: grid;
@@ -141,17 +154,19 @@
 }
 
 .grafico {
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: var(--panel-alt);
-  border: 1px solid var(--borde-suave);
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(12, 18, 40, 0.82);
+  border: 1px solid var(--borde);
 }
 
 .grafico h3 {
   margin: 0 0 12px;
   font-size: 0.85rem;
   color: var(--texto-muted);
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .barras {
@@ -180,7 +195,7 @@
 .barra-pista {
   height: 10px;
   border-radius: 999px;
-  background: var(--bg-elevado);
+  background: #070b18;
   overflow: hidden;
 }
 
@@ -188,7 +203,7 @@
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: var(--ambar);
+  background: linear-gradient(90deg, #ff8c24, var(--ambar));
 }
 
 .barra-valor {
@@ -248,9 +263,9 @@
   justify-content: space-between;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 10px;
-  background: var(--panel-alt);
-  border: 1px solid var(--borde-suave);
+  border-radius: 11px;
+  background: rgba(12, 18, 40, 0.82);
+  border: 1px solid var(--borde);
 }
 
 .form-unirme {
@@ -266,8 +281,8 @@
 }
 
 .zona-peligro {
-  border-color: rgba(255, 107, 107, 0.55);
-  background: linear-gradient(160deg, rgba(255, 107, 107, 0.07), var(--panel) 55%);
+  border-color: rgba(255, 84, 112, 0.55);
+  background: linear-gradient(160deg, rgba(255, 84, 112, 0.1), var(--panel) 55%);
 }
 
 .zona-peligro .panel-encabezado h2 {

@@ -15,10 +15,10 @@ const COLORES_PASAJERO = ["#38bdf8", "#f472b6", "#a3e635", "#facc15", "#c084fc",
 
 export class EscenarioElevador extends EscenarioBase {
   constructor(config, opciones) {
-    super({ ...config, mundo: 4 }, opciones);
+    super({ ...config, mundo: 3 }, opciones);
     this.pisos = config.pisos ?? 5;
     this.capacidad = config.capacidad ?? 4;
-    this.p = paletaDe(4);
+    this.p = paletaDe(3);
     this.reiniciarModelo();
   }
 

@@ -129,7 +129,7 @@ await prueba("la caja de entrada viaja y se muestra mientras ocurre (estado inte
 });
 
 console.log("Nivel Jefe: El Gran Ensamblaje");
-const jefe = JSON.parse(readFileSync("levels/mundo5/level55.json", "utf8"));
+const jefe = JSON.parse(readFileSync("levels/mundo4/level55.json", "utf8"));
 const fase = jefe.fases[0];
 async function evaluar(codigo) {
   const cfg = { ...jefe.escenario, ...(fase.escenario || {}) };

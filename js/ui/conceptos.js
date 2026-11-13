@@ -80,39 +80,38 @@ export { GLOSARIO, CONCEPTOS, conceptosHasta, conceptosDelMundo, buscarConceptos
 // ---------------------------------------------------------------- Bienvenidas por mundo
 export const BIENVENIDAS = {
   1: {
-    titulo: "¡Bienvenido al Mundo 1: Despertar!",
-    texto: "Robot1 acaba de despertar en un laboratorio y solo entiende instrucciones simples. Aquí aprenderás qué es un programa: una lista de órdenes que se ejecutan una tras otra.",
-    puntos: ["Cada instrucción va en su propia línea.", "El orden importa: Robot1 las ejecuta de arriba hacia abajo.", "Si algo falla, el mensaje de error te dirá cómo corregirlo."],
-    ejemplo: "robot1.avanzar(3)\nrobot1.hablar(\"Hola\")",
+    titulo: "¡Bienvenido al Mundo 1: Fundamentos y Datos!",
+    texto: "Robot1 acaba de despertar en un laboratorio y solo entiende instrucciones simples. Después saldrá al pueblo, donde cada problema se resuelve con datos: guardarlos en variables, pedirlos con input() y calcular con ellos.",
+    puntos: ["Cada instrucción va en su propia línea y el orden importa.", "Una variable es una caja con nombre: = guarda un valor y ahorro += 100 lo actualiza.", "El contador «Líneas: X / Límite» te avisa si tu solución se puede escribir más corta.", "Si algo falla, el mensaje de error te dirá cómo corregirlo."],
+    ejemplo: "robot1.avanzar(3)\nahorro = 0\nahorro += 100\nprint(ahorro)",
     visual: "algoritmo",
   },
   2: {
-    titulo: "¡Bienvenido al Mundo 2: Memoria!",
-    texto: "Robot1 perdió la memoria. Aquí aprenderás a guardar datos en variables: cajas con nombre que recuerdan valores para usarlos después.",
-    puntos: ["= guarda un valor en una variable.", "Los datos tienen tipo: números, decimales y textos.", "Los operadores (+ - * / %) permiten calcular con ellos."],
-    ejemplo: 'energia = 80\nenergia = energia - 15\nprint(energia)',
-    visual: "variable",
-  },
-  3: {
-    titulo: "¡Bienvenido al Mundo 3: Lógica!",
+    titulo: "¡Bienvenido al Mundo 2: Lógica!",
     texto: "Un programa útil sabe decidir. Aquí aprenderás a hacer preguntas con if, elif y else, a compararlas y a combinarlas con and, or y not.",
     puntos: ["Una condición responde True o False.", "Las líneas dentro de un if llevan sangría (4 espacios, tecla Tab).", "Tu regla se prueba en varias mesas: tiene que funcionar siempre."],
     ejemplo: 'if total > 21:\n    print("Bust")\nelse:\n    print("Sigue")',
     visual: "condicional",
   },
-  4: {
-    titulo: "¡Bienvenido al Mundo 4: Automatización!",
+  3: {
+    titulo: "¡Bienvenido al Mundo 3: Automatización!",
     texto: "Repetir órdenes a mano es agotador. Aquí aprenderás a automatizar con ciclos: while repite mientras algo sea cierto y for repite una cantidad de veces.",
     puntos: ["Cada vuelta del ciclo es una repetición.", "Dentro del ciclo hay que cambiar algo, o no terminará nunca.", "Si el programa repite más de 1000 veces, se detiene para protegerte."],
     ejemplo: "for i in range(4):\n    elevador.subir(1)",
     visual: "ciclo",
   },
-  5: {
-    titulo: "¡Bienvenido al Mundo 5: Modularidad!",
+  4: {
+    titulo: "¡Bienvenido al Mundo 4: Modularidad!",
     texto: "En la fábrica de robots no se repite el trabajo a mano: se construyen máquinas. Aquí aprenderás a crear funciones con def, a darles parámetros y a pedirles resultados con return.",
     puntos: ["def construye la máquina; llamarla con su nombre la enciende.", "Los parámetros son las ranuras de entrada; return es la bandeja de salida.", "Las variables de dentro de una función son locales: no se ven desde fuera."],
     ejemplo: "def calcular_doble(x):\n    return x * 2\nprint(calcular_doble(21))",
     visual: "funcion",
+  },
+  5: {
+    titulo: "¡Bienvenido al Mundo 5: Proyecto!",
+    texto: "Aquí ya no hay lecciones nuevas: solo proyectos. Cada reto junta lo que sabes (entradas, decisiones, ciclos y variables) y se prueba con varios casos, así que tu programa tiene que funcionar siempre, no solo una vez.",
+    puntos: ["Lee bien el enunciado: los casos de prueba revisan los detalles (por ejemplo, qué pasa justo en el límite).", "Si un caso falla, el panel te dice cuál para que lo revises.", "El último nivel es tu proyecto libre: tú decides qué construir."],
+    ejemplo: 'dinero = int(input())\nprecio = int(input())\nif dinero >= precio:\n    print("Cambio: " + str(dinero - precio))',
   },
 };
 
@@ -150,6 +149,7 @@ function bloqueCodigo(codigo) {
 
 function tarjetaConcepto(c, { abierta, mundoActual }) {
   const nuevo = c.mundo === mundoActual;
+  const urlLaboratorio = `juego.html?modo=sandbox&concepto=${encodeURIComponent(c.id)}`;
   return `<details class="teoria-item concepto-item"${abierta ? " open" : ""}>
     <summary><span>${esc(c.titulo)}</span><span class="concepto-etiqueta-mundo${nuevo ? " nuevo" : ""}">${nuevo ? "Nuevo · " : ""}Mundo ${c.mundo}</span></summary>
     <div class="teoria-cuerpo">
@@ -157,6 +157,9 @@ function tarjetaConcepto(c, { abierta, mundoActual }) {
       <p class="concepto-def"><strong>Definición.</strong> ${esc(c.definicion)}</p>
       <p class="concepto-analogia"><span aria-hidden="true">💡</span> <strong>Analogía.</strong> ${esc(c.analogia)}</p>
       ${bloqueCodigo(c.ejemplo)}
+      <div class="concepto-acciones">
+        <a class="boton boton-secundario boton-chico concepto-probar" href="${urlLaboratorio}" data-probar-concepto="${esc(c.id)}">Probar en el Laboratorio Libre</a>
+      </div>
     </div></details>`;
 }
 
@@ -243,17 +246,20 @@ export function mostrarBienvenidaMundo(mundo, { usuarioId = null, forzar = false
 
   return new Promise((resolve) => {
     const { caja, cerrar } = crearModal("modal-bienvenida");
+    caja.setAttribute("aria-labelledby", "bienvenida-titulo");
     caja.style.setProperty("--teoria-acento", paletaDe(mundo).acento);
     caja.innerHTML = `
-      <p class="teoria-etiqueta">Mundo ${mundo}</p>
-      <h2>${esc(b.titulo)}</h2>
+      <div class="bienvenida-cabecera">
+        <p class="teoria-etiqueta">Mundo ${mundo}</p>
+        <h2 class="bienvenida-titulo" id="bienvenida-titulo">${esc(b.titulo)}</h2>
+      </div>
       ${VISUALES[b.visual] ? `<div class="teoria-visual">${VISUALES[b.visual]}</div>` : ""}
-      <p>${esc(b.texto)}</p>
-      <ul>${b.puntos.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
+      <p class="bienvenida-texto">${esc(b.texto)}</p>
+      <ul class="bienvenida-puntos">${b.puntos.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
       ${bloqueCodigo(b.ejemplo)}
-      <div class="modal-acciones">
-        <button type="button" class="boton boton-secundario" data-glosario>Ver conceptos</button>
-        <button type="button" class="boton boton-primario" data-empezar>¡Empezar!</button>
+      <div class="modal-acciones modal-acciones-bienvenida">
+        <button type="button" class="boton boton-primario boton-bienvenida boton-bienvenida-empezar" data-empezar>¡Empezar!</button>
+        <button type="button" class="boton boton-secundario boton-bienvenida boton-bienvenida-conceptos" data-glosario>Ver conceptos</button>
       </div>`;
     const terminar = () => {
       try {

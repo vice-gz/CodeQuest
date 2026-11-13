@@ -1,0 +1,274 @@
+{
+  "id": 14,
+  "mundo": 1,
+  "nombre": "El Pozo",
+  "ordinal": 15,
+  "concepto": "ciclo while, not y contadores",
+  "concepto_evaluado": "while_contador",
+  "narrativa": "Se secó la llave del pueblo y solo queda el pozo viejo. Nadie sabe a cuántos metros está el agua: habrá que bajar la cubeta y contar.",
+  "escenario": {
+    "tipo": "pozo",
+    "profundidad": 5
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "14.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Baja la cubeta",
+      "enunciado": "El objeto pozo tiene métodos: pozo.bajar() baja la cubeta 1 metro y pozo.hayAgua() responde True si la cubeta ya llegó al agua (si no, False). Ejecuta y observa.",
+      "codigoInicial": "pozo.bajar()\npozo.bajar()\nprint(pozo.hayAgua())",
+      "instruccionesPermitidas": [
+        "print"
+      ],
+      "metodosPermitidos": [
+        "bajar",
+        "subir",
+        "llenar",
+        "hayAgua"
+      ],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Después de 2 metros todavía no hay agua: hayAgua() respondió False.",
+      "pistas": [
+        "Mira las marcas de metros en el pozo."
+      ]
+    },
+    {
+      "id": "14.2",
+      "tipo": "PREDECIR",
+      "titulo": "Repetir mientras…",
+      "enunciado": "Concepto nuevo: while repite su bloque MIENTRAS la condición sea True, y not invierte un valor lógico (not False es True). metros += 1 suma 1 al contador en cada vuelta. Si el agua está a 3 metros, ¿qué muestra este programa?",
+      "codigoInicial": "metros = 0\nwhile not pozo.hayAgua():\n    pozo.bajar()\n    metros += 1\nprint(metros)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "while",
+        "not"
+      ],
+      "metodosPermitidos": [
+        "bajar",
+        "subir",
+        "llenar",
+        "hayAgua"
+      ],
+      "escenario": {
+        "profundidad": 3
+      },
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "3"
+        },
+        {
+          "id": "b",
+          "texto": "1"
+        },
+        {
+          "id": "c",
+          "texto": "Nada: se repite para siempre"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: el ciclo bajó 3 veces y en cada vuelta el contador metros subió 1. Al llegar al agua, not pozo.hayAgua() fue False y el ciclo se detuvo.",
+      "pistas": [
+        "Cuenta cuántas veces se repite el bloque."
+      ]
+    },
+    {
+      "id": "14.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Cuenta los metros",
+      "enunciado": "Usa while not pozo.hayAgua(): para bajar la cubeta metro a metro hasta el agua, contando los metros en la variable metros (empieza en 0 y súmale 1 en cada vuelta). Al final muestra metros. Se prueba con 3 pozos de distinta profundidad.",
+      "codigoInicial": "",
+      "solucionReferencia": "metros = 0\nwhile not pozo.hayAgua():\n    pozo.bajar()\n    metros += 1\nprint(metros)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "while",
+        "not"
+      ],
+      "metodosPermitidos": [
+        "bajar",
+        "subir",
+        "llenar",
+        "hayAgua"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pozo de 4 m",
+          "escenario": {
+            "profundidad": 4
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "4"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pozo de 7 m",
+          "escenario": {
+            "profundidad": 7
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "7"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pozo de 2 m",
+          "escenario": {
+            "profundidad": 2
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "2"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "while",
+            "not"
+          ],
+          "variable": "metros"
+        }
+      },
+      "retroalimentacion": "El ciclo se adapta a cada pozo: no tuviste que saber la profundidad de antemano.",
+      "pistas": [
+        "metros = 0 antes del ciclo.",
+        "Dentro del while: pozo.bajar() y metros += 1."
+      ],
+      "mensajeNoLogrado": "Debe mostrar los metros que bajó la cubeta en los 3 pozos (cada uno tiene otra profundidad).",
+      "solucionesIncorrectas": [
+        "pozo.bajar()\npozo.bajar()\npozo.bajar()\npozo.bajar()\nprint(4)",
+        "metros = 0\nwhile not pozo.hayAgua():\n    pozo.bajar()\nprint(metros)"
+      ],
+      "max_lineas_recomendadas": 5
+    },
+    {
+      "id": "14.4",
+      "tipo": "RESOLVER",
+      "titulo": "Agua para el pueblo",
+      "enunciado": "Ahora completa el trabajo: baja la cubeta hasta el agua contando los metros, llénala con pozo.llenar(), súbela con pozo.subir(metros) (sube esa cantidad de metros) y muestra los metros. Se prueba con 3 pozos.",
+      "codigoInicial": "",
+      "solucionReferencia": "metros = 0\nwhile not pozo.hayAgua():\n    pozo.bajar()\n    metros += 1\npozo.llenar()\npozo.subir(metros)\nprint(metros)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "while",
+        "not"
+      ],
+      "metodosPermitidos": [
+        "bajar",
+        "subir",
+        "llenar",
+        "hayAgua"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pozo de 3 m",
+          "escenario": {
+            "profundidad": 3
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "pozo",
+                "lleno": true,
+                "arriba": true
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "3"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pozo de 6 m",
+          "escenario": {
+            "profundidad": 6
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "pozo",
+                "lleno": true,
+                "arriba": true
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "6"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "Pozo de 5 m",
+          "escenario": {
+            "profundidad": 5
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "pozo",
+                "lleno": true,
+                "arriba": true
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "5"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "while",
+            "not"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Agua para todos! El contador sirvió dos veces: para saber cuánto subir y para el reporte.",
+      "pistas": [
+        "Después del ciclo: pozo.llenar()",
+        "pozo.subir(metros) usa el contador."
+      ],
+      "mensajeNoLogrado": "La cubeta debe terminar ARRIBA y LLENA, y debes mostrar los metros, en los 3 pozos.",
+      "solucionesIncorrectas": [
+        "metros = 0\nwhile not pozo.hayAgua():\n    pozo.bajar()\n    metros += 1\npozo.subir(metros)\nprint(metros)",
+        "metros = 0\nwhile not pozo.hayAgua():\n    pozo.bajar()\n    metros += 1\npozo.llenar()\npozo.subir(3)\nprint(metros)"
+      ],
+      "max_lineas_recomendadas": 7
+    }
+  ]
+}

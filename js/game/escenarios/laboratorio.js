@@ -47,6 +47,11 @@ export class EscenarioLaboratorio extends EscenarioBase {
   }
 
   /** La vista del mundo. Los escenarios que heredan (p. ej. la fábrica) la sustituyen por la suya. */
+  destruir() {
+    super.destruir();
+    this.scene?.destruir?.(); // la escena del Mundo 1 tiene su propio dibujo de reposo
+  }
+
   crearEscena() {
     return this.canvas ? new Scene(this.canvas, this.world, this.robot1) : new EscenaNula(this.world, this.robot1);
   }

@@ -46,7 +46,19 @@ export const BIBLIOTECA_MESA = {
   },
 };
 
-// Mundo 2 (Datos): no hay objetos con métodos.
+// Mundo 1 · El Pozo: la cubeta baja de metro en metro hasta el agua, se llena y se sube.
+export const BIBLIOTECA_POZO = {
+  objeto: "pozo",
+  nombreParaMensajes: "El pozo",
+  metodos: {
+    bajar: {},
+    subir: { numerico: true },
+    llenar: {},
+    hayAgua: { retorna: true },
+  },
+};
+
+// Escenarios de datos (consola, alcancía, vasos, receta…): no hay objetos con métodos.
 export const BIBLIOTECA_SIN_OBJETOS = {
   objeto: null,
   nombreParaMensajes: "",

@@ -19,7 +19,7 @@ if (hay.status !== 0) {
 }
 console.log(`Comparando con ${String(hay.stdout || hay.stderr).trim()}`);
 
-const PERMISOS = ["print", "input", "int", "float", "str", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos", "def", "return"];
+const PERMISOS = ["print", "input", "int", "float", "str", "round", "asignacion", "if", "elif", "else", "while", "for", "and", "or", "not", "booleanos", "def", "return"];
 
 // Código de error de CQL -> clase de excepción de Python que le corresponde
 const EXCEPCION = {
@@ -27,13 +27,16 @@ const EXCEPCION = {
   // funciones
   SEM_003: "NameError", SEM_014: "TypeError", SEM_015: "NameError", SEM_017: "NameError", RUN_020: "NameError", RUN_021: "RecursionError", RUN_023: "UnboundLocalError", RUN_022: "TypeError",
   SYN_015: "SyntaxError", SYN_016: "SyntaxError", SYN_017: "SyntaxError",
+  RUN_024: "TypeError", SEM_002: "TypeError",
 };
 
 function python(codigo, stdin = "") {
-  const r = spawnSync("python3", ["-c", codigo], { input: stdin, encoding: "utf8" });
-  if (r.status === 0) return { lineas: r.stdout.split("\n").filter((l, i, a) => !(i === a.length - 1 && l === "")) };
-  const clase = (r.stderr.trim().split("\n").pop() || "").split(":")[0];
-  return { error: clase, lineas: r.stdout.split("\n").filter(Boolean) };
+  // PYTHONIOENCODING y quitar \r: en Windows Python escribe CRLF y usa otra codificación.
+  const r = spawnSync("python3", ["-c", codigo], { input: stdin, encoding: "utf8", env: { ...process.env, PYTHONIOENCODING: "utf-8" } });
+  const stdout = String(r.stdout ?? "").replace(/\r/g, "");
+  if (r.status === 0) return { lineas: stdout.split("\n").filter((l, i, a) => !(i === a.length - 1 && l === "")) };
+  const clase = (String(r.stderr ?? r.error ?? "").replace(/\r/g, "").trim().split("\n").pop() || "").split(":")[0];
+  return { error: clase, lineas: stdout.split("\n").filter(Boolean) };
 }
 
 async function cql(codigo, entradas = []) {
@@ -70,6 +73,13 @@ const PROGRAMAS = [
   ["print(5 + 3)"], ["print(5 + 3.0)"], ["print(1.5 + 1.5)"], ["print(0.1 + 0.2)"], ["print(3 * 1.0)"], ["print(5 - 0.5)"], ["print(2 * 3 + 4 * 5)"], ["print((2 + 3) * 4)"], ["print(-3 - -2)"], ["print(10 - 2 - 3)"], ["print(100 / 10 / 5)"],
   // --- cómo se imprimen los decimales
   ["print(7.0)"], ["print(0.5)"], ["print(1.75)"], ["print(100000.0 * 10000000000000)"], ["print(0.00001)"], ["print(0.0001)"], ["print(123456789.0 * 10)"], ["print(2.5 * 4)"], ["print(-0.0)"], ["print(3.14159)"],
+  // --- round(): al entero más cercano; en un empate EXACTO va al par; round(x, n) redondea el valor binario exacto (2.675 -> 2.67)
+  ["print(round(2.5))"], ["print(round(2.5, 0))"], ["print(round(2.5, 1))"], ["print(round(2.5, 2))"], ["print(round(2.5, 3))"], ["print(round(2.5, -1))"], ["print(round(2.5, -2))"], ["print(round(3.5))"], ["print(round(3.5, 0))"], ["print(round(3.5, 1))"], ["print(round(3.5, 2))"], ["print(round(3.5, 3))"], ["print(round(3.5, -1))"], ["print(round(3.5, -2))"], ["print(round(-2.5))"], ["print(round(-2.5, 0))"], ["print(round(-2.5, 1))"], ["print(round(-2.5, 2))"], ["print(round(-2.5, 3))"], ["print(round(-2.5, -1))"], ["print(round(-2.5, -2))"], ["print(round(0.5))"], ["print(round(0.5, 0))"], ["print(round(0.5, 1))"], ["print(round(0.5, 2))"], ["print(round(0.5, 3))"], ["print(round(0.5, -1))"], ["print(round(0.5, -2))"], ["print(round(1.5))"], ["print(round(1.5, 0))"], ["print(round(1.5, 1))"], ["print(round(1.5, 2))"], ["print(round(1.5, 3))"], ["print(round(1.5, -1))"], ["print(round(1.5, -2))"], ["print(round(2.675))"], ["print(round(2.675, 0))"], ["print(round(2.675, 1))"], ["print(round(2.675, 2))"], ["print(round(2.675, 3))"], ["print(round(2.675, -1))"], ["print(round(2.675, -2))"], ["print(round(0.125))"], ["print(round(0.125, 0))"], ["print(round(0.125, 1))"], ["print(round(0.125, 2))"], ["print(round(0.125, 3))"], ["print(round(0.125, -1))"], ["print(round(0.125, -2))"], ["print(round(0.375))"], ["print(round(0.375, 0))"], ["print(round(0.375, 1))"], ["print(round(0.375, 2))"], ["print(round(0.375, 3))"], ["print(round(0.375, -1))"], ["print(round(0.375, -2))"], ["print(round(1234.5678))"], ["print(round(1234.5678, 0))"], ["print(round(1234.5678, 1))"], ["print(round(1234.5678, 2))"], ["print(round(1234.5678, 3))"], ["print(round(1234.5678, -1))"], ["print(round(1234.5678, -2))"], ["print(round(-0.4))"], ["print(round(-0.4, 0))"], ["print(round(-0.4, 1))"], ["print(round(-0.4, 2))"], ["print(round(-0.4, 3))"], ["print(round(-0.4, -1))"], ["print(round(-0.4, -2))"], ["print(round(7))"], ["print(round(7, 0))"], ["print(round(7, 1))"], ["print(round(7, 2))"], ["print(round(7, 3))"], ["print(round(7, -1))"], ["print(round(7, -2))"], ["print(round(2.0))"], ["print(round(2.0, 0))"], ["print(round(2.0, 1))"], ["print(round(2.0, 2))"], ["print(round(2.0, 3))"], ["print(round(2.0, -1))"], ["print(round(2.0, -2))"], ["print(round(0.1))"], ["print(round(0.1, 0))"], ["print(round(0.1, 1))"], ["print(round(0.1, 2))"], ["print(round(0.1, 3))"], ["print(round(0.1, -1))"], ["print(round(0.1, -2))"], ["print(round(10 / 3))"], ["print(round(10 / 3, 0))"], ["print(round(10 / 3, 1))"], ["print(round(10 / 3, 2))"], ["print(round(10 / 3, 3))"], ["print(round(10 / 3, -1))"], ["print(round(10 / 3, -2))"], ["print(round(-1.005))"], ["print(round(-1.005, 0))"], ["print(round(-1.005, 1))"], ["print(round(-1.005, 2))"], ["print(round(-1.005, 3))"], ["print(round(-1.005, -1))"], ["print(round(-1.005, -2))"], ["print(round(163.335))"], ["print(round(163.335, 0))"], ["print(round(163.335, 1))"], ["print(round(163.335, 2))"], ["print(round(163.335, 3))"], ["print(round(163.335, -1))"], ["print(round(163.335, -2))"], ["print(round(1 / 3))"], ["print(round(1 / 3, 0))"], ["print(round(1 / 3, 1))"], ["print(round(1 / 3, 2))"], ["print(round(1 / 3, 3))"], ["print(round(1 / 3, -1))"], ["print(round(1 / 3, -2))"],
+  ["print(round(True))"], ["print(round(1250, -2))"], ["print(round(1350, -2))"], ["print(round(-7, -1))"], ["print(round(300.0) + 1)"], ["x = round(4.5)\nprint(x * 2)"],
+  ['print(round("5"))'], ["print(round(2.5, 1.0))"], ["x = int(4.5 + 0.5)\nprint(x)"],
+  // --- asignación compuesta: += -= *= /= //= %=
+  ["x = 5\nx += 3\nx -= 1\nx *= 2\nprint(x)\nx /= 4\nprint(x)\nx //= 2\nprint(x)"], ["y = 17\ny %= 5\nprint(y)"], ['t = "a"\nt += "b"\nprint(t)'],
+  ["ahorro = 0\nfor i in range(4):\n    ahorro += 100\nprint(ahorro)"], ["z += 1"], ['n = "5"\nn += 1'],
   // --- conversiones
   ['print(int("5"))'], ['print(int(" 7 "))'], ['print(int("-12"))'], ["print(int(3.9))"], ["print(int(-3.9))"], ["print(int(5))"], ["print(int(True))"],
   ['print(float("3.5"))'], ["print(float(3))"], ['print(float("7"))'], ['print(float(" .5 "))'], ['print(float("5."))'], ['print(float("-2.25"))'],

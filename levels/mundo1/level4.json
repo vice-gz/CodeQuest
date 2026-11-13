@@ -2,6 +2,7 @@
   "id": 4,
   "mundo": 1,
   "nombre": "¿Cuánto?",
+  "ordinal": 4,
   "concepto": "parámetros, argumentos, literales numéricos",
   "concepto_evaluado": "parametros",
   "narrativa": "El valor entre paréntesis es lo que hace que una misma instrucción sirva para muchas cosas.",
@@ -86,7 +87,8 @@
       "pistas": [
         "Cuenta las columnas del tramo horizontal.",
         "Luego las filas del tramo vertical."
-      ]
+      ],
+      "max_lineas_recomendadas": 3
     }
   ],
   "escenario": {

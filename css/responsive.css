@@ -229,6 +229,15 @@ video {
     display: none !important;
   }
 
+  /* «✨ Animaciones» se queda en el celular (ahí es donde más sirve el modo Ligeras), pero solo con el icono: el texto cabe de más. */
+  #btn-animaciones {
+    padding: 8px 10px;
+  }
+
+  #btn-animaciones #animaciones-etiqueta {
+    display: none;
+  }
+
   .acciones-barra {
     order: 1;
     flex: 1;

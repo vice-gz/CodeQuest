@@ -2,7 +2,40 @@
 
 Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persistencia en Supabase, perfil y panel de administrador**. No se implementan los Mundos 3-6. La documentación del Avance 1 está en `docs/README_avance1.md`.
 
+## Mundo 1 «Fundamentos y Datos»: fusión de los Mundos 1 y 2 y minijuegos (v3.4.0)
+
+Los antiguos Mundos 1 (Despertar) y 2 (Memoria) son ahora **un solo Mundo 1 de 21 niveles** (Nivel 0 + 18 niveles + 2 jefes), todo en **Python 3**. Los demás mundos bajan un número: **2 Lógica · 3 Automatización · 4 Modularidad · 5 Proyecto** (5 mundos, 59 niveles, 177 estrellas).
+
+| Bloque | Nivel | Escenario | Concepto |
+|---|---|---|---|
+| A · Primeros pasos | 0 Ordenar · 1-2 Escribir · 3-4 Resolver · 5 Debug | diagrama / robot | algoritmo, `print()`, `avanzar`, `girar`, errores |
+| B · Los primeros datos | 6 **La Alcancía** | `alcancia` | variables y reasignación: `ahorro = ahorro + mesada` y `ahorro += mesada` |
+| | 7 La Terminal | robot | `input()` e `int()` |
+| | 8 **Semáforos y Decisiones** | `semaforo` | `if` / `else`, `==`, `and`, `or` |
+| C · Lógica y datos | 9 La Salida | robot | llegar a (5,3) y decir «Libre» |
+| | 10 **El Intercambio** (tres vasos) | `vasos` | intercambiar con `temp = vasoA` |
+| | 11 Identificadores · 13 El Sistema de Energía | consola de datos | nombres de variables · constante `MAXIMO` |
+| | 12 **La Receta** | `receta` | `*`, `/`, `int(x + 0.5)` y `round()` |
+| | 14 👑 Laberinto ciego | robot | jefe intermedio (sin pistas) |
+| D · Ciclos y cierre | 15 **El Pozo** | `pozo` | `while not pozo.hayAgua():` y contadores |
+| | 16 El Puente de Datos | robot | `int(input()) + 15` y mover a Robot1 |
+| | 17 **El Cronómetro** | `cronometro` | `//` y `%`: segundos → HH:MM:SS |
+| | 18 **La Boleta** | `boleta` | `aprobado = promedio >= 70 and asistencia >= 80` (sin `if`) |
+| | 19 **El Viaje** | `viaje` | `/`, `*` y `round(costo / pasajeros, 2)` |
+| | 20 👑 **La Caja Fuerte** | `cajafuerte` | jefe final: `(a + b) * c - d % 7` con 4 cajas |
+
+- **Escenarios nuevos** (`js/game/escenarios/`): todos heredan de `minijuego.js` (modelo = variables del programa; reacciona a `print`, `input`, asignaciones y condiciones; dibujo con formas geométricas en Canvas y una franja con el último `print`). Cada nivel elige el suyo con `escenario.tipo`, así el Mundo 1 alterna robot, consola y minijuegos. `body[data-escenario]` permite estilos por escenario (la consola de datos ya no depende del número de mundo).
+- **El Pozo** trae el objeto `pozo` (`bajar()`, `hayAgua()`, `llenar()`, `subir(n)`; error `RUN_025` si la cubeta baja más allá del agua) y la validación propia `pozo`. **La Alcancía** valida con `alcancia_depositos` (cuántas veces subió el dinero), así `ahorro = 400` no pasa.
+- **Python nuevo en el intérprete:** `round(x)` y `round(x, n)` con el redondeo **exacto** de Python (empate al par: `round(4.5)` → 4; `round(2.675, 2)` → 2.67) y error `RUN_024`; asignación compuesta `+=`, `-=`, `*=`, `/=`, `//=`, `%=`. `test_python_compat.mjs` ahora compara **289 programas** con el Python real (134 nuevos de `round` y `+=`). Los decimales que trae un escenario (`precio: 24.5`) entran como `float`.
+- **Contador de líneas en todo el Mundo 1:** cada fase donde se escribe código trae `max_lineas_recomendadas` (el largo de su solución de referencia).
+- **Orden por `ordinal`:** si todos los niveles de un mundo declaran `ordinal`, el catálogo los ordena así (el jefe 44 va entre el 13 y el 14). Ids del Mundo 1: 0-18, 44 y 45 (el 19 se retiró). Los niveles 0-5, 7 y 9 son JSON escritos a mano; el resto los genera `herramientas/generar_niveles.py`.
+- **Contenido que cambia:** se retiraron *El sistema desconocido*, *Necesito recordar*, *Cambia de opinión*, *No todo es lo mismo* (tipos de dato), *Cálculo de energía*, *Calcula el reparto*, *Información del exterior*, *Módulos que se combinan* y *La puerta del Mundo 3*. La fase del decimal con coma pasó a *El Viaje* (18.2: `precio = 24,5`). `if`, `and`/`or`/`not` y `while` se ven primero en el Mundo 1 (glosario y diccionario actualizados).
+- **Progreso guardado:** los ids 0-18 se reutilizan con contenido nuevo y los mundos cambian de número, así que el progreso anterior en Supabase ya no corresponde. Conviene empezar con la tabla `progreso_fases` (y `progreso_jugador`) vacía.
+- **Pruebas:** `test_niveles.mjs` revisa el orden y el escenario de los 21 niveles, los conceptos de cada minijuego y el límite de líneas; `test_juego_dom.mjs` (48) juega cada minijuego en la página real. Las pruebas que armaban rutas con `/` ya funcionan en Windows.
+
 ## Mundo 5, Niveles Jefe, Nivel 0 y tours (Avance 3.8)
+
+> Nota: desde la v3.4.0 los mundos se renumeraron (el antiguo Mundo 5 es el Mundo 4 y así sucesivamente) y el Mundo 1 se fusionó con el 2. Las secciones siguientes describen el estado de cada versión.
 
 - **Funciones en el lenguaje (Unidad 5, Modularidad).** CQL acepta `def`, parámetros, `return`, `None`, variables **locales** y recursión (límite de 100 llamadas anidadas), con errores educativos (`SYN_015`-`SYN_018`, `SEM_014`-`SEM_017`, `RUN_020`-`RUN_023`). Se comparó con el Python 3 real (`test_python_compat.mjs`: 155 programas, 39 con funciones). Diferencias deliberadas: `def` solo va al margen izquierdo (no dentro de un `if`/ciclo/otro `def`) y no existen valores por omisión, `*args`, `lambda`, `global` ni `nonlocal`.
 - **Mundo 5 · Modularidad (8 niveles, ids 48-55) con Visualizador de Flujo.** Escenario `fabrica` (`js/game/escenarios/fabrica.js`): una **línea de ensamble** que reacciona a lo que hace el intérprete (ganchos `funcionDefinida`, `llamadaIniciada`, `asignacionLocal`, `print`, `llamadaTerminada`): cada `def` construye una **máquina**; cada llamada manda una **caja de materiales** con los argumentos (`[5, 3]`); la máquina se ilumina y aparecen **chips con las variables locales** (`a = 5`, `resultado = 8`); un `print` sale como **burbuja**; el `return` sale como **caja de producto terminado** (verde) o una **caja gris con `None`**. Todo se anota en `escenario.registro` (se prueba sin dibujar). Progresión: 1 *Construyendo máquinas* (definir) · 2 *Activando la producción* (llamar, RESOLVER) · 3 *Personalizando productos* (parámetros, ESCRIBIR) · 4 *El producto terminado* (`return`, DEBUG de `print` por `return`) · 5 *Información confidencial* (ámbito local, PREDECIR) · 6 *Producción en cadena* (encadenar, RESOLVER) · 7 *Reparando la fábrica* (DEBUG: falta de `return`, mal parámetro, función sin llamar) · 8 👑 *El Gran Ensamblaje* (Jefe).
@@ -13,6 +46,60 @@ Avance 1 (juego, intérprete CQL, Mundos 1-2) + **landing, autenticación, persi
 - **Cambios de catálogo.** Ya hay **56 niveles** (máximo 168 estrellas). Los ids **no son consecutivos** (0, 1-43, 44-47 jefes, 48-55 Mundo 5): el número que ve el estudiante dentro de su mundo es el *ordinal* (el Nivel 0 es 0), y el siguiente nivel se pregunta al catálogo en vez de sumar 1. En el panel de profesor y en el CSV los niveles se siguen identificando con el id interno; la equivalencia está en `MEJORAS_Y_GUIA_PROFESOR.md`.
 - **Pruebas nuevas/ajustadas:** `test_niveles.mjs` (56 niveles, 176 fases, jefes y Nivel 0), `test_juego_dom.mjs` (26: Nivel 0, jefe, fábrica y tours), `test_navegacion.mjs` (ordinales y siguiente nivel).
 - **Docs regeneradas:** `docs/GUIA_NIVELES_MUNDOS_1_A_5.md` (los 56 niveles; reemplaza a `..._2_A_4`) y `docs/REFERENCIA_LENGUAJE_CQL.md` (sección 6.6 Funciones).
+
+## Contador de líneas y botones de inserción rápida (v3.3.0 · Fase 1 del Mundo 1 fusionado)
+
+- **Contador de líneas** (`js/ui/contadorLineas.js`): en la cabecera del editor, «Líneas: X / Límite». El límite sale de `max_lineas_recomendadas` de la **fase** o, si no, del **nivel** (la misma propiedad que usan los jefes para el mensaje de eficiencia). Al pasarse se pone **rojo y con ⚠** (no depende solo del color) pero **nunca bloquea** la ejecución. Sin límite solo cuenta; se oculta en las fases sin editor (predecir, ordenar). Cuenta líneas no vacías.
+- **Botones de inserción rápida** (`js/ui/chipsInsercion.js`): las instrucciones disponibles («Disponible en esta fase · clic para insertar») ahora son botones que escriben su sintaxis de **Python** donde está el cursor: `print(|)`, `int(|)`, `variable = |`, `if |:` con el cuerpo ya sangrado, `robot1.avanzar(|)`… (`|` = dónde queda el cursor). Una sentencia insertada después de texto abre línea nueva con la misma sangría; las expresiones (`int()`, `and`, `or`, `True`) van en línea sin espacios dobles. En celular, al insertar se pasa a la pestaña Jugar. Se desactivan en las fases sin editor. Los botones **no** van dentro de «Más info» (deben verse siempre).
+- **Pruebas:** `test_insercion.mjs` (12) y 4 más en `test_juego_dom.mjs` (ya 47).
+
+## Mundo 6: cada nivel con su escena y su forma de jugarse (v3.2.0)
+
+Los cuatro niveles del Mundo 6 ya no se parecen: cada uno tiene su propia escena de pixel art (todas heredan de `escenarios/pixelBase.js`: lienzo pequeño con capa estática en caché, motor, lámparas de casos, Nix y LCD) y una mecánica distinta.
+
+| Nivel | Escena | Cómo se juega |
+|---|---|---|
+| 1 · Máquina expendedora | `expendedora.js` | Casos con entradas automáticas; monedas, resorte, producto y cambio |
+| 2 · Validador de contraseñas | `puerta.js` | Sin teclear: instrumentos con la clave, barra de LEDs con la marca en el 8 y detector de números; dos relés y una compuerta **Y** (la lógica del `and`); tras decidir, los relés muestran el estado real (por qué pasó o no) |
+| 3 · Juego de adivinanza | `radar.js` | **Se juega a mano** (`entradasInteractivas`): el estudiante teclea sus intentos; cada uno lanza un sonar y gasta una pila; flechas ↑/↓ y la cápsula se revela al ganar o perder. El secreto no sale en Memoria (`variablesOcultas`); los 5 casos se prueban aparte en silencio (`casoVisual: -1`) y las lámparas eligen con qué secreto juegas |
+| 4 · Proyecto libre (jefe) | `nucleo.js` | Programa libre; al comprobar, los módulos LÍNEAS / IF / WHILE / VARIABLE / EJECUTA se sincronizan uno por uno (✓/✗) y, si todos cumplen, el núcleo se activa, se abre el domo y Nix sube a la superficie antes de la pantalla final |
+
+- **Requisitos** (`js/game/requisitos.js`): `listarRequisitos(fase, codigo)` deduce la lista de la propia validación del nivel (`min_lineas`, `requiere.construcciones`, `requiere.algunaVariable`); la escena la recibe con `marcarRequisitos`. El juego **espera** esa animación antes de mostrar el resultado.
+- **Tour:** el recorrido de la primera vez ahora tiene 5 pasos y explica la misión y el botón **«Más info»**.
+- **Nix** ya no repite el resultado anterior mientras se comprueba el nuevo («COMPROBANDO…»).
+- **Pruebas nuevas:** `test_escenas_mundo6.mjs` (16), 1 más en `test_hud.mjs` y 4 más en `test_juego_dom.mjs` (ya 43).
+
+## Pantalla «de videojuego» y máquina expendedora en pixel art (v3.1.0)
+
+- **Pantalla del nivel** (`css/hud.css`, `js/ui/hud.js`): en escritorio la **escena a la izquierda (60 %)** y el código a la derecha (40 %). Sobre la escena hay una **misión de una línea** (`fase.mision`, o se deduce del título/enunciado), el progreso del nivel (✓ ● ○) y las **lámparas de casos**. El texto largo del nivel (narrativa, enunciado e instrucciones disponibles) está en **«Más info»**: se abre solo la primera vez que entras a un nivel (solo escritorio; en celular lleva a la pestaña Aprende). Con pantalla alta (≥ 880 px) la escena queda fija mientras escribes en la terminal.
+- **Lámparas de casos:** una por caso, con **símbolo además de color** (○ sin probar, ✓, ✗; también en `aria-label`), y se pueden pulsar para elegir el caso que se ve. **Cambio de comportamiento:** en niveles con casos que traen `entradas` (jefe del Mundo 2, proyectos del Mundo 6) la ejecución usa automáticamente las entradas del caso elegido (igual que la evaluación); antes había que teclearlas y, con otros números, el caso 1 fallaba aunque el programa estuviera bien.
+- **Nix y la retroalimentación:** una franja bajo la escena (reserva siempre su espacio, así no salta) con Nix y un globo con la pista **corta** (`resumirFeedback` lee el panel con un `MutationObserver`; no hubo que tocar cada punto donde se muestra un resultado). El panel de retroalimentación **completo sigue existiendo** (el caso exacto que falló, la explicación educativa y los botones): empieza plegado y se abre con «Ver detalle»; una **pista** lo abre sola.
+- **Estilo pixel art** (`js/game/pixel.js`): paleta fija de 16 colores, fuente de píxeles de 3×5, mapas de caracteres y Nix de 16×16 con 4 expresiones (normal, feliz, preocupado, parpadeo). Se dibuja en un lienzo pequeño y se escala con **números enteros** en píxeles físicos (nítido en cualquier densidad de pantalla); si la escala entera quedara diminuta (celular de poca resolución) usa la escala exacta. La capa estática se pinta **una sola vez** en caché.
+- **Mundo 6 · Nivel 1, escena `expendedora`** (`js/game/escenarios/expendedora.js`): el primer `input()` (dinero) hace caer monedas y el tablero muestra la cantidad; el segundo (precio) lo muestra; `print("Cambio: X")` enciende la luz verde, gira el resorte, cae el producto y salen X monedas a la charola (máximo 8 dibujadas; el número es el real); `print("Dinero insuficiente")` parpadea la luz roja y devuelve las monedas; cualquier otro `print` sale en la pantallita (texto largo se desplaza). Las 5 lámparas de la máquina son los casos, y Nix cambia de cara.
+- **Para crear otra escena así:** extiende `EscenarioBase`, pinta el fondo en `pintarEstatico` (una vez) y lo que se mueve en `pintarDinamico`, reacciona en `crearMotor` (print, entrada, asignacion) y llama `iniciarReposo()` en el constructor; `marcarCasos(resultados)` recibe los ✓/✗ de la evaluación.
+- **Pruebas nuevas:** `test_hud.mjs` (11), `test_expendedora.mjs` (15) y 3 más en `test_juego_dom.mjs` (ya 39). La revisión de pantallas acepta que un canvas con `data-pixel` no llene el panel (escala entera).
+
+## Rendimiento y limpieza (v3.0.6)
+
+- **Causa de la lentitud en los Mundos 2, 5 y 6:** cada fase o nivel creaba un escenario nuevo con un bucle `requestAnimationFrame` infinito que redibujaba toda la escena al ritmo de la pantalla; los bucles anteriores nunca se detenían y se acumulaban sobre el mismo canvas (y `render()` intentaba arrancarlo otra vez en cada llamada).
+- **`js/game/rendimiento.js`:** un solo bucle de reposo por escenario (`iniciarReposo()` / `destruir()` en `base.js`; `juego.js` destruye el escenario anterior antes de crear otro), con cuadros limitados (auto 24 → 15 → 8, completas 30), pausa automática con la pestaña oculta o el canvas fuera de pantalla (IntersectionObserver) y sin dibujar el reposo mientras una animación de ejecución ya dibuja cada cuadro.
+- **Modos:** botón «✨ Animaciones» en la barra del juego: **Auto** (se adapta: si dibujar tarda más de ~9 ms baja los cuadros y apaga los resplandores), **Completas** (30 cuadros y todos los efectos) y **Ligeras** (sin animación en reposo ni resplandores). Se guarda en `localStorage` (`codequest:animaciones`).
+- **Dibujo más barato:** los fondos estáticos de los Mundos 2 y 6 se pintan una vez en una capa en caché (`capaCacheada` en `dibujo.js`); los resplandores (`shadowBlur`) se omiten en calidad baja (`conBrillo`, `brilloCalidad`).
+- **CSS:** se quitó `backdrop-filter` de `.panel`, `.boton-secundario` y `.encabezado-codigo` (fondos opacos: no se veía nada, pero se recalculaba en cada cuadro del canvas). En `.encabezado-codigo` además hacía que el botón flotante «Ejecutar» del celular no quedara al pie (un `backdrop-filter` vuelve contenedor a sus hijos `position: fixed`). Regla: **no uses `backdrop-filter`, `transform` ni `filter` en los ancestros del botón flotante**.
+- **Página de inicio:** barra y tarjetas de mundos ya no se desbordan en 768 px y 320 px.
+- **Limpieza:** `hero-robot1.jpg` (copia idéntica sin uso), `commands.js` (sin referencias), documentos viejos (`GUIA_NIVELES_MUNDOS_2_A_4/2_A_5`, `README_avance1`, `docs/README`) y `LEEME_CAMBIOS.txt`; la imagen de Nix pasó de 447 KB (JPG) a 19 KB (WebP 640 px). El `.env` real no se incluye: copia `.env.example` a `.env`.
+- **Medir:** `node herramientas/medir_rendimiento.mjs ETIQUETA 2,5,6` (con `dist/` compilado contra el servidor simulado) cuenta dibujos del canvas por segundo y CPU, en reposo y tras 6 reinicios de fase (si los bucles se acumularan, los dibujos subirían). **Pruebas:** `test_rendimiento.mjs`.
+- Tras extraer el proyecto de un `.rar`/`.zip` que no conserve permisos: `chmod -R u+x node_modules/.bin`.
+
+## Mundo 6, navegación de inicio y calidad (Avance 4 · cierre)
+
+- **Navegación dinámica en `index.html`** (`js/ui/menuUsuario.js`, cableada en `js/landing.js`): al cargar se lee la sesión con `supabase.auth.getSession()`. Sin sesión se ve «Iniciar sesión» / «Empezar a jugar»; con sesión se oculta «Iniciar sesión» y aparece **«Hola, \<nombre\>»** (avatar con la inicial) con un menú: **Mi perfil** (`perfil.html`), **Jugar** (`mundos.html`) y **Cerrar sesión** (`signOut()` y vuelve a `index.html` como invitado). El nombre sale del perfil, de la cuenta de Google/GitHub o del correo; se inserta como texto (sin HTML). El menú se cierra con Escape o al hacer clic fuera. Los botones del cuerpo se cambian por «Continuar jugando». La barra no muestra nada hasta saber si hay sesión (sin parpadeo). Prueba: `test_inicio.mjs`.
+- **Mundo 6 · Proyecto (ids 56-59).** Escenario `proyecto` (`js/game/escenarios/proyecto.js`, equivale al «SceneProyecto»): la terminal y la memoria del Mundo 2 en rosa. Sin sintaxis nueva; validación estricta con varios casos (si falla uno no pasa y el panel dice cuál): 1 *La máquina expendedora* (`input`, `if`, cambio; 5 casos, incluido el dinero justo), 2 *El validador de contraseñas* (`if` con `and`; 6 casos con el límite de 8 caracteres), 3 *El juego de adivinanza* (`while` con 5 intentos e `if`; 5 casos, incluido acertar en el último intento) y 4 *Proyecto libre* (Nivel Jefe final: al menos 10 líneas de código —sin comentarios ni líneas vacías— con `if`, `while` y una variable, sin errores de ejecución; validaciones nuevas `min_lineas` y `requiere.algunaVariable`). CQL no tiene `len()` ni operaciones sobre texto, así que en el Nivel 2 el sistema deja cargadas en la memoria `contrasena`, `longitud` y `tiene_numero`, y en el 3 el `secreto`; los casos las traen en `escenario.variables`.
+- **3.1 Canvas nítido:** el buffer del canvas usa píxeles físicos **enteros** (`round(ancho × dpr)`) y una escala exacta al tamaño CSS (con `dpr` fraccionario, como 2.625 en Android, el navegador estiraba el buffer y todo se veía borroso); además se reajusta si el `dpr` cambia sin `resize` (zoom, cambio de pantalla).
+- **3.2 Feedback de carga** (`js/ui/cargando.js`): capa «CARGANDO...» mientras se prepara el nivel (visible desde que carga la página y, al cambiar de nivel, solo si tarda más de 150 ms), línea «EJECUTANDO...» en la consola, «COMPROBANDO TU RESULTADO...» mientras se guarda en Supabase, y el botón Ejecutar muestra un giro. Si todo es rápido, nunca se ven.
+- **3.3 Autoguardado** (`js/game/autoguardado.js`): el código se guarda en `localStorage` por persona y por fase (tras 0.5 s sin teclear, y al cerrar o recargar) y se recupera con F5 avisando «Recuperamos el código…»; se borra al completar la fase y con Reiniciar. No se guarda en el Laboratorio Libre, ni en fases sin editor, ni si el código está vacío o igual al inicial.
+- **3.4 Pantalla final** (`js/ui/pantallaFinal.js`): al completar el Proyecto libre aparece a pantalla completa «¡Felicidades, has completado CodeQuest! Ahora piensas como un programador» con las **estrellas totales** y las **líneas de código escritas** (`js/game/lineasEscritas.js`: suma, por fase, el tamaño de la última solución aceptada en fases donde se escribe código; es un dato local del navegador y cuenta desde que existe este registro).
+- **Pruebas nuevas:** `test_inicio.mjs` (7), `test_calidad.mjs` (10) y 5 más en `test_juego_dom.mjs` (ya 36). Ahora son **60 niveles** y **180 estrellas**.
 
 ## Ajustes pedagógicos finales (Avance 3.9)
 
@@ -166,7 +253,7 @@ Archivos: `css/responsive.css` (se carga al final en todas las páginas), `js/ui
 `docs/GUIA_NIVELES_MUNDOS_1_A_5.md` explica, nivel por nivel y fase por fase, qué pide cada una y cómo se pasa (sin código; las soluciones están escondidas como spoiler). Se regenera con `python3 herramientas/generar_guia.py`.
 
 ### Pruebas (`npm test`)
-`test_cql.mjs` (lenguaje y escenarios: 60), `test_python_compat.mjs` (155 programas comparados con el Python real), `test_niveles.mjs` (176 fases de 56 niveles con su solución de referencia + 116 soluciones tramposas o rotas que deben ser rechazadas, y la estructura por bloques), `test_fabrica.mjs` (visualizador de flujo del Mundo 5: eventos en orden, dibujo en todos los estados y validación del jefe), `test_navegacion.mjs` (desbloqueo, catálogo y glosario), `test_csv.mjs` (exportación), `test_persistencia.mjs`, `test_editor.mjs` y `test_juego_dom.mjs` (31 pruebas), que abre `juego.html` real en jsdom con un Supabase simulado y juega los 5 mundos, el Nivel 0, los jefes, los tours, la transición, el parámetro `?nivel`, el Laboratorio Libre y el modo demo.
+`test_cql.mjs` (lenguaje y escenarios: 60), `test_python_compat.mjs` (155 programas comparados con el Python real), `test_niveles.mjs` (176 fases de 56 niveles con su solución de referencia + 116 soluciones tramposas o rotas que deben ser rechazadas, y la estructura por bloques), `test_fabrica.mjs` (visualizador de flujo del Mundo 5: eventos en orden, dibujo en todos los estados y validación del jefe), `test_navegacion.mjs` (desbloqueo, catálogo y glosario), `test_csv.mjs` (exportación), `test_persistencia.mjs`, `test_editor.mjs` y `test_juego_dom.mjs` (47 pruebas), que abre `juego.html` real en jsdom con un Supabase simulado y juega los 5 mundos, el Nivel 0, los jefes, los tours, la transición, el parámetro `?nivel`, el Laboratorio Libre y el modo demo.
 Los niveles de los Mundos 2-4 se generan con `python3 herramientas/generar_niveles.py` (edita ahí y vuelve a correr; luego `npm test`).
 
 ### Para el Avance 4

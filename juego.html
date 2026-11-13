@@ -14,8 +14,15 @@
 <link rel="stylesheet" href="css/mundos.css" />
 <link rel="stylesheet" href="css/tarjetas.css" />
 <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/hud.css" />
 </head>
 <body class="con-nav">
+
+<!-- 3.2 · Feedback de carga: se ve mientras se prepara el nivel (progreso desde Supabase, escenario y fase) y se oculta solo -->
+<div class="cargando-nivel" id="cargando-nivel" role="status" aria-live="polite">
+  <span class="carga-giro carga-giro-grande" aria-hidden="true"></span>
+  <span class="cargando-texto">CARGANDO...</span>
+</div>
 
 <div id="nav" aria-label="Navegación principal"></div>
 <div class="aviso-red oculto" id="aviso-red" role="status"></div>
@@ -42,6 +49,9 @@
     </button>
     <button class="boton boton-barra" id="btn-conceptos" type="button" title="Glosario de programación con ejemplos">Conceptos</button>
     <button class="boton boton-barra" id="btn-tour" type="button" title="Ver de nuevo el recorrido por la interfaz">Tour</button>
+    <button class="boton boton-barra" id="btn-animaciones" type="button" title="Animaciones del tablero: automático, completas o ligeras (si va lento, elige «Ligeras»)" aria-label="Animaciones: automático">
+      <span aria-hidden="true">✨</span> <span id="animaciones-etiqueta">Auto</span>
+    </button>
     <div class="contador-estrellas" id="contador-estrellas-total" title="Estrellas totales">
       <span class="icono-estrella-mini">★</span>
       <span id="total-estrellas">0</span>
@@ -78,10 +88,15 @@
       <nav class="barra-fases" id="barra-fases" aria-label="Fases del nivel"></nav>
 
       <h1 class="titulo-nivel" id="titulo-nivel">Cargando nivel…</h1>
-      <p class="texto-narrativa" id="texto-narrativa"></p>
-      <p class="texto-aprende" id="texto-aprende"></p>
+      <!-- «Más info»: el texto largo del nivel. En escritorio se pliega (la misión de una línea vive sobre la escena); en celular
+           se ve completo en la pestaña Aprende. -->
+      <div class="mas-info" id="mas-info" data-abierto="false">
+        <p class="texto-narrativa" id="texto-narrativa"></p>
+        <p class="texto-aprende" id="texto-aprende"></p>
+      </div>
+      <!-- Los botones de inserción rápida NO van dentro de «Más info»: deben verse siempre, junto al editor. -->
       <div class="instrucciones-permitidas">
-        <span class="instrucciones-label">Disponible en esta fase</span>
+        <span class="instrucciones-label">Disponible en esta fase · clic para insertar</span>
         <div class="lista-instrucciones" id="lista-instrucciones"></div>
       </div>
     </section>
@@ -93,6 +108,7 @@
         <div class="encabezado-titulo">
           <h2 id="titulo-codigo">Código</h2>
           <span class="lenguaje-tag" id="lenguaje-tag">Python</span>
+          <span class="contador-lineas" id="contador-lineas" role="status" aria-live="polite" title="Líneas de código (sin contar las vacías)">Líneas: 0</span>
         </div>
         <div class="acciones-codigo" role="group" aria-label="Acciones del código">
           <button class="boton boton-ejecutar" id="btn-ejecutar" type="button" title="Ejecutar el código (Ctrl+Enter)">
@@ -163,9 +179,25 @@
         <h2 id="titulo-mundo">Mundo 2D · Laboratorio</h2>
         <span class="etiqueta-objetivo" id="etiqueta-objetivo"></span>
       </div>
+      <div class="hud-nivel" id="hud-nivel">
+        <p class="hud-mision"><span class="hud-etiqueta">MISIÓN</span><span class="hud-mision-texto" id="hud-mision-texto"></span></p>
+        <div class="hud-fila">
+          <div class="hud-fases" id="hud-fases" role="img" aria-label="Progreso del nivel"></div>
+          <div class="hud-diodos" id="hud-diodos" role="group" aria-label="Casos de prueba" hidden></div>
+          <button type="button" class="boton boton-barra hud-mas-info" id="btn-mas-info" aria-expanded="false" aria-controls="mas-info">ⓘ Más info</button>
+        </div>
+      </div>
       <div class="selector-casos oculto" id="selector-casos" role="group" aria-label="Casos de prueba"></div>
       <div class="lienzo-envoltura">
         <canvas id="lienzo-mundo" aria-label="Escenario donde se ejecuta tu programa"></canvas>
+        <!-- Nix da la pista corta; el detalle completo está en el panel de retroalimentación («Ver detalle») -->
+        <div class="nix-globo" id="nix-globo" data-estado="neutral" hidden role="status" aria-live="polite">
+          <canvas class="nix-sprite" id="nix-sprite" width="32" height="32" aria-hidden="true"></canvas>
+          <div class="nix-globo-cuerpo">
+            <p class="nix-texto" id="nix-texto"></p>
+            <button type="button" class="nix-detalle" id="btn-nix-detalle">Ver detalle</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -191,9 +223,10 @@
     </section>
   </div>
 
-  <section class="panel panel-feedback" aria-labelledby="titulo-feedback">
+  <section class="panel panel-feedback" aria-labelledby="titulo-feedback" data-plegado="true">
     <div class="panel-encabezado">
       <h2 id="titulo-feedback">Retroalimentación</h2>
+      <button type="button" class="boton boton-barra feedback-detalle-boton" id="btn-feedback-detalle" aria-expanded="false" aria-controls="feedback-contenido">Ver detalle ▾</button>
       <div class="estrellas-nivel" id="estrellas-nivel"></div>
     </div>
     <div class="feedback-panel feedback-neutral" id="feedback-contenido">

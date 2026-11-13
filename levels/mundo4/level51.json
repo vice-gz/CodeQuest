@@ -1,0 +1,181 @@
+{
+  "id": 51,
+  "mundo": 4,
+  "nombre": "El producto terminado",
+  "concepto": "return y valor de retorno",
+  "concepto_evaluado": "funciones_retorno",
+  "narrativa": "Hasta ahora las máquinas mostraban cosas. Una buena máquina ENTREGA un producto terminado: un valor que el programa puede guardar y usar.",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "51.1",
+      "tipo": "EXPLORAR",
+      "titulo": "La bandeja de salida",
+      "enunciado": "Concepto nuevo: return devuelve un valor a quien llamó la función: sale de la máquina en una caja de producto terminado. Ese valor se puede guardar en una variable. Ejecuta y mira la caja que sale.",
+      "codigoInicial": "def calcular_doble(x):\n    return x * 2\nresultado = calcular_doble(21)\nprint(resultado)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "return entrega 42 al programa; la variable resultado lo recibe y print lo muestra.",
+      "pistas": [
+        "La caja verde que sale de la máquina lleva el valor 42."
+      ]
+    },
+    {
+      "id": "51.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué devuelve?",
+      "enunciado": "En Python, ¿qué muestra este programa?",
+      "codigoInicial": "def suma(a, b):\n    return a + b\nprint(suma(2, 3) * 2)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "5"
+        },
+        {
+          "id": "b",
+          "texto": "10"
+        },
+        {
+          "id": "c",
+          "texto": "7"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "suma(2, 3) devuelve 5 y después 5 * 2 es 10: la llamada se reemplaza por lo que devuelve.",
+      "pistas": [
+        "Primero calcula suma(2, 3)."
+      ]
+    },
+    {
+      "id": "51.3",
+      "tipo": "DEBUG",
+      "titulo": "Muestra, pero no entrega",
+      "enunciado": "Esta máquina MUESTRA el doble con print, pero no lo DEVUELVE: la variable resultado se queda con None (caja gris) y el programa imprime dos líneas. Arréglala para que la máquina entregue el valor con return y el programa muestre solo 42.",
+      "codigoInicial": "def calcular_doble(x):\n    print(x * 2)\nresultado = calcular_doble(21)\nprint(resultado)",
+      "solucionReferencia": "def calcular_doble(x):\n    return x * 2\nresultado = calcular_doble(21)\nprint(resultado)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "42"
+            ]
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "calcular_doble"
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "print solo MUESTRA un valor; return lo ENTREGA para que el programa lo use. La diferencia es la caja verde frente a la gris.",
+      "pistas": [
+        "Cambia print por return dentro de la función."
+      ],
+      "mensajeNoLogrado": "Debe mostrarse solo 42, y la función tiene que devolver el valor con return.",
+      "solucionesIncorrectas": [
+        "def calcular_doble(x):\n    print(x * 2)\nresultado = calcular_doble(21)\nprint(resultado)",
+        "print(42)"
+      ]
+    },
+    {
+      "id": "51.4",
+      "tipo": "DEBUG",
+      "titulo": "¿Es par? (otra vez sin entregar)",
+      "enunciado": "Esta máquina debería DEVOLVER True si el número es par, pero solo lo muestra. Corrígela para que es_par(8) y es_par(7) entreguen su valor y el programa muestre True y False (una sola vez cada uno).",
+      "codigoInicial": "def es_par(n):\n    print(n % 2 == 0)\nprint(es_par(8))\nprint(es_par(7))",
+      "solucionReferencia": "def es_par(n):\n    return n % 2 == 0\nprint(es_par(8))\nprint(es_par(7))",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "True",
+              "False"
+            ]
+          },
+          {
+            "tipo": "funcion_retorna",
+            "nombre": "es_par"
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "return"
+          ]
+        }
+      },
+      "retroalimentacion": "Una función puede devolver también True o False.",
+      "pistas": [
+        "return n % 2 == 0 devuelve True o False."
+      ],
+      "mensajeNoLogrado": "Debe mostrar True y luego False, devolviendo el resultado con return.",
+      "solucionesIncorrectas": [
+        "def es_par(n):\n    print(n % 2 == 0)\nprint(es_par(8))\nprint(es_par(7))",
+        "print(True)\nprint(False)"
+      ]
+    }
+  ]
+}

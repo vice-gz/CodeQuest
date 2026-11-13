@@ -12,6 +12,7 @@
 // quien cambia el modelo y lo dibuja.
 
 import { BIBLIOTECA_SIN_OBJETOS } from "../../interpreter/bibliotecas.js";
+import { crearBucleReposo, aplicarModo, escucharModo } from "../rendimiento.js";
 
 export function movimientoReducido() {
   return typeof window !== "undefined" && typeof window.matchMedia === "function"
@@ -31,6 +32,35 @@ export class EscenarioBase {
     this.ctx = canvas ? canvas.getContext("2d") : null;
     this.reducido = movimientoReducido();
     this.mundo = config.mundo || 1;
+    this._animando = 0; // animaciones de ejecución en curso (durante ellas no hace falta el dibujo de reposo)
+    this._reposo = null;
+    this.destruido = false;
+  }
+
+  // ----- Animación en reposo y ciclo de vida -----
+  /** Arranca (una sola vez) el dibujo de reposo: flotar, ondas, partículas… Ver rendimiento.js. */
+  iniciarReposo() {
+    if (!this.canvas || !this.ctx || this.reducido || this.destruido) return;
+    if (!this._reposo) {
+      this._reposo = crearBucleReposo({ canvas: this.canvas, dibujar: () => this.render(), ocupado: () => this._animando > 0 });
+      this._alCambiarModo = () => {
+        aplicarModo();
+        this._reposo?.reconfigurar();
+        this.render(); // el cambio de modo se nota al instante (con o sin resplandores)
+      };
+      this._dejarDeEscucharModo = escucharModo(this._alCambiarModo);
+    }
+    this._reposo.iniciar();
+  }
+
+  /** Detiene todo lo que este escenario dejó corriendo. Hay que llamarlo antes de crear el siguiente escenario sobre el mismo canvas. */
+  destruir() {
+    this.destruido = true;
+    this._reposo?.detener();
+    this._reposo = null;
+    this._dejarDeEscucharModo?.();
+    this._dejarDeEscucharModo = null;
+    this._alCambiarModo = null;
   }
 
   // ----- Información del mundo (la UI la lee; cada escenario la redefine) -----
@@ -96,13 +126,17 @@ export class EscenarioBase {
       return Promise.resolve();
     }
     const t0 = performance.now();
+    this._animando++;
     return new Promise((resolve) => {
       const cuadro = (ahora) => {
         const t = Math.min(1, (ahora - t0) / ms);
         paso(t);
         this.render();
-        if (t < 1) requestAnimationFrame(cuadro);
-        else resolve();
+        if (t < 1 && !this.destruido) requestAnimationFrame(cuadro);
+        else {
+          this._animando = Math.max(0, this._animando - 1);
+          resolve();
+        }
       };
       requestAnimationFrame(cuadro);
     });
@@ -110,23 +144,32 @@ export class EscenarioBase {
 
   dimensiones() {
     const dpr = (typeof window !== "undefined" && window.devicePixelRatio) || 1;
-    return { w: this.canvas.width / dpr, h: this.canvas.height / dpr, dpr };
+    // Tamaño en píxeles CSS con el que se ajustó el canvas (si aún no se ajustó, se deduce del buffer).
+    return { w: this.anchoCss ?? this.canvas.width / dpr, h: this.altoCss ?? this.canvas.height / dpr, dpr };
   }
 
   /** Ajusta el canvas al ancho del contenedor con el alto que pida el escenario. */
-  ajustarCanvas(altoPara) {
+  ajustarCanvas(altoPara, anchoPara = null) {
     if (!this.canvas) return;
     const contenedor = this.canvas.parentElement;
-    const ancho = contenedor.clientWidth;
-    if (ancho <= 0) return; // escenario oculto (otra pestaña): se reajusta al volver a «Jugar»
+    const disponible = contenedor.clientWidth;
+    if (disponible <= 0) return; // escenario oculto (otra pestaña): se reajusta al volver a «Jugar»
+    // `anchoPara` permite que un escenario use MENOS que todo el ancho (p. ej. pixel art con escala entera, centrado).
+    const ancho = anchoPara ? Math.min(disponible, anchoPara(disponible)) : disponible;
     // En celulares horizontales (poco alto) el escenario no debe ocupar más que la pantalla.
     const alto = Math.min(altoPara(ancho), Math.max(240, window.innerHeight * 0.8));
     const dpr = window.devicePixelRatio || 1;
-    this.canvas.width = ancho * dpr;
-    this.canvas.height = alto * dpr;
+    // Buffer de píxeles FÍSICOS (ancho × dpr, redondeado a entero) y una escala que lo lleva exacto al tamaño CSS:
+    // así cada línea (también las punteadas) cae sobre píxeles reales y se ve nítida en pantallas Retina y celulares.
+    const anchoPx = Math.max(1, Math.round(ancho * dpr));
+    const altoPx = Math.max(1, Math.round(alto * dpr));
+    this.canvas.width = anchoPx;
+    this.canvas.height = altoPx;
     this.canvas.style.width = `${ancho}px`;
     this.canvas.style.height = `${alto}px`;
-    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.anchoCss = ancho;
+    this.altoCss = alto;
+    this.ctx.setTransform(anchoPx / ancho, 0, 0, altoPx / alto, 0, 0);
     this.render();
   }
 }

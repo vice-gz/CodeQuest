@@ -1,0 +1,142 @@
+{
+  "id": 47,
+  "mundo": 3,
+  "nombre": "Evacuación crítica",
+  "concepto": "integración del Mundo 3",
+  "concepto_evaluado": "jefe_mundo_3",
+  "narrativa": "El complejo entero está en llamas y el elevador tiene la batería casi agotada. Cada piso cuenta.",
+  "narrativaSiguienteMundo": "¡Evacuación completada! Robot1 descubre una puerta con luces parpadeantes: es la entrada a una fábrica de robots gigante. Allí lo espera el Mundo 4: Modularidad.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 4,
+    "pisoInicial": 1,
+    "energiaInicial": 10
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "47.1",
+      "tipo": "RESOLVER",
+      "titulo": "Evacuación crítica",
+      "enunciado": "¡Alarma en el edificio! Hay pasajeros esperando en todos los pisos y la batería del elevador solo alcanza para recorrer 10 pisos (cada piso recorrido gasta 1). Evacúa a todos hasta la planta baja sin quedarte sin energía. Se prueba con 5 edificios distintos.",
+      "codigoInicial": "",
+      "solucionReferencia": "for i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero",
+        "llevando"
+      ],
+      "escenario": {
+        "energiaInicial": 10
+      },
+      "casos": [
+        {
+          "etiqueta": "Edificio 1",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "energiaInicial": 10
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Edificio 2",
+          "escenario": {
+            "pasajeros": [
+              3,
+              3,
+              5,
+              5
+            ],
+            "energiaInicial": 10
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Edificio 3",
+          "escenario": {
+            "pasajeros": [
+              2,
+              2,
+              4,
+              5
+            ],
+            "energiaInicial": 10
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Edificio 4",
+          "escenario": {
+            "pasajeros": [
+              5,
+              5,
+              5,
+              5
+            ],
+            "energiaInicial": 10
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Edificio 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              3,
+              4
+            ],
+            "energiaInicial": 10
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos"
+      },
+      "retroalimentacion": "¡Jefe derrotado! Recogiste a todos en un solo viaje y sobró energía.",
+      "mensajeNoLogrado": "Deben quedar todos en la planta baja sin agotar la batería: planea un solo viaje de subida y bajada.",
+      "solucionesIncorrectas": [
+        "for v in range(2):\n    for i in range(4):\n        elevador.subir(1)\n        if elevador.hayPasajero():\n            elevador.recoger()\n    for i in range(4):\n        elevador.bajar(1)\n    elevador.soltar()"
+      ],
+      "sinPistas": true
+    }
+  ],
+  "jefe": true,
+  "max_lineas_recomendadas": 7
+}

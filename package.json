@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node test_cql.mjs && node test_python_compat.mjs && node test_niveles.mjs && node test_fabrica.mjs && node test_navegacion.mjs && node test_auth_oauth.mjs && node test_dashboard_admin.mjs && node test_dashboard_sql.mjs && node test_csv.mjs && node test_persistencia.mjs && node test_editor.mjs && node test_juego_dom.mjs",
+    "test": "node test_cql.mjs && node test_python_compat.mjs && node test_niveles.mjs && node test_fabrica.mjs && node test_navegacion.mjs && node test_inicio.mjs && node test_calidad.mjs && node test_rendimiento.mjs && node test_hud.mjs && node test_insercion.mjs && node test_expendedora.mjs && node test_escenas_mundo6.mjs && node test_auth_oauth.mjs && node test_dashboard_admin.mjs && node test_dashboard_sql.mjs && node test_csv.mjs && node test_persistencia.mjs && node test_editor.mjs && node test_juego_dom.mjs",
     "test:responsive": "node herramientas/responsive/medir.mjs"
   },
   "dependencies": {

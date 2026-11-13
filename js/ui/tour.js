@@ -10,65 +10,67 @@
 //   - Atrás / Siguiente / Saltar están en una barra FIJA al pie de la pantalla,
 //     fuera del globo, y hay una ✕ fija arriba a la derecha durante todo el tour.
 
-const PASOS = [
-  {
-    selector: ".panel-mundo",
-    pestana: "jugar",
-    titulo: "El escenario",
-    texto:
-      "Aquí vive Robot1, dentro del laboratorio. La cuadrícula son las casillas por las que se mueve, y la punta naranja indica hacia dónde mira.",
-  },
+// 2.1. Tour del Nivel 0 (Específico): solo se activa en el Nivel 0 la primera vez que se juega.
+export const PASOS_NIVEL_0 = [
   {
     selector: ".panel-aprende",
     pestana: "aprende",
-    titulo: "Aquí aprendes",
-    texto:
-      "Cada nivel se divide en fases. Arriba ves en cuál vas (● actual, ✓ hecha, ○ pendiente) y abajo qué instrucciones puedes usar en esta fase.",
+    titulo: "Aprende",
+    texto: "Lee la historia y el concepto",
   },
   {
     selector: ".panel-codigo",
     pestana: "jugar",
-    titulo: "Aquí escribes tu código",
-    texto:
-      "Este es el editor. Escribes instrucciones y pulsas ▶ Ejecutar para que Robot1 las obedezca. Reiniciar deja la fase como estaba.",
+    titulo: "Tu Algoritmo",
+    texto: "Haz clic en las tarjetas en orden para programar a Robot1",
   },
   {
-    selector: ".panel-salida",
-    pestana: "consola",
-    titulo: "La salida",
-    texto:
-      "Todo lo que muestres con print(), lo que diga Robot1 y los valores que escribas aparecen aquí, en orden.",
-  },
-  {
-    selector: ".panel-memoria",
-    pestana: "consola",
-    titulo: "La memoria",
-    texto:
-      "Cuando guardes datos en variables, los verás aquí con su valor actual. Es la memoria de tu programa.",
-  },
-  {
-    selector: ".panel-estado",
-    pestana: "consola",
-    titulo: "El estado",
-    texto:
-      "Su posición, hacia dónde mira y cuánta energía le queda. Se actualiza mientras el código corre.",
-  },
-  {
-    selector: ".panel-feedback",
+    selector: ".panel-mundo",
     pestana: "jugar",
-    titulo: "La retroalimentación",
-    texto:
-      "Aquí te digo si lo lograste y, si algo falla, qué salió mal y cómo arreglarlo. Ningún error es un castigo.",
-  },
-  {
-    selector: "#btn-diccionario",
-    titulo: "Tu diccionario",
-    texto:
-      "Cada instrucción que aprendas se guarda aquí. Ábrelo cuando no recuerdes cómo se usaba alguna.",
+    titulo: "Pasillo 2D",
+    texto: "Mira cómo Robot1 ejecuta tus pasos",
   },
 ];
 
+// 2.2. Tour General (Nivel 1 en adelante): se activa la primera vez que el alumno entra al Nivel 1.
+export const PASOS_GENERAL = [
+  {
+    selector: ".hud-mision",
+    pestana: "jugar",
+    titulo: "Tu misión",
+    texto: "Aquí está lo que tienes que lograr, en una línea. Las lámparas de abajo son las pruebas de tu código y Nix te da pistas.",
+  },
+  {
+    selector: "#btn-mas-info",
+    pestana: "jugar",
+    titulo: "Más info",
+    texto: "¿Necesitas el enunciado completo, la historia o las instrucciones que puedes usar? Pulsa «Más info»: se abre el texto largo del nivel (en el celular te lleva a la pestaña Aprende). La primera vez que entras a un nivel se abre sola.",
+  },
+  {
+    selector: ".editor-envoltura, .panel-codigo",
+    pestana: "jugar",
+    titulo: "Editor de código",
+    texto: "Aquí escribirás tu código Python",
+  },
+  {
+    selector: "#btn-ejecutar",
+    pestana: "jugar",
+    titulo: "Botón Ejecutar",
+    texto: "Presiona aquí para que Robot1 haga lo que escribiste",
+  },
+  {
+    selector: ".panel-salida",
+    selectorFin: ".panel-memoria",
+    pestana: "consola",
+    titulo: "Resultados y memoria",
+    texto: "Aquí verás los resultados y la memoria",
+  },
+];
+
+const PASOS = PASOS_GENERAL;
+
 const CLAVE_VISTO = "codequest:tour-visto";
+const CLAVE_VISTO_NIVEL_0 = "codequest:tour-nivel0-visto";
 const ALTO_BARRA_INFERIOR = 84; // controles fijos + aire
 const ALTO_BARRA_SUPERIOR = 60; // botón ✕
 
@@ -81,7 +83,7 @@ export class Tour {
    * @param {(pestana:string)=>void} [opciones.alNecesitarPestana] cambia a la pestaña (Jugar/Aprende/Consola) donde vive el paso
    */
   constructor({ alNecesitarPestana = null, pasos = null, alTerminar = null } = {}) {
-    // `pasos` propios = tour de un mundo nuevo (presenta su escenario); no marca el tour general como visto.
+    // `pasos` propios = tour específico (Nivel 0 o mundo nuevo); usa su propio `alTerminar`.
     this.pasos = pasos || PASOS;
     this.pasosPropios = pasos !== null;
     this.alTerminar = alTerminar;
@@ -103,6 +105,22 @@ export class Tour {
   static marcarVisto() {
     try {
       localStorage.setItem(CLAVE_VISTO, "1");
+    } catch {
+      /* si no hay localStorage, el tour simplemente volverá a salir */
+    }
+  }
+
+  static yaSeVioNivel0() {
+    try {
+      return localStorage.getItem(CLAVE_VISTO_NIVEL_0) === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  static marcarVistoNivel0() {
+    try {
+      localStorage.setItem(CLAVE_VISTO_NIVEL_0, "1");
     } catch {
       /* si no hay localStorage, el tour simplemente volverá a salir */
     }
@@ -241,7 +259,19 @@ export class Tour {
     }
 
     // El recuadro se recorta a lo visible (hay paneles más altos que la pantalla).
-    const r = objetivo.getBoundingClientRect();
+    const rIni = objetivo.getBoundingClientRect();
+    const pasoActual = this.pasos[this.indice];
+    const finEl = pasoActual?.selectorFin ? document.querySelector(pasoActual.selectorFin) : null;
+    const rFin = finEl && finEl.getClientRects().length > 0 && getComputedStyle(finEl).visibility !== "hidden" ? finEl.getBoundingClientRect() : null;
+    const r = rFin
+      ? {
+          top: Math.min(rIni.top, rFin.top),
+          left: Math.min(rIni.left, rFin.left),
+          bottom: Math.max(rIni.bottom, rFin.bottom),
+          right: Math.max(rIni.right, rFin.right),
+          width: Math.max(rIni.right, rFin.right) - Math.min(rIni.left, rFin.left),
+        }
+      : rIni;
     const margen = 6;
     const arriba = Math.max(r.top - margen, 4);
     const abajo = Math.min(r.bottom + margen, window.innerHeight - 4);

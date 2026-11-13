@@ -1,0 +1,124 @@
+{
+  "id": 11,
+  "mundo": 1,
+  "nombre": "Identificadores",
+  "ordinal": 11,
+  "concepto": "nombres de variables válidos (identificadores)",
+  "concepto_evaluado": "identificadores",
+  "narrativa": "La consola del ayuntamiento no encuentra algunos datos: alguien escribió mal sus nombres. Un nombre mal escrito deja un dato huérfano.",
+  "escenario": {
+    "tipo": "datos",
+    "capacidad": 8
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "11.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Nombres válidos",
+      "enunciado": "Concepto nuevo: el nombre de una variable (identificador) puede llevar letras, números y _, pero NO empieza con número ni lleva espacios. También importa si es mayúscula o minúscula.",
+      "codigoInicial": "energia_total = 90\nvalor2 = 7\nprint(energia_total)\nprint(valor2)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Buenos nombres: letras, números y _ (sin empezar con número).",
+      "pistas": [
+        "energia_total usa guion bajo en vez de espacio."
+      ]
+    },
+    {
+      "id": "11.2",
+      "tipo": "DEBUG",
+      "titulo": "Empieza con número",
+      "enunciado": "El nombre 2valor no es válido porque empieza con un número. Cámbialo por valor2 para que el programa muestre 5.",
+      "codigoInicial": "2valor = 5\nprint(2valor)",
+      "solucionReferencia": "valor2 = 5\nprint(valor2)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_con_variable",
+        "valorEsperado": "5",
+        "variableRequerida": "valor2"
+      },
+      "retroalimentacion": "Un identificador no puede empezar con número.",
+      "pistas": [
+        "Pasa el 2 al final del nombre."
+      ],
+      "solucionesIncorrectas": [
+        "2valor = 5\nprint(2valor)"
+      ],
+      "max_lineas_recomendadas": 2
+    },
+    {
+      "id": "11.3",
+      "tipo": "PREDECIR",
+      "titulo": "Mayúsculas importan",
+      "enunciado": "¿Qué pasa al ejecutar este programa?",
+      "codigoInicial": "Nombre = \"Ana\"\nprint(nombre)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Muestra Ana"
+        },
+        {
+          "id": "b",
+          "texto": "Error: la variable nombre no existe"
+        },
+        {
+          "id": "c",
+          "texto": "Muestra Nombre"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Nombre y nombre son identificadores distintos.",
+      "pistas": [
+        "Compara cómo se escribe la variable en cada línea."
+      ]
+    },
+    {
+      "id": "11.4",
+      "tipo": "DEBUG",
+      "titulo": "Una letra de más",
+      "enunciado": "Corrige el programa para que muestre 10. Las dos líneas deben usar exactamente el mismo nombre.",
+      "codigoInicial": "Puntos = 10\nprint(puntos)",
+      "solucionReferencia": "puntos = 10\nprint(puntos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "output_exacto",
+        "valorEsperado": "10"
+      },
+      "retroalimentacion": "Los nombres deben coincidir letra por letra, también en mayúsculas.",
+      "pistas": [
+        "Usa minúscula en la primera línea."
+      ],
+      "solucionesIncorrectas": [
+        "Puntos = 10\nprint(puntos)"
+      ],
+      "max_lineas_recomendadas": 2
+    }
+  ]
+}

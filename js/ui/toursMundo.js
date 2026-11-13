@@ -1,24 +1,10 @@
 // toursMundo.js
-// Tour de INMERSIÓN: la primera vez que el alumno entra a un mundo nuevo (2, 3, 4 o 5) se le presenta el
+// Tour de INMERSIÓN: la primera vez que el alumno entra a un mundo nuevo (2, 3, 4 o 5; el Mundo 1 tiene el recorrido general) se le presenta el
 // escenario nuevo y lo que va a hacer en él. Usa la misma clase Tour de la interfaz (scroll automático,
 // controles fijos, ✕, cambio de pestaña en el celular). Cada mundo se muestra UNA vez por persona.
 
 export const PASOS_MUNDO = {
   2: [
-    {
-      selector: ".panel-salida",
-      pestana: "consola",
-      titulo: "La terminal",
-      texto: "Ya no hay robot. Ahora controlas el sistema. Usa variables para guardar datos y print() para mostrarlos en esta terminal.",
-    },
-    {
-      selector: ".panel-mundo",
-      pestana: "jugar",
-      titulo: "El Centro de Recuperación",
-      texto: "Cada dato que guardes aparecerá aquí como un chip de memoria, con su nombre, su valor y su tipo.",
-    },
-  ],
-  3: [
     {
       selector: ".panel-mundo",
       pestana: "jugar",
@@ -26,7 +12,7 @@ export const PASOS_MUNDO = {
       texto: "Bienvenido al casino. Tu código tomará decisiones. Usa if y else para ganar: la mesa juzgará cada condición con un VERDADERO o un FALSO.",
     },
   ],
-  4: [
+  3: [
     {
       selector: ".panel-mundo",
       pestana: "jugar",
@@ -34,7 +20,7 @@ export const PASOS_MUNDO = {
       texto: "El elevador necesita automatización. Usa ciclos while para subir y bajar sin detenerte, y for para repetir un número exacto de veces.",
     },
   ],
-  5: [
+  4: [
     {
       selector: ".panel-mundo",
       pestana: "jugar",
@@ -49,6 +35,21 @@ export const PASOS_MUNDO = {
     },
   ],
 };
+
+PASOS_MUNDO[5] = [
+  {
+    selector: ".panel-mundo",
+    pestana: "jugar",
+    titulo: "El taller de proyectos",
+    texto: "Bienvenido al Laboratorio de creación. Aquí no hay sintaxis nueva: combina input, if, while y variables para resolver cada proyecto. Tus variables aparecen como chips en la memoria.",
+  },
+  {
+    selector: ".panel-codigo",
+    pestana: "jugar",
+    titulo: "Tu programa se prueba con varios casos",
+    texto: "Cada proyecto se ejecuta con varios casos de prueba y tienes que pasarlos todos. Si uno falla, el panel te dice cuál. El Nivel 4 es tu proyecto libre: ¡el cierre de CodeQuest!",
+  },
+];
 
 const clave = (usuarioId, mundo) => `codequest:tour-mundo:${usuarioId}:${mundo}`;
 

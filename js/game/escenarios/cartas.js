@@ -37,9 +37,9 @@ export function variablesDeMano(config) {
 
 export class EscenarioCartas extends EscenarioBase {
   constructor(config, opciones) {
-    super({ ...config, mundo: 3 }, opciones);
+    super({ ...config, mundo: 2 }, opciones);
     this.cartas = (config.cartas || []).map((c) => ({ valor: c.valor, palo: c.palo || "picas" }));
-    this.p = paletaDe(3);
+    this.p = paletaDe(2);
     this.reiniciarModelo();
   }
 

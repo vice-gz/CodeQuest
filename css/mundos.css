@@ -1,18 +1,14 @@
 /* ============================================================
-   CodeQuest — Avance 3
-   1) Mapa de mundos (mundos.html)
-   2) Tema por mundo en el juego (body[data-mundo])
-   3) Selector de casos, resultados por caso y modales de teoría
-   Cada mundo tiene su acento (js/game/paletas.js lo vuelca en
-   --mundo-acento, --mundo-acento-2, --mundo-fondo y --mundo-glow).
+   CodeQuest — Mapa de mundos, temas dinámicos por mundo,
+   selector de casos y glosario de conceptos.
    ============================================================ */
 
 /* ---------------------------------------------------------------- 1) Mapa */
 
 .mapa {
-  max-width: 1180px;
+  max-width: 1220px;
   margin: 0 auto;
-  padding: 28px 24px 56px;
+  padding: 32px 24px 64px;
 }
 
 .mapa-encabezado {
@@ -21,13 +17,19 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 22px;
+  margin-bottom: 28px;
+  padding: 22px 26px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(24, 34, 70, 0.85), rgba(12, 18, 40, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: var(--sombra-panel);
 }
 
 .mapa-etiqueta {
   margin: 0 0 6px;
   font-family: var(--fuente-mono);
   font-size: 0.78rem;
+  font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--teal);
@@ -35,19 +37,26 @@
 
 .mapa-encabezado h1 {
   margin: 0;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(1.85rem, 4vw, 2.6rem);
+  letter-spacing: -0.025em;
+  background: linear-gradient(90deg, #ffffff, #00f5d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .mapa-subtitulo {
   margin: 8px 0 0;
-  color: var(--texto-muted);
+  color: var(--ambar);
+  font-family: var(--fuente-mono);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .mapa-rejilla {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 24px;
 }
 
 .mundo-card {
@@ -55,29 +64,42 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 20px;
-  background: var(--panel);
+  border-radius: 22px;
+  background: linear-gradient(165deg, rgba(22, 31, 64, 0.92) 0%, rgba(12, 17, 36, 0.96) 100%);
   border: 2px solid var(--mundo-acento);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 10px 30px -12px var(--mundo-glow);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 16px 38px -12px var(--mundo-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   color: var(--mundo-acento);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.mundo-card:hover:not(.estado-bloqueado):not(.estado-proximamente) {
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 22px 46px -8px var(--mundo-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
 .mundo-card.estado-completado {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 0 32px -6px var(--mundo-glow);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 0 36px -6px var(--mundo-glow);
 }
 
-/* Bloqueado: gris y con trazo punteado (no depende solo del color). */
 .mundo-card.estado-bloqueado,
 .mundo-card.estado-proximamente {
-  border: 2px dashed #3a4170;
-  box-shadow: none;
-  color: #6c749c;
+  border: 2px dashed #364173;
+  box-shadow: 0 10px 26px -12px rgba(0, 0, 0, 0.5);
+  color: #6c77a3;
 }
 
 .mundo-card.estado-bloqueado .mundo-ilustracion,
 .mundo-card.estado-proximamente .mundo-ilustracion {
-  filter: grayscale(1);
-  opacity: 0.55;
+  filter: grayscale(0.85) contrast(0.95);
+  opacity: 0.52;
 }
 
 .mundo-card.mundo-actual {
@@ -86,9 +108,11 @@
 }
 
 .mundo-ilustracion {
-  height: 150px;
-  background: radial-gradient(ellipse at 50% 120%, var(--mundo-glow), transparent 70%), #0a0d14;
-  border-bottom: 1px solid var(--borde);
+  height: 158px;
+  background:
+    radial-gradient(ellipse at 50% 115%, var(--mundo-glow), transparent 72%),
+    #070a14;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .mundo-ilustracion svg {
@@ -101,8 +125,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 8px;
-  padding: 18px 20px 20px;
+  gap: 9px;
+  padding: 20px 22px 22px;
   color: var(--texto);
 }
 
@@ -115,7 +139,8 @@
 
 .mundo-numero {
   font-family: var(--fuente-mono);
-  font-size: 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--mundo-acento);
@@ -127,9 +152,10 @@
 }
 
 .mundo-estado {
-  padding: 3px 11px;
+  padding: 3px 12px;
   border-radius: 999px;
   border: 1.5px solid currentColor;
+  background: color-mix(in srgb, var(--mundo-acento) 12%, transparent);
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--mundo-acento);
@@ -138,30 +164,34 @@
 .estado-bloqueado .mundo-estado,
 .estado-proximamente .mundo-estado {
   color: var(--texto-muted);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .mundo-cuerpo h2 {
-  margin: 4px 0 0;
-  font-size: 1.5rem;
+  margin: 2px 0 0;
+  font-size: 1.52rem;
+  letter-spacing: -0.02em;
 }
 
 .mundo-lugar {
   margin: 0;
-  font-size: 0.82rem;
-  color: var(--texto-muted);
+  font-family: var(--fuente-mono);
+  font-size: 0.8rem;
+  color: var(--mundo-acento-2, var(--texto-muted));
 }
 
 .mundo-resumen {
   margin: 4px 0;
   font-size: 0.92rem;
   color: var(--texto-muted);
+  line-height: 1.55;
 }
 
 .mundo-temas {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 0 0 6px;
+  margin: 2px 0 8px;
   padding: 0;
   list-style: none;
 }
@@ -169,15 +199,17 @@
 .mundo-temas li {
   padding: 3px 10px;
   border-radius: 999px;
-  background: var(--panel-alt);
-  border: 1px solid var(--borde);
+  background: rgba(10, 15, 34, 0.8);
+  border: 1px solid color-mix(in srgb, var(--mundo-acento) 38%, var(--borde));
   font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .mundo-barra {
-  height: 10px;
+  height: 11px;
   border-radius: 999px;
-  background: var(--bg-elevado);
+  background: #080c1c;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   overflow: hidden;
 }
 
@@ -185,14 +217,16 @@
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: var(--mundo-acento);
+  background: linear-gradient(90deg, var(--mundo-acento), var(--mundo-acento-2, var(--mundo-acento)));
+  box-shadow: 0 0 12px var(--mundo-glow);
 }
 
 .mundo-cifras {
   display: flex;
   justify-content: space-between;
   margin: 2px 0 0;
-  font-size: 0.85rem;
+  font-family: var(--fuente-mono);
+  font-size: 0.82rem;
   color: var(--texto-muted);
 }
 
@@ -202,10 +236,10 @@
 
 .mundo-requisito {
   margin: 4px 0 0;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: rgba(255, 184, 77, 0.08);
-  border: 1px solid rgba(255, 184, 77, 0.3);
+  padding: 9px 12px;
+  border-radius: 11px;
+  background: rgba(255, 200, 61, 0.09);
+  border: 1px solid rgba(255, 200, 61, 0.32);
   font-size: 0.82rem;
   color: var(--ambar);
 }
@@ -221,7 +255,7 @@
   margin-top: auto;
   text-align: center;
   text-decoration: none;
-  background: var(--mundo-acento);
+  background: linear-gradient(135deg, var(--mundo-acento), var(--mundo-acento-2, var(--mundo-acento)));
 }
 
 .mundo-entrar:disabled {
@@ -231,8 +265,12 @@
 .mapa-leyenda {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 22px;
-  margin: 26px 0 0;
+  gap: 10px 24px;
+  margin: 28px 0 0;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(12, 18, 40, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   font-size: 0.85rem;
   color: var(--texto-muted);
 }
@@ -250,9 +288,12 @@
 /* ---------------------------------------------------------------- 2) Tema por mundo (juego) */
 
 body[data-mundo] .panel-mundo {
-  background: var(--mundo-fondo);
+  background: linear-gradient(165deg, color-mix(in srgb, var(--mundo-fondo) 82%, var(--panel)) 0%, var(--mundo-fondo) 100%);
   border: 1.5px solid var(--mundo-acento);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 0 26px -4px var(--mundo-glow), inset 0 0 40px -22px var(--mundo-glow);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 0 32px -6px var(--mundo-glow),
+    inset 0 0 42px -22px var(--mundo-glow);
 }
 
 body[data-mundo] .panel-mundo .lienzo-envoltura {
@@ -269,13 +310,13 @@ body[data-mundo] .separador-mundo {
 }
 
 body[data-mundo] .nivel-punto.activo {
-  background: var(--mundo-acento);
+  background: linear-gradient(135deg, var(--mundo-acento), var(--mundo-acento-2, var(--mundo-acento)));
   border-color: var(--mundo-acento);
-  color: #0a0d14;
+  color: #060914;
 }
 
 body[data-mundo] .nivel-punto.completado:not(.activo) {
-  border-color: var(--mundo-acento);
+  border-color: color-mix(in srgb, var(--mundo-acento) 65%, var(--borde));
   color: var(--mundo-acento);
 }
 
@@ -283,14 +324,13 @@ body[data-mundo] .chip-instruccion {
   border-color: color-mix(in srgb, var(--mundo-acento) 55%, transparent);
 }
 
-/* Mundo 2: no hay robot; la memoria es la protagonista. */
-body[data-mundo="2"] .panel-memoria {
+body[data-escenario="datos"] .panel-memoria {
   border-color: var(--mundo-acento);
-  box-shadow: 0 0 22px -8px var(--mundo-glow);
+  box-shadow: 0 0 26px -8px var(--mundo-glow);
 }
 
-body[data-mundo="2"] .panel-memoria .panel-contenido,
-body[data-mundo="2"] .panel-memoria .memoria-contenido {
+body[data-escenario="datos"] .panel-memoria .panel-contenido,
+body[data-escenario="datos"] .panel-memoria .memoria-contenido {
   max-height: 300px;
 }
 
@@ -308,31 +348,34 @@ body.modo-sandbox .boton-mapa {
 .selector-casos {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--borde-suave);
+  gap: 7px;
+  padding: 8px 12px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 10px;
 }
 
 .caso-boton {
-  padding: 6px 12px;
+  padding: 6px 13px;
   border-radius: 999px;
   border: 1.5px solid var(--borde);
-  background: transparent;
+  background: rgba(10, 15, 34, 0.7);
   color: var(--texto-muted);
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.14s ease;
 }
 
 .caso-boton:hover {
   color: var(--texto);
-  border-color: var(--texto-muted);
+  border-color: var(--mundo-acento, var(--teal));
 }
 
 .caso-boton.activo {
   background: var(--mundo-acento, var(--teal));
   border-color: var(--mundo-acento, var(--teal));
-  color: #0a0d14;
+  color: #060914;
+  box-shadow: 0 0 14px -2px var(--mundo-glow, rgba(0, 245, 212, 0.45));
 }
 
 .caso-boton:focus-visible {
@@ -351,39 +394,146 @@ body.modo-sandbox .boton-mapa {
 }
 
 .feedback-casos li {
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 7px 11px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--borde-suave);
 }
 
 .feedback-casos .caso-ok {
   color: var(--exito);
+  border-color: rgba(34, 245, 122, 0.35);
 }
 
 .feedback-casos .caso-mal {
-  color: #ffb3b3;
-  border-color: rgba(255, 107, 107, 0.4);
+  color: #ffb8c4;
+  border-color: rgba(255, 84, 112, 0.45);
 }
 
 .modal-teoria {
   --teoria-acento: var(--teal);
   border-color: var(--teoria-acento);
-  box-shadow: 0 0 40px -10px var(--teoria-acento);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 44px -10px var(--teoria-acento);
 }
 
 .modal-teoria.modal-ancho {
-  width: min(720px, 100%);
+  width: min(740px, 100%);
 }
 
 .modal-teoria.modal-bienvenida {
-  width: min(560px, 100%);
+  width: min(600px, 100%);
+  text-align: center;
+  padding: 32px 28px;
+}
+
+.bienvenida-cabecera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.modal-bienvenida .teoria-etiqueta {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--teoria-acento) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teoria-acento) 38%, transparent);
+}
+
+.modal-bienvenida .bienvenida-titulo {
+  margin: 4px 0 0;
+  font-size: clamp(1.7rem, 3.8vw, 2.3rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #ffffff 15%, var(--teoria-acento) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.modal-bienvenida .bienvenida-texto {
+  max-width: 50ch;
+  margin: 0 auto 14px;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--texto);
+}
+
+.modal-bienvenida .bienvenida-puntos {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.modal-bienvenida .bienvenida-puntos li {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(10, 15, 34, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--texto-muted);
+  font-size: 0.88rem;
+}
+
+.modal-bienvenida .teoria-codigo {
+  text-align: left;
+}
+
+.modal-acciones-bienvenida {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.modal-acciones-bienvenida .boton-bienvenida {
+  flex: 1 1 0;
+  min-width: 175px;
+  max-width: 230px;
+  min-height: 48px;
+  justify-content: center;
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.modal-acciones-bienvenida .boton-bienvenida-empezar {
+  background: linear-gradient(135deg, #22f57a 0%, #00e5a3 100%);
+  color: #031c0d;
+  border-color: transparent;
+  box-shadow: 0 4px 0 #0c7a38, 0 8px 24px -4px rgba(34, 245, 122, 0.55);
+}
+
+.modal-acciones-bienvenida .boton-bienvenida-empezar:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4aff95 0%, #22f5b8 100%);
+  box-shadow: 0 6px 0 #0c7a38, 0 12px 28px -2px rgba(34, 245, 122, 0.72);
+}
+
+.modal-acciones-bienvenida .boton-bienvenida-conceptos {
+  background: rgba(34, 45, 78, 0.85);
+  border: 1.5px solid rgba(160, 180, 230, 0.28);
+  color: #d8e2ff;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+.modal-acciones-bienvenida .boton-bienvenida-conceptos:hover:not(:disabled) {
+  background: rgba(46, 60, 102, 0.95);
+  border-color: var(--teoria-acento);
+  color: #ffffff;
 }
 
 .teoria-etiqueta {
   margin: 0 0 4px;
   font-family: var(--fuente-mono);
   font-size: 0.75rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--teoria-acento);
@@ -404,59 +554,128 @@ body.modo-sandbox .boton-mapa {
 .teoria-visual {
   display: flex;
   justify-content: center;
-  margin: 10px 0 14px;
-  padding: 10px;
-  border-radius: 12px;
-  background: var(--bg-elevado);
+  margin: 12px 0 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 245, 212, 0.08), #070b18 75%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--teoria-acento);
 }
 
 .teoria-visual svg {
-  width: min(320px, 100%);
+  width: min(330px, 100%);
   height: auto;
 }
 
 .teoria-codigo {
   margin: 0 0 12px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: #080b16;
+  padding: 13px 16px;
+  border-radius: 11px;
+  background: #060916;
   border: 1px solid var(--borde);
   font-family: var(--fuente-mono);
-  font-size: 0.84rem;
-  line-height: 1.55;
-  color: #cfe9e4;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #d6f5ef;
   overflow-x: auto;
 }
 
 .teoria-lista {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 
 .teoria-item {
   border: 1px solid var(--borde);
-  border-radius: 12px;
-  background: var(--panel-alt);
+  border-radius: 13px;
+  background: rgba(18, 25, 54, 0.78);
+  overflow: hidden;
+  transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+}
+
+.teoria-item:hover {
+  border-color: var(--teoria-acento);
+}
+
+.teoria-item[open] {
+  border-color: color-mix(in srgb, var(--teoria-acento) 72%, var(--borde));
+  background: rgba(20, 29, 64, 0.92);
+  box-shadow: 0 10px 26px -10px rgba(0, 0, 0, 0.55);
 }
 
 .teoria-item summary {
-  padding: 12px 16px;
+  padding: 13px 16px;
   font-weight: 700;
   cursor: pointer;
+  list-style: none;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.teoria-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.teoria-item summary::after {
+  content: "▾";
+  font-size: 0.9rem;
+  color: var(--texto-muted);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
 }
 
 .teoria-item[open] summary {
   color: var(--teoria-acento);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.teoria-item[open] summary::after {
+  transform: rotate(180deg);
+  color: var(--teoria-acento);
 }
 
 .teoria-cuerpo {
-  padding: 0 16px 14px;
+  padding: 14px 16px 16px;
+  animation: acordeonAbrir 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes acordeonAbrir {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .teoria-cuerpo p {
   margin: 0 0 12px;
+}
+
+.concepto-acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.concepto-probar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  border-color: color-mix(in srgb, var(--teoria-acento, var(--teal)) 55%, var(--borde));
+  color: var(--teoria-acento, var(--teal));
+  background: rgba(0, 245, 212, 0.08);
+  font-weight: 700;
+}
+
+.concepto-probar:hover {
+  background: var(--teoria-acento, var(--teal));
+  color: #051218;
+  border-color: var(--teoria-acento, var(--teal));
 }
 
 @media (max-width: 640px) {
@@ -478,7 +697,9 @@ body.modo-sandbox .boton-mapa {
   gap: 12px;
   padding: 0 24px;
   height: var(--nav-alto);
-  border-bottom: 1px solid var(--borde-suave);
+  background: rgba(6, 9, 22, 0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .conceptos-barra nav {
@@ -487,14 +708,18 @@ body.modo-sandbox .boton-mapa {
 }
 
 .conceptos-contenido {
-  max-width: 1000px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 32px 24px 56px;
+  padding: 36px 24px 60px;
 }
 
 .conceptos-contenido h1 {
   margin: 0;
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-size: clamp(1.85rem, 4vw, 2.5rem);
+  background: linear-gradient(90deg, #ffffff, #00f5d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .conceptos-indice {
@@ -508,15 +733,18 @@ body.modo-sandbox .boton-mapa {
   padding: 6px 14px;
   border-radius: 999px;
   border: 1.5px solid var(--borde);
+  background: var(--panel);
   color: var(--texto);
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
+  transition: all 0.15s ease;
 }
 
 .conceptos-indice a:hover {
   border-color: var(--teal);
   color: var(--teal);
+  transform: translateY(-1px);
 }
 
 .conceptos-rejilla {
@@ -530,6 +758,7 @@ body.modo-sandbox .boton-mapa {
   border-radius: 16px;
   background: var(--panel);
   border: 1px solid var(--borde);
+  box-shadow: var(--sombra-panel);
   scroll-margin-top: 16px;
 }
 
@@ -544,7 +773,6 @@ body.modo-sandbox .boton-mapa {
   }
 }
 
-
 /* ---------------------------------------------------------------- Acciones del código (arriba y siempre a la vista) */
 
 .encabezado-codigo {
@@ -553,42 +781,44 @@ body.modo-sandbox .boton-mapa {
   z-index: 15;
   flex-wrap: wrap;
   align-items: center;
-  margin: -18px -20px 12px;
-  padding: 12px 20px;
-  background: var(--panel);
-  border-bottom: 1px solid var(--borde-suave);
-  border-radius: 14px 14px 0 0;
+  margin: -20px -22px 14px;
+  padding: 13px 22px;
+  /* Sin backdrop-filter: además de costoso, convertía este encabezado en el «contenedor» del botón ▶ Ejecutar flotante del celular
+     (position: fixed) y el botón dejaba de quedar al pie de la pantalla. El fondo es casi opaco, así que no cambia lo que se ve. */
+  background: rgba(16, 23, 50, 0.97);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px 16px 0 0;
 }
 
 .encabezado-titulo {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
 }
 
 .acciones-codigo {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 9px;
 }
 
-/* Verde brillante: es la acción principal y no puede pasar desapercibida. */
+/* Verde neón vibrante para la acción principal ▶ Ejecutar */
 .boton-ejecutar {
-  background: #22e06b;
-  color: #04200f;
+  background: linear-gradient(135deg, #22f57a 0%, #00e5a3 100%);
+  color: #031c0d;
   font-weight: 800;
   padding: 11px 22px;
-  font-size: 1rem;
-  box-shadow: 0 4px 0 #0f8a3e, 0 0 18px -4px rgba(34, 224, 107, 0.7);
+  font-size: 0.98rem;
+  box-shadow: 0 4px 0 #0c7a38, 0 0 22px -3px rgba(34, 245, 122, 0.72);
 }
 
 .boton-ejecutar:hover:not(:disabled) {
-  background: #4cf08a;
-  box-shadow: 0 6px 0 #0f8a3e, 0 0 24px -2px rgba(34, 224, 107, 0.85);
+  background: linear-gradient(135deg, #4aff95 0%, #22f5b8 100%);
+  box-shadow: 0 6px 0 #0c7a38, 0 0 28px -1px rgba(34, 245, 122, 0.9);
 }
 
 .boton-ejecutar:active:not(:disabled) {
-  box-shadow: 0 1px 0 #0f8a3e;
+  box-shadow: 0 1px 0 #0c7a38;
 }
 
 .boton-ejecutar:disabled {
@@ -599,14 +829,14 @@ body.modo-sandbox .boton-mapa {
 }
 
 .boton-ejecutar .atajo {
-  margin-left: 8px;
-  padding: 1px 7px;
+  margin-left: 6px;
+  padding: 2px 7px;
   border-radius: 6px;
-  background: rgba(4, 32, 15, 0.18);
-  border: 1px solid rgba(4, 32, 15, 0.35);
+  background: rgba(3, 28, 13, 0.2);
+  border: 1px solid rgba(3, 28, 13, 0.35);
   font-family: var(--fuente-mono);
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .boton-reiniciar {
@@ -615,12 +845,15 @@ body.modo-sandbox .boton-mapa {
   border: 1.5px solid var(--borde);
 }
 
-@media (max-width: 520px) {
-  .boton-ejecutar .atajo {
-    display: none; /* en pantallas táctiles no hay Ctrl+Enter */
-  }
+.boton-reiniciar:hover:not(:disabled) {
+  border-color: var(--mundo-acento, var(--teal));
 }
 
+@media (max-width: 520px) {
+  .boton-ejecutar .atajo {
+    display: none;
+  }
+}
 
 /* ---------------------------------------------------------------- Glosario con buscador */
 
@@ -629,7 +862,7 @@ body.modo-sandbox .boton-mapa {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 14px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .glosario-buscador {
@@ -662,6 +895,7 @@ body.modo-sandbox .boton-mapa {
 .concepto-etiqueta-mundo.nuevo {
   border-color: var(--teoria-acento, var(--teal));
   color: var(--teoria-acento, var(--teal));
+  background: rgba(0, 245, 212, 0.1);
 }
 
 .concepto-def {
@@ -669,10 +903,10 @@ body.modo-sandbox .boton-mapa {
 }
 
 .concepto-analogia {
-  padding: 10px 12px;
+  padding: 11px 14px;
   border-radius: 10px;
-  background: rgba(255, 184, 77, 0.07);
-  border: 1px solid rgba(255, 184, 77, 0.3);
+  background: rgba(255, 200, 61, 0.09);
+  border: 1px solid rgba(255, 200, 61, 0.32);
   font-size: 0.92rem;
 }
 
@@ -682,8 +916,8 @@ body.modo-sandbox .boton-mapa {
 
 .conceptos-alcance {
   margin: 10px 0 18px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 11px 15px;
+  border-radius: 11px;
   background: var(--panel-alt);
   border: 1px solid var(--borde);
   color: var(--texto-muted);

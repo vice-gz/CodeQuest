@@ -40,14 +40,20 @@ const VIEWPORTS = [
 
 const ESCENARIOS = [
   { id: "landing", url: "/index.html", rol: null },
+  { id: "landing-sesion", url: "/index.html", rol: "estudiante", hasta: 0 },
   { id: "auth", url: "/auth.html", rol: null },
   { id: "conceptos", url: "/conceptos.html?mundo=4", rol: null },
   { id: "mundos", url: "/mundos.html", rol: "estudiante", hasta: 19 },
   { id: "juego-m1", url: "/juego.html?mundo=1", rol: "estudiante", hasta: 0, juego: true },
-  { id: "juego-m2", url: "/juego.html?mundo=2", rol: "estudiante", hasta: 8, juego: true },
-  { id: "juego-m3", url: "/juego.html?mundo=3", rol: "estudiante", hasta: 19, juego: true },
-  { id: "juego-m4", url: "/juego.html?mundo=4", rol: "estudiante", hasta: 31, juego: true },
-  { id: "juego-m5", url: "/juego.html?mundo=5", rol: "estudiante", hasta: 43, juego: true },
+  { id: "juego-m1-alcancia", url: "/juego.html?mundo=1&nivel=6", rol: "estudiante", hasta: 5, juego: true },
+  { id: "juego-m1-semaforo", url: "/juego.html?mundo=1&nivel=8", rol: "estudiante", hasta: 7, juego: true },
+  { id: "juego-m2", url: "/juego.html?mundo=2", rol: "estudiante", hasta: 19, juego: true },
+  { id: "juego-m3", url: "/juego.html?mundo=3", rol: "estudiante", hasta: 31, juego: true },
+  { id: "juego-m4", url: "/juego.html?mundo=4", rol: "estudiante", hasta: 43, juego: true },
+  { id: "juego-m5", url: "/juego.html?mundo=5", rol: "estudiante", hasta: 55, juego: true },
+  { id: "juego-m5-n2", url: "/juego.html?mundo=5&nivel=2", rol: "estudiante", hasta: 56, juego: true },
+  { id: "juego-m5-n3", url: "/juego.html?mundo=5&nivel=3", rol: "estudiante", hasta: 57, juego: true },
+  { id: "juego-m5-n4", url: "/juego.html?mundo=5&nivel=4", rol: "estudiante", hasta: 58, juego: true },
   { id: "juego-tour", url: "/juego.html?mundo=1", rol: "estudiante", hasta: 0, juego: true, tour: true },
   { id: "juego-sandbox", url: "/juego.html?modo=sandbox", rol: "estudiante", hasta: 8, juego: true },
   { id: "perfil", url: "/perfil.html", rol: "estudiante", hasta: 25 },
@@ -141,14 +147,18 @@ async function medir(page, esc, vp) {
         const lienzo = q("#lienzo-mundo");
         if (mundo && codigo) {
           const arriba = mundo.getBoundingClientRect().top < codigo.getBoundingClientRect().top - 5;
-          const alLado = mundo.getBoundingClientRect().left > codigo.getBoundingClientRect().left + 100;
+          // Al lado en cualquier orden (desde v3.1 la escena va a la IZQUIERDA y el código a la derecha): sin solaparse en horizontal.
+          const rm = mundo.getBoundingClientRect();
+          const rc = codigo.getBoundingClientRect();
+          const alLado = Math.abs(rm.left - rc.left) > 100 && (rm.right <= rc.left + 2 || rc.right <= rm.left + 2);
           if (ancho <= 992 && !arriba) problemas.push("en pantallas ≤ 992px el escenario debe ir ANTES del editor");
           if (ancho > 1100 && !alLado) problemas.push("en PC el escenario debe ir al lado del editor");
         }
         if (lienzo && visible(lienzo)) {
           const w = lienzo.getBoundingClientRect().width;
           const pad = mundo.getBoundingClientRect().width;
-          if (w < pad * 0.8) problemas.push(`el escenario no ocupa el ancho del panel (${Math.round(w)} de ${Math.round(pad)}px)`);
+          const minimo = lienzo.dataset.pixel ? 0.65 : 0.8; // el pixel art con escala entera deja franjas a los lados (a propósito)
+          if (w < pad * minimo) problemas.push(`el escenario no ocupa el ancho del panel (${Math.round(w)} de ${Math.round(pad)}px)`);
         }
         const ej = q("#btn-ejecutar");
         if (ej && visible(ej) && vp.movil && ej.getBoundingClientRect().height < 44) problemas.push(`Ejecutar mide ${Math.round(ej.getBoundingClientRect().height)}px de alto (<44px táctil)`);
@@ -266,7 +276,7 @@ for (const esc of ESCENARIOS) {
         await new Promise((r) => setTimeout(r, 250));
         const lienzo = document.querySelector("#lienzo-mundo");
         const panel = document.querySelector(".panel-mundo");
-        if (lienzo && lienzo.getBoundingClientRect().width < panel.getBoundingClientRect().width * 0.8) fallos.push("al volver a «Jugar» el escenario no recuperó su ancho");
+        if (lienzo && lienzo.getBoundingClientRect().width < panel.getBoundingClientRect().width * (lienzo.dataset.pixel ? 0.65 : 0.8)) fallos.push("al volver a «Jugar» el escenario no recuperó su ancho");
         return fallos;
       }, esperado);
       resultado.forEach((x) => problemas.push(`[pestañas] ${x}`));

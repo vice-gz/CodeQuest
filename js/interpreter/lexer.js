@@ -16,6 +16,7 @@ export const TipoToken = {
   NUMERO: "NUMERO",
   TEXTO: "TEXTO",
   ASIGNACION: "ASIGNACION",
+  ASIGNACION_COMPUESTA: "ASIGNACION_COMPUESTA", // += -= *= /= //= %=  (valor = el operador: "+", "//"...)
   PUNTO: "PUNTO",
   PAREN_IZQ: "PAREN_IZQ",
   PAREN_DER: "PAREN_DER",
@@ -161,6 +162,16 @@ export class Lexer {
       if (esLetra(c)) {
         this.leerIdentificador();
         continue;
+      }
+
+      // Asignación compuesta (ahorro += mesada): += -= *= /= //= %=
+      {
+        const op = this.codigo.startsWith("//=", this.pos) ? "//" : "+-*/%".includes(c) && this.codigo[this.pos + 1] === "=" ? c : null;
+        if (op) {
+          this.push(TipoToken.ASIGNACION_COMPUESTA, op);
+          this.pos += op.length + 1;
+          continue;
+        }
       }
 
       switch (c) {

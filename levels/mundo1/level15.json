@@ -1,0 +1,161 @@
+{
+  "id": 15,
+  "mundo": 1,
+  "nombre": "El Puente de Datos",
+  "ordinal": 16,
+  "concepto": "input(), int(), operadores y robot juntos",
+  "concepto_evaluado": "integracion_datos_robot",
+  "narrativa": "Robot1 vuelve al río: el puente del pueblo está roto y la terminal del puente le dirá cuánto mide cada tramo.",
+  "escenario": {
+    "tipo": "laboratorio",
+    "ancho": 6,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "objetivoPosicion": [
+      5,
+      0
+    ],
+    "mostrarEnergia": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "15.1",
+      "tipo": "ESCRIBIR",
+      "titulo": "Distancia",
+      "enunciado": "Guarda tiempo = 3 y velocidad = 12. Calcula distancia = tiempo * velocidad y muéstrala (36).",
+      "codigoInicial": "",
+      "solucionReferencia": "tiempo = 3\nvelocidad = 12\ndistancia = tiempo * velocidad\nprint(distancia)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "retroceder",
+        "girar",
+        "hablar",
+        "recoger",
+        "soltar",
+        "mirar",
+        "posicion",
+        "energia"
+      ],
+      "validacion": {
+        "tipo": "output_con_variable",
+        "valorEsperado": "36",
+        "variableRequerida": "distancia",
+        "requiere": {
+          "operador": "*"
+        }
+      },
+      "retroalimentacion": "Variables y operadores también funcionan con Robot1 en pantalla.",
+      "pistas": [
+        "Tres variables: tiempo, velocidad y distancia."
+      ],
+      "max_lineas_recomendadas": 4
+    },
+    {
+      "id": "15.2",
+      "tipo": "RESOLVER",
+      "titulo": "Cruza con el sensor",
+      "enunciado": "Pide un valor al sensor (escribe 10), conviértelo con int(), súmale 15 y muestra el resultado (25) usando una variable llamada resultado.",
+      "codigoInicial": "",
+      "solucionReferencia": "dato = int(input())\nresultado = dato + 15\nprint(resultado)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "retroceder",
+        "girar",
+        "hablar",
+        "recoger",
+        "soltar",
+        "mirar",
+        "posicion",
+        "energia"
+      ],
+      "entradasEstudiante": [
+        "10"
+      ],
+      "etiquetaEntrada": "¿Qué valor envía el sensor?",
+      "validacion": {
+        "tipo": "output_con_variable",
+        "valorEsperado": "25",
+        "variableRequerida": "resultado"
+      },
+      "retroalimentacion": "Combinaste input, int(), variables y cálculo.",
+      "pistas": [
+        "Convierte con int(input()) antes de sumar."
+      ],
+      "solucionesIncorrectas": [
+        "print(25)"
+      ],
+      "max_lineas_recomendadas": 3
+    },
+    {
+      "id": "15.3",
+      "tipo": "RESOLVER",
+      "titulo": "El puente",
+      "enunciado": "El sensor dice cuántas casillas mide el puente (escribe 3), pero Robot1 necesita 2 casillas más para bajar de él. Guarda en pasos el valor del sensor (convertido con int()) más 2, muestra pasos y haz que Robot1 avance pasos casillas para llegar a (5,0).",
+      "codigoInicial": "",
+      "solucionReferencia": "pasos = int(input()) + 2\nprint(pasos)\nrobot1.avanzar(pasos)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str"
+      ],
+      "metodosPermitidos": [
+        "avanzar",
+        "retroceder",
+        "girar",
+        "hablar",
+        "recoger",
+        "soltar",
+        "mirar",
+        "posicion",
+        "energia"
+      ],
+      "entradasEstudiante": [
+        "3"
+      ],
+      "etiquetaEntrada": "¿Cuántas casillas mide el puente?",
+      "validacion": {
+        "tipo": "estado",
+        "posicionEsperada": [
+          5,
+          0
+        ],
+        "outputEsperado": "5",
+        "variableRequerida": "pasos"
+      },
+      "retroalimentacion": "¡Puente cruzado! Un dato que llegó de fuera controló a Robot1 a través de una variable.",
+      "pistas": [
+        "pasos = int(input()) + 2",
+        "robot1.avanzar(pasos)"
+      ],
+      "mensajeNoLogrado": "Robot1 debe llegar a (5,0) avanzando pasos (el valor del sensor más 2), y debes mostrar pasos.",
+      "solucionesIncorrectas": [
+        "robot1.avanzar(5)\nprint(5)"
+      ],
+      "max_lineas_recomendadas": 3
+    }
+  ]
+}

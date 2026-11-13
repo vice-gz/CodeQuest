@@ -1,0 +1,290 @@
+{
+  "id": 41,
+  "mundo": 3,
+  "nombre": "La cabina chica",
+  "concepto": "capacidad limitada",
+  "concepto_evaluado": "capacidad_limitada",
+  "narrativa": "Un elevador de servicio más pequeño: solo caben 2 personas. Si intentas subir a una tercera, la cabina se llena y el programa falla.",
+  "escenario": {
+    "tipo": "elevador",
+    "pisos": 5,
+    "capacidad": 2,
+    "pisoInicial": 1,
+    "pasajeros": [
+      2,
+      3,
+      4
+    ]
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "41.1",
+      "tipo": "RESOLVER",
+      "titulo": "No te pases de la capacidad",
+      "enunciado": "En la cabina caben 2 personas. Sube recogiendo pasajeros SOLO mientras elevador.llevando() sea menor que 2, baja y suelta. Los que no caben se quedan esperando. Se prueba en 5 edificios.",
+      "codigoInicial": "",
+      "solucionReferencia": "for i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero() and elevador.llevando() < 2:\n        elevador.recoger()\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "for",
+        "if",
+        "else",
+        "not",
+        "and",
+        "or"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero",
+        "llevando"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pasajeros en 2, 3, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              3,
+              4
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "entregados": 2,
+            "abordo": 0
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 3, 4, 5",
+          "escenario": {
+            "pasajeros": [
+              3,
+              4,
+              5
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "entregados": 2,
+            "abordo": 0
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              5
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "entregados": 2,
+            "abordo": 0
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 4",
+          "escenario": {
+            "pasajeros": [
+              4
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "entregados": 1,
+            "abordo": 0
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 2, 5",
+          "escenario": {
+            "pasajeros": [
+              2,
+              2,
+              5
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_estado",
+            "entregados": 2,
+            "abordo": 0
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "Preguntaste por el espacio antes de recoger.",
+      "pistas": [
+        "Une las dos preguntas con and."
+      ],
+      "mensajeNoLogrado": "Deben entregarse exactamente 2 personas (o 1 si solo hay una).",
+      "solucionesIncorrectas": [
+        "for i in range(4):\n    elevador.subir(1)\n    if elevador.hayPasajero():\n        elevador.recoger()\nfor i in range(4):\n    elevador.bajar(1)\nelevador.soltar()"
+      ]
+    },
+    {
+      "id": "41.2",
+      "tipo": "RESOLVER",
+      "titulo": "Dos viajes",
+      "enunciado": "Hay 4 pasajeros, en parejas por piso, y caben 2. Haz DOS viajes completos: en cada uno sube hasta encontrar a una pareja, recógela, baja a la planta baja y suéltala. Se prueba en 4 edificios.",
+      "codigoInicial": "",
+      "solucionReferencia": "viajes = 0\nwhile viajes < 2:\n    while not elevador.hayPasajero():\n        elevador.subir(1)\n    elevador.recoger()\n    while elevador.piso() > 1:\n        elevador.bajar(1)\n    elevador.soltar()\n    viajes = viajes + 1",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "if",
+        "else",
+        "not"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero"
+      ],
+      "casos": [
+        {
+          "etiqueta": "Pasajeros en 2, 2, 4, 4",
+          "escenario": {
+            "pasajeros": [
+              2,
+              2,
+              4,
+              4
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 3, 3, 5, 5",
+          "escenario": {
+            "pasajeros": [
+              3,
+              3,
+              5,
+              5
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 2, 2, 3, 3",
+          "escenario": {
+            "pasajeros": [
+              2,
+              2,
+              3,
+              3
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        },
+        {
+          "etiqueta": "Pasajeros en 4, 4, 5, 5",
+          "escenario": {
+            "pasajeros": [
+              4,
+              4,
+              5,
+              5
+            ],
+            "capacidad": 2
+          },
+          "esperado": {
+            "tipo": "elevador_entrega"
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "while"
+          ]
+        }
+      },
+      "retroalimentacion": "Un ciclo dentro de otro: el de afuera cuenta los viajes.",
+      "pistas": [
+        "El ciclo de afuera repite 2 veces todo el recorrido."
+      ],
+      "mensajeNoLogrado": "Con un solo viaje solo se entregan 2 de las 4 personas.",
+      "solucionesIncorrectas": [
+        "while not elevador.hayPasajero():\n    elevador.subir(1)\nelevador.recoger()\nwhile elevador.piso() > 1:\n    elevador.bajar(1)\nelevador.soltar()"
+      ]
+    },
+    {
+      "id": "41.3",
+      "tipo": "LIBRE",
+      "titulo": "Cabina chica libre",
+      "enunciado": "Experimenta con la cabina de 2 personas. Nada se evalúa.",
+      "codigoInicial": "# Prueba tus propios viajes\nelevador.subir(1)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "while",
+        "if",
+        "else",
+        "not"
+      ],
+      "metodosPermitidos": [
+        "subir",
+        "bajar",
+        "recoger",
+        "soltar",
+        "piso",
+        "hayPasajero",
+        "llevando"
+      ],
+      "escenario": {
+        "pasajeros": [
+          2,
+          2,
+          3
+        ]
+      },
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Ya sabes cuidar la capacidad.",
+      "pistas": [
+        "Prueba llevando()."
+      ]
+    }
+  ]
+}

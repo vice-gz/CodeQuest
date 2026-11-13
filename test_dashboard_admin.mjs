@@ -137,7 +137,7 @@ const STUBS = {
          export function mensajeRpc(e, d) { return d; }
          export async function obtenerPerfil() { return globalThis.__perfil; }`,
   nav: `export async function renderizarNav() {}`,
-  catalogo: `import { construirCatalogo } from "${RAIZ}/js/persistence/progreso.js";
+  catalogo: `import { construirCatalogo } from ${JSON.stringify(resolve(RAIZ, "js/persistence/progreso.js"))};
     export const catalogo = construirCatalogo(globalThis.__niveles);
     export const NIVELES_POR_MUNDO = Object.fromEntries(Object.values(catalogo.mundos).map((m) => [m.id, m.niveles.length]));
     export const TOTAL_NIVELES = catalogo.totalNiveles; export const MAX_ESTRELLAS = catalogo.maxEstrellas;

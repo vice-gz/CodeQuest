@@ -1,0 +1,205 @@
+{
+  "id": 50,
+  "mundo": 4,
+  "nombre": "Personalizando productos",
+  "concepto": "parámetros de una función",
+  "concepto_evaluado": "funciones_parametros",
+  "narrativa": "Una máquina que siempre hace lo mismo sirve poco. Con parámetros, la misma máquina fabrica productos distintos según los materiales que reciba.",
+  "escenario": {
+    "tipo": "fabrica",
+    "ancho": 8,
+    "alto": 1,
+    "robotPosicion": [
+      0,
+      0
+    ],
+    "robotDireccion": "este",
+    "mostrarEnergia": false,
+    "robot": false
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "50.1",
+      "tipo": "EXPLORAR",
+      "titulo": "La caja de materiales",
+      "enunciado": "Concepto nuevo: un PARÁMETRO es una ranura de entrada de la máquina. Cada llamada lleva una caja de materiales con los valores (los argumentos). Mira cómo n recibe 2 y luego 4.",
+      "codigoInicial": "def avanzar_n(n):\n    robot1.avanzar(n)\navanzar_n(2)\navanzar_n(4)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [
+        "avanzar"
+      ],
+      "escenario": {
+        "tipo": "fabrica",
+        "ancho": 8,
+        "alto": 1,
+        "robotPosicion": [
+          0,
+          0
+        ],
+        "robotDireccion": "este",
+        "mostrarEnergia": false,
+        "robot": true,
+        "objetivoPosicion": [
+          6,
+          0
+        ]
+      },
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "La misma máquina avanzó 2 y luego 4: lo que cambia es el valor que entra por el parámetro.",
+      "pistas": [
+        "Mira la caja azul que entra a la máquina y el chip n = ... que aparece dentro."
+      ]
+    },
+    {
+      "id": "50.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué entra y qué sale?",
+      "enunciado": "En Python, ¿qué muestra este programa?",
+      "codigoInicial": "def repetir(texto, veces):\n    for i in range(veces):\n        print(texto)\nrepetir(\"ok\", 2)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "ok una sola vez"
+        },
+        {
+          "id": "b",
+          "texto": "ok dos veces"
+        },
+        {
+          "id": "c",
+          "texto": "texto veces"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "texto vale \"ok\" y veces vale 2: el for muestra ok dos veces. Una función puede tener varios parámetros.",
+      "pistas": [
+        "Primero reemplaza los parámetros por los valores de la llamada."
+      ]
+    },
+    {
+      "id": "50.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Una máquina que repite lo que le dan",
+      "enunciado": "Construye la función decir(mensaje) que muestre el mensaje que reciba. Llámala con \"A\" y después con \"B\".",
+      "codigoInicial": "",
+      "solucionReferencia": "def decir(mensaje):\n    print(mensaje)\ndecir(\"A\")\ndecir(\"B\")",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "A",
+              "B"
+            ]
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "decir",
+            "parametros": 1
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "decir",
+            "minimo": 2
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "def"
+          ]
+        }
+      },
+      "retroalimentacion": "Un parámetro hace que una sola máquina sirva para muchas piezas.",
+      "pistas": [
+        "def decir(mensaje): y dentro print(mensaje)."
+      ],
+      "mensajeNoLogrado": "Debe verse A y luego B, usando la función decir con un parámetro.",
+      "solucionesIncorrectas": [
+        "print(\"A\")\nprint(\"B\")"
+      ]
+    },
+    {
+      "id": "50.4",
+      "tipo": "ESCRIBIR",
+      "titulo": "Fabrica productos distintos",
+      "enunciado": "Construye la función fabricar(producto, cantidad) que muestre una línea con el producto, una x y la cantidad (por ejemplo: tornillos x 5). Úsala para fabricar tornillos (5) y luego tuercas (3).",
+      "codigoInicial": "",
+      "solucionReferencia": "def fabricar(producto, cantidad):\n    print(producto + \" x \" + str(cantidad))\nfabricar(\"tornillos\", 5)\nfabricar(\"tuercas\", 3)",
+      "instruccionesPermitidas": [
+        "print",
+        "asignacion",
+        "def",
+        "for",
+        "return",
+        "booleanos",
+        "str",
+        "int",
+        "float"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "tornillos x 5",
+              "tuercas x 3"
+            ]
+          },
+          {
+            "tipo": "funcion_definida",
+            "nombre": "fabricar",
+            "parametros": 2
+          },
+          {
+            "tipo": "funcion_llamada",
+            "nombre": "fabricar",
+            "minimo": 2
+          }
+        ],
+        "requiere": {
+          "construcciones": [
+            "def"
+          ]
+        }
+      },
+      "retroalimentacion": "Dos parámetros: una sola máquina, dos productos distintos.",
+      "pistas": [
+        "Recuerda que para unir un texto con un número hay que usar str()."
+      ],
+      "mensajeNoLogrado": "Debe mostrar tornillos x 5 y tuercas x 3 con una función fabricar de dos parámetros.",
+      "solucionesIncorrectas": [
+        "print(\"tornillos x 5\")\nprint(\"tuercas x 3\")"
+      ]
+    }
+  ]
+}

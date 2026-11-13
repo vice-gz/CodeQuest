@@ -2,6 +2,7 @@
   "id": 5,
   "mundo": 1,
   "nombre": "La orden equivocada",
+  "ordinal": 5,
   "concepto": "sintaxis, errores, mensajes del sistema",
   "concepto_evaluado": "errores_de_sintaxis",
   "narrativa": "Robot1 recibe órdenes mal escritas. Los mensajes de error no son castigos: son información.",
@@ -45,7 +46,8 @@
       "retroalimentacion": "SYN_001 resuelto: cada paréntesis que abres debe cerrarse.",
       "pistas": [
         "Mira el final de la línea."
-      ]
+      ],
+      "max_lineas_recomendadas": 1
     },
     {
       "id": "5.3",
@@ -104,7 +106,8 @@
         "El método correcto para moverse es avanzar.",
         "La meta está una fila más abajo: usa girar(\"sur\")."
       ],
-      "mensajeNoLogrado": "Robot1 debe terminar en (3,1)."
+      "mensajeNoLogrado": "Robot1 debe terminar en (3,1).",
+      "max_lineas_recomendadas": 3
     }
   ],
   "escenario": {

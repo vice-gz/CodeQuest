@@ -1,0 +1,146 @@
+{
+  "id": 45,
+  "mundo": 1,
+  "nombre": "La Caja Fuerte",
+  "ordinal": 20,
+  "concepto": "integración del Mundo 1",
+  "concepto_evaluado": "jefe_mundo_1",
+  "narrativa": "El alcalde guardó el tesoro del pueblo en 4 cajas fuertes y olvidó los códigos. Solo queda una fórmula y los datos que llegan por la terminal.",
+  "narrativaSiguienteMundo": "¡Las 4 cajas están abiertas y el pueblo está a salvo! Robot1 ya domina los fundamentos y los datos. Ahora una mesa de cartas holográfica lo espera para enseñarle a decidir. Entra al Mundo 2: Lógica.",
+  "escenario": {
+    "tipo": "cajafuerte",
+    "total": 4
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "45.1",
+      "tipo": "RESOLVER",
+      "titulo": "La Caja Fuerte",
+      "enunciado": "El tesoro del pueblo está repartido en 4 cajas fuertes. Cada una se abre con un código que tú calculas. La terminal te enviará, uno por uno y como texto, cuatro números: a, b, c y d. El código es: la suma de a y b, multiplicada por c, menos el residuo de dividir d entre 7, es decir (a + b) * c - d % 7. Muéstralo con print(). Se prueba con las 4 cajas.",
+      "codigoInicial": "",
+      "solucionReferencia": "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\ncodigo = (a + b) * c - d % 7\nprint(codigo)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print",
+        "input",
+        "int",
+        "float",
+        "str"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "Caja 1",
+          "entradas": [
+            "12",
+            "5",
+            "3",
+            "40"
+          ],
+          "escenario": {
+            "combinacion": "46",
+            "indice": 1,
+            "total": 4
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "46"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Caja 2",
+          "entradas": [
+            "7",
+            "8",
+            "2",
+            "50"
+          ],
+          "escenario": {
+            "combinacion": "29",
+            "indice": 2,
+            "total": 4
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "29"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Caja 3",
+          "entradas": [
+            "20",
+            "1",
+            "4",
+            "23"
+          ],
+          "escenario": {
+            "combinacion": "82",
+            "indice": 3,
+            "total": 4
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "82"
+            ]
+          }
+        },
+        {
+          "etiqueta": "Caja 4",
+          "entradas": [
+            "0",
+            "0",
+            "9",
+            "6"
+          ],
+          "escenario": {
+            "combinacion": "-6",
+            "indice": 4,
+            "total": 4
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "-6"
+            ]
+          }
+        }
+      ],
+      "etiquetaEntrada": "La caja fuerte pide un número (a, b, c y d, en ese orden)",
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "int",
+            "input"
+          ],
+          "operadores": [
+            "+",
+            "*",
+            "-",
+            "%"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Jefe derrotado! Convertiste los datos, usaste cuatro operaciones y las 4 cajas se abrieron.",
+      "mensajeNoLogrado": "El código debe ser (a + b) * c - d % 7 para las 4 cajas. Recuerda convertir lo que llega de input().",
+      "solucionesIncorrectas": [
+        "print(46)",
+        "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\nprint((a + b) * c - d // 7)"
+      ],
+      "max_lineas_recomendadas": 6,
+      "sinPistas": true
+    }
+  ],
+  "jefe": true,
+  "max_lineas_recomendadas": 6
+}

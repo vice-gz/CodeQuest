@@ -64,6 +64,7 @@ const DESCRIPCION_TOKEN = {
   MAYOR: [">", "¿Es mayor?"],
   MENOR_IGUAL: ["<=", "¿Es menor o igual?"],
   MAYOR_IGUAL: [">=", "¿Es mayor o igual?"],
+  ASIGNACION_COMPUESTA: ["+= -= *= /= //= %=", "Reasigna operando con el valor actual: x += 1 es x = x + 1 (la variable debe existir antes)"],
   DOS_PUNTOS: [":", "Cierra la línea de un if / elif / else / while / for y abre su bloque"],
   INDENTACION: ["(sube la sangría)", "Aparece al empezar un bloque: la línea está más a la derecha que la anterior"],
   DEDENTACION: ["(baja la sangría)", "Aparece al terminar un bloque: una por cada nivel que se cierra"],
@@ -73,7 +74,7 @@ const GRUPOS = [
   ["Valores y nombres", ["IDENTIFICADOR", "NUMERO", "TEXTO"]],
   ["Operadores aritméticos", ["SUMA", "RESTA", "MULT", "DIV", "DIV_ENTERA", "MODULO", "POTENCIA"]],
   ["Operadores de comparación", ["IGUAL", "DISTINTO", "MENOR", "MAYOR", "MENOR_IGUAL", "MAYOR_IGUAL"]],
-  ["Asignación y delimitadores", ["ASIGNACION", "PUNTO", "PAREN_IZQ", "PAREN_DER", "COMA", "DOS_PUNTOS"]],
+  ["Asignación y delimitadores", ["ASIGNACION", "ASIGNACION_COMPUESTA", "PUNTO", "PAREN_IZQ", "PAREN_DER", "COMA", "DOS_PUNTOS"]],
   ["Estructura del programa (los inserta el lexer)", ["NUEVA_LINEA", "INDENTACION", "DEDENTACION", "EOF"]],
 ];
 const sinDescribir = Object.keys(TipoToken).filter((t) => !DESCRIPCION_TOKEN[t]);
@@ -373,7 +374,7 @@ nombre = "Beto"       # reasigna: el valor anterior se pierde
 total = a + b * 2     # el lado derecho es cualquier expresión
 \`\`\`
 
-Una sola variable por línea (no existe \`x = y = 3\`) y sin operadores abreviados (no existe \`x += 1\`; se escribe \`x = x + 1\`). El lado derecho puede incluir llamadas con valor: \`pos = robot1.posicion()\`, \`n = int(input())\`. Los nombres \`print\`, \`input\`, \`int\`, \`float\`, \`str\` y \`range\` están reservados (\`SEM_012\`).
+Una sola variable por línea (no existe \`x = y = 3\`) y con los atajos de Python para reasignar: \`ahorro += mesada\` es lo mismo que \`ahorro = ahorro + mesada\` (también \`-=\`, \`*=\`, \`/=\`, \`//=\` y \`%=\`; la variable debe tener valor antes, si no es \`SEM_001\` como en Python). El lado derecho puede incluir llamadas con valor: \`pos = robot1.posicion()\`, \`n = int(input())\`. Los nombres \`print\`, \`input\`, \`int\`, \`float\`, \`str\` y \`range\` están reservados (\`SEM_012\`).
 
 ### 6.2 Condicionales
 
@@ -418,7 +419,7 @@ Los argumentos pueden ser expresiones, pero deben dar **enteros** y el paso no p
 - **Métodos de un objeto**: \`robot1.avanzar(3)\`, \`elevador.subir(1)\`, \`mesa.voltear()\`.
 - Los métodos que **devuelven valor** también se pueden usar dentro de expresiones: \`if elevador.hayPasajero():\`, \`print(robot1.energia())\`. Usar en una expresión un método que no devuelve valor es el error \`SEM_009\`.
 
-### 6.6 Funciones: \`def\`, parámetros y \`return\` (Mundo 5)
+### 6.6 Funciones: \`def\`, parámetros y \`return\` (Mundo 4)
 
 \`\`\`python
 def calcular_area(ancho, alto):     # define la función (aún no se ejecuta nada)
@@ -434,7 +435,7 @@ print(calcular_area(4, 5))         # 20
 - **Variables locales.** Lo que se asigna dentro de una función es **local**: no existe fuera (\`SEM_015\`) y, si la función asigna una variable, esa variable es local en TODA la función, aunque haya una global con el mismo nombre (\`RUN_023\`, UnboundLocalError). Las variables globales sí se pueden **leer** desde la función. No existen \`global\` ni \`nonlocal\`.
 - **Recursión.** Una función puede llamarse a sí misma; el límite es de ${MAX_PROFUNDIDAD} llamadas anidadas (\`RUN_021\`, RecursionError).
 - **Nombre sin paréntesis** (\`x = doble\`) no ejecuta nada: error \`SEM_016\`. \`def\` solo va al margen izquierdo (\`SYN_018\`); \`return\` fuera de una función es \`SYN_017\`. Los nombres \`print\`, \`input\`, \`int\`, \`float\` y \`str\` no se pueden usar como nombre de función ni de parámetro.
-- **Mundo 5:** cada \`def\` se dibuja como una **máquina** en la fábrica; cada llamada la enciende (entra el argumento, sale el \`return\`).
+- **Mundo 4:** cada \`def\` se dibuja como una **máquina** en la fábrica; cada llamada la enciende (entra el argumento, sale el \`return\`).
 
 ### 6.7 Comentarios y líneas vacías
 
@@ -456,6 +457,7 @@ Son las de Python (más \`range\`, que únicamente vive dentro del \`for\`). \`e
 | \`int(valor)\` | Convierte a número entero | entero | \`int("12")\` → 12; \`int(3.9)\` → 3 (corta, no redondea); \`int(" 7 ")\` → 7. Un texto que no parece un entero (\`int("hola")\`, \`int("3.5")\`) → **ValueError** \`RUN_017\`: «El valor ingresado no es un número válido» |
 | \`float(valor)\` | Convierte a número decimal | decimal | \`float("3.5")\` → 3.5; \`float(3)\` → 3.0. Texto inválido → \`RUN_017\` |
 | \`str(valor)\` | Convierte a texto | texto | \`str(5)\` → \`"5"\`; \`str(2.5)\` → \`"2.5"\`; \`str(True)\` → \`"True"\`. Sirve para unir números con textos: \`"Total: " + str(5)\` |
+| \`round(x)\` / \`round(x, n)\` | Redondea un número | entero (con \`n\`: el tipo de \`x\`) | Igual que Python: \`round(2.7)\` → 3; en un empate exacto va al **par** (\`round(4.5)\` → 4, \`round(5.5)\` → 6); \`round(10 / 3, 2)\` → 3.33; \`round(2.675, 2)\` → 2.67 (el float guarda 2.67499…). Un texto → \`RUN_024\` (TypeError); \`n\` debe ser entero |
 | \`range(...)\` | Genera la cuenta de un \`for\` | — | Ver 6.4. Sus argumentos deben ser enteros |
 
 \`int\`, \`float\` y \`str\` necesitan **exactamente un** valor (\`SEM_013\`).
@@ -491,11 +493,34 @@ El laboratorio es una cuadrícula con **(0, 0) en la esquina superior izquierda*
 | \`posicion()\` → texto | Devuelve la posición como texto \`"(x,y)"\` | |
 | \`energia()\` → número | Devuelve la energía que le queda | |
 
-### 8.2 Mundo 2 · Memoria (sin objetos)
+### 8.2 Mundo 1 · la consola de datos y los minijuegos (sin objetos, salvo el pozo)
 
-El «Centro de Recuperación» dibuja cada variable como un **chip de memoria** (con su nombre, valor y tipo) y muestra los cables por donde viaja cada dato. No hay robot: se programa solo con variables, operadores, \`print\`, \`input\` y las conversiones \`int\`, \`float\` y \`str\`.
+El Mundo 1 (Fundamentos y Datos) **alterna escenarios**: cada nivel dice cuál usa en \`escenario.tipo\`. La **consola de datos** («Centro de Recuperación», Niveles 11 y 13) dibuja cada variable como un **chip de memoria** (nombre, valor y tipo) con los cables por donde viaja cada dato. Los **minijuegos** son dibujos sencillos que reaccionan a las variables del programa:
 
-### 8.3 Mundo 3 · Lógica (la mesa de cartas)
+| Nivel | Escenario | Qué reacciona |
+|---|---|---|
+| 6 · La Alcancía | \`alcancia\` | Cada vez que \`ahorro\` sube cae una moneda y se marca una semana del calendario (validación propia \`alcancia_depositos\`) |
+| 8 · Semáforos y Decisiones | \`semaforo\` | Las variables \`color\` y \`peaton\` (las trae cada caso); \`print("Avanzar")\` / \`print("Frenar")\` mueven el auto; cada condición del \`if\` se muestra con su True/False |
+| 10 · El Intercambio | \`vasos\` | \`vasoA\`, \`vasoB\`, \`vasoC\` y \`temp\` son vasos; al asignar, un chorro va del vaso que se lee al que recibe (copiar no vacía el origen) |
+| 12 · La Receta | \`receta\` | \`invitados\`, \`factor\` y los ingredientes; si una cantidad por piezas queda con decimales (4.5 huevos) se marca |
+| 15 · El Pozo | \`pozo\` | El objeto \`pozo\` (tabla de abajo) |
+| 17 · El Cronómetro | \`cronometro\` | \`total\` (lo trae cada caso) y la pantalla HH:MM:SS con \`horas\`, \`minutos\` y \`segundos\` |
+| 18 · La Boleta | \`boleta\` | \`promedio\` y \`asistencia\` (de cada caso); al guardar un lógico en \`aprobado\` cae el sello |
+| 19 · El Viaje | \`viaje\` | \`litros\`, \`costo\` y \`por_persona\` (avisa si hay más de 2 decimales) |
+| 20 👑 · La Caja Fuerte | \`cajafuerte\` | Las 4 entradas \`a\`, \`b\`, \`c\`, \`d\`; si \`print\` muestra la combinación de esa caja, se abre |
+
+**El objeto \`pozo\`** (Nivel 15): el agua está a \`profundidad\` metros (cambia en cada caso).
+
+| Método | Qué hace | Errores posibles |
+|---|---|---|
+| \`bajar()\` | Baja la cubeta 1 metro | Bajar estando ya en el agua (\`RUN_025\`) |
+| \`hayAgua()\` → lógico | ¿La cubeta ya llegó al agua? | |
+| \`llenar()\` | Llena la cubeta (solo dentro del agua) | |
+| \`subir(n)\` | Sube la cubeta n metros | n debe ser número |
+
+Validación propia: \`{ "tipo": "pozo", "lleno": true, "arriba": true }\`.
+
+### 8.3 Mundo 2 · Lógica (la mesa de cartas)
 
 Cada mesa trae **variables ya definidas** que el programa puede leer:
 
@@ -504,7 +529,7 @@ Cada mesa trae **variables ya definidas** que el programa puede leer:
 | \`carta1\`, \`carta2\`, \`carta3\`… | El valor de cada carta de la mano (número) |
 | \`total\` | La suma de los valores de la mano |
 | \`color1\`, \`color2\`… | \`"roja"\` o \`"negra"\` (cuando el nivel lo habilita) |
-| \`numero\` | Igual que \`total\` (solo en el Nivel 1 del Mundo 3) |
+| \`numero\` | Igual que \`total\` (solo en el Nivel 1 del Mundo 2) |
 
 Métodos de la mesa (solo en las fases «Libre»; son **visuales**: no cambian \`carta1\`, \`total\`, etc.):
 
@@ -531,7 +556,7 @@ El **piso 1 es la planta baja**; el edificio llega hasta el piso 5. Los pasajero
 
 ---
 
-### 8.5 Mundo 5 · Modularidad (la fábrica de robots)
+### 8.5 Mundo 4 · Modularidad (la fábrica de robots)
 
 No hay un objeto nuevo: lo que se dibuja son **tus funciones**, como una **línea de ensamble con visualización paso a paso**:
 
@@ -551,8 +576,12 @@ Validaciones propias de la fábrica (las usan los niveles): la función *se defi
 ### 8.6 Nivel 0 y Niveles Jefe
 
 - **Nivel 0 (antes del Mundo 1):** no se escribe código. Se hace clic en las tarjetas de un **diagrama de flujo** (\`Inicio\`, pasos como \`Caminar 3 pasos\` o \`Abrir la puerta\`, y \`Fin\`) en el orden correcto; cada tarjeta correcta se ejecuta en un pasillo y, si no tocaba todavía, Robot1 choca y se empieza de nuevo. Es el equivalente visual de «un programa es una lista de instrucciones en orden».
-- **Nivel 8 del Mundo 5 · El Gran Ensamblaje (Jefe):** hay que definir exactamente tres funciones, \`cabeza()\`, \`brazos()\` y \`piernas()\`, y llamarlas en ese orden; un **Robot1 gigante** se arma en pantalla conforme se ejecutan las llamadas. Sin pistas y con el editor en blanco.
+- **Nivel 8 del Mundo 4 · El Gran Ensamblaje (Jefe):** hay que definir exactamente tres funciones, \`cabeza()\`, \`brazos()\` y \`piernas()\`, y llamarlas en ese orden; un **Robot1 gigante** se arma en pantalla conforme se ejecutan las llamadas. Sin pistas y con el editor en blanco.
 - **Niveles Jefe** (último nivel de los Mundos 1 a 4): usan el CQL de su mundo, pero **sin botón de pistas**, con el editor en blanco y un solo enunciado; los de los Mundos 2 a 4 se prueban en varios casos.
+
+### 8.7 Mundo 5 · Proyecto (el taller)
+
+No hay sintaxis nueva ni objetos nuevos: el escenario es la **terminal y la memoria** de la consola de datos del Mundo 1 (chips de variables, cables de datos y terminal) en color rosa. Cada nivel es un proyecto que junta \`input()\`, \`if\`, \`while\` y variables, y se prueba con **varios casos** (si falla uno, no pasa; el panel dice cuál). Los casos pueden dejar variables ya cargadas en la memoria (la contraseña a revisar con su \`longitud\` y \`tiene_numero\`, o el \`secreto\` del juego de adivinanza), porque CQL no tiene \`len()\` ni operaciones sobre texto. El Nivel 4 es el **proyecto libre**: al menos 10 líneas de código (sin contar comentarios ni líneas vacías) con un \`if\`, un \`while\` y una variable; se comprueba que se ejecute sin errores. Al completarlo sale la **pantalla final** de CodeQuest.
 
 ## 9. Qué se desbloquea y cuándo
 
@@ -562,7 +591,7 @@ Esta tabla es la del **Diccionario** del juego:
 
 ${tablaDesbloqueos}
 
-Los operadores aritméticos \`+ - *\` se usan desde el Mundo 2; \`/\`, \`//\` y \`%\` se enseñan en el Nivel 5 del Mundo 2 (Calcula el reparto). \`**\` está disponible en todo CQL aunque ningún nivel lo exige.
+Los operadores aritméticos se enseñan en el Mundo 1: \`+\` y la reasignación en La Alcancía (Nivel 6), \`*\` y \`/\` en La Receta (Nivel 12) y \`//\` y \`%\` en El Cronómetro (Nivel 17). \`**\` está disponible en todo CQL aunque ningún nivel lo exige.
 
 ---
 
@@ -584,13 +613,13 @@ CQL es deliberadamente pequeño. Todo esto **no existe** (y la mayoría produce 
 | Listas, diccionarios, tuplas (\`[ ]\`, \`{ }\`) | \`LEX_001\`: carácter no reconocido |
 | Recorrer con \`for x in lista\` | \`SYN_012\`: el for solo acepta \`range(...)\` |
 | \`break\`, \`continue\`, \`pass\` | Se leen como nombres de variable sin sentido |
-| \`+=\`, \`-=\`, \`x = y = 3\`, varias asignaciones en una línea | Error de sintaxis |
+| \`**=\`, \`x = y = 3\`, varias asignaciones en una línea | Error de sintaxis |
 | \`;\` para separar instrucciones, llaves \`{ }\` | \`LEX_001\` |
 | Secuencias de escape en textos (\`\\n\`, \`\\"\`), textos de varias líneas, f-strings | No se interpretan |
 | \`print\` con varios argumentos | Solo se muestra el primero |
 | \`True\`/\`False\` como número (\`True + 1\`) o «verdadero/falso» de números y textos (\`if 5:\`) | \`RUN_015\`, \`RUN_006\` |
 | Comparaciones encadenadas (\`1 < x < 5\`) | \`SYN_014\` |
-| \`import\`, clases, módulos, \`len()\`, \`type()\`, \`round()\`, \`abs()\` y el resto de funciones de Python | No existen: solo \`print\`, \`input\`, \`int\`, \`float\`, \`str\` y \`range\` (\`SEM_003\`) |
+| \`import\`, clases, módulos, \`len()\`, \`type()\`, \`abs()\` y el resto de funciones de Python | No existen: solo \`print\`, \`input\`, \`int\`, \`float\`, \`str\`, \`round\` y \`range\` (\`SEM_003\`) |
 | \`entrada()\` (el nombre antiguo) | \`SEM_003\`: «se llama input()» |
 | Variables con tilde o \`ñ\` en el nombre | \`LEX_001\` |
 
@@ -598,7 +627,7 @@ CQL es deliberadamente pequeño. Todo esto **no existe** (y la mayoría produce 
 
 ## 12. Ejemplos
 
-### Mundo 1 — instrucciones en orden
+### Mundo 1 · Fundamentos y Datos — instrucciones en orden (robot)
 
 \`\`\`python
 robot1.avanzar(3)
@@ -607,7 +636,7 @@ robot1.avanzar(2)
 robot1.hablar("¡Llegué!")
 \`\`\`
 
-### Mundo 2 — variables, operadores y entrada
+### Mundo 1 · Fundamentos y Datos — variables, operadores, entrada y redondeo
 
 \`\`\`python
 MAXIMO = 100
@@ -621,9 +650,20 @@ print(17 / 4)               # 4.25  (/ siempre da decimal)
 print(17 // 4)              # 4     (división entera)
 print(17 % 5)               # 2     (residuo)
 print("Total: " + str(5))   # str() convierte el número en texto
+
+ahorro = 0
+ahorro += 100               # atajo de ahorro = ahorro + 100
+huevos = int(4.5 + 0.5)     # 5   (redondeo «de la escuela»)
+print(round(10 / 3, 2))     # 3.33
+aprobado = 85 >= 70 and 90 >= 80   # True, sin if
+
+metros = 0
+while not pozo.hayAgua():   # El Pozo: while, not y un contador
+    pozo.bajar()
+    metros += 1
 \`\`\`
 
-### Mundo 3 — decisiones
+### Mundo 2 — decisiones
 
 \`\`\`python
 if total > 21:
@@ -640,7 +680,7 @@ if not seguro:
     print("Peligro")
 \`\`\`
 
-### Mundo 4 — ciclos y el elevador
+### Mundo 3 — ciclos y el elevador
 
 \`\`\`python
 # Sube revisando cada piso y recoge a quien encuentre
@@ -656,7 +696,7 @@ elevador.soltar()
 print(elevador.llevando())   # 0
 \`\`\`
 
-### Mundo 5 — funciones
+### Mundo 4 — funciones
 
 \`\`\`python
 def calcular_area(ancho, alto):
@@ -674,7 +714,7 @@ def saludar(nombre):
 saludar("Robot1")
 \`\`\`
 
-Un error típico del Mundo 5 (la variable local no existe afuera):
+Un error típico del Mundo 4 (la variable local no existe afuera):
 
 \`\`\`python
 def calcular():
@@ -688,7 +728,7 @@ SEM_015 · NameError: la variable "resultado" solo existe dentro de la función 
 Haz que calcular() devuelva el valor con return, y guárdalo al llamarla: resultado = calcular(...)
 \`\`\`
 
-### Mundo 4, Nivel Jefe — la energía se planea
+### Mundo 3, Nivel Jefe — la energía se planea
 
 \`\`\`python
 # 5 pisos, cabina de 4 y batería de 10: un solo viaje de subida y uno de bajada gasta 8

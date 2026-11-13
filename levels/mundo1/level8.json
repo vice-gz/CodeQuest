@@ -1,205 +1,296 @@
 {
   "id": 8,
   "mundo": 1,
-  "nombre": "La salida",
-  "concepto": "integración total",
-  "concepto_evaluado": "integracion_mundo_1",
-  "narrativa": "Robot1 encontró la puerta, pero el pasillo se volvió un laberinto.",
-  "ensena": [
-    "robot1.recoger()"
-  ],
+  "nombre": "Semáforos y Decisiones",
+  "ordinal": 8,
+  "concepto": "if / else, comparaciones (==) y and / or",
+  "concepto_evaluado": "decisiones_basicas",
+  "narrativa": "En la avenida principal hay un cruce peligroso. El auto autónomo del pueblo necesita reglas para decidir cuándo avanzar y cuándo frenar.",
+  "escenario": {
+    "tipo": "semaforo",
+    "variables": {
+      "color": "rojo",
+      "peaton": false
+    }
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
   "fases": [
     {
       "id": "8.1",
-      "tipo": "RESOLVER",
-      "titulo": "Recupera la tarjeta",
-      "enunciado": "Instrucción nueva: robot1.recoger() levanta el objeto de la casilla donde está Robot1. La tarjeta morada está en (2,0): ve hasta ella y recógela.",
-      "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(2)\nrobot1.recoger()",
-      "instruccionesPermitidas": [],
-      "metodosPermitidos": [
-        "avanzar",
-        "recoger"
+      "tipo": "EXPLORAR",
+      "titulo": "El semáforo pregunta",
+      "enunciado": "Concepto nuevo: if hace una PREGUNTA y elige qué hacer. color == \"rojo\" compara (== significa «¿es igual?») y responde True o False. Si es True se ejecuta lo de adentro del if; si es False, lo del else. Las líneas de adentro llevan 4 espacios de sangría. Ejecuta: el semáforo está en rojo.",
+      "codigoInicial": "if color == \"rojo\":\n    print(\"Frenar\")\nelse:\n    print(\"Avanzar\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else",
+        "and",
+        "or",
+        "booleanos"
       ],
+      "metodosPermitidos": [],
       "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          2,
-          0
-        ]
+        "tipo": "ejecutado"
       },
-      "retroalimentacion": "Tarjeta asegurada. Primero llegar, después recoger: el orden importa.",
+      "retroalimentacion": "La condición color == \"rojo\" dio True, así que se ejecutó print(\"Frenar\").",
       "pistas": [
-        "Avanza hasta la casilla morada.",
-        "Después, en otra línea, robot1.recoger()."
-      ],
-      "escenario": {
-        "objetos": [
-          {
-            "posicion": [
-              2,
-              0
-            ],
-            "tipo": "tarjeta"
-          }
-        ],
-        "objetivoPosicion": [
-          2,
-          0
-        ],
-        "obstaculos": []
-      }
+        "Arriba a la izquierda de la escena aparece la condición y su resultado."
+      ]
     },
     {
       "id": "8.2",
       "tipo": "PREDECIR",
-      "titulo": "Lee el laberinto",
-      "enunciado": "Robot1 está en (0,0) mirando al este y hay un muro justo en (1,0). ¿Qué instrucción debe ir PRIMERO?",
-      "codigoInicial": "# muro en (1,0)\n# Robot1 en (0,0) mirando al este",
-      "instruccionesPermitidas": [],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar"
+      "titulo": "Las dos condiciones",
+      "enunciado": "and exige que las DOS condiciones sean True. Aquí el semáforo está en rojo pero NO hay peatón. ¿Qué muestra el programa?",
+      "codigoInicial": "color = \"rojo\"\npeaton = False\nif color == \"rojo\" and peaton == True:\n    print(\"Frenar\")\nelse:\n    print(\"Avanzar\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else",
+        "and",
+        "or",
+        "booleanos"
       ],
+      "metodosPermitidos": [],
       "opciones": [
         {
           "id": "a",
-          "texto": "robot1.avanzar(1), porque la meta está a la derecha"
+          "texto": "Frenar"
         },
         {
           "id": "b",
-          "texto": "robot1.girar(\"sur\"), porque el este está bloqueado"
+          "texto": "Avanzar"
         },
         {
           "id": "c",
-          "texto": "robot1.recoger(), para quitar el muro"
+          "texto": "Las dos cosas"
         }
       ],
       "respuestaCorrecta": "b",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Exacto: antes de moverte hay que mirar dónde están los muros.",
+      "retroalimentacion": "Correcto: color == \"rojo\" es True, pero peaton == True es False, y con and basta que una sea False para que todo sea False.",
       "pistas": [
-        "Si la casilla de al lado tiene muro, avanzar hacia allá es chocar."
+        "¿Las dos condiciones son verdaderas?"
       ]
     },
     {
       "id": "8.3",
-      "tipo": "RESOLVER",
-      "titulo": "Escapa del laberinto",
-      "enunciado": "La salida está en (5,3). Encuentra una ruta entre los muros y anuncia tu escape con print(\"Libre\").",
+      "tipo": "ESCRIBIR",
+      "titulo": "Rojo o peatón",
+      "enunciado": "El auto debe frenar si el semáforo está en rojo O si hay un peatón cruzando (peaton == True). En cualquier otro caso, avanza. Usa if, else y or, y muestra \"Frenar\" o \"Avanzar\". Se prueba con 4 cruces.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.girar(\"sur\")\nrobot1.avanzar(3)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)\nprint(\"Libre\")",
+      "solucionReferencia": "if color == \"rojo\" or peaton == True:\n    print(\"Frenar\")\nelse:\n    print(\"Avanzar\")",
       "instruccionesPermitidas": [
-        "print"
+        "print",
+        "if",
+        "else",
+        "and",
+        "or",
+        "booleanos"
       ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "retroceder",
-        "hablar",
-        "recoger"
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "verde · sin peatón",
+          "escenario": {
+            "variables": {
+              "color": "verde",
+              "peaton": false
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Avanzar"
+            ]
+          }
+        },
+        {
+          "etiqueta": "rojo · sin peatón",
+          "escenario": {
+            "variables": {
+              "color": "rojo",
+              "peaton": false
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Frenar"
+            ]
+          }
+        },
+        {
+          "etiqueta": "verde · con peatón",
+          "escenario": {
+            "variables": {
+              "color": "verde",
+              "peaton": true
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Frenar"
+            ]
+          }
+        },
+        {
+          "etiqueta": "amarillo · sin peatón",
+          "escenario": {
+            "variables": {
+              "color": "amarillo",
+              "peaton": false
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Avanzar"
+            ]
+          }
+        }
       ],
       "validacion": {
-        "tipo": "estado",
-        "posicionEsperada": [
-          5,
-          3
-        ],
-        "outputEsperado": "Libre"
-      },
-      "retroalimentacion": "¡Robot1 escapó! Secuencia, giros, obstáculos y salida en un solo programa.",
-      "pistas": [
-        "La columna 0 y la fila 3 están libres de muros.",
-        "No olvides el print(\"Libre\")."
-      ],
-      "mensajeNoLogrado": "Robot1 debe terminar en (5,3) y mostrar \"Libre\" con print().",
-      "escenario": {
-        "robotPosicion": [
-          0,
-          0
-        ],
-        "objetivoPosicion": [
-          5,
-          3
-        ],
-        "obstaculos": [
-          [
-            1,
-            1
-          ],
-          [
-            2,
-            1
-          ],
-          [
-            4,
-            1
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            3,
-            2
-          ],
-          [
-            4,
-            2
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "or"
           ]
-        ]
+        }
       },
+      "retroalimentacion": "Con or basta que UNA condición sea True para frenar.",
+      "pistas": [
+        "Une las dos preguntas con or.",
+        "if color == \"rojo\" or peaton == True:"
+      ],
+      "mensajeNoLogrado": "Revisa los 4 cruces: hay que frenar con rojo o con peatón.",
       "solucionesIncorrectas": [
-        "robot1.girar(\"sur\")\nrobot1.avanzar(3)\nrobot1.girar(\"este\")\nrobot1.avanzar(5)"
-      ]
+        "if color == \"rojo\":\n    print(\"Frenar\")\nelse:\n    print(\"Avanzar\")",
+        "print(\"Frenar\")"
+      ],
+      "max_lineas_recomendadas": 4
+    },
+    {
+      "id": "8.4",
+      "tipo": "RESOLVER",
+      "titulo": "Solo con luz verde",
+      "enunciado": "La patrulla escolar puso una regla más estricta: el auto solo avanza si el semáforo está en verde Y no hay peatón (peaton == False). Muestra \"Avanzar\" en ese caso y \"Frenar\" en cualquier otro. Se prueba con 5 cruces.",
+      "codigoInicial": "",
+      "solucionReferencia": "if color == \"verde\" and peaton == False:\n    print(\"Avanzar\")\nelse:\n    print(\"Frenar\")",
+      "instruccionesPermitidas": [
+        "print",
+        "if",
+        "else",
+        "and",
+        "or",
+        "booleanos"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "verde · sin peatón",
+          "escenario": {
+            "variables": {
+              "color": "verde",
+              "peaton": false
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Avanzar"
+            ]
+          }
+        },
+        {
+          "etiqueta": "verde · con peatón",
+          "escenario": {
+            "variables": {
+              "color": "verde",
+              "peaton": true
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Frenar"
+            ]
+          }
+        },
+        {
+          "etiqueta": "rojo · sin peatón",
+          "escenario": {
+            "variables": {
+              "color": "rojo",
+              "peaton": false
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Frenar"
+            ]
+          }
+        },
+        {
+          "etiqueta": "amarillo · sin peatón",
+          "escenario": {
+            "variables": {
+              "color": "amarillo",
+              "peaton": false
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Frenar"
+            ]
+          }
+        },
+        {
+          "etiqueta": "rojo · con peatón",
+          "escenario": {
+            "variables": {
+              "color": "rojo",
+              "peaton": true
+            }
+          },
+          "esperado": {
+            "tipo": "output_lineas",
+            "valores": [
+              "Frenar"
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "construcciones": [
+            "if",
+            "and"
+          ]
+        }
+      },
+      "retroalimentacion": "¡Cruce seguro! and pide que se cumplan las dos condiciones a la vez.",
+      "pistas": [
+        "Une las dos condiciones con and."
+      ],
+      "mensajeNoLogrado": "Solo se avanza con verde y sin peatón; todo lo demás es Frenar.",
+      "solucionesIncorrectas": [
+        "if color == \"verde\":\n    print(\"Avanzar\")\nelse:\n    print(\"Frenar\")",
+        "if color == \"verde\" or peaton == False:\n    print(\"Avanzar\")\nelse:\n    print(\"Frenar\")"
+      ],
+      "max_lineas_recomendadas": 4
     }
-  ],
-  "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 4,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      5,
-      3
-    ],
-    "obstaculos": [
-      [
-        1,
-        1
-      ],
-      [
-        2,
-        1
-      ],
-      [
-        4,
-        1
-      ],
-      [
-        1,
-        2
-      ],
-      [
-        3,
-        2
-      ],
-      [
-        4,
-        2
-      ]
-    ],
-    "mostrarEnergia": false
-  },
-  "estrellas": {
-    "base": true,
-    "sinPistas": true,
-    "primerIntento": true
-  }
+  ]
 }

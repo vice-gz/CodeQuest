@@ -2,6 +2,7 @@
   "id": 2,
   "mundo": 1,
   "nombre": "Primeros movimientos",
+  "ordinal": 2,
   "concepto": "secuencia, orden, estructura básica",
   "concepto_evaluado": "secuencia",
   "narrativa": "Robot1 da sus primeros pasos por un pasillo recto de la instalación.",
@@ -49,7 +50,8 @@
       "pistas": [
         "Robot1 empieza en la casilla 0.",
         "Cuenta las casillas hasta la estrella."
-      ]
+      ],
+      "max_lineas_recomendadas": 1
     },
     {
       "id": "2.3",
@@ -79,7 +81,8 @@
           5,
           0
         ]
-      }
+      },
+      "max_lineas_recomendadas": 2
     }
   ],
   "escenario": {

@@ -1,152 +1,166 @@
 {
   "id": 6,
   "mundo": 1,
-  "nombre": "La terminal",
-  "concepto": "input(), int(), print()",
-  "concepto_evaluado": "entrada_y_salida",
-  "narrativa": "La instalación tiene una terminal. Ahora los datos no los escribe el programa: los escribes tú.",
-  "ensena": [
-    "input()",
-    "int()"
-  ],
-  "fases": [
-    {
-      "id": "6.1",
-      "tipo": "EXPLORAR",
-      "titulo": "La terminal te pregunta",
-      "enunciado": "Instrucción nueva: input() pausa el programa y te pide un valor. Ejecuta, escribe lo que quieras en el campo que aparece y observa el panel de Salida.",
-      "codigoInicial": "input()",
-      "instruccionesPermitidas": [
-        "input"
-      ],
-      "metodosPermitidos": [],
-      "entradasEstudiante": [
-        "7"
-      ],
-      "etiquetaEntrada": "Escribe cualquier valor para probar la terminal",
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "El programa se detuvo hasta que tú escribiste. Ese valor viene de fuera del código.",
-      "pistas": [
-        "Puedes escribir un número o una palabra: pruébalo."
-      ]
-    },
-    {
-      "id": "6.4",
-      "tipo": "PREDECIR",
-      "titulo": "¿Qué hace input()?",
-      "enunciado": "Acabas de ejecutar input(). ¿Qué hace esta instrucción?",
-      "codigoInicial": "input()",
-      "instruccionesPermitidas": [
-        "input"
-      ],
-      "metodosPermitidos": [],
-      "opciones": [
-        {
-          "id": "a",
-          "texto": "Pausa el programa y espera a que escribas un valor"
-        },
-        {
-          "id": "b",
-          "texto": "Muestra la palabra input en el panel de Salida"
-        },
-        {
-          "id": "c",
-          "texto": "Hace avanzar a Robot1"
-        }
-      ],
-      "respuestaCorrecta": "a",
-      "validacion": {
-        "tipo": "ejecutado"
-      },
-      "retroalimentacion": "Correcto: input() detiene el programa hasta que la persona escribe algo y, además, DEVUELVE lo que escribió.",
-      "pistas": [
-        "¿Quién escribió el 7 que se pidió?"
-      ]
-    },
-    {
-      "id": "6.2",
-      "tipo": "ESCRIBIR",
-      "titulo": "Usa lo que escribes",
-      "enunciado": "input() DEVUELVE un valor, así que puedes ponerlo justo donde harías falta un dato: dentro de print(). Escribe un programa que muestre lo que teclees. Escribe 7 cuando se te pida.",
-      "codigoInicial": "",
-      "solucionReferencia": "print(input())",
-      "instruccionesPermitidas": [
-        "input",
-        "print"
-      ],
-      "metodosPermitidos": [],
-      "entradasEstudiante": [
-        "7"
-      ],
-      "etiquetaEntrada": "La terminal pregunta: ¿qué valor envías?",
-      "validacion": {
-        "tipo": "output",
-        "valorEsperado": "7"
-      },
-      "retroalimentacion": "input() se evaluó primero y su resultado pasó a print(). El valor se usó y se perdió: guardarlo vendrá después.",
-      "pistas": [
-        "Puedes escribir una instrucción dentro de otra.",
-        "print(input()) muestra lo que teclees."
-      ],
-      "mensajeNoLogrado": "Debes mostrar con print() el valor que escribes en la terminal. Escribe 7 cuando se te pida."
-    },
-    {
-      "id": "6.3",
-      "tipo": "RESOLVER",
-      "titulo": "Tú marcas el rumbo",
-      "enunciado": "En Python, input() SIEMPRE lee texto, incluso si escribes un número. Para contar casillas necesitas un número entero: conviértelo con int(input()). Haz que Robot1 avance las casillas que teclees, luego gire al sur y avance 1, para llegar a (3,1). Escribe 3 cuando se te pida.",
-      "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(int(input()))\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
-      "instruccionesPermitidas": [
-        "input",
-        "int"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar"
-      ],
-      "entradasEstudiante": [
-        "3"
-      ],
-      "etiquetaEntrada": "¿Cuántas casillas avanza Robot1 al este?",
-      "validacion": {
-        "tipo": "posicion",
-        "valorEsperado": [
-          3,
-          1
-        ]
-      },
-      "retroalimentacion": "Un valor que tú escribiste (convertido con int()) controló el movimiento de Robot1, sin estar en el código.",
-      "pistas": [
-        "Puedes poner int(input()) como argumento de avanzar().",
-        "Después gira al sur y avanza 1."
-      ],
-      "mensajeNoLogrado": "Robot1 debe terminar en (3,1) usando el valor que escribes en la terminal.",
-      "solucionesIncorrectas": [
-        "robot1.avanzar(input())\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)"
-      ]
-    }
-  ],
+  "nombre": "La Alcancía",
+  "ordinal": 6,
+  "concepto": "variables y reasignación (ahorro = ahorro + mesada)",
+  "concepto_evaluado": "reasignacion_variables",
+  "narrativa": "Robot1 salió del laboratorio y llegó al pueblo. Sus habitantes tienen problemas reales que se resuelven con datos. Lupita quiere juntar $400 en su alcancía en 4 semanas. Una variable será su alcancía: una caja con nombre que guarda el dinero.",
   "escenario": {
-    "tipo": "laboratorio",
-    "ancho": 4,
-    "alto": 2,
-    "robotPosicion": [
-      0,
-      0
-    ],
-    "robotDireccion": "este",
-    "objetivoPosicion": [
-      3,
-      1
-    ],
-    "mostrarEnergia": false
+    "tipo": "alcancia",
+    "variable": "ahorro",
+    "semanas": 4,
+    "meta": 400
   },
   "estrellas": {
     "base": true,
     "sinPistas": true,
     "primerIntento": true
-  }
+  },
+  "fases": [
+    {
+      "id": "6.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Tu primera variable",
+      "enunciado": "Concepto nuevo: una VARIABLE es una caja con nombre que guarda un valor. ahorro = 0 crea la caja ahorro con un 0 adentro. Después, ahorro = ahorro + 100 toma lo que ya había, le suma 100 y lo guarda otra vez en la MISMA caja (eso es reasignar). Ejecuta y mira caer la moneda.",
+      "codigoInicial": "ahorro = 0\nahorro = ahorro + 100\nprint(ahorro)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "La alcancía no se cambió por otra: la misma variable ahorro pasó de 0 a 100.",
+      "pistas": [
+        "Mira el panel de Memoria: el valor de ahorro cambia."
+      ]
+    },
+    {
+      "id": "6.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Cuánto hay en la alcancía?",
+      "enunciado": "Lee el programa con calma, renglón por renglón. ¿Qué muestra al final?",
+      "codigoInicial": "ahorro = 50\nahorro = ahorro + 100\nahorro = ahorro + 100\nprint(ahorro)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "100"
+        },
+        {
+          "id": "b",
+          "texto": "250"
+        },
+        {
+          "id": "c",
+          "texto": "50"
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: 50, luego 150 y luego 250. Cada reasignación parte del valor que ya tenía la variable.",
+      "pistas": [
+        "Ve sumando: empieza en 50."
+      ]
+    },
+    {
+      "id": "6.3",
+      "tipo": "MODIFICAR",
+      "titulo": "La mesada cambia",
+      "enunciado": "La mesada se guarda en su propia variable. Cambia SOLO el valor de mesada para que, después de dos semanas, la alcancía tenga 300.",
+      "codigoInicial": "mesada = 100\nahorro = 0\nahorro = ahorro + mesada\nahorro = ahorro + mesada\nprint(ahorro)",
+      "solucionReferencia": "mesada = 150\nahorro = 0\nahorro = ahorro + mesada\nahorro = ahorro + mesada\nprint(ahorro)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "variables",
+            "variables": {
+              "ahorro": 300
+            }
+          },
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "300"
+            ]
+          },
+          {
+            "tipo": "alcancia_depositos",
+            "minimo": 2
+          }
+        ],
+        "requiere": {
+          "variable": "mesada"
+        }
+      },
+      "retroalimentacion": "Con una variable para la mesada, basta cambiar un número y todo el programa se ajusta.",
+      "pistas": [
+        "Dos mesadas iguales deben sumar 300."
+      ],
+      "mensajeNoLogrado": "Después de dos depósitos de mesada, ahorro debe valer 300.",
+      "solucionesIncorrectas": [
+        "mesada = 100\nahorro = 0\nahorro = ahorro + mesada\nahorro = ahorro + mesada\nprint(ahorro)",
+        "ahorro = 300\nprint(ahorro)",
+        "mesada = 100\nahorro = 0\nahorro = ahorro + 300\nprint(ahorro)"
+      ],
+      "max_lineas_recomendadas": 5
+    },
+    {
+      "id": "6.4",
+      "tipo": "ESCRIBIR",
+      "titulo": "Cuatro semanas de ahorro",
+      "enunciado": "Empieza con ahorro = 0 y mesada = 100. Durante 4 semanas, cada semana suma la mesada a la alcancía con ahorro = ahorro + mesada. Python tiene un atajo que hace lo mismo: ahorro += mesada. Al final muestra ahorro (400).",
+      "codigoInicial": "",
+      "solucionReferencia": "ahorro = 0\nmesada = 100\nahorro += mesada\nahorro += mesada\nahorro += mesada\nahorro += mesada\nprint(ahorro)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "todos",
+        "condiciones": [
+          {
+            "tipo": "output_lineas",
+            "valores": [
+              "400"
+            ]
+          },
+          {
+            "tipo": "alcancia_depositos",
+            "minimo": 4
+          }
+        ],
+        "requiere": {
+          "variable": "mesada"
+        }
+      },
+      "retroalimentacion": "¡Meta cumplida! ahorro += mesada es lo mismo que ahorro = ahorro + mesada, pero más corto.",
+      "pistas": [
+        "Cuatro semanas = cuatro reasignaciones.",
+        "ahorro += mesada"
+      ],
+      "mensajeNoLogrado": "Deben caer 4 depósitos en la alcancía (uno por semana) y mostrarse 400.",
+      "solucionesIncorrectas": [
+        "ahorro = 400\nprint(ahorro)",
+        "ahorro = 0\nmesada = 100\nahorro = ahorro + 400\nprint(ahorro)",
+        "ahorro = 0\nahorro += 100\nahorro += 100\nahorro += 100\nahorro += 100\nprint(ahorro)"
+      ],
+      "max_lineas_recomendadas": 7
+    }
+  ]
 }

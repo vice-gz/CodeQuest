@@ -1,0 +1,296 @@
+{
+  "id": 10,
+  "mundo": 1,
+  "nombre": "El Intercambio",
+  "ordinal": 10,
+  "concepto": "intercambiar variables con una temporal (temp)",
+  "concepto_evaluado": "intercambio_variables",
+  "narrativa": "En la cafetería del pueblo los pedidos salieron cruzados: el agua está en el vaso del jugo y al revés. Hay que intercambiarlos sin tirar nada.",
+  "escenario": {
+    "tipo": "vasos",
+    "vasos": [
+      "vasoA",
+      "vasoB",
+      "temp"
+    ],
+    "variables": {
+      "vasoA": "agua",
+      "vasoB": "jugo"
+    }
+  },
+  "estrellas": {
+    "base": true,
+    "sinPistas": true,
+    "primerIntento": true
+  },
+  "fases": [
+    {
+      "id": "10.1",
+      "tipo": "EXPLORAR",
+      "titulo": "Copiar no es mover",
+      "enunciado": "Cada vaso es una variable y su líquido es un texto. vasoA = vasoB COPIA el líquido de B en A. Ejecuta y fíjate: ¿qué le pasa al agua que tenía vasoA?",
+      "codigoInicial": "vasoA = vasoB\nprint(vasoA)\nprint(vasoB)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "vasoA recibió una copia del jugo y su agua se perdió para siempre: una variable solo guarda UN valor.",
+      "pistas": [
+        "Mira el aviso rojo arriba de los vasos."
+      ]
+    },
+    {
+      "id": "10.2",
+      "tipo": "PREDECIR",
+      "titulo": "¿Dónde quedó el agua?",
+      "enunciado": "Después de vasoA = vasoB, ¿qué tienen los vasos?",
+      "codigoInicial": "vasoA = vasoB\nprint(vasoA)\nprint(vasoB)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Los dos tienen jugo y el agua se perdió"
+        },
+        {
+          "id": "b",
+          "texto": "Se intercambiaron: A tiene jugo y B tiene agua"
+        },
+        {
+          "id": "c",
+          "texto": "vasoB quedó vacío"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: asignar copia el valor; el valor viejo de vasoA se reemplaza y ya no está en ningún lado.",
+      "pistas": [
+        "vasoB no cambió en ningún renglón."
+      ]
+    },
+    {
+      "id": "10.3",
+      "tipo": "DEBUG",
+      "titulo": "El intercambio roto",
+      "enunciado": "Este programa quería intercambiar los líquidos, pero los dos vasos terminan iguales. Usa el vaso temp para guardar el líquido de vasoA ANTES de que se pierda (temp = vasoA). Se prueba con 3 pares de vasos.",
+      "codigoInicial": "vasoA = vasoB\nvasoB = vasoA\nprint(vasoA)\nprint(vasoB)",
+      "solucionReferencia": "temp = vasoA\nvasoA = vasoB\nvasoB = temp\nprint(vasoA)\nprint(vasoB)",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "casos": [
+        {
+          "etiqueta": "agua y jugo",
+          "escenario": {
+            "variables": {
+              "vasoA": "agua",
+              "vasoB": "jugo"
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "vasoA": "jugo",
+                  "vasoB": "agua"
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "jugo",
+                  "agua"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "leche y cafe",
+          "escenario": {
+            "variables": {
+              "vasoA": "leche",
+              "vasoB": "cafe"
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "vasoA": "cafe",
+                  "vasoB": "leche"
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "cafe",
+                  "leche"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "etiqueta": "te y refresco",
+          "escenario": {
+            "variables": {
+              "vasoA": "te",
+              "vasoB": "refresco"
+            }
+          },
+          "esperado": {
+            "tipo": "todos",
+            "condiciones": [
+              {
+                "tipo": "variables",
+                "variables": {
+                  "vasoA": "refresco",
+                  "vasoB": "te"
+                }
+              },
+              {
+                "tipo": "output_lineas",
+                "valores": [
+                  "refresco",
+                  "te"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "variable": "temp"
+        }
+      },
+      "retroalimentacion": "¡Intercambio perfecto! temp guardó el valor que estaba por perderse.",
+      "pistas": [
+        "Primero: temp = vasoA.",
+        "Luego vasoA = vasoB y al final vasoB = temp."
+      ],
+      "mensajeNoLogrado": "Al final vasoA debe tener lo que tenía vasoB y al revés, en los 3 pares.",
+      "solucionesIncorrectas": [
+        "vasoA = vasoB\nvasoB = vasoA\nprint(vasoA)\nprint(vasoB)",
+        "vasoA = \"jugo\"\nvasoB = \"agua\"\nprint(vasoA)\nprint(vasoB)",
+        "temp = vasoA\nvasoA = vasoB\nprint(vasoA)\nprint(vasoB)"
+      ],
+      "max_lineas_recomendadas": 5
+    },
+    {
+      "id": "10.4",
+      "tipo": "RESOLVER",
+      "titulo": "La ronda de tres vasos",
+      "enunciado": "Ahora hay tres vasos. El líquido de vasoA debe pasar a vasoB, el de vasoB a vasoC y el de vasoC a vasoA, sin perder ninguno. Tienes un solo vaso extra: temp. Se prueba con 3 rondas distintas.",
+      "codigoInicial": "",
+      "solucionReferencia": "temp = vasoC\nvasoC = vasoB\nvasoB = vasoA\nvasoA = temp",
+      "instruccionesPermitidas": [
+        "asignacion",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "escenario": {
+        "vasos": [
+          "vasoA",
+          "vasoB",
+          "vasoC",
+          "temp"
+        ],
+        "variables": {
+          "vasoA": "agua",
+          "vasoB": "jugo",
+          "vasoC": "leche"
+        }
+      },
+      "casos": [
+        {
+          "etiqueta": "agua, jugo, leche",
+          "escenario": {
+            "variables": {
+              "vasoA": "agua",
+              "vasoB": "jugo",
+              "vasoC": "leche"
+            }
+          },
+          "esperado": {
+            "tipo": "variables",
+            "variables": {
+              "vasoA": "leche",
+              "vasoB": "agua",
+              "vasoC": "jugo"
+            }
+          }
+        },
+        {
+          "etiqueta": "cafe, te, limonada",
+          "escenario": {
+            "variables": {
+              "vasoA": "cafe",
+              "vasoB": "te",
+              "vasoC": "limonada"
+            }
+          },
+          "esperado": {
+            "tipo": "variables",
+            "variables": {
+              "vasoA": "limonada",
+              "vasoB": "cafe",
+              "vasoC": "te"
+            }
+          }
+        },
+        {
+          "etiqueta": "refresco, chocolate, agua",
+          "escenario": {
+            "variables": {
+              "vasoA": "refresco",
+              "vasoB": "chocolate",
+              "vasoC": "agua"
+            }
+          },
+          "esperado": {
+            "tipo": "variables",
+            "variables": {
+              "vasoA": "agua",
+              "vasoB": "refresco",
+              "vasoC": "chocolate"
+            }
+          }
+        }
+      ],
+      "validacion": {
+        "tipo": "casos",
+        "requiere": {
+          "variable": "temp"
+        }
+      },
+      "retroalimentacion": "¡Ronda completa! Guardaste en temp el único valor que se iba a perder y moviste los demás en el orden correcto.",
+      "pistas": [
+        "¿Qué líquido se perdería primero? Guárdalo en temp.",
+        "Empieza por temp = vasoC."
+      ],
+      "mensajeNoLogrado": "A debe quedar con lo de C, B con lo de A y C con lo de B, en las 3 rondas.",
+      "solucionesIncorrectas": [
+        "temp = vasoA\nvasoA = vasoB\nvasoB = vasoC\nvasoC = temp"
+      ],
+      "max_lineas_recomendadas": 4
+    }
+  ]
+}

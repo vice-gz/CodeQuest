@@ -3,59 +3,95 @@
 .tarjetas-envoltura {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 4px 2px 8px;
+  gap: 16px;
+  padding: 6px 2px 10px;
 }
 
 .tarjetas-ayuda {
   margin: 0;
-  font-size: 0.9rem;
-  color: var(--texto-muted);
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(0, 245, 212, 0.08);
+  border-left: 3px solid var(--mundo-acento, var(--teal));
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--texto);
 }
 
 .tarjetas-columnas {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 18px;
+  align-items: start;
+}
+
+.tarjetas-columnas > div {
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(8, 12, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .tarjetas-titulo {
-  margin: 0 0 8px;
+  margin: 0 0 11px;
   font-size: 0.78rem;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--texto-muted);
+  color: var(--mundo-acento, var(--teal));
 }
 
 .tarjetas-banco {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 11px;
 }
 
 .tarjeta-flujo,
 .paso-diagrama {
   display: block;
   width: 100%;
-  min-height: 46px;
-  padding: 10px 12px;
+  min-height: 50px;
+  padding: 12px 16px;
   border: 2px solid var(--mundo-acento, var(--teal));
-  border-radius: 8px;
-  background: var(--bg-elevado);
-  color: inherit;
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(16, 26, 58, 0.92) 0%, rgba(10, 15, 34, 0.95) 100%);
+  color: #ffffff;
   font: inherit;
-  font-weight: 600;
+  font-size: 0.96rem;
+  font-weight: 700;
   text-align: center;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5), 0 8px 18px -6px rgba(0, 245, 212, 0.28);
 }
 
 .tarjeta-flujo {
   cursor: pointer;
-  transition: transform 0.12s, background 0.12s;
+  transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.tarjeta-flujo::before {
+  content: "⚡ ";
+  opacity: 0.85;
+}
+
+.tarjeta-inicio::before {
+  content: "▶ ";
+}
+
+.tarjeta-fin::before {
+  content: "🏁 ";
 }
 
 .tarjeta-flujo:hover:not(:disabled) {
-  background: rgba(94, 234, 212, 0.12);
-  transform: translateY(-1px);
+  background: linear-gradient(160deg, rgba(0, 245, 212, 0.24) 0%, rgba(16, 28, 64, 0.95) 100%);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.55), 0 0 22px -2px rgba(0, 245, 212, 0.55);
+}
+
+.tarjeta-flujo:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 .tarjeta-flujo:focus-visible {
@@ -63,17 +99,23 @@
   outline-offset: 2px;
 }
 
-/* formas de un diagrama de flujo: inicio y fin son óvalos; los pasos son rectángulos */
 .tarjeta-inicio,
 .tarjeta-fin {
   border-radius: 999px;
   border-color: var(--ambar);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5), 0 8px 18px -6px rgba(255, 200, 61, 0.32);
+}
+
+.tarjeta-inicio:hover:not(:disabled),
+.tarjeta-fin:hover:not(:disabled) {
+  background: linear-gradient(160deg, rgba(255, 200, 61, 0.24) 0%, rgba(28, 24, 14, 0.95) 100%);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.55), 0 0 22px -2px rgba(255, 200, 61, 0.55);
 }
 
 .tarjeta-error {
   animation: sacudir 0.4s;
-  border-color: #f87171;
-  background: rgba(248, 113, 113, 0.18);
+  border-color: var(--error);
+  background: rgba(255, 84, 112, 0.22);
 }
 
 @keyframes sacudir {
@@ -86,7 +128,7 @@
 .tarjetas-diagrama {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -94,27 +136,29 @@
 
 .paso-diagrama {
   position: relative;
-  background: rgba(94, 234, 212, 0.1);
+  background: linear-gradient(160deg, rgba(0, 245, 212, 0.18) 0%, rgba(12, 22, 48, 0.92) 100%);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4), 0 0 18px -6px rgba(0, 245, 212, 0.45);
 }
 
-/* flecha hacia el siguiente paso */
 .paso-diagrama:not(:last-child)::after {
   content: "↓";
   position: absolute;
   left: 50%;
-  bottom: -19px;
+  bottom: -20px;
   transform: translateX(-50%);
   color: var(--mundo-acento, var(--teal));
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  font-weight: 800;
   line-height: 1;
 }
 
 .diagrama-vacio {
-  padding: 14px 10px;
-  border: 2px dashed var(--borde);
-  border-radius: 8px;
+  padding: 22px 14px;
+  border: 2px dashed rgba(0, 245, 212, 0.35);
+  border-radius: 12px;
+  background: rgba(0, 245, 212, 0.04);
   color: var(--texto-muted);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   text-align: center;
 }
 
@@ -123,19 +167,60 @@
   cursor: progress;
 }
 
-/* En el Nivel 0 no hay consola, memoria ni estado: no se muestran. */
 body.modo-ordenar :is(.panel-salida, .panel-memoria, .panel-estado, #pestana-consola),
 body.modo-ordenar .contenedor-nivel :is(.panel-salida, .panel-memoria, .panel-estado) {
   display: none !important;
 }
 
-/* Nivel Jefe: la insignia de la barra de niveles y un tono dorado */
+/* Rediseño inmersivo del Nivel 0:
+   - «Aprende» va arriba a todo lo ancho como barra narrativa.
+   - El Pasillo 2D de Robot1 (.panel-mundo) y el panel «Tu Algoritmo» (.panel-codigo)
+     quedan LADO A LADO a la misma altura, grandes y conectados visualmente. */
+@media (min-width: 993px) {
+  body.modo-ordenar .contenedor-nivel {
+    grid-template-columns: minmax(420px, 1.08fr) minmax(420px, 1fr);
+    align-items: stretch;
+  }
+
+  body.modo-ordenar .contenedor-nivel > .columna {
+    display: contents;
+  }
+
+  body.modo-ordenar .panel-aprende {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+
+  body.modo-ordenar .panel-mundo {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  body.modo-ordenar .panel-codigo {
+    order: 3;
+    border: 1.5px solid color-mix(in srgb, var(--mundo-acento, var(--teal)) 65%, var(--borde));
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.45),
+      0 18px 42px -12px rgba(0, 0, 0, 0.7),
+      0 0 32px -10px var(--mundo-glow, rgba(0, 245, 212, 0.38));
+  }
+
+  body.modo-ordenar .panel-feedback {
+    grid-column: 1 / -1;
+    order: 4;
+  }
+}
+
+/* Nivel Jefe: insignia dorada brillante */
 .nivel-punto.nivel-jefe {
   border-color: var(--ambar);
   color: var(--ambar);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45), 0 0 12px -4px rgba(255, 200, 61, 0.45);
 }
 
-@media (max-width: 520px) {
+@media (max-width: 560px) {
   .tarjetas-columnas {
     grid-template-columns: minmax(0, 1fr);
   }

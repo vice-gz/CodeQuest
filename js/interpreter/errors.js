@@ -86,7 +86,7 @@ export const Errores = {
       educativo:
         nombre === "entrada"
           ? "CodeQuest usa Python de verdad: la función para pedir un dato se llama input(), ya no entrada()."
-          : "Aquí solo se usan estas funciones de Python: print, input, int, float y str (más las que definas tú con def).",
+          : "Aquí solo se usan estas funciones de Python: print, input, int, float, str y round (más las que definas tú con def).",
       sugerencia: nombre === "entrada" ? "Escribe input() en lugar de entrada()." : "Por ejemplo, usa print(...) para mostrar algo en pantalla.",
       linea,
     }),
@@ -472,9 +472,26 @@ Errores.conversionNinguno = (funcion, linea) =>
     sugerencia: "Agrega return con el valor en la función que estás llamando.",
     linea,
   });
+// round(): solo redondea números; los decimales que se piden deben ser un entero.
+Errores.roundInvalido = (motivo, linea) =>
+  new CQLError("RUN_024", motivo === "decimales" ? "TypeError: en round(x, n) la cantidad de decimales n debe ser un número entero" : `TypeError: round() solo redondea números (recibió ${motivo})`, {
+    educativo:
+      motivo === "decimales"
+        ? "round(x, n) redondea x a n decimales; n cuenta cifras, así que tiene que ser entero: round(3.14159, 2) da 3.14."
+        : "round() redondea un número: round(2.7) da 3 y round(3.14159, 2) da 3.14. Un texto (aunque tenga dígitos) no se puede redondear.",
+    sugerencia: motivo === "decimales" ? "Escribe los decimales sin punto: round(precio, 2)." : 'Si el dato viene de input(), conviértelo primero: round(float(input()), 1).',
+    linea,
+  });
 Errores.variableLocalSinValor = (nombre, funcion, linea) =>
   new CQLError("RUN_023", `UnboundLocalError: la variable "${nombre}" es local en ${funcion}() y todavía no tiene valor`, {
     educativo: "Si una función asigna una variable (x = ...), esa variable es LOCAL en toda la función: no se puede leer la de afuera con el mismo nombre antes de asignarle un valor.",
     sugerencia: "Recibe el valor como parámetro y devuelve el nuevo con return: def f(n): return n + 1   y afuera:  total = f(total)",
+    linea,
+  });
+// El Pozo (Mundo 1 · Nivel 15): la cubeta no puede bajar más allá del agua.
+Errores.cubetaEnElFondo = (linea = null) =>
+  new CQLError("RUN_025", "La cubeta ya está en el agua: si baja más, se atora en el fondo del pozo", {
+    educativo: "Bajaste la cubeta más metros de los que tiene el pozo. Por eso conviene PREGUNTAR antes de bajar: pozo.hayAgua() dice si la cubeta ya llegó al agua.",
+    sugerencia: "Usa un ciclo que baje solo mientras no haya agua:  while not pozo.hayAgua():",
     linea,
   });

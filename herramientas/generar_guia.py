@@ -15,16 +15,20 @@ RAIZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SIMBOLO = {"corazones": "♥", "diamantes": "♦", "treboles": "♣", "picas": "♠"}
 ROJO = {"corazones", "diamantes"}
 MUNDOS = {
-    1: ("Despertar", "Laboratorio tecnológico (cuadrícula 2D con **Robot1**; el Nivel 0 es un pasillo con una puerta)",
-        "El Nivel 0 enseña qué es un algoritmo ordenando tarjetas de un diagrama de flujo. Después: instrucciones (`avanzar`, `girar`, `hablar`, `retroceder`, `recoger`), `print()`, errores y `input()` con `int()`. El Nivel Jefe es el Laberinto ciego."),
-    2: ("Memoria", "Centro de Recuperación (módulos de memoria y terminal, **sin robot**)",
-        "Variables, tipos de dato, operadores, input() y conversiones de tipo (int, float, str). Se ven chips que se iluminan al guardar un valor y cables que muestran de dónde viene cada dato."),
-    3: ("Lógica", "Sala de Estrategia (mesa de cartas)",
+    1: ("Fundamentos y Datos", "Laboratorio de **Robot1** y el pueblo (cada nivel elige su escenario: robot, consola de datos o un minijuego)",
+        "Fusión de los antiguos Mundos 1 y 2, todo en Python. El Nivel 0 enseña qué es un algoritmo con un diagrama de flujo. Bloque A (robot): `print()`, `avanzar`, `girar` y errores. "
+        "Bloque B: variables y reasignación en **La Alcancía** (`ahorro += mesada`), `input()` e `int()` en la terminal y `if` / `and` / `or` en **Semáforos**. "
+        "Bloque C: el **Intercambio** de vasos (`temp`), identificadores, **La Receta** (`*`, `/`, `int(x + 0.5)` y `round()`) y constantes; cierra el jefe intermedio **Laberinto ciego**. "
+        "Bloque D: `while` y contadores en **El Pozo**, el puente de datos, `//` y `%` en **El Cronómetro**, expresiones booleanas sin `if` en **La Boleta**, `round(x, 2)` en **El Viaje** y el jefe final **La Caja Fuerte**. "
+        "Cada fase donde se escribe código trae un límite de líneas recomendado (contador «Líneas: X / Límite»)."),
+    2: ("Lógica", "Sala de Estrategia (mesa de cartas)",
         "Decisiones con `if`, `elif`, `else`, comparadores y `and` / `or` / `not`. Al ejecutar las cartas se voltean y cada pregunta se juzga con ✓ VERDADERO o ✗ FALSO."),
-    4: ("Automatización", "Complejo industrial (edificio de 5 pisos con elevador)",
+    3: ("Automatización", "Complejo industrial (edificio de 5 pisos con elevador)",
         "Ciclos `while` y `for`, contadores. Un letrero muestra en qué repetición va el ciclo; el piso 1 es la planta baja."),
-    5: ("Modularidad", "Fábrica de robots (cada función se construye como una **máquina**; a veces con una pista para Robot1)",
+    4: ("Modularidad", "Fábrica de robots (cada función se construye como una **máquina**; a veces con una pista para Robot1)",
         "Funciones: `def`, llamar una función, parámetros, `return`, variables locales y depuración de errores de ámbito y de orden."),
+    5: ("Proyecto", "Taller de proyectos (la terminal y la memoria, en color rosa)",
+        "No hay sintaxis nueva: cada nivel es un proyecto que integra `input()`, `if`, `while` y variables. Los niveles 1 a 3 se prueban con varios casos (si falla uno, no pasa) y el Nivel 4 es el proyecto libre que cierra CodeQuest."),
 }
 TIPOS = [
     ("EXPLORAR", "Solo hay que **ejecutar** el código que ya viene y observar qué pasa. Se pasa con cualquier ejecución sin errores."),
@@ -115,6 +119,8 @@ def describir(v):
         out.append(f"Debe llamar a `{v['nombre']}()` al menos {v.get('minimo', 1)} vez/veces.")
     elif t == "funcion_retorna":
         out.append(f"La función `{v['nombre']}` debe **devolver** un valor con `return` (no solo mostrarlo).")
+    elif t == "min_lineas":
+        out.append(f"El programa debe tener **al menos {v['minimo']} líneas de código** (las líneas vacías y los comentarios no cuentan).")
     elif t == "ensamble":
         out.append("Debe definir **exactamente** estas funciones: " + lista_es(f"`{p}()`" for p in v["partes"]) + ", y llamar a cada una al menos una vez, **en ese orden** (la primera llamada de cada una).")
     elif t == "posicion":
@@ -307,6 +313,10 @@ def principal():
     por_mundo = {}
     for n in niveles:
         por_mundo.setdefault(n["mundo"], []).append(n)
+    # Mismo orden que el catálogo del juego: por ordinal si TODOS los niveles del mundo lo declaran (Mundo 1), si no por id.
+    for lista in por_mundo.values():
+        if all(isinstance(n.get("ordinal"), int) for n in lista):
+            lista.sort(key=lambda n: n["ordinal"])
     # Número que ve el estudiante dentro de su mundo (igual que el catálogo del juego): el Nivel 0 declara su ordinal y el resto sigue contando.
     ordinal = {}
     for lista in por_mundo.values():
@@ -325,8 +335,8 @@ def principal():
     L.append("")
     L.append("## Cómo funciona todo")
     L.append("")
-    L.append("- **Mundos:** se juegan en orden. Un mundo se abre al completar **todos** los niveles del anterior, **incluido su Nivel Jefe** (👑, el último de cada mundo del 1 al 4: sin botón de pistas, editor en blanco y un solo enunciado). El **Nivel 0** (diagramas de flujo) es el primero del Mundo 1 y se da por hecho si ya se había jugado antes.")
-    L.append("- **Niveles:** cada nivel tiene 3 o 4 fases que se hacen en orden (el Nivel Jefe tiene una sola). En el juego los niveles se numeran dentro de su mundo (Nivel 0, 1, 2…); entre paréntesis va el número interno.")
+    L.append("- **Mundos:** se juegan en orden. Un mundo se abre al completar **todos** los niveles del anterior, **incluidos sus Niveles Jefe** (👑: sin botón de pistas, editor en blanco y un solo enunciado; cierran cada mundo, y el Mundo 1 tiene además un jefe intermedio, el Laberinto ciego). El **Nivel 0** (diagramas de flujo) es el primero del Mundo 1 y se da por hecho si ya se había jugado antes.")
+    L.append("- **Niveles:** cada nivel tiene de 3 a 5 fases que se hacen en orden (el Nivel Jefe tiene una sola). En el juego los niveles se numeran dentro de su mundo (Nivel 0, 1, 2…); entre paréntesis va el número interno.")
     L.append("- **Estrellas por nivel:** ⭐ completar todas las fases · ⭐⭐ además, sin usar pistas · ⭐⭐⭐ además, acertando a la **primera** en cada fase.")
     L.append("- **Casos:** en las fases de lógica y ciclos el programa se prueba en varias mesas o edificios. Un programa que solo funciona para el caso que se ve **no pasa**.")
     L.append("- **Sangría:** dentro de `if`, `while` y `for` las líneas van movidas 4 espacios (tecla **Tab**). Cada pregunta o ciclo termina en dos puntos `:`.")
@@ -369,12 +379,12 @@ def principal():
             L.append(f"**Concepto:** {n['concepto']}  ·  **Historia:** _{limpiar(n['narrativa'])}_")
             L.append("")
             if n.get("jefe"):
-                L.append("> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco y se prueba en varios casos.")
+                L.append("> 👑 **Nivel Jefe:** no hay botón de pistas, el editor empieza en blanco" + (" y se prueba en varios casos." if n["fases"][0].get("casos") else "."))
                 L.append("")
             for j, f in enumerate(n["fases"], 1):
                 L.extend(seccion_fase(n, f, j))
             if n.get("narrativaSiguienteMundo"):
-                L.append(f"> 🎬 **Al terminar este nivel** aparece la pantalla de transición: _{limpiar(n['narrativaSiguienteMundo'])}_")
+                L.append(f"> 🎬 **Al terminar este nivel** aparece la {'pantalla final de CodeQuest (con las estrellas totales y las líneas de código escritas)' if n['mundo'] == max(MUNDOS) else 'pantalla de transición'}: _{limpiar(n['narrativaSiguienteMundo'])}_")
                 L.append("")
 
     destino = os.path.join(RAIZ, "docs", "GUIA_NIVELES_MUNDOS_1_A_5.md")

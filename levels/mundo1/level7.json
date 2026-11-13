@@ -1,135 +1,148 @@
 {
   "id": 7,
   "mundo": 1,
-  "nombre": "El sistema desconocido",
-  "concepto": "experimentación, combinación de conceptos",
-  "concepto_evaluado": "experimentacion",
-  "narrativa": "El laboratorio se abre a zonas dañadas: aparecen muros. Robot1 tendrá que rodearlos.",
-  "ensena": [],
+  "nombre": "La terminal",
+  "concepto": "input(), int(), print()",
+  "concepto_evaluado": "entrada_y_salida",
+  "narrativa": "La instalación tiene una terminal. Ahora los datos no los escribe el programa: los escribes tú.",
+  "ensena": [
+    "input()",
+    "int()"
+  ],
   "fases": [
     {
       "id": "7.1",
-      "tipo": "PREDECIR",
-      "titulo": "Aparecen los muros",
-      "enunciado": "Los bloques grises son muros: Robot1 no puede atravesarlos. Hay uno en (2,0) y Robot1 está en (0,0) mirando al este. ¿Qué pasa si ejecutas robot1.avanzar(5)?",
-      "codigoInicial": "robot1.avanzar(5)",
-      "instruccionesPermitidas": [],
-      "metodosPermitidos": [
-        "avanzar"
+      "tipo": "EXPLORAR",
+      "titulo": "La terminal te pregunta",
+      "enunciado": "Instrucción nueva: input() pausa el programa y te pide un valor. Ejecuta, escribe lo que quieras en el campo que aparece y observa el panel de Salida.",
+      "codigoInicial": "input()",
+      "instruccionesPermitidas": [
+        "input"
       ],
-      "opciones": [
-        {
-          "id": "a",
-          "texto": "Atraviesa el muro y llega al final"
-        },
-        {
-          "id": "b",
-          "texto": "Choca con el muro y el programa se detiene"
-        },
-        {
-          "id": "c",
-          "texto": "Rodea el muro automáticamente"
-        }
+      "metodosPermitidos": [],
+      "entradasEstudiante": [
+        "7"
       ],
-      "respuestaCorrecta": "b",
+      "etiquetaEntrada": "Escribe cualquier valor para probar la terminal",
       "validacion": {
         "tipo": "ejecutado"
       },
-      "retroalimentacion": "Correcto: Robot1 no improvisa. Si hay un muro, choca. Rodearlo es tarea tuya.",
+      "retroalimentacion": "El programa se detuvo hasta que tú escribiste. Ese valor viene de fuera del código.",
       "pistas": [
-        "Robot1 hace exactamente lo que le indicas, ni más ni menos."
+        "Puedes escribir un número o una palabra: pruébalo."
       ]
     },
     {
       "id": "7.2",
-      "tipo": "RESOLVER",
-      "titulo": "Rodea los escombros",
-      "enunciado": "Llega a la batería en (5,0) sin chocar. Hay muros en (2,0) y (3,1). Usa girar() para buscar una fila libre.",
+      "tipo": "PREDECIR",
+      "titulo": "¿Qué hace input()?",
+      "enunciado": "Acabas de ejecutar input(). ¿Qué hace esta instrucción?",
+      "codigoInicial": "input()",
+      "instruccionesPermitidas": [
+        "input"
+      ],
+      "metodosPermitidos": [],
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Pausa el programa y espera a que escribas un valor"
+        },
+        {
+          "id": "b",
+          "texto": "Muestra la palabra input en el panel de Salida"
+        },
+        {
+          "id": "c",
+          "texto": "Hace avanzar a Robot1"
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "validacion": {
+        "tipo": "ejecutado"
+      },
+      "retroalimentacion": "Correcto: input() detiene el programa hasta que la persona escribe algo y, además, DEVUELVE lo que escribió.",
+      "pistas": [
+        "¿Quién escribió el 7 que se pidió?"
+      ]
+    },
+    {
+      "id": "7.3",
+      "tipo": "ESCRIBIR",
+      "titulo": "Usa lo que escribes",
+      "enunciado": "input() DEVUELVE un valor, así que puedes ponerlo justo donde harías falta un dato: dentro de print(). Escribe un programa que muestre lo que teclees. Escribe 7 cuando se te pida.",
       "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)\nrobot1.girar(\"norte\")\nrobot1.avanzar(2)",
-      "instruccionesPermitidas": [],
+      "solucionReferencia": "print(input())",
+      "instruccionesPermitidas": [
+        "input",
+        "print"
+      ],
+      "metodosPermitidos": [],
+      "entradasEstudiante": [
+        "7"
+      ],
+      "etiquetaEntrada": "La terminal pregunta: ¿qué valor envías?",
+      "validacion": {
+        "tipo": "output",
+        "valorEsperado": "7"
+      },
+      "retroalimentacion": "input() se evaluó primero y su resultado pasó a print(). El valor se usó y se perdió: guardarlo vendrá después.",
+      "pistas": [
+        "Puedes escribir una instrucción dentro de otra.",
+        "print(input()) muestra lo que teclees."
+      ],
+      "mensajeNoLogrado": "Debes mostrar con print() el valor que escribes en la terminal. Escribe 7 cuando se te pida.",
+      "max_lineas_recomendadas": 1
+    },
+    {
+      "id": "7.4",
+      "tipo": "RESOLVER",
+      "titulo": "Tú marcas el rumbo",
+      "enunciado": "En Python, input() SIEMPRE lee texto, incluso si escribes un número. Para contar casillas necesitas un número entero: conviértelo con int(input()). Haz que Robot1 avance las casillas que teclees, luego gire al sur y avance 1, para llegar a (3,1). Escribe 3 cuando se te pida.",
+      "codigoInicial": "",
+      "solucionReferencia": "robot1.avanzar(int(input()))\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)",
+      "instruccionesPermitidas": [
+        "input",
+        "int"
+      ],
       "metodosPermitidos": [
         "avanzar",
         "girar"
       ],
+      "entradasEstudiante": [
+        "3"
+      ],
+      "etiquetaEntrada": "¿Cuántas casillas avanza Robot1 al este?",
       "validacion": {
         "tipo": "posicion",
         "valorEsperado": [
-          5,
-          0
+          3,
+          1
         ]
       },
-      "retroalimentacion": "Bajaste hasta una fila despejada, cruzaste y volviste a subir.",
+      "retroalimentacion": "Un valor que tú escribiste (convertido con int()) controló el movimiento de Robot1, sin estar en el código.",
       "pistas": [
-        "La fila 2 está despejada de lado a lado.",
-        "Baja, cruza y sube."
+        "Puedes poner int(input()) como argumento de avanzar().",
+        "Después gira al sur y avanza 1."
       ],
-      "mensajeNoLogrado": "Robot1 no llegó a (5,0). Busca una fila sin muros para cruzar."
-    },
-    {
-      "id": "7.3",
-      "tipo": "RESOLVER",
-      "titulo": "Batería y puerta",
-      "enunciado": "Ahora hay DOS objetivos: la batería en (5,0) y la puerta en (5,2). Pasa por los dos, en el orden que quieras. Cada estrella se apaga al pisarla.",
-      "codigoInicial": "",
-      "solucionReferencia": "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)\nrobot1.girar(\"norte\")\nrobot1.avanzar(2)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)",
-      "instruccionesPermitidas": [
-        "print"
-      ],
-      "metodosPermitidos": [
-        "avanzar",
-        "girar",
-        "retroceder",
-        "hablar"
-      ],
-      "validacion": {
-        "tipo": "objetivos"
-      },
-      "retroalimentacion": "Pasaste por los dos objetivos: no hay una única ruta correcta.",
-      "pistas": [
-        "Puedes atenderlos en cualquier orden.",
-        "Mira qué estrella sigue encendida."
-      ],
-      "mensajeNoLogrado": "Faltó pisar alguno de los dos objetivos.",
-      "escenario": {
-        "objetivosPosicion": [
-          [
-            5,
-            0
-          ],
-          [
-            5,
-            2
-          ]
-        ]
-      },
+      "mensajeNoLogrado": "Robot1 debe terminar en (3,1) usando el valor que escribes en la terminal.",
       "solucionesIncorrectas": [
-        "robot1.avanzar(1)\nrobot1.girar(\"sur\")\nrobot1.avanzar(2)\nrobot1.girar(\"este\")\nrobot1.avanzar(4)"
-      ]
+        "robot1.avanzar(input())\nrobot1.girar(\"sur\")\nrobot1.avanzar(1)"
+      ],
+      "max_lineas_recomendadas": 3
     }
   ],
   "escenario": {
     "tipo": "laboratorio",
-    "ancho": 6,
-    "alto": 3,
+    "ancho": 4,
+    "alto": 2,
     "robotPosicion": [
       0,
       0
     ],
     "robotDireccion": "este",
     "objetivoPosicion": [
-      5,
-      0
-    ],
-    "obstaculos": [
-      [
-        2,
-        0
-      ],
-      [
-        3,
-        1
-      ]
+      3,
+      1
     ],
     "mostrarEnergia": false
   },
@@ -137,5 +150,6 @@
     "base": true,
     "sinPistas": true,
     "primerIntento": true
-  }
+  },
+  "ordinal": 7
 }

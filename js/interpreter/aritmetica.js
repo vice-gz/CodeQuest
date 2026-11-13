@@ -149,3 +149,62 @@ export function convertirADecimal(v, linea) {
   if (!PATRON_DECIMAL.test(t)) throw Errores.valorNoNumerico("float", v, linea);
   return flotante(parseFloat(t), linea);
 }
+
+// ---------------------------------------------------------------- round()
+// Igual que Python 3:
+//   round(x)      -> int, al entero más cercano; en un empate exacto, al PAR:  round(2.5) -> 2 , round(3.5) -> 4
+//   round(x, n)   -> mismo tipo que x (float si x es float):  round(3.14159, 2) -> 3.14
+// Python redondea el valor EXACTO que guarda el float (2.675 en realidad es 2.67499999…, por eso round(2.675, 2) da 2.67).
+// Para reproducirlo se trabaja con el valor binario exacto del número (BigInt), no con x * 10 ** n.
+
+/** Valor exacto de un float finito como fracción num/den (den potencia de 2). */
+function fraccionExacta(x) {
+  const vista = new DataView(new ArrayBuffer(8));
+  vista.setFloat64(0, x);
+  const alto = vista.getUint32(0);
+  const bajo = vista.getUint32(4);
+  const exponente = (alto >>> 20) & 0x7ff;
+  let mantisa = (BigInt(alto & 0xfffff) << 32n) | BigInt(bajo);
+  let e = -1074; // subnormal
+  if (exponente !== 0) {
+    mantisa |= 1n << 52n;
+    e = exponente - 1075;
+  }
+  const num = alto >>> 31 ? -mantisa : mantisa;
+  return e >= 0 ? { num: num << BigInt(e), den: 1n } : { num, den: 1n << BigInt(-e) };
+}
+
+/** Entero más cercano a num/den (den > 0); los empates van al par. */
+function mitadAlPar(num, den) {
+  let q = num / den;
+  let r = num % den;
+  if (r < 0n) {
+    r += den;
+    q -= 1n;
+  }
+  const doble = 2n * r;
+  if (doble > den || (doble === den && (q & 1n) === 1n)) q += 1n;
+  return q;
+}
+
+export function redondear(x, decimales, linea) {
+  if (esLogico(x)) x = x ? 1 : 0;
+  if (!esNumero(x)) throw Errores.roundInvalido(nombreDeTipo(x), linea);
+  if (decimales !== undefined && !esEntero(decimales) && !esLogico(decimales)) throw Errores.roundInvalido("decimales", linea);
+  const n = decimales === undefined ? 0 : Number(decimales);
+  const potencia = 10n ** BigInt(Math.abs(n));
+
+  if (esEntero(x)) {
+    if (n >= 0) return x; // round(7) y round(7, 2) siguen siendo 7
+    return entero(Number(mitadAlPar(BigInt(x), potencia) * potencia), linea); // round(1250, -2) -> 1200
+  }
+
+  const v = x.v;
+  if (!Number.isFinite(v)) throw Errores.enteroDemasiadoGrande(linea);
+  const { num, den } = fraccionExacta(v);
+  const q = n >= 0 ? mitadAlPar(num * potencia, den) : mitadAlPar(num, den * potencia);
+  if (decimales === undefined) return entero(Number(q), linea);
+  let resultado = n >= 0 ? parseFloat(`${q}e-${n}`) : Number(q * potencia);
+  if (resultado === 0 && v < 0) resultado = -0; // round(-0.4, 0) -> -0.0, como Python
+  return flotante(resultado, linea);
+}

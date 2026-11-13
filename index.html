@@ -12,6 +12,7 @@
 
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/landing.css" />
+<link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body class="pagina-landing">
 
@@ -23,82 +24,135 @@
     <a href="conceptos.html">Conceptos</a>
     <a href="#mundos">Mundos</a>
     <a href="#proyecto">Proyecto</a>
-    <a href="auth.html" class="boton boton-primario boton-chico">Iniciar sesión</a>
   </nav>
+  <!-- Sesión: sin sesión se ve «Iniciar sesión»; con sesión, «Hola, nombre» con su menú (js/ui/menuUsuario.js) -->
+  <div class="nav-auth" id="nav-auth" data-estado="cargando">
+    <a href="auth.html" class="boton boton-primario boton-chico" data-auth="invitado">Iniciar sesión</a>
+    <div class="menu-usuario" data-auth="sesion" hidden>
+      <button type="button" class="menu-usuario-boton" id="menu-usuario-boton" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-usuario-lista">
+        <span class="menu-usuario-avatar" id="menu-usuario-avatar" aria-hidden="true">?</span>
+        <span class="menu-usuario-saludo">Hola, <strong id="menu-usuario-nombre"></strong></span>
+        <span class="menu-usuario-flecha" aria-hidden="true">▾</span>
+      </button>
+      <div class="menu-usuario-lista" id="menu-usuario-lista" role="menu" hidden>
+        <a role="menuitem" href="perfil.html">Mi perfil</a>
+        <a role="menuitem" href="mundos.html">Jugar</a>
+        <button role="menuitem" type="button" id="menu-usuario-salir">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
 </header>
 
 <main>
 
   <!-- 1. Hero -->
   <section class="hero" id="inicio">
-    <p class="hero-etiqueta">Aprende Programando</p>
-    <h1>CodeQuest</h1>
-    <p class="hero-subtitulo">Aprende a programar resolviendo retos con Robot1</p>
-    <div class="hero-botones">
-      <a class="boton boton-primario boton-grande" href="auth.html?modo=registro">Empezar a jugar</a>
-      <a class="boton boton-secundario boton-grande" href="auth.html">Iniciar sesión</a>
+    <div class="hero-grid">
+      <div class="hero-columna-texto">
+        <p class="hero-etiqueta"><span class="pulso-neon" aria-hidden="true"></span> Aprende Programando · Python 3</p>
+        <h1>CodeQuest</h1>
+        <p class="hero-subtitulo">Aprende a programar guiando a <strong>Nix, el ser de datos</strong>, por 5 mundos interactivos llenos de retos visuales.</p>
+        <div class="hero-botones">
+          <a class="boton boton-primario boton-grande" href="auth.html?modo=registro" data-auth="invitado">🚀 Empezar a jugar</a>
+          <a class="boton boton-secundario boton-grande" href="auth.html" data-auth="invitado">Iniciar sesión</a>
+          <a class="boton boton-primario boton-grande" href="mundos.html" data-auth="sesion" hidden>▶ Continuar jugando</a>
+        </div>
+        <div class="hero-insignias" aria-hidden="true">
+          <span class="hero-insignia"><b>6</b> Mundos temáticos</span>
+          <span class="hero-insignia"><b>60</b> Niveles guiados</span>
+          <span class="hero-insignia"><b>★ 180</b> Estrellas</span>
+        </div>
+      </div>
+
+      <div class="hero-columna-visual">
+        <div class="hero-marco-imagen">
+          <img src="img/nix-mascota.webp" width="640" height="640" alt="Ilustración Principal de Nix, el ser de datos: mascota cósmica flotante morada y cian" class="hero-imagen" loading="eager" />
+          <div class="hero-ventana-codigo" aria-hidden="true">
+            <div class="ventana-barra">
+              <span class="ventana-punto punto-rojo"></span>
+              <span class="ventana-punto punto-ambar"></span>
+              <span class="ventana-punto punto-verde"></span>
+              <span class="ventana-archivo">mision_nix.py</span>
+            </div>
+            <pre class="hero-codigo"><span class="c-var">robot1</span>.<span class="c-fn">avanzar</span>(<span class="c-num">3</span>)
+<span class="c-fn">print</span>(<span class="c-txt">"Nix listo ★"</span>)</pre>
+          </div>
+        </div>
+      </div>
     </div>
-    <pre class="hero-codigo" aria-hidden="true"><span class="c-var">robot1</span>.<span class="c-fn">avanzar</span>(<span class="c-num">3</span>)
-<span class="c-fn">print</span>(<span class="c-txt">"Robot1 listo"</span>)</pre>
   </section>
 
   <!-- 2. ¿Qué es CodeQuest? -->
   <section class="seccion" id="que-es">
-    <h2>¿Qué es CodeQuest?</h2>
-    <p class="seccion-intro">
-      CodeQuest es un videojuego didáctico para quienes nunca han programado. Escribes instrucciones
-      en <strong>CQL</strong> (un lenguaje sencillo, muy parecido a Python) y ves cómo
-      <strong>Robot1</strong> las ejecuta en un laboratorio 2D. Si te equivocas, el juego te explica qué pasó
-      y cómo corregirlo.
-    </p>
+    <div class="seccion-cabecera">
+      <span class="seccion-etiqueta">Experiencia Interactiva</span>
+      <h2>¿Qué es CodeQuest?</h2>
+      <p class="seccion-intro">
+        CodeQuest es un videojuego didáctico diseñado para quienes nunca han programado. Escribes instrucciones
+        en <strong>Python</strong> (el lenguaje real más usado en ciencia y tecnología) y ves cómo
+        <strong>Robot1</strong> las ejecuta al instante en un escenario 2D animado.
+      </p>
+    </div>
     <div class="rejilla-tres">
       <article class="tarjeta">
+        <div class="tarjeta-icono" aria-hidden="true">⚡</div>
         <h3>Aprendes haciendo</h3>
-        <p>Cada nivel se divide en fases: explorar, modificar, predecir, escribir y depurar código.</p>
+        <p>Cada nivel se divide en fases progresivas: explorar, modificar, predecir, escribir y depurar código en vivo.</p>
       </article>
       <article class="tarjeta">
+        <div class="tarjeta-icono" aria-hidden="true">🧭</div>
         <h3>Errores que enseñan</h3>
-        <p>Los mensajes de error están pensados para estudiantes: dicen qué falló y cómo arreglarlo.</p>
+        <p>Los mensajes de error están traducidos para estudiantes: te señalan la línea exacta, qué falló y cómo arreglarlo.</p>
       </article>
       <article class="tarjeta">
-        <h3>Tu progreso se guarda</h3>
-        <p>Estrellas, niveles y fases quedan en tu cuenta para que continúes desde cualquier dispositivo.</p>
+        <div class="tarjeta-icono" aria-hidden="true">🏆</div>
+        <h3>Tu progreso en la nube</h3>
+        <p>Estrellas, niveles, código autoguardado y estadísticas quedan en tu cuenta para continuar en cualquier dispositivo.</p>
       </article>
     </div>
   </section>
 
   <!-- 3. ¿Cómo funciona? -->
   <section class="seccion" id="como-funciona">
-    <h2>¿Cómo funciona?</h2>
+    <div class="seccion-cabecera">
+      <span class="seccion-etiqueta">Ciclo de Juego</span>
+      <h2>¿Cómo funciona?</h2>
+    </div>
     <ol class="pasos">
       <li class="paso">
         <span class="paso-numero">1</span>
         <h3>Aprender</h3>
-        <p>Lee la misión del nivel y descubre una idea nueva de programación.</p>
+        <p>Lee la misión del nivel y descubre una idea nueva de programación con ejemplos claros.</p>
       </li>
       <li class="paso">
         <span class="paso-numero">2</span>
         <h3>Programar</h3>
-        <p>Escribe tu código en el editor usando solo las instrucciones que ya conoces.</p>
+        <p>Escribe tu código Python en el editor inteligente usando las instrucciones desbloqueadas.</p>
       </li>
       <li class="paso">
         <span class="paso-numero">3</span>
         <h3>Ejecutar</h3>
-        <p>Pulsa ▶ Ejecutar y observa a Robot1, la memoria y la salida en vivo.</p>
+        <p>Pulsa ▶ Ejecutar y observa a Robot1, los chips de memoria y la consola reaccionar en tiempo real.</p>
       </li>
     </ol>
   </section>
 
   <!-- 4. Mundos -->
   <section class="seccion" id="mundos">
-    <h2>Los mundos</h2>
-    <p class="seccion-intro">Cuatro mundos ya están disponibles: del laboratorio de Robot1 a un elevador que se automatiza solo. Los demás llegarán en próximos avances.</p>
+    <div class="seccion-cabecera">
+      <span class="seccion-etiqueta">Campaña Completa</span>
+      <h2>Los 5 mundos de CodeQuest</h2>
+      <p class="seccion-intro">Viaja desde el despertar de Robot1 en el laboratorio y los problemas del pueblo hasta la fábrica de funciones y el taller de proyectos finales.</p>
+    </div>
     <div class="rejilla-mundos" id="rejilla-mundos"></div>
   </section>
 
   <!-- 5. Sobre el proyecto -->
   <section class="seccion" id="proyecto">
-    <h2>Sobre el proyecto</h2>
+    <div class="seccion-cabecera">
+      <span class="seccion-etiqueta">Ficha Técnica</span>
+      <h2>Sobre el proyecto</h2>
+    </div>
     <div class="proyecto-datos">
       <dl>
         <dt>Proyecto</dt>
@@ -106,20 +160,16 @@
         <dt>Propósito</dt>
         <dd>Enseñar fundamentos de programación a estudiantes principiantes mediante un videojuego educativo.</dd>
         <dt>Institución</dt>
-        <dd>Tecnológico Nacional de México campus Pachuca (TecNM Pachuca)</dd>
+        <dd><!-- EDITAR: nombre de tu institución -->Tecnológico Nacional de México campus Pachuca (TecNM Pachuca)</dd>
         <dt>Autores</dt>
-        <dd>
-          Ximena Alcantara            <br>
-          Regina Dominguez Hernandez  <br>
-          Jordan Vicente Vite Gomez   <br>
-        </dd>
+        <dd><!-- EDITAR: autores del proyecto -->[Nombre del autor o autores]</dd>
         <dt>Asesor/a</dt>
-        <dd>Austria</dd>
+        <dd><!-- EDITAR: asesor/a -->[Nombre del asesor/a]</dd>
         <dt>Tecnologías</dt>
         <dd class="chips">
-          <span class="chip-instruccion">HTML</span>
-          <span class="chip-instruccion">CSS</span>
-          <span class="chip-instruccion">JavaScript</span>
+          <span class="chip-instruccion">HTML5</span>
+          <span class="chip-instruccion">CSS3 Glass &amp; Neon</span>
+          <span class="chip-instruccion">JavaScript ES6+</span>
           <span class="chip-instruccion">Canvas 2D</span>
           <span class="chip-instruccion">Supabase</span>
         </dd>
@@ -129,10 +179,14 @@
 
   <!-- Llamada final -->
   <section class="seccion seccion-cta">
-    <h2>¿Listo para programar con Robot1?</h2>
-    <div class="hero-botones">
-      <a class="boton boton-primario boton-grande" href="auth.html?modo=registro">Empezar a jugar</a>
-      <a class="boton boton-secundario boton-grande" href="auth.html">Iniciar sesión</a>
+    <div class="cta-caja">
+      <h2>¿Listo para programar con Robot1?</h2>
+      <p class="cta-sub">Entra al laboratorio, desbloquea los 5 mundos y conviértete en creador de código.</p>
+      <div class="hero-botones">
+        <a class="boton boton-primario boton-grande" href="auth.html?modo=registro" data-auth="invitado">🚀 Empezar a jugar</a>
+        <a class="boton boton-secundario boton-grande" href="auth.html" data-auth="invitado">Iniciar sesión</a>
+        <a class="boton boton-primario boton-grande" href="mundos.html" data-auth="sesion" hidden>▶ Continuar jugando</a>
+      </div>
     </div>
   </section>
 </main>
@@ -141,7 +195,7 @@
   <div class="pie-bloque">
     <strong>CodeQuest · Aprende Programando</strong>
     <span>Proyecto educativo para enseñar fundamentos de programación a estudiantes principiantes.</span>
-    <span>Autores: Ximena Alcantara, Regina Dominguez Hernandez, Jordan Vicente Vite Gomez · Asesor/a: Austria</span>
+    <span><!-- EDITAR: autores -->Autores: [Nombre del autor o autores] · Asesor/a: [Nombre del asesor/a]</span>
     <span>Tecnológico Nacional de México campus Pachuca (TecNM Pachuca)</span>
   </div>
   <nav aria-label="Pie de página">

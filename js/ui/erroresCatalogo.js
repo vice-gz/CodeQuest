@@ -10,6 +10,8 @@ export const NOMBRES_ERROR = {
   SYN_003: "Se esperaba = en la asignación",
   SYN_004: "Instrucción incompleta",
   SYN_019: "Decimal con coma",
+  RUN_024: "round() con un valor que no es número",
+  RUN_025: "La cubeta bajó más allá del agua",
   SYN_005: "Falta el valor tras =",
   SEM_001: "Variable que no existe",
   SEM_002: "Método de Robot1 que no existe",

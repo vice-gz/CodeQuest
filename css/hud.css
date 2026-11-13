@@ -1,0 +1,376 @@
+/* hud.css — pantalla del nivel «de videojuego»
+   · Escritorio: la ESCENA a la izquierda (60 %) y el código a la derecha (40 %).
+   · Misión de una línea sobre la escena; el texto largo queda en «Más info».
+   · Lámparas de casos (✓ / ✗ con símbolo), Nix con globo de pista y retroalimentación plegable.
+   Sin backdrop-filter ni resplandores: el tablero ya anima y todo lo demás tiene que ser barato. */
+
+:root {
+  --hud-borde: var(--mundo-acento, #5eead4);
+  --hud-ok: #38b764;
+  --hud-mal: #ef5b6b;
+}
+
+/* ---------------------------------------------------------------- Escritorio: 60 % escena · 40 % código */
+@media (min-width: 993px) {
+  .contenedor-nivel {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    max-width: 1560px;
+  }
+
+  .columna-derecha {
+    order: -1; /* la escena (y su terminal) pasa a la izquierda */
+  }
+
+  .panel-feedback {
+    grid-column: 1 / -1;
+  }
+
+  /* «Más info» plegado: la columna del código solo trae título, progreso y el editor */
+  .panel-aprende .mas-info[data-abierto="false"] {
+    display: none;
+  }
+
+  .panel-aprende .panel-encabezado {
+    margin-bottom: 4px;
+  }
+}
+
+/* Con pantalla alta, la escena se queda a la vista mientras se escribe en la terminal de abajo (al pedir un input() el navegador
+   desplazaba la página y la máquina se perdía de vista). */
+@media (min-width: 993px) and (min-height: 880px) {
+  .columna-derecha {
+    align-self: start;
+  }
+
+  .columna-derecha .panel-mundo {
+    position: sticky;
+    top: var(--offset-sticky, 128px);
+    z-index: 5;
+  }
+}
+
+#lienzo-mundo {
+  display: block;
+  margin: 0 auto;
+}
+
+/* En celular el texto largo vive en la pestaña Aprende y se ve completo */
+@media (max-width: 992px) {
+  .panel-aprende .mas-info {
+    display: block;
+  }
+
+  .hud-mas-info {
+    order: 3;
+  }
+}
+
+/* ---------------------------------------------------------------- HUD sobre la escena */
+.hud-nivel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.hud-mision {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  padding: 8px 12px;
+  background: #0d0a1a;
+  border: 2px solid var(--hud-borde);
+  border-radius: 4px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.55);
+  color: var(--texto, #e6f4ff);
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  line-height: 1.35;
+}
+
+.hud-etiqueta {
+  flex: none;
+  padding: 2px 6px;
+  background: var(--hud-borde);
+  color: #0d0a1a;
+  font-family: var(--fuente-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  border-radius: 2px;
+}
+
+.hud-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.hud-fases {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--fuente-mono, ui-monospace, monospace);
+  font-size: 0.85rem;
+}
+
+.hud-fases[hidden],
+.hud-diodos[hidden] {
+  display: none;
+}
+
+.hud-fase {
+  color: var(--texto-muted, #9aa3c7);
+}
+
+.hud-fase[data-estado="actual"] {
+  color: var(--hud-borde);
+}
+
+.hud-fase[data-estado="hecha"] {
+  color: var(--hud-ok);
+}
+
+.hud-fases-texto {
+  margin-left: 4px;
+  color: var(--texto-muted, #9aa3c7);
+  font-size: 0.75rem;
+}
+
+.hud-mas-info {
+  margin-left: auto;
+}
+
+/* ---- lámparas de casos: cada una lleva SÍMBOLO (○ ✓ ✗) además de color, para quien no distingue rojo de verde */
+.hud-diodos {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hud-diodo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 40px;
+  min-height: 32px;
+  padding: 3px 8px;
+  background: #1a1630;
+  border: 2px solid #4a4470;
+  border-radius: 4px;
+  color: var(--texto, #e6f4ff);
+  font-family: var(--fuente-mono, ui-monospace, monospace);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.hud-diodo-simbolo {
+  font-weight: 800;
+}
+
+.hud-diodo[data-estado="ok"] {
+  border-color: var(--hud-ok);
+  background: #123524;
+  color: #b7f5c9;
+}
+
+.hud-diodo[data-estado="mal"] {
+  border-color: var(--hud-mal);
+  background: #3d1620;
+  color: #ffc1c9;
+}
+
+.hud-diodo[aria-pressed="true"] {
+  outline: 2px solid var(--hud-borde);
+  outline-offset: 1px;
+}
+
+.hud-diodo:focus-visible {
+  outline: 3px solid #fff;
+}
+
+/* las lámparas del HUD reemplazan a los botones de caso de siempre (siguen en el DOM por accesibilidad y pruebas) */
+.selector-casos {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------- Nix y su globo de pista */
+/* Nix y su globo van en una franja DEBAJO del arte (no encima: tapaban la máquina). La franja siempre reserva su espacio, así la
+   escena no «salta» cuando Nix empieza o deja de hablar. */
+.lienzo-envoltura {
+  position: relative;
+}
+
+.nix-globo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.nix-globo[hidden] {
+  display: flex;
+  visibility: hidden;
+}
+
+.nix-sprite {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+}
+
+.nix-globo-cuerpo {
+  position: relative;
+  flex: 1;
+  padding: 8px 10px;
+  background: #f4f4f4;
+  color: #1a1c2c;
+  border: 2px solid #1a1c2c;
+  border-radius: 4px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  pointer-events: auto;
+}
+
+.nix-globo-cuerpo::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 14px;
+  border: 6px solid transparent;
+  border-right-color: #1a1c2c;
+  border-left: 0;
+}
+
+.nix-globo[data-estado="error"] .nix-globo-cuerpo {
+  background: #ffe3e7;
+  border-color: #b13e53;
+}
+
+.nix-globo[data-estado="exito"] .nix-globo-cuerpo {
+  background: #e3ffe9;
+  border-color: #257179;
+}
+
+.nix-texto {
+  margin: 0 0 4px;
+}
+
+.nix-detalle {
+  padding: 2px 8px;
+  background: #1a1c2c;
+  border: 0;
+  border-radius: 3px;
+  color: #f4f4f4;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.nix-detalle:focus-visible {
+  outline: 3px solid #3b5dc9;
+}
+
+/* ---------------------------------------------------------------- Retroalimentación plegable */
+.feedback-detalle-boton {
+  margin-left: auto;
+}
+
+.panel-feedback[data-plegado="true"] #feedback-contenido:not(.feedback-neutral) :is(.feedback-texto, .feedback-casos, .feedback-sugerencia, .feedback-codigo, .feedback-consejo) {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- Estilo pixel del Mundo 5 (Proyecto) */
+body[data-mundo="5"] .lienzo-envoltura {
+  border-radius: 4px;
+  border-width: 3px;
+  background: #1a1c2c;
+}
+
+/* efecto de pantalla CRT: líneas finas fijas (no se animan, no cuestan nada) */
+body[data-mundo="5"] .lienzo-envoltura::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 62px 0; /* solo sobre el arte, no sobre la franja de Nix */
+  z-index: 2;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2px, rgba(0, 0, 0, 0.1) 3px);
+  opacity: 0.7;
+}
+
+body[data-mundo="5"] #lienzo-mundo {
+  image-rendering: pixelated;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-mundo="5"] .lienzo-envoltura::after {
+    display: none;
+  }
+}
+
+/* En celulares angostos el encabezado de la retroalimentación (título, «Ver detalle» y estrellas) pasa a dos renglones */
+@media (max-width: 520px) {
+  .panel-feedback .panel-encabezado {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+}
+
+/* ---------------------------------------------------------------- Botones de inserción rápida (panel Aprende) */
+.chip-insertable {
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--fuente-mono, ui-monospace, monospace);
+  font-size: 0.8rem;
+  text-align: left;
+  transition: transform 0.08s, background 0.12s;
+}
+
+.chip-insertable:hover:not(:disabled) {
+  background: rgba(40, 52, 96, 0.95);
+  transform: translateY(-1px);
+}
+
+.chip-insertable:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.chip-insertable:focus-visible {
+  outline: 3px solid var(--mundo-acento, #5eead4);
+  outline-offset: 2px;
+}
+
+.chip-insertable:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ---------------------------------------------------------------- Contador de líneas */
+.contador-lineas {
+  margin-left: 8px;
+  padding: 2px 9px;
+  background: rgba(10, 15, 34, 0.85);
+  border: 1px solid var(--borde, #3a4170);
+  border-radius: 999px;
+  color: var(--texto-muted, #b8c2e8);
+  font-family: var(--fuente-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.contador-lineas[hidden] {
+  display: none;
+}
+
+/* Pasarse del límite recomendado: rojo (y con ⚠ en el texto, para no depender solo del color). No bloquea nada. */
+.contador-lineas.excedido {
+  background: #3d1620;
+  border-color: #ef5b6b;
+  color: #ffc1c9;
+  font-weight: 700;
+}
